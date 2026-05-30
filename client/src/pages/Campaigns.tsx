@@ -34,6 +34,40 @@ function fmt(n: number): string {
   return n.toString();
 }
 
+// ── Logo with fallback ───────────────────────────────────────────────────────
+function ClientLogo({ client, size = 36 }: { client: CampaignClient; size?: number }) {
+  const initials = client.name.split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+  const logoUrl = client.logoDomain
+    ? `https://logo.clearbit.com/${client.logoDomain}`
+    : null;
+
+  if (!logoUrl) {
+    return (
+      <div style={{ width: size, height: size, borderRadius: 8, background: client.primaryColor + "22", border: `1.5px solid ${client.primaryColor}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.33, fontWeight: 800, color: client.primaryColor, flexShrink: 0 }}>
+        {initials}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: size, height: size, borderRadius: 8, background: "#fff", border: `1.5px solid #e2e8f0`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
+      <img
+        src={logoUrl}
+        alt={client.name}
+        style={{ width: size - 8, height: size - 8, objectFit: "contain" }}
+        onError={e => {
+          const img = e.currentTarget;
+          img.style.display = "none";
+          const parent = img.parentElement!;
+          parent.style.background = client.primaryColor + "22";
+          parent.style.border = `1.5px solid ${client.primaryColor}44`;
+          parent.innerHTML = `<span style="font-size:${size * 0.33}px;font-weight:800;color:${client.primaryColor}">${initials}</span>`;
+        }}
+      />
+    </div>
+  );
+}
+
 // ── Campaign Card ─────────────────────────────────────────────────────────────
 function CampaignCard({ client, dark, onClick }: { client: CampaignClient; dark: boolean; onClick: () => void }) {
   const cardBg  = dark ? "#0d0d2b" : "#ffffff";
@@ -66,9 +100,12 @@ function CampaignCard({ client, dark, onClick }: { client: CampaignClient; dark:
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, marginTop: 4 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary, lineHeight: 1.3, marginBottom: 2 }}>{client.name}</div>
-          <div style={{ fontSize: 11, color: textSecondary, fontWeight: 500 }}>{client.vertical}</div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1, minWidth: 0 }}>
+          <ClientLogo client={client} size={36} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: textPrimary, lineHeight: 1.3, marginBottom: 2 }}>{client.name}</div>
+            <div style={{ fontSize: 11, color: textSecondary, fontWeight: 500 }}>{client.vertical}</div>
+          </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0, marginLeft: 8 }}>
           <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 6px #4ade80", animation: "pulse-dot 2s ease-in-out infinite" }} />

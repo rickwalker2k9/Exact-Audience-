@@ -56,7 +56,7 @@ export const LAND_ROVER_PROFILES: BuyerProfile[] = [
   {
     id: "lr-001",
     dashboardId: "land-rover",
-    name: "Marcus T.",
+    name: "Marcus Thornton",
     age: 42,
     location: "Paradise Valley, AZ",
     occupation: "Commercial Real Estate Developer",
@@ -95,7 +95,7 @@ export const LAND_ROVER_PROFILES: BuyerProfile[] = [
   {
     id: "lr-002",
     dashboardId: "land-rover",
-    name: "Priya S.",
+    name: "Priya Sharma",
     age: 36,
     location: "Scottsdale, AZ",
     occupation: "Pediatric Surgeon",
@@ -133,7 +133,7 @@ export const LAND_ROVER_PROFILES: BuyerProfile[] = [
   {
     id: "lr-003",
     dashboardId: "land-rover",
-    name: "Derek W.",
+    name: "Derek Walton",
     age: 29,
     location: "Tempe, AZ",
     occupation: "Tech Startup Founder",
@@ -178,7 +178,7 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
   {
     id: "lambo-001",
     dashboardId: "lamborghini",
-    name: "Nathaniel R.",
+    name: "Nathaniel Reeves",
     age: 51,
     location: "Paradise Valley, AZ",
     occupation: "Private Equity Partner",
@@ -217,7 +217,7 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
   {
     id: "lambo-002",
     dashboardId: "lamborghini",
-    name: "Tyler M.",
+    name: "Tyler Marsh",
     age: 34,
     location: "Scottsdale, AZ",
     occupation: "Tech Company Founder (Series B)",
@@ -255,7 +255,7 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
   {
     id: "lambo-003",
     dashboardId: "lamborghini",
-    name: "Sandra K.",
+    name: "Sandra Kessler",
     age: 47,
     location: "Fountain Hills, AZ",
     occupation: "Plastic Surgeon / Practice Owner",
@@ -300,7 +300,7 @@ export const WARBY_PROFILES: BuyerProfile[] = [
   {
     id: "wb-001",
     dashboardId: "warby-parker",
-    name: "Jasmine L.",
+    name: "Jasmine Lawson",
     age: 28,
     location: "Brooklyn, NY",
     occupation: "UX Designer",
@@ -338,7 +338,7 @@ export const WARBY_PROFILES: BuyerProfile[] = [
   {
     id: "wb-002",
     dashboardId: "warby-parker",
-    name: "Carlos M.",
+    name: "Carlos Mendez",
     age: 44,
     location: "Austin, TX",
     occupation: "High School Principal",
@@ -376,7 +376,7 @@ export const WARBY_PROFILES: BuyerProfile[] = [
   {
     id: "wb-003",
     dashboardId: "warby-parker",
-    name: "Rachel H.",
+    name: "Rachel Harmon",
     age: 32,
     location: "Chicago, IL",
     occupation: "Marketing Director",
@@ -421,7 +421,7 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
   {
     id: "pg-001",
     dashboardId: "policygenius",
-    name: "Brian O.",
+    name: "Brian Okafor",
     age: 38,
     location: "Denver, CO",
     occupation: "Software Engineer (Remote)",
@@ -460,7 +460,7 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
   {
     id: "pg-002",
     dashboardId: "policygenius",
-    name: "Angela V.",
+    name: "Angela Vasquez",
     age: 52,
     location: "Atlanta, GA",
     occupation: "Real Estate Agent",
@@ -498,7 +498,7 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
   {
     id: "pg-003",
     dashboardId: "policygenius",
-    name: "James K.",
+    name: "James Keller",
     age: 31,
     location: "Nashville, TN",
     occupation: "Nurse Practitioner",

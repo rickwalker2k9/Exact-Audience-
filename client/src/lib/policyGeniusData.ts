@@ -82,14 +82,14 @@ export const PG_INSURANCE_PAGES = [
 ];
 
 export const PG_VISITORS = [
-  { first: "Amanda",  last: "S.", city: "Columbus",    zip: "43201", income: "$75K–$99K",   networth: "$100K–$249K", credit: "B", job: "Nurse",             company: "OhioHealth",       score: 81, mood: "High Intent", vehicle: "Honda Odyssey",    time: "2m ago" },
-  { first: "Kevin",   last: "D.", city: "Charlotte",   zip: "28201", income: "$100K–$149K", networth: "$250K–$499K", credit: "A", job: "Financial Analyst", company: "Bank of America",  score: 77, mood: "In-Market",   vehicle: "Toyota Camry",     time: "6m ago" },
-  { first: "Rachel",  last: "H.", city: "Phoenix",     zip: "85001", income: "$60K–$74K",   networth: "$50K–$99K",   credit: "C", job: "Teacher",           company: "Scottsdale USD",   score: 68, mood: "Awareness",   vehicle: "Kia Sorento",      time: "11m ago" },
-  { first: "Brandon", last: "W.", city: "Dallas",      zip: "75201", income: "$125K–$149K", networth: "$300K–$499K", credit: "A", job: "Sales Director",    company: "AT&T",             score: 84, mood: "High Intent", vehicle: "Ford F-150",       time: "15m ago" },
-  { first: "Melissa", last: "P.", city: "Atlanta",     zip: "30301", income: "$85K–$99K",   networth: "$150K–$249K", credit: "B", job: "HR Manager",        company: "Delta Air Lines",  score: 73, mood: "In-Market",   vehicle: "Chevrolet Equinox",time: "20m ago" },
-  { first: "Tyler",   last: "N.", city: "Denver",      zip: "80201", income: "$70K–$84K",   networth: "$75K–$149K",  credit: "C", job: "IT Specialist",     company: "Lockheed Martin",  score: 62, mood: "Awareness",   vehicle: "Subaru Forester",  time: "26m ago" },
-  { first: "Cynthia", last: "B.", city: "Houston",     zip: "77001", income: "$95K–$124K",  networth: "$200K–$374K", credit: "B", job: "Pharmacist",        company: "CVS Health",       score: 76, mood: "In-Market",   vehicle: "Toyota RAV4",      time: "31m ago" },
-  { first: "Jason",   last: "L.", city: "Minneapolis", zip: "55401", income: "$65K–$74K",   networth: "$75K–$124K",  credit: "C", job: "Logistics Coord.",  company: "UPS",              score: 57, mood: "Awareness",   vehicle: "Dodge Ram",        time: "38m ago" },
+  { first: "Amanda",  last: "Sorrento",  city: "Columbus",    zip: "43201", income: "$75K–$99K",   networth: "$100K–$249K", credit: "B", job: "Nurse",             company: "OhioHealth",       score: 81, mood: "High Intent", vehicle: "Honda Odyssey",    time: "2m ago" },
+  { first: "Kevin",   last: "Dempsey",    city: "Charlotte",   zip: "28201", income: "$100K–$149K", networth: "$250K–$499K", credit: "A", job: "Financial Analyst", company: "Bank of America",  score: 77, mood: "In-Market",   vehicle: "Toyota Camry",     time: "6m ago" },
+  { first: "Rachel",  last: "Haines",     city: "Phoenix",     zip: "85001", income: "$60K–$74K",   networth: "$50K–$99K",   credit: "C", job: "Teacher",           company: "Scottsdale USD",   score: 68, mood: "Awareness",   vehicle: "Kia Sorento",      time: "11m ago" },
+  { first: "Brandon", last: "Whitfield",  city: "Dallas",      zip: "75201", income: "$125K–$149K", networth: "$300K–$499K", credit: "A", job: "Sales Director",    company: "AT&T",             score: 84, mood: "High Intent", vehicle: "Ford F-150",       time: "15m ago" },
+  { first: "Melissa", last: "Pruitt",     city: "Atlanta",     zip: "30301", income: "$85K–$99K",   networth: "$150K–$249K", credit: "B", job: "HR Manager",        company: "Delta Air Lines",  score: 73, mood: "In-Market",   vehicle: "Chevrolet Equinox", time: "20m ago" },
+  { first: "Tyler",   last: "Norris",     city: "Denver",      zip: "80201", income: "$70K–$84K",   networth: "$75K–$149K",  credit: "C", job: "IT Specialist",     company: "Lockheed Martin",  score: 62, mood: "Awareness",   vehicle: "Subaru Forester",  time: "26m ago" },
+  { first: "Cynthia", last: "Beaumont",   city: "Houston",     zip: "77001", income: "$95K–$124K",  networth: "$200K–$374K", credit: "B", job: "Pharmacist",        company: "CVS Health",       score: 76, mood: "In-Market",   vehicle: "Toyota RAV4",      time: "31m ago" },
+  { first: "Jason",   last: "Lund",       city: "Minneapolis", zip: "55401", income: "$65K–$74K",   networth: "$75K–$124K",  credit: "C", job: "Logistics Coord.",  company: "UPS",              score: 57, mood: "Awareness",   vehicle: "Dodge Ram",        time: "38m ago" },
 ];
 
 export const PG_MOODS = [

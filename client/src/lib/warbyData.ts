@@ -82,14 +82,14 @@ export const WARBY_SITE_PAGES = [
 ];
 
 export const WARBY_VISITORS = [
-  { first: "Sarah",   last: "M.", city: "Brooklyn",      zip: "11201", income: "$75K–$99K",   networth: "$100K–$249K", credit: "B", job: "UX Designer",       company: "Spotify",            score: 82, mood: "High Intent", vehicle: "Toyota Prius",    time: "2m ago" },
-  { first: "Marcus",  last: "T.", city: "Austin",        zip: "78701", income: "$100K–$149K", networth: "$250K–$499K", credit: "A", job: "Software Engineer", company: "Dell Technologies",  score: 78, mood: "In-Market",   vehicle: "Tesla Model 3",   time: "5m ago" },
-  { first: "Priya",   last: "K.", city: "San Francisco", zip: "94102", income: "$150K–$199K", networth: "$500K–$749K", credit: "A", job: "Product Manager",   company: "Salesforce",         score: 84, mood: "High Intent", vehicle: "Honda CR-V",      time: "9m ago" },
-  { first: "Jake",    last: "R.", city: "Chicago",       zip: "60601", income: "$60K–$74K",   networth: "$50K–$99K",   credit: "C", job: "Teacher",           company: "Chicago Public Schools", score: 61, mood: "Awareness", vehicle: "Ford Focus",     time: "14m ago" },
-  { first: "Olivia",  last: "C.", city: "Seattle",       zip: "98101", income: "$125K–$149K", networth: "$300K–$499K", credit: "B", job: "Data Analyst",      company: "Amazon",             score: 76, mood: "In-Market",   vehicle: "Subaru Outback",  time: "19m ago" },
-  { first: "Derek",   last: "L.", city: "Denver",        zip: "80202", income: "$85K–$99K",   networth: "$150K–$249K", credit: "B", job: "Marketing Manager", company: "REI",                score: 69, mood: "Awareness",   vehicle: "Jeep Wrangler",   time: "24m ago" },
-  { first: "Natalie", last: "F.", city: "Nashville",     zip: "37201", income: "$95K–$124K",  networth: "$200K–$374K", credit: "B", job: "Nurse Practitioner","company": "Vanderbilt Health",score: 74, mood: "In-Market",   vehicle: "Nissan Rogue",    time: "29m ago" },
-  { first: "Carlos",  last: "V.", city: "Miami",         zip: "33101", income: "$65K–$74K",   networth: "$75K–$124K",  credit: "C", job: "Graphic Designer",  company: "Freelance",          score: 58, mood: "Awareness",   vehicle: "Honda Civic",     time: "36m ago" },
+  { first: "Sarah",   last: "Moreno",    city: "Brooklyn",      zip: "11201", income: "$75K–$99K",   networth: "$100K–$249K", credit: "B", job: "UX Designer",       company: "Spotify",               score: 82, mood: "High Intent", vehicle: "Toyota Prius",    time: "2m ago" },
+  { first: "Marcus",  last: "Thornton",  city: "Austin",        zip: "78701", income: "$100K–$149K", networth: "$250K–$499K", credit: "A", job: "Software Engineer", company: "Dell Technologies",      score: 78, mood: "In-Market",   vehicle: "Tesla Model 3",   time: "5m ago" },
+  { first: "Priya",   last: "Kapoor",    city: "San Francisco", zip: "94102", income: "$150K–$199K", networth: "$500K–$749K", credit: "A", job: "Product Manager",   company: "Salesforce",            score: 84, mood: "High Intent", vehicle: "Honda CR-V",      time: "9m ago" },
+  { first: "Jake",    last: "Riordan",   city: "Chicago",       zip: "60601", income: "$60K–$74K",   networth: "$50K–$99K",   credit: "C", job: "Teacher",           company: "Chicago Public Schools", score: 61, mood: "Awareness",   vehicle: "Ford Focus",      time: "14m ago" },
+  { first: "Olivia",  last: "Chen",      city: "Seattle",       zip: "98101", income: "$125K–$149K", networth: "$300K–$499K", credit: "B", job: "Data Analyst",      company: "Amazon",                score: 76, mood: "In-Market",   vehicle: "Subaru Outback",  time: "19m ago" },
+  { first: "Derek",   last: "Lawson",    city: "Denver",        zip: "80202", income: "$85K–$99K",   networth: "$150K–$249K", credit: "B", job: "Marketing Manager", company: "REI",                   score: 69, mood: "Awareness",   vehicle: "Jeep Wrangler",   time: "24m ago" },
+  { first: "Natalie", last: "Fontaine",  city: "Nashville",     zip: "37201", income: "$95K–$124K",  networth: "$200K–$374K", credit: "B", job: "Nurse Practitioner", company: "Vanderbilt Health",     score: 74, mood: "In-Market",   vehicle: "Nissan Rogue",    time: "29m ago" },
+  { first: "Carlos",  last: "Vega",      city: "Miami",         zip: "33101", income: "$65K–$74K",   networth: "$75K–$124K",  credit: "C", job: "Graphic Designer",  company: "Freelance",             score: 58, mood: "Awareness",   vehicle: "Honda Civic",     time: "36m ago" },
 ];
 
 export const WARBY_MOODS = [
