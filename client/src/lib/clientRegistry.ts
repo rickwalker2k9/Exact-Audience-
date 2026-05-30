@@ -136,7 +136,7 @@ export const CLIENTS: CampaignClient[] = [
     impressionsToDate: 2847293,
     reachToDate: 111093,
     completionRate: 88.4,
-    primaryColor: "#c8102e",
+    primaryColor: "#2a6496",
   },
 
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────

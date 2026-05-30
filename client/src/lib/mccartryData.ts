@@ -14,7 +14,7 @@ export const MCCARTY_CLIENT = {
   electionDate: "June 16, 2026",
   budget: "$33,000",
   website: "colleenmccarty.com",
-  accentColor: "#9b2335",
+  accentColor: "#2a6496",
   dashboardId: "mccarty",
 };
 
@@ -85,16 +85,16 @@ export const MCCARTY_DAILY_IMPRESSIONS = [
 ];
 
 export const MCCARTY_MEDIA_MIX = [
-  { channel: "CTV Streaming",    pct: 74, impressions: 360891, spend: 24420, color: "#9b2335" },
+  { channel: "CTV Streaming",    pct: 74, impressions: 360891, spend: 24420, color: "#2a6496" },
   { channel: "Meta Ads",         pct: 10, impressions:  48742, spend:  3300, color: "#1877f2" },
   { channel: "Google Ads",       pct:  6, impressions:  29245, spend:  1980, color: "#fbbc04" },
-  { channel: "YouTube",          pct:  5, impressions:  24371, spend:  1650, color: "#e05a6a" },
+  { channel: "YouTube",          pct:  5, impressions:  24371, spend:  1650, color: "#60a5fa" },
   { channel: "Email Marketing",  pct:  3, impressions:  14623, spend:   990, color: "#10b981" },
   { channel: "QR Activation",    pct:  2, impressions:   9748, spend:   660, color: "#8b5cf6" },
 ];
 
 export const MCCARTY_CTV_CHANNELS = [
-  { name: "Samsung TV Plus",     impressions: 58420, completions: 53100, cpm: 17.35, frequency: 2.65, completionRate: 90.8, color: "#9b2335" },
+  { name: "Samsung TV Plus",     impressions: 58420, completions: 53100, cpm: 17.35, frequency: 2.65, completionRate: 90.8, color: "#2a6496" },
   { name: "Tubi",                impressions: 42600, completions: 38200, cpm: 18.20, frequency: 2.41, completionRate: 89.6, color: "#f97316" },
   { name: "Pluto TV",            impressions: 38400, completions: 34400, cpm: 16.80, frequency: 2.18, completionRate: 89.5, color: "#a855f7" },
   { name: "Roku Channel",        impressions: 34800, completions: 31200, cpm: 19.40, frequency: 2.32, completionRate: 89.7, color: "#6366f1" },
@@ -103,15 +103,15 @@ export const MCCARTY_CTV_CHANNELS = [
   { name: "News on 6 / KOTV",    impressions: 24200, completions: 22100, cpm: 15.58, frequency: 2.50, completionRate: 91.5, color: "#10b981" },
   { name: "2 News Oklahoma KJRH",impressions: 22400, completions: 20200, cpm: 15.58, frequency: 2.10, completionRate: 90.5, color: "#14b8a6" },
   { name: "Court TV",            impressions: 20800, completions: 18700, cpm: 14.76, frequency: 2.22, completionRate: 90.0, color: "#f59e0b" },
-  { name: "America's Voice",     impressions: 18400, completions: 16900, cpm: 10.58, frequency: 3.78, completionRate: 91.8, color: "#c0394a" },
+  { name: "America's Voice",     impressions: 18400, completions: 16900, cpm: 10.58, frequency: 3.78, completionRate: 91.8, color: "#3a85c0" },
   { name: "A&E Network",         impressions: 16200, completions: 14700, cpm: 15.71, frequency: 1.96, completionRate: 91.0, color: "#8b5cf6" },
   { name: "HISTORY",             impressions: 14400, completions: 12900, cpm: 21.16, frequency: 1.73, completionRate: 90.0, color: "#d97706" },
   { name: "Performance Network", impressions: 12671, completions: 11400, cpm:  8.40, frequency: 1.84, completionRate: 90.0, color: "#64748b" },
 ];
 
 export const MCCARTY_CREATIVES = [
-  { name: "Name ID — 'Colleen' :30",     impressions: 162400, completions: 147200, ctr: 0.71, completionRate: 90.5, color: "#9b2335" },
-  { name: "Accountability — 'Enough' :30", impressions: 118600, completions: 107200, ctr: 0.68, completionRate: 90.3, color: "#c0394a" },
+  { name: "Name ID — 'Colleen' :30",     impressions: 162400, completions: 147200, ctr: 0.71, completionRate: 90.5, color: "#2a6496" },
+  { name: "Accountability — 'Enough' :30", impressions: 118600, completions: 107200, ctr: 0.68, completionRate: 90.3, color: "#3a85c0" },
   { name: "Victims First :15",           impressions:  84200, completions:  75400, ctr: 0.64, completionRate: 89.4, color: "#f97316" },
   { name: "Debate Highlight :15",        impressions:  68400, completions:  62100, ctr: 0.82, completionRate: 90.8, color: "#f59e0b" },
   { name: "Taxpayer Waste :30",          impressions:  42800, completions:  38400, ctr: 0.58, completionRate: 89.5, color: "#10b981" },
@@ -119,8 +119,8 @@ export const MCCARTY_CREATIVES = [
 ];
 
 export const MCCARTY_MOODS = [
-  { mood: "Civic Duty",       pct: 34, color: "#9b2335",  desc: "Engaged voters who respond to accountability messaging" },
-  { mood: "Crime Concerned",  pct: 28, color: "#c0394a",  desc: "Voters prioritizing public safety and tough prosecution" },
+  { mood: "Civic Duty",       pct: 34, color: "#2a6496",  desc: "Engaged voters who respond to accountability messaging" },
+  { mood: "Crime Concerned",  pct: 28, color: "#3a85c0",  desc: "Voters prioritizing public safety and tough prosecution" },
   { mood: "Reform Minded",    pct: 18, color: "#f59e0b",  desc: "Voters frustrated with current DA office performance" },
   { mood: "Undecided",        pct: 12, color: "#6366f1",  desc: "Persuadable voters watching debate content and news" },
   { mood: "Awareness Stage",  pct:  8, color: "#64748b",  desc: "Early exposure — name recognition building" },
@@ -185,8 +185,8 @@ export const MCCARTY_DEBATE_ENGAGEMENT = {
 
 // ── Voter Segment Pages (replaces "Site Pages") ───────────────────────────────
 export const MCCARTY_VOTER_SEGMENTS = [
-  { label: "GOP 45+ Tulsa City",     views: 6840, avgTime: "3:42", bounce: 22, color: "#9b2335" },
-  { label: "GOP 45+ Broken Arrow",   views: 3280, avgTime: "3:18", bounce: 24, color: "#c0394a" },
+  { label: "GOP 45+ Tulsa City",     views: 6840, avgTime: "3:42", bounce: 22, color: "#2a6496" },
+  { label: "GOP 45+ Broken Arrow",   views: 3280, avgTime: "3:18", bounce: 24, color: "#3a85c0" },
   { label: "GOP 45+ Bixby/Jenks",    views: 2140, avgTime: "3:54", bounce: 21, color: "#f97316" },
   { label: "GOP 45+ Owasso",         views: 1820, avgTime: "3:28", bounce: 26, color: "#f59e0b" },
   { label: "GOP 45+ Sand Springs",   views: 1460, avgTime: "3:12", bounce: 28, color: "#10b981" },

@@ -24,25 +24,26 @@ import {
 } from "@/lib/mccartryData";
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
+// McCarty palette: NO RED — deep navy + teal accent + gold
 function useColors(isDark: boolean) {
   return isDark ? {
-    bg: "#0a0a0f", bg2: "#0f0f1a", bg3: "#141420",
-    card: "#0f0f1e", card2: "#141428", border: "#1e1e3a",
-    // Softer deep crimson — less aggressive than bright red
-    red: "#9b2335", red2: "#c0394a", red3: "#e8a0aa",
-    green: "#4ade80", gold: "#f59e0b", blue: "#38bdf8",
-    white: "#f1f5f9", muted: "#8892b0",
-    headerBg: "linear-gradient(135deg,#120810,#1e0d18)",
-    tooltipBg: "#141428", scrollTrack: "#0f0f1a", scrollThumb: "#1e1e3a",
+    bg: "#07090f", bg2: "#0c0f1a", bg3: "#111525",
+    card: "#0d1120", card2: "#111828", border: "#1a2540",
+    // Primary accent: deep navy-teal (NO red anywhere)
+    red: "#2a6496", red2: "#3a85c0", red3: "#7db8d8",
+    green: "#2dd4bf", gold: "#d4a017", blue: "#60a5fa",
+    white: "#e8eef6", muted: "#7a8aaa",
+    headerBg: "linear-gradient(135deg,#07090f,#0d1a2e)",
+    tooltipBg: "#111828", scrollTrack: "#0c0f1a", scrollThumb: "#1a2540",
   } : {
-    bg: "#f2f4f7", bg2: "#e8edf5", bg3: "#dde4ef",
-    card: "#ffffff", card2: "#f8fafc", border: "#c8d4e8",
-    // Softer deep crimson for light mode
-    red: "#8b1a2a", red2: "#a8263a", red3: "#c0394a",
-    green: "#16a34a", gold: "#d97706", blue: "#0284c7",
-    white: "#1e293b", muted: "#64748b",
-    headerBg: "linear-gradient(135deg,#120810,#1e0d18)",
-    tooltipBg: "#ffffff", scrollTrack: "#e8edf5", scrollThumb: "#c8d4e8",
+    bg: "#f0f4f8", bg2: "#e4ecf4", bg3: "#d8e4f0",
+    card: "#ffffff", card2: "#f4f8fc", border: "#b8cce0",
+    // Primary accent: deep navy-teal (NO red anywhere)
+    red: "#1a4f7a", red2: "#2a6496", red3: "#3a85c0",
+    green: "#0d9488", gold: "#b8860b", blue: "#1d6fa4",
+    white: "#0f1e35", muted: "#5a7090",
+    headerBg: "linear-gradient(135deg,#07090f,#0d1a2e)",
+    tooltipBg: "#ffffff", scrollTrack: "#e4ecf4", scrollThumb: "#b8cce0",
   };
 }
 type C = ReturnType<typeof useColors>;
@@ -1087,7 +1088,7 @@ export default function McCartryDashboard() {
       </div>
 
       {/* Campaign Day Progress Bar */}
-      <div style={{ background: isDark ? "#0d0a0e" : "#f7f2f4", borderBottom: `1px solid ${C.red}22`, padding: mobile ? "8px 16px" : "10px 28px", display: "flex", alignItems: "center", gap: mobile ? 10 : 20, flexWrap: "wrap" }}>
+      <div style={{ background: isDark ? "#080c18" : "#eef3f8", borderBottom: `1px solid ${C.border}`, padding: mobile ? "8px 16px" : "10px 28px", display: "flex", alignItems: "center", gap: mobile ? 10 : 20, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <span style={{ fontSize: 10, fontWeight: 800, color: C.red, textTransform: "uppercase", letterSpacing: "0.1em" }}>Day {campaign.dayNum} of 18</span>
           <span style={{ fontSize: 10, color: C.muted }}>·</span>
