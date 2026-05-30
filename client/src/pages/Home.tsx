@@ -1,6 +1,6 @@
 /**
  * Exact Audience — Live Campaign Intelligence Dashboard
- * Design: Dark command-center aesthetic, Exact Audience navy/purple brand
+ * Design: Dark command-center aesthetic (default) + clean light mode toggle
  * Layout: Sticky header + tab bar, responsive grid (single-col mobile, multi-col desktop)
  * Animation: Live counters, chart updates, visitor feed rotation
  */
@@ -16,25 +16,52 @@ import {
   DAYPARTS, CREATIVES
 } from "@/lib/dashboardData";
 import { PEOPLE } from "@/lib/peopleData";
+import { useTheme } from "@/contexts/ThemeContext";
 
-// ── Color tokens ──────────────────────────────────────────────────────────────
-const C = {
-  bg:      "#07071a",
-  bg2:     "#0d0d28",
-  bg3:     "#12123a",
-  card:    "#0f0f2e",
-  card2:   "#141440",
-  border:  "#252560",
-  purple:  "#7c3aed",
-  purple2: "#a855f7",
-  purple3: "#c084fc",
-  green:   "#4ade80",
-  gold:    "#f59e0b",
-  blue:    "#38bdf8",
-  red:     "#f87171",
-  white:   "#f1f5f9",
-  muted:   "#8892b0",
-};
+// ── Theme-aware color tokens ──────────────────────────────────────────────────
+function useColors(isDark: boolean) {
+  return isDark ? {
+    bg:      "#07071a",
+    bg2:     "#0d0d28",
+    bg3:     "#12123a",
+    card:    "#0f0f2e",
+    card2:   "#141440",
+    border:  "#252560",
+    purple:  "#7c3aed",
+    purple2: "#a855f7",
+    purple3: "#c084fc",
+    green:   "#4ade80",
+    gold:    "#f59e0b",
+    blue:    "#38bdf8",
+    red:     "#f87171",
+    white:   "#f1f5f9",
+    muted:   "#8892b0",
+    headerBg: "linear-gradient(135deg,#0a0a22,#1a0840)",
+    tooltipBg: "#141440",
+    scrollTrack: "#0d0d28",
+    scrollThumb: "#252560",
+  } : {
+    bg:      "#f0f4f8",
+    bg2:     "#e8edf5",
+    bg3:     "#dde4ef",
+    card:    "#ffffff",
+    card2:   "#f8fafc",
+    border:  "#c8d4e8",
+    purple:  "#7c3aed",
+    purple2: "#7c3aed",
+    purple3: "#9333ea",
+    green:   "#16a34a",
+    gold:    "#d97706",
+    blue:    "#0284c7",
+    red:     "#dc2626",
+    white:   "#1e293b",
+    muted:   "#64748b",
+    headerBg: "linear-gradient(135deg,#1e1b4b,#312e81)",
+    tooltipBg: "#ffffff",
+    scrollTrack: "#e8edf5",
+    scrollThumb: "#c8d4e8",
+  };
+}
 
 const TABS = [
   "Overview", "Channels", "Creatives",
@@ -69,7 +96,7 @@ function useTick(base: number, step: number, interval = 8000) {
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
-function KpiCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color: string }) {
+function KpiCard({ label, value, sub, color, C }: { label: string; value: string; sub?: string; color: string; C: ReturnType<typeof useColors> }) {
   return (
     <div style={{
       background: C.card, border: `1px solid ${C.border}`,
@@ -83,7 +110,7 @@ function KpiCard({ label, value, sub, color }: { label: string; value: string; s
   );
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
+function SectionTitle({ children, C }: { children: React.ReactNode; C: ReturnType<typeof useColors> }) {
   return (
     <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
       <span style={{ width: 3, height: 14, background: C.purple2, borderRadius: 2, display: "inline-block", flexShrink: 0 }} />
@@ -92,15 +119,16 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ProgressBar({ value, max, color = C.purple2 }: { value: number; max: number; color?: string }) {
+function ProgressBar({ value, max, color, C }: { value: number; max: number; color?: string; C: ReturnType<typeof useColors> }) {
+  const barColor = color ?? C.purple2;
   return (
     <div style={{ background: C.bg3, borderRadius: 4, height: 6, overflow: "hidden" }}>
-      <div style={{ width: `${Math.min(100, (value / max) * 100)}%`, background: color, height: "100%", borderRadius: 4, transition: "width 0.6s ease" }} />
+      <div style={{ width: `${Math.min(100, (value / max) * 100)}%`, background: barColor, height: "100%", borderRadius: 4, transition: "width 0.6s ease" }} />
     </div>
   );
 }
 
-function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+function Card({ children, style, C }: { children: React.ReactNode; style?: React.CSSProperties; C: ReturnType<typeof useColors> }) {
   return (
     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20, ...style }}>
       {children}
@@ -109,7 +137,7 @@ function Card({ children, style }: { children: React.ReactNode; style?: React.CS
 }
 
 // ── Visitor Feed ──────────────────────────────────────────────────────────────
-function VisitorFeed() {
+function VisitorFeed({ C }: { C: ReturnType<typeof useColors> }) {
   const [idx, setIdx] = useState(0);
   const [fade, setFade] = useState(true);
   useEffect(() => {
@@ -154,7 +182,7 @@ function VisitorFeed() {
 }
 
 // ── TAB: Overview ─────────────────────────────────────────────────────────────
-function TabOverview({ mobile }: { mobile: boolean }) {
+function TabOverview({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   const impressions = useTick(LIVE_BASE.impressions, 1247);
   const completions = useTick(LIVE_BASE.completions, 1089);
   const reach       = useTick(LIVE_BASE.reach, 23);
@@ -171,16 +199,16 @@ function TabOverview({ mobile }: { mobile: boolean }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* KPI row */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
-        <KpiCard label="Total Impressions" value={fmt(impressions)} sub="↑ 3.2% vs last week" color={C.purple2} />
-        <KpiCard label="Completed Views" value={fmt(completions)} sub={`${LIVE_BASE.completionRate}% completion`} color={C.green} />
-        <KpiCard label="Unique Reach" value={fmt(reach)} sub={`${LIVE_BASE.frequency}x avg frequency`} color={C.blue} />
-        <KpiCard label="SiteID Visitors" value={fmt(visitors)} sub="Identified by name & address" color={C.gold} />
+        <KpiCard label="Total Impressions" value={fmt(impressions)} sub="↑ 3.2% vs last week" color={C.purple2} C={C} />
+        <KpiCard label="Completed Views" value={fmt(completions)} sub={`${LIVE_BASE.completionRate}% completion`} color={C.green} C={C} />
+        <KpiCard label="Unique Reach" value={fmt(reach)} sub={`${LIVE_BASE.frequency}x avg frequency`} color={C.blue} C={C} />
+        <KpiCard label="SiteID Visitors" value={fmt(visitors)} sub="Identified by name & address" color={C.gold} C={C} />
       </div>
 
       {/* Chart + Visitor Feed */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "3fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>Daily Delivery — Last 14 Days (000s)</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Daily Delivery — Last 14 Days (000s)</SectionTitle>
           <ResponsiveContainer width="100%" height={mobile ? 180 : 220}>
             <AreaChart data={chartData}>
               <defs>
@@ -200,7 +228,7 @@ function TabOverview({ mobile }: { mobile: boolean }) {
               <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
               <XAxis dataKey="day" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={30} />
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 12 }} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 12 }} />
               <Legend wrapperStyle={{ color: C.muted, fontSize: 11 }} />
               <Area type="monotone" dataKey="CTV" stroke={C.purple2} fill="url(#gCTV)" strokeWidth={2} />
               <Area type="monotone" dataKey="YouTube" stroke={C.red} fill="url(#gYT)" strokeWidth={2} />
@@ -208,13 +236,13 @@ function TabOverview({ mobile }: { mobile: boolean }) {
             </AreaChart>
           </ResponsiveContainer>
         </Card>
-        <VisitorFeed />
+        <VisitorFeed C={C} />
       </div>
 
       {/* Channel Mix + Budget Pacing */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>Channel Mix — Impression Share</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Channel Mix — Impression Share</SectionTitle>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie data={[
@@ -225,14 +253,14 @@ function TabOverview({ mobile }: { mobile: boolean }) {
               ]} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
                 {[C.purple2, C.red, C.blue, C.gold].map((c, i) => <Cell key={i} fill={c} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `${v}%`} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `${v}%`} />
               <Legend wrapperStyle={{ color: C.muted, fontSize: 12 }} />
             </PieChart>
           </ResponsiveContainer>
         </Card>
 
-        <Card>
-          <SectionTitle>Budget Pacing</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Budget Pacing</SectionTitle>
           {[
             { label: "CTV Streaming", pct: 72, color: C.purple2 },
             { label: "YouTube", pct: 68, color: C.red },
@@ -245,7 +273,7 @@ function TabOverview({ mobile }: { mobile: boolean }) {
                 <span style={{ fontSize: 12, color: C.white }}>{r.label}</span>
                 <span style={{ fontSize: 12, fontWeight: 700, color: r.color }}>{r.pct}%</span>
               </div>
-              <ProgressBar value={r.pct} max={100} color={r.color} />
+              <ProgressBar value={r.pct} max={100} color={r.color} C={C} />
             </div>
           ))}
         </Card>
@@ -255,21 +283,21 @@ function TabOverview({ mobile }: { mobile: boolean }) {
 }
 
 // ── TAB: CPM & Channels ───────────────────────────────────────────────────────
-function TabChannels({ mobile }: { mobile: boolean }) {
+function TabChannels({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   const [sort, setSort] = useState<"impressions" | "cpm" | "completionRate">("impressions");
   const sorted = [...CTV_CHANNELS].sort((a, b) => b[sort] - a[sort]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <Card>
+      <Card C={C}>
         <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", gap: 12, marginBottom: 16 }}>
-          <SectionTitle>CTV Streaming — Vibe.co Inventory</SectionTitle>
+          <SectionTitle C={C}>CTV Streaming — Vibe.co Inventory</SectionTitle>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {(["impressions", "cpm", "completionRate"] as const).map(k => (
               <button key={k} onClick={() => setSort(k)} style={{
                 padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
                 background: sort === k ? C.purple : C.bg3,
-                color: sort === k ? C.white : C.muted,
+                color: sort === k ? "#ffffff" : C.muted,
                 border: `1px solid ${sort === k ? C.purple : C.border}`,
               }}>
                 {k === "impressions" ? "Impressions" : k === "cpm" ? "CPM" : "Completion"}
@@ -288,7 +316,7 @@ function TabChannels({ mobile }: { mobile: boolean }) {
             </thead>
             <tbody>
               {sorted.map((ch, i) => (
-                <tr key={ch.name} style={{ borderBottom: `1px solid ${C.border}22`, background: i % 2 === 0 ? "transparent" : `${C.bg3}44` }}>
+                <tr key={ch.name} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : C.bg3 }}>
                   <td style={{ padding: "9px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                       <span style={{ width: 8, height: 8, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
@@ -312,8 +340,8 @@ function TabChannels({ mobile }: { mobile: boolean }) {
       </Card>
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>Phoenix Local TV</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Phoenix Local TV</SectionTitle>
           {LOCAL_CHANNELS.map(ch => (
             <div key={ch.name} style={{ marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
@@ -324,13 +352,13 @@ function TabChannels({ mobile }: { mobile: boolean }) {
                 <span style={{ fontSize: 11, color: C.muted }}>{fmt(ch.impressions)} impr · {ch.frequency.toFixed(2)}x freq</span>
                 <span style={{ fontSize: 11, color: ch.completionRate >= 90 ? C.green : C.gold }}>{ch.completionRate.toFixed(1)}%</span>
               </div>
-              <ProgressBar value={ch.completionRate} max={100} color={C.blue} />
+              <ProgressBar value={ch.completionRate} max={100} color={C.blue} C={C} />
             </div>
           ))}
         </Card>
 
-        <Card>
-          <SectionTitle>YouTube Performance</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>YouTube Performance</SectionTitle>
           {[
             { label: "Pre-Roll :30", data: YOUTUBE.preRoll, color: C.red },
             { label: "Mid-Roll :15", data: YOUTUBE.midRoll, color: "#ff6b35" },
@@ -356,7 +384,7 @@ function TabChannels({ mobile }: { mobile: boolean }) {
 }
 
 // ── TAB: Creatives ────────────────────────────────────────────────────────────
-function TabCreatives({ mobile }: { mobile: boolean }) {
+function TabCreatives({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   const chartData = CREATIVES.map(c => ({ name: c.format, CPM: c.cpm, VCR: c.completionRate }));
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -371,7 +399,7 @@ function TabCreatives({ mobile }: { mobile: boolean }) {
               {cr.completionRate > 0 && (
                 <div style={{ gridColumn: "1 / 3" }}>
                   <div style={{ fontSize: 9, color: C.muted, marginBottom: 4 }}>Completion Rate</div>
-                  <ProgressBar value={cr.completionRate} max={100} color={cr.completionRate >= 90 ? C.green : C.purple2} />
+                  <ProgressBar value={cr.completionRate} max={100} color={cr.completionRate >= 90 ? C.green : C.purple2} C={C} />
                   <div style={{ fontSize: 11, fontWeight: 700, color: cr.completionRate >= 90 ? C.green : C.purple2, marginTop: 4 }}>{cr.completionRate.toFixed(1)}%</div>
                 </div>
               )}
@@ -381,26 +409,26 @@ function TabCreatives({ mobile }: { mobile: boolean }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>CPM by Creative Format</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>CPM by Creative Format</SectionTitle>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke={C.border} horizontal={false} />
               <XAxis type="number" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis dataKey="name" type="category" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={65} />
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `$${Number(v).toFixed(2)}`} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `$${Number(v).toFixed(2)}`} />
               <Bar dataKey="CPM" fill={C.gold} radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
-        <Card>
-          <SectionTitle>Completion Rate by Format</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Completion Rate by Format</SectionTitle>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData.filter(d => d.VCR > 0)} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke={C.border} horizontal={false} />
               <XAxis type="number" domain={[0, 100]} tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis dataKey="name" type="category" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={65} />
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `${v}%`} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `${v}%`} />
               <Bar dataKey="VCR" fill={C.green} radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -411,7 +439,7 @@ function TabCreatives({ mobile }: { mobile: boolean }) {
 }
 
 // ── TAB: Audience Intelligence ────────────────────────────────────────────────
-function TabAudience({ mobile }: { mobile: boolean }) {
+function TabAudience({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   const maxAge  = Math.max(...DEMOGRAPHICS.age.map(d => d.value));
   const maxInc  = Math.max(...DEMOGRAPHICS.income.map(d => d.value));
   const maxNW   = Math.max(...DEMOGRAPHICS.networth.map(d => d.value));
@@ -420,90 +448,90 @@ function TabAudience({ mobile }: { mobile: boolean }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>Age Distribution</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Age Distribution</SectionTitle>
           {DEMOGRAPHICS.age.map(d => (
             <div key={d.label} style={{ marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                 <span style={{ fontSize: 12, color: C.white }}>{d.label}</span>
                 <span style={{ fontSize: 12, fontWeight: 700, color: C.purple3 }}>{d.value}</span>
               </div>
-              <ProgressBar value={d.value} max={maxAge} color={C.purple2} />
+              <ProgressBar value={d.value} max={maxAge} color={C.purple2} C={C} />
             </div>
           ))}
         </Card>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <Card>
-            <SectionTitle>Gender</SectionTitle>
+          <Card C={C}>
+            <SectionTitle C={C}>Gender</SectionTitle>
             <ResponsiveContainer width="100%" height={130}>
               <PieChart>
                 <Pie data={DEMOGRAPHICS.gender} cx="50%" cy="50%" innerRadius={35} outerRadius={55} dataKey="value" paddingAngle={4}>
                   <Cell fill={C.blue} />
                   <Cell fill={C.purple3} />
                 </Pie>
-                <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
+                <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
                 <Legend wrapperStyle={{ color: C.muted, fontSize: 11 }} />
               </PieChart>
             </ResponsiveContainer>
           </Card>
-          <Card>
-            <SectionTitle>Homeowner Status</SectionTitle>
+          <Card C={C}>
+            <SectionTitle C={C}>Homeowner Status</SectionTitle>
             <ResponsiveContainer width="100%" height={130}>
               <PieChart>
                 <Pie data={DEMOGRAPHICS.homeowner} cx="50%" cy="50%" innerRadius={35} outerRadius={55} dataKey="value" paddingAngle={4}>
                   {[C.green, C.red, C.muted].map((c, i) => <Cell key={i} fill={c} />)}
                 </Pie>
-                <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
+                <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
                 <Legend wrapperStyle={{ color: C.muted, fontSize: 11 }} />
               </PieChart>
             </ResponsiveContainer>
           </Card>
         </div>
 
-        <Card>
-          <SectionTitle>Household Income</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Household Income</SectionTitle>
           {DEMOGRAPHICS.income.map(d => (
             <div key={d.label} style={{ marginBottom: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                 <span style={{ fontSize: 11, color: C.white }}>{d.label}</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: C.gold }}>{d.value}</span>
               </div>
-              <ProgressBar value={d.value} max={maxInc} color={C.gold} />
+              <ProgressBar value={d.value} max={maxInc} color={C.gold} C={C} />
             </div>
           ))}
         </Card>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>Net Worth</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Net Worth</SectionTitle>
           {DEMOGRAPHICS.networth.map(d => (
             <div key={d.label} style={{ marginBottom: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                 <span style={{ fontSize: 11, color: C.white }}>{d.label}</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: C.green }}>{d.value}</span>
               </div>
-              <ProgressBar value={d.value} max={maxNW} color={C.green} />
+              <ProgressBar value={d.value} max={maxNW} color={C.green} C={C} />
             </div>
           ))}
         </Card>
-        <Card>
-          <SectionTitle>Credit Rating</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Credit Rating</SectionTitle>
           {DEMOGRAPHICS.credit.map(d => (
             <div key={d.label} style={{ marginBottom: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                 <span style={{ fontSize: 11, color: C.white }}>{d.label}</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: C.blue }}>{d.value}</span>
               </div>
-              <ProgressBar value={d.value} max={94} color={C.blue} />
+              <ProgressBar value={d.value} max={94} color={C.blue} C={C} />
             </div>
           ))}
         </Card>
       </div>
 
-      <Card>
-        <SectionTitle>Top Cities</SectionTitle>
+      <Card C={C}>
+        <SectionTitle C={C}>Top Cities</SectionTitle>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 10 }}>
           {DEMOGRAPHICS.topCities.map(d => (
             <div key={d.label}>
@@ -511,7 +539,7 @@ function TabAudience({ mobile }: { mobile: boolean }) {
                 <span style={{ fontSize: 12, color: C.white }}>{d.label}</span>
                 <span style={{ fontSize: 12, fontWeight: 700, color: C.purple3 }}>{d.value}</span>
               </div>
-              <ProgressBar value={d.value} max={maxCity} color={C.purple2} />
+              <ProgressBar value={d.value} max={maxCity} color={C.purple2} C={C} />
             </div>
           ))}
         </div>
@@ -521,7 +549,7 @@ function TabAudience({ mobile }: { mobile: boolean }) {
 }
 
 // ── TAB: Day Part ─────────────────────────────────────────────────────────────
-function TabDayPart({ mobile }: { mobile: boolean }) {
+function TabDayPart({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   const heatData = Array.from({ length: 24 }, (_, h) => {
     const base = h >= 6 && h <= 9 ? 0.7 : h >= 17 && h <= 21 ? 1.0 : h >= 22 || h <= 5 ? 0.3 : 0.5;
     return { hour: `${h}:00`, value: Math.round(base * 100 + Math.random() * 20) };
@@ -543,7 +571,7 @@ function TabDayPart({ mobile }: { mobile: boolean }) {
               </div>
               <div style={{ marginTop: 10 }}>
                 <div style={{ fontSize: 9, color: C.muted, marginBottom: 4 }}>{dp.count} audience members</div>
-                <ProgressBar value={dp.count} max={142} color={colors[i]} />
+                <ProgressBar value={dp.count} max={142} color={colors[i]} C={C} />
               </div>
             </div>
           );
@@ -551,8 +579,8 @@ function TabDayPart({ mobile }: { mobile: boolean }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>24-Hour Activity Heatmap</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>24-Hour Activity Heatmap</SectionTitle>
           <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
             {heatData.map(h => {
               const intensity = h.value / 120;
@@ -562,7 +590,7 @@ function TabDayPart({ mobile }: { mobile: boolean }) {
                   background: `rgba(168, 85, 247, ${intensity})`,
                   border: `1px solid ${C.border}`,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 9, color: intensity > 0.5 ? C.white : C.muted,
+                  fontSize: 9, color: intensity > 0.5 ? "#ffffff" : C.muted,
                 }}>
                   {h.hour.split(":")[0]}
                 </div>
@@ -576,14 +604,14 @@ function TabDayPart({ mobile }: { mobile: boolean }) {
           </div>
         </Card>
 
-        <Card>
-          <SectionTitle>Impressions by Day Part</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Impressions by Day Part</SectionTitle>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={DAYPARTS.map(d => ({ name: d.label.split("/")[0], impressions: Math.round(d.impressions / 1000), cpm: d.cpm }))}>
               <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
               <XAxis dataKey="name" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={30} />
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `${v}K`} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `${v}K`} />
               <Bar dataKey="impressions" fill={C.purple2} radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -594,39 +622,39 @@ function TabDayPart({ mobile }: { mobile: boolean }) {
 }
 
 // ── TAB: Content ──────────────────────────────────────────────────────────────
-function TabContent({ mobile }: { mobile: boolean }) {
+function TabContent({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>Content Consumer Segments</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Content Consumer Segments</SectionTitle>
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>
               <Pie data={CONTENT_SEGMENTS} cx="50%" cy="50%" outerRadius={100} dataKey="count" nameKey="label" paddingAngle={3}>
                 {CONTENT_SEGMENTS.map((seg, i) => <Cell key={i} fill={seg.color} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
               <Legend wrapperStyle={{ color: C.muted, fontSize: 11 }} />
             </PieChart>
           </ResponsiveContainer>
         </Card>
 
-        <Card>
-          <SectionTitle>Segment Breakdown</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Segment Breakdown</SectionTitle>
           {CONTENT_SEGMENTS.map(seg => (
             <div key={seg.label} style={{ marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: C.white }}>{seg.label}</span>
                 <span style={{ fontSize: 13, fontWeight: 700, color: seg.color }}>{seg.count} people</span>
               </div>
-              <ProgressBar value={seg.count} max={112} color={seg.color} />
+              <ProgressBar value={seg.count} max={112} color={seg.color} C={C} />
             </div>
           ))}
         </Card>
       </div>
 
-      <Card>
-        <SectionTitle>Content Segment × Day Part</SectionTitle>
+      <Card C={C}>
+        <SectionTitle C={C}>Content Segment × Day Part</SectionTitle>
         <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, minWidth: 480 }}>
             <thead>
@@ -644,7 +672,7 @@ function TabContent({ mobile }: { mobile: boolean }) {
                   counts.filter(p => p.daypart === dp).length
                 );
                 return (
-                  <tr key={seg.label} style={{ borderBottom: `1px solid ${C.border}22`, background: i % 2 === 0 ? "transparent" : `${C.bg3}44` }}>
+                  <tr key={seg.label} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : C.bg3 }}>
                     <td style={{ padding: "10px 14px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                         <span style={{ width: 8, height: 8, borderRadius: "50%", background: seg.color, flexShrink: 0 }} />
@@ -666,7 +694,7 @@ function TabContent({ mobile }: { mobile: boolean }) {
 }
 
 // ── TAB: Moods ────────────────────────────────────────────────────────────────
-function TabMoods({ mobile }: { mobile: boolean }) {
+function TabMoods({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
@@ -680,21 +708,21 @@ function TabMoods({ mobile }: { mobile: boolean }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Card>
-          <SectionTitle>Mood Distribution</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Mood Distribution</SectionTitle>
           <ResponsiveContainer width="100%" height={240}>
             <PieChart>
               <Pie data={MOODS} cx="50%" cy="50%" outerRadius={90} innerRadius={45} dataKey="count" nameKey="label" paddingAngle={4}>
                 {MOODS.map((m, i) => <Cell key={i} fill={m.color} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
               <Legend wrapperStyle={{ color: C.muted, fontSize: 11 }} />
             </PieChart>
           </ResponsiveContainer>
         </Card>
 
-        <Card>
-          <SectionTitle>Mood × Net Worth Correlation</SectionTitle>
+        <Card C={C}>
+          <SectionTitle C={C}>Mood × Net Worth Correlation</SectionTitle>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={[
               { mood: "High Intent", "$1M+": 12, "$500K+": 14, "$250K+": 8, "Under": 5 },
@@ -705,7 +733,7 @@ function TabMoods({ mobile }: { mobile: boolean }) {
               <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
               <XAxis dataKey="mood" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={28} />
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} />
               <Legend wrapperStyle={{ color: C.muted, fontSize: 10 }} />
               <Bar dataKey="$1M+" stackId="a" fill={C.green} />
               <Bar dataKey="$500K+" stackId="a" fill={C.blue} />
@@ -720,7 +748,7 @@ function TabMoods({ mobile }: { mobile: boolean }) {
 }
 
 // ── TAB: People ───────────────────────────────────────────────────────────────
-function TabPeople({ mobile }: { mobile: boolean }) {
+function TabPeople({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   const [search, setSearch] = useState("");
   const [filterMood, setFilterMood] = useState("All");
   const [filterCity, setFilterCity] = useState("All");
@@ -778,7 +806,7 @@ function TabPeople({ mobile }: { mobile: boolean }) {
             </thead>
             <tbody>
               {filtered.map((p, i) => (
-                <tr key={i} style={{ borderBottom: `1px solid ${C.border}22`, background: i % 2 === 0 ? "transparent" : `${C.bg3}44` }}>
+                <tr key={i} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : C.bg3 }}>
                   <td style={{ padding: "9px 12px", color: C.white, fontWeight: 700, whiteSpace: "nowrap" }}>{p.first} {p.last}</td>
                   <td style={{ padding: "9px 12px", color: C.muted, whiteSpace: "nowrap" }}>{p.city}</td>
                   {!mobile && <td style={{ padding: "9px 12px", color: C.muted, whiteSpace: "nowrap" }}>{p.age || "—"}</td>}
@@ -813,11 +841,37 @@ function TabPeople({ mobile }: { mobile: boolean }) {
   );
 }
 
+// ── Theme Toggle Button ───────────────────────────────────────────────────────
+function ThemeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) {
+  return (
+    <button
+      onClick={onToggle}
+      title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      style={{
+        display: "flex", alignItems: "center", gap: 6,
+        background: isDark ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.2)",
+        border: "1px solid rgba(255,255,255,0.25)",
+        borderRadius: 20, padding: "5px 12px",
+        cursor: "pointer", fontSize: 11, fontWeight: 600,
+        color: "#ffffff", letterSpacing: "0.04em",
+        transition: "all 0.2s ease",
+        flexShrink: 0,
+      }}
+    >
+      <span style={{ fontSize: 14 }}>{isDark ? "☀️" : "🌙"}</span>
+      {!false && <span>{isDark ? "Light" : "Dark"}</span>}
+    </button>
+  );
+}
+
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 export default function Home() {
   const [tab, setTab] = useState(0);
   const [time, setTime] = useState(new Date());
   const mobile = useIsMobile();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
+  const C = useColors(isDark);
 
   useEffect(() => {
     const id = setInterval(() => setTime(new Date()), 1000);
@@ -825,54 +879,55 @@ export default function Home() {
   }, []);
 
   const tabContent = [
-    <TabOverview mobile={mobile} />,
-    <TabChannels mobile={mobile} />,
-    <TabCreatives mobile={mobile} />,
-    <TabAudience mobile={mobile} />,
-    <TabDayPart mobile={mobile} />,
-    <TabContent mobile={mobile} />,
-    <TabMoods mobile={mobile} />,
-    <TabPeople mobile={mobile} />,
+    <TabOverview mobile={mobile} C={C} />,
+    <TabChannels mobile={mobile} C={C} />,
+    <TabCreatives mobile={mobile} C={C} />,
+    <TabAudience mobile={mobile} C={C} />,
+    <TabDayPart mobile={mobile} C={C} />,
+    <TabContent mobile={mobile} C={C} />,
+    <TabMoods mobile={mobile} C={C} />,
+    <TabPeople mobile={mobile} C={C} />,
   ];
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif", color: C.white }}>
+    <div style={{ background: C.bg, minHeight: "100vh", fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif", color: C.white, transition: "background 0.3s ease, color 0.3s ease" }}>
       <style>{`
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
         @keyframes pdot  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: ${C.bg2}; }
-        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: ${C.scrollTrack}; }
+        ::-webkit-scrollbar-thumb { background: ${C.scrollThumb}; border-radius: 3px; }
         input::placeholder { color: ${C.muted}; }
-        select option { background: ${C.card}; }
+        select option { background: ${C.card}; color: ${C.white}; }
         * { box-sizing: border-box; }
       `}</style>
 
       {/* Header */}
       <div style={{
-        background: "linear-gradient(135deg,#0a0a22,#1a0840)",
-        borderBottom: `1px solid ${C.border}`,
+        background: C.headerBg,
+        borderBottom: `1px solid ${isDark ? "#252560" : "rgba(255,255,255,0.15)"}`,
         padding: mobile ? "12px 16px" : "14px 28px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         position: "sticky", top: 0, zIndex: 200,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: mobile ? 10 : 16, minWidth: 0 }}>
           <div style={{ fontSize: mobile ? 10 : 12, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <span style={{ width: 8, height: 8, background: C.purple2, borderRadius: "50%", boxShadow: `0 0 10px ${C.purple2}`, animation: "pdot 2s ease-in-out infinite", flexShrink: 0 }} />
-            {mobile ? "EA" : "EXACT AUDIENCE"}
+            <span style={{ width: 8, height: 8, background: "#a855f7", borderRadius: "50%", boxShadow: `0 0 10px #a855f7`, animation: "pdot 2s ease-in-out infinite", flexShrink: 0 }} />
+            <span style={{ color: "#ffffff" }}>{mobile ? "EA" : "EXACT AUDIENCE"}</span>
           </div>
-          {!mobile && <div style={{ width: 1, height: 30, background: C.border }} />}
+          {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: mobile ? 12 : 14, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{CLIENT.name}</div>
-            {!mobile && <div style={{ fontSize: 10, color: C.muted }}>{CLIENT.location} · {CLIENT.vertical} · {CLIENT.campaign}</div>}
+            <div style={{ fontSize: mobile ? 12 : 14, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#ffffff" }}>{CLIENT.name}</div>
+            {!mobile && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)" }}>{CLIENT.location} · {CLIENT.vertical} · {CLIENT.campaign}</div>}
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(74,222,128,.1)", border: "1px solid rgba(74,222,128,.3)", borderRadius: 20, padding: "4px 10px", fontSize: 10, fontWeight: 700, color: C.green, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-            <span style={{ width: 6, height: 6, background: C.green, borderRadius: "50%", animation: "blink 1.2s ease-in-out infinite" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: mobile ? 6 : 10, flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(74,222,128,.15)", border: "1px solid rgba(74,222,128,.35)", borderRadius: 20, padding: "4px 10px", fontSize: 10, fontWeight: 700, color: "#4ade80", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", animation: "blink 1.2s ease-in-out infinite" }} />
             Live
           </div>
-          {!mobile && <div style={{ fontSize: 10, color: C.muted, fontFamily: "monospace" }}>{time.toLocaleTimeString()}</div>}
+          {!mobile && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", fontFamily: "monospace" }}>{time.toLocaleTimeString()}</div>}
+          <ThemeToggle isDark={isDark} onToggle={toggleTheme ?? (() => {})} />
         </div>
       </div>
 
