@@ -101,11 +101,7 @@ function CampaignCard({ client, dark, onClick }: { client: CampaignClient; dark:
         </div>
       </div>
 
-      {client.hasDashboard && (
-        <div style={{ position: "absolute", bottom: 12, left: "50%", transform: "translateX(-50%)", background: `${client.primaryColor}22`, border: `1px solid ${client.primaryColor}44`, borderRadius: 20, padding: "2px 10px", fontSize: 9, fontWeight: 700, color: client.primaryColor, letterSpacing: "0.1em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
-          Full Dashboard
-        </div>
-      )}
+
     </div>
   );
 }
@@ -182,22 +178,7 @@ export default function Campaigns() {
         </div>
       </div>
 
-      {/* Stats bar */}
-      <div style={{ background: dark ? "#0d0d2b" : "#1e1b4b", padding: "16px 24px", borderBottom: dark ? "1px solid #1e1e4a" : "1px solid #312e81" }}>
-        <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex", gap: 40, flexWrap: "wrap" }}>
-          {[
-            { label: "Active Campaigns",  value: String(CLIENTS.length),                                   color: "#4ade80" },
-            { label: "Total Impressions", value: fmt(totalImpressions),                                    color: "#a855f7" },
-            { label: "Total Reach",       value: fmt(totalReach),                                          color: "#38bdf8" },
-            { label: "Full Dashboards",   value: String(CLIENTS.filter(c => c.hasDashboard).length),       color: "#f59e0b" },
-          ].map(s => (
-            <div key={s.label}>
-              <div style={{ fontSize: 20, fontWeight: 800, color: s.color, letterSpacing: "-0.02em" }}>{s.value}</div>
-              <div style={{ fontSize: 11, color: "#8892b0", fontWeight: 500 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+
 
       {/* Content */}
       <div style={{ maxWidth: 1400, margin: "0 auto", padding: "28px 24px" }}>
@@ -214,7 +195,7 @@ export default function Campaigns() {
           <select value={filterVertical} onChange={e => setFilterVertical(e.target.value)} style={{ background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: 10, padding: "10px 14px", color: textPrimary, fontSize: 13, cursor: "pointer" }}>
             {verticals.map(v => <option key={v} value={v}>{v}</option>)}
           </select>
-          <div style={{ fontSize: 12, color: textSecondary, whiteSpace: "nowrap" }}>{filtered.length} of {CLIENTS.length} campaigns</div>
+
         </div>
 
         {/* Grid */}
