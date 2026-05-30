@@ -8,7 +8,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useTheme } from "../contexts/ThemeContext";
-import { getNetworkLogo } from "../lib/networkLogos";
+import { getNetworkLogo, getNetworkInitials } from "../lib/networkLogos";
 import { getProfilesByDashboard } from "@/lib/buyerProfiles";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
@@ -813,6 +813,10 @@ function TabCTV({ mobile, C }: { mobile: boolean; C: C }) {
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       {(() => {
                         const logoUrl = getNetworkLogo(ch.name);
+                        const initials = getNetworkInitials(ch.name);
+                        const InitialsBadge = () => (
+                          <span style={{ width: 24, height: 24, borderRadius: 5, background: ch.color, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", letterSpacing: 0 }}>{initials}</span>
+                        );
                         return logoUrl ? (
                           <img
                             src={logoUrl}
@@ -822,14 +826,15 @@ function TabCTV({ mobile, C }: { mobile: boolean; C: C }) {
                             style={{ borderRadius: 5, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
                             onError={(e) => {
                               const img = e.target as HTMLImageElement;
+                              const badge = document.createElement("span");
+                              badge.style.cssText = `width:24px;height:24px;border-radius:5px;background:${ch.color};flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff`;
+                              badge.textContent = initials;
+                              img.parentNode?.insertBefore(badge, img);
                               img.style.display = "none";
-                              const dot = document.createElement("span");
-                              dot.style.cssText = `width:6px;height:6px;border-radius:50%;background:${ch.color};flex-shrink:0;display:inline-block`;
-                              img.parentNode?.insertBefore(dot, img);
                             }}
                           />
                         ) : (
-                          <span style={{ width: 6, height: 6, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
+                          <InitialsBadge />
                         );
                       })()}
                       {ch.name}
