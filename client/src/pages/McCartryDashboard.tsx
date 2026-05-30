@@ -161,7 +161,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         <KpiCard label="Total Impressions" value={fmt(impressions)} sub="↑ 4.1% vs last week" color={C.red} C={C} />
         <KpiCard label="Voters Reached" value={fmt(reach)} sub={`${MCCARTY_LIVE_BASE.frequency}x avg frequency`} color={C.green} C={C} />
         <KpiCard label="Completion Rate" value={`${MCCARTY_LIVE_BASE.completionRate}%`} sub="CTV ad completions" color={C.blue} C={C} />
-        <KpiCard label="SiteID Voters ID'd" value="6,284" sub="Name, address, phone matched" color={C.gold} C={C} />
+        <KpiCard label="SiteID Voters ID'd" value="1,842" sub="Name, address, phone matched" color={C.gold} C={C} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
@@ -230,8 +230,8 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ background: C.bg3, borderRadius: 10, padding: 16 }}>
               <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Campaign Budget</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: C.red }}>$68,400</div>
-              <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>18-day primary campaign · May 1 – June 16, 2026</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: C.red }}>$33,000</div>
+              <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>18-day primary campaign · May 28 – June 16, 2026 · Day 3</div>
             </div>
             <div style={{ background: C.bg3, borderRadius: 10, padding: 16 }}>
               <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>CTV Dominance</div>
@@ -504,10 +504,10 @@ function MovedVoterLog({ mobile, C }: { mobile: boolean; C: C }) {
 // ── TAB: Voter Intelligence ───────────────────────────────────────────────────
 function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
   const PERSUASION_DATA = [
-    { segment: "Threshold Met (5+ exposures)", count: 42840, color: C.green },
-    { segment: "Near Threshold (3–4 exposures)", count: 28620, color: C.gold },
-    { segment: "In Progress (1–2 exposures)", count: 24180, color: C.blue },
-    { segment: "Not Yet Reached", count: 15453, color: C.muted },
+    { segment: "Threshold Met (5+ exposures)", count: 4840, color: C.green },
+    { segment: "Near Threshold (3–4 exposures)", count: 9620, color: C.gold },
+    { segment: "In Progress (1–2 exposures)", count: 14180, color: C.blue },
+    { segment: "Not Yet Reached", count: 1600, color: C.muted },
   ];
 
   const MOOD_CHART = MCCARTY_MOODS.map(m => ({ name: m.mood, value: m.pct, color: m.color }));
@@ -520,9 +520,9 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
       {/* Voter Intent Segmentation */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
         {[
-          { label: "Colleen McCarty", count: 18400 + 4218, pct: 47, color: C.red, icon: "🟥", desc: "Committed + moved undecided voters" },
-          { label: "Undecided / Movable", count: 16782, pct: 35, color: C.gold, icon: "🟡", desc: "Still in play — primary ad target" },
-          { label: "Steve Kunzweiler", count: 18400 + 1840, pct: 18, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler + moved from undecided" },
+          { label: "Colleen McCarty", count: 5200 + 840, pct: 43, color: C.red, icon: "🟥", desc: "Committed + moved undecided voters (Day 3)" },
+          { label: "Undecided / Movable", count: 10940, pct: 36, color: C.gold, icon: "🟡", desc: "Still in play — primary ad target" },
+          { label: "Steve Kunzweiler", count: 8100 + 620, pct: 21, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler + moved from undecided" },
         ].map(seg => (
           <div key={seg.label} style={{ background: C.card, border: `2px solid ${seg.color}44`, borderRadius: 14, padding: 20 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
@@ -543,10 +543,10 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
       <MovedVoterLog mobile={mobile} C={C} />
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
-        <KpiCard label="Total Voter Universe" value="111,093" sub="Tulsa County GOP 45+ registered" color={C.red} C={C} />
-        <KpiCard label="Persuasion Threshold Met" value="42,840" sub="5+ exposures delivered" color={C.green} C={C} />
-        <KpiCard label="SiteID Matched" value="6,284" sub="60% match rate on site visitors" color={C.gold} C={C} />
-        <KpiCard label="Avg Persuasion Score" value="67.4" sub="Across all reached voters" color={C.blue} C={C} />
+        <KpiCard label="Total Voter Universe" value="30,240" sub="Tulsa County GOP 45+ registered" color={C.red} C={C} />
+        <KpiCard label="Persuasion Threshold Met" value="4,840" sub="5+ exposures delivered (Day 3)" color={C.green} C={C} />
+        <KpiCard label="SiteID Matched" value="1,842" sub="62% match rate on site visitors" color={C.gold} C={C} />
+        <KpiCard label="Avg Persuasion Score" value="64.2" sub="Across all reached voters" color={C.blue} C={C} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
@@ -559,7 +559,7 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
                 <span style={{ fontSize: 12, color: C.white }}>{p.segment}</span>
                 <span style={{ fontSize: 12, fontWeight: 700, color: p.color }}>{fmt(p.count)}</span>
               </div>
-              <ProgressBar value={p.count} max={111093} color={p.color} C={C} />
+              <ProgressBar value={p.count} max={30240} color={p.color} C={C} />
             </div>
           ))}
         </Card>
