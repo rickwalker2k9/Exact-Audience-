@@ -15,7 +15,7 @@ export const KPI_TARGETS = {
   impressions: 5100000,
   reach: 198000,
   completions: 4488000,
-  siteVisitors: 3420,
+  siteVisitors: 412,
   conversions: 891,
 };
 
@@ -24,7 +24,7 @@ export const LIVE_BASE = {
   impressions: 4871342,
   reach: 188640,
   completions: 4261100,
-  siteVisitors: 3247,
+  siteVisitors: 387,
   conversions: 847,
   frequency: 2.61,
   completionRate: 87.5,

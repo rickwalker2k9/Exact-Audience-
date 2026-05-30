@@ -164,7 +164,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         <KpiCard label="SiteID Voters ID'd" value="6,284" sub="Name, address, phone matched" color={C.gold} C={C} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "3fr 1fr", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
         <Card C={C}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
             <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted }}>Daily Voter Delivery (000s)</span>
@@ -209,7 +209,6 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
             </AreaChart>
           </ResponsiveContainer>
         </Card>
-        <VoterFeed C={C} />
       </div>
 
       {/* Media Mix */}
@@ -242,6 +241,9 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
           </div>
         </div>
       </Card>
+
+      {/* SiteID Voter Feed — moved below media mix */}
+      <VoterFeed C={C} />
     </div>
   );
 }

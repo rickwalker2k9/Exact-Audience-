@@ -216,8 +216,8 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useC
         <KpiCard label="SiteID Visitors" value={fmt(visitors)} sub="Identified by name & address" color={C.gold} C={C} />
       </div>
 
-      {/* Chart + Visitor Feed */}
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "3fr 1fr", gap: 16 }}>
+      {/* Chart */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
         <Card C={C}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
             <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted }}>Daily Delivery — {rangeLabel} (000s)</span>
@@ -261,7 +261,6 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useC
             </AreaChart>
           </ResponsiveContainer>
         </Card>
-        <VisitorFeed C={C} />
       </div>
 
       {/* Channel Mix + Budget Pacing */}
@@ -327,6 +326,9 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useC
           ))}
         </Card>
       </div>
+
+      {/* SiteID Visitor Feed — moved below channel mix for realistic pacing */}
+      <VisitorFeed C={C} />
     </div>
   );
 }

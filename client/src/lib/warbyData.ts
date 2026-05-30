@@ -15,7 +15,7 @@ export const WARBY_KPI_TARGETS = {
   impressions: 4800000,
   reach: 192000,
   completions: 4128000,
-  siteVisitors: 3120,
+  siteVisitors: 2840,
   conversions: 1248,
 };
 
@@ -23,7 +23,7 @@ export const WARBY_LIVE_BASE = {
   impressions: 4428700,
   reach: 174200,
   completions: 3797200,
-  siteVisitors: 2874,
+  siteVisitors: 2618,
   conversions: 1147,
   frequency: 2.54,
   completionRate: 85.8,

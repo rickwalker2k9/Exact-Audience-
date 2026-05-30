@@ -15,7 +15,7 @@ export const LAMBO_KPI_TARGETS = {
   impressions: 5800000,
   reach: 218000,
   completions: 5220000,
-  siteVisitors: 3840,
+  siteVisitors: 248,
   conversions: 612,
 };
 
@@ -23,7 +23,7 @@ export const LAMBO_LIVE_BASE = {
   impressions: 5214800,
   reach: 201340,
   completions: 4648200,
-  siteVisitors: 3412,
+  siteVisitors: 221,
   conversions: 548,
   frequency: 2.59,
   completionRate: 89.2,

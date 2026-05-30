@@ -15,7 +15,7 @@ export const PG_KPI_TARGETS = {
   impressions: 4400000,
   reach: 176000,
   completions: 3696000,
-  siteVisitors: 2860,
+  siteVisitors: 1820,
   conversions: 1144,
 };
 
@@ -23,7 +23,7 @@ export const PG_LIVE_BASE = {
   impressions: 3987200,
   reach: 162400,
   completions: 3348200,
-  siteVisitors: 2614,
+  siteVisitors: 1672,
   conversions: 1047,
   frequency: 2.45,
   completionRate: 83.4,
