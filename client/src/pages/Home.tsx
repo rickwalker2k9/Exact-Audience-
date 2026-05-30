@@ -17,6 +17,7 @@ import {
   DAYPARTS, CREATIVES, DEFENDER_PAGE_VIEWS, DEFENDER_PAGE_TOTALS
 } from "@/lib/dashboardData";
 import { PEOPLE } from "@/lib/peopleData";
+import { getProfilesByDashboard } from "@/lib/buyerProfiles";
 import { useTheme } from "@/contexts/ThemeContext";
 
 // ── Theme-aware color tokens ──────────────────────────────────────────────────
@@ -797,9 +798,12 @@ function TabMoods({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColo
 
 // ── TAB: People ───────────────────────────────────────────────────────────────
 function TabPeople({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
+  const [, navigate] = useLocation();
   const [search, setSearch] = useState("");
   const [filterMood, setFilterMood] = useState("All");
   const [filterCity, setFilterCity] = useState("All");
+  const lrProfiles = getProfilesByDashboard("land-rover");
+  const windowColors = ["#4ade80", "#f59e0b", "#38bdf8"];
 
   const cities = ["All", ...Array.from(new Set(PEOPLE.map(p => p.city).filter(Boolean))).sort()];
   const moods  = ["All", "High Intent", "In-Market", "Awareness", "Prospect"];
@@ -818,6 +822,45 @@ function TabPeople({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useCol
 
   return (
     <div>
+      {/* ── Featured Buyer Profiles ── */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 800, color: C.white, marginBottom: 4 }}>Featured Buyer Profiles</div>
+        <div style={{ fontSize: 12, color: C.muted, marginBottom: 14 }}>3 identified individuals — click any profile to view their full buyer journey, intent signals, and personalized media recommendations.</div>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 14 }}>
+          {lrProfiles.map(profile => (
+            <div
+              key={profile.id}
+              onClick={() => navigate(`/buyer/${profile.id}`)}
+              style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "18px", cursor: "pointer", transition: "all 0.18s ease", borderTop: `3px solid ${profile.avatarColor}` }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.transform = "translateY(-3px)"; el.style.boxShadow = `0 8px 24px ${profile.avatarColor}22`; el.style.borderColor = profile.avatarColor; }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; el.style.borderColor = C.border; }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <div style={{ width: 40, height: 40, borderRadius: "50%", background: profile.avatarColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{profile.avatar}</div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.white }}>{profile.name}</div>
+                  <div style={{ fontSize: 11, color: C.muted }}>{profile.age} · {profile.occupation}</div>
+                </div>
+              </div>
+              <div style={{ background: `${profile.avatarColor}18`, border: `1px solid ${profile.avatarColor}33`, borderRadius: 8, padding: "8px 10px", marginBottom: 10 }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: profile.avatarColor, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 2 }}>🧬 Buyer DNA</div>
+                <div style={{ fontSize: 11, color: C.white, lineHeight: 1.5 }}>{profile.buyerDNA}</div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 5, marginBottom: 10 }}>
+                {profile.purchaseWindows.map((pw, i) => (
+                  <div key={pw.window} style={{ background: C.bg3, borderRadius: 7, padding: "7px 5px", textAlign: "center" }}>
+                    <div style={{ fontSize: 13, fontWeight: 900, color: windowColors[i] }}>{pw.probability}%</div>
+                    <div style={{ fontSize: 9, color: C.muted, lineHeight: 1.3 }}>{pw.window}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: profile.avatarColor, textTransform: "uppercase", letterSpacing: "0.08em" }}>View Full Journey →</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Full People Table ── */}
       <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         <input
           value={search} onChange={e => setSearch(e.target.value)}

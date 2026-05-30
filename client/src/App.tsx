@@ -13,6 +13,7 @@ import LamborghiniDashboard from "./pages/LamborghiniDashboard";
 import WarbyDashboard from "./pages/WarbyDashboard";
 import PolicyGeniusDashboard from "./pages/PolicyGeniusDashboard";
 import CampaignPlaceholder from "./pages/CampaignPlaceholder";
+import BuyerProfilePage from "./pages/BuyerProfilePage";
 
 function Router() {
   return (
@@ -28,6 +29,9 @@ function Router() {
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />
+
+      {/* Buyer profile detail pages */}
+      <Route path="/buyer/:id" component={BuyerProfilePage} />
 
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

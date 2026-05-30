@@ -21,7 +21,7 @@ const LAMBO_SITE_PAGES = [
 export default function LamborghiniDashboard() {
   return (
     <GenericDashboard
-      client={{ ...LAMBO_CLIENT, accentColor: "#d4a017" }}
+      client={{ ...LAMBO_CLIENT, accentColor: "#d4a017", dashboardId: "lamborghini" as const }}
       liveBase={LAMBO_LIVE_BASE}
       dailyImpressions={LAMBO_DAILY_IMPRESSIONS}
       mediaMix={LAMBO_MEDIA_MIX}

@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
+import { getProfilesByDashboard, type BuyerProfile } from "@/lib/buyerProfiles";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -22,6 +23,7 @@ export interface DashClientInfo {
   budget: string;
   website: string;
   accentColor: string;   // brand accent (e.g. "#d4a017" for Lamborghini)
+  dashboardId: BuyerProfile["dashboardId"];  // used to look up buyer profiles
 }
 
 export interface DashLiveBase {
@@ -699,9 +701,69 @@ function ThemeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
-const TABS = ["Overview", "Channels", "Creatives", "Moods", "Site Pages"];
+const TABS = ["Overview", "Channels", "Creatives", "Moods", "Site Pages", "People"];
 
 // ── Main Component ────────────────────────────────────────────────────────────
+// ── TabPeople ─────────────────────────────────────────────────────────────────
+function TabPeople({ mobile, C, dashboardId, accentColor }: { mobile: boolean; C: C; dashboardId: BuyerProfile["dashboardId"]; accentColor: string }) {
+  const [, navigate] = useLocation();
+  const profiles = getProfilesByDashboard(dashboardId);
+  const windowColors = ["#4ade80", "#f59e0b", "#38bdf8"];
+
+  return (
+    <div style={{ padding: mobile ? "16px" : "24px 28px" }}>
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 16, fontWeight: 800, color: C.white, marginBottom: 4 }}>Featured Buyer Profiles</div>
+        <div style={{ fontSize: 12, color: C.muted }}>3 identified individuals — click any profile to view their full buyer journey, intent signals, and personalized media recommendations.</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
+        {profiles.map(profile => (
+          <div
+            key={profile.id}
+            onClick={() => navigate(`/buyer/${profile.id}`)}
+            style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "20px", cursor: "pointer", transition: "all 0.18s ease", borderTop: `3px solid ${profile.avatarColor}`, position: "relative", overflow: "hidden" }}
+            onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.transform = "translateY(-3px)"; el.style.boxShadow = `0 8px 28px ${profile.avatarColor}22`; el.style.borderColor = profile.avatarColor; }}
+            onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; el.style.borderColor = C.border; }}
+          >
+            {/* Avatar + name */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+              <div style={{ width: 44, height: 44, borderRadius: "50%", background: profile.avatarColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "#fff", flexShrink: 0, boxShadow: `0 0 12px ${profile.avatarColor}44` }}>{profile.avatar}</div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.white }}>{profile.name}</div>
+                <div style={{ fontSize: 11, color: C.muted }}>{profile.age} · {profile.occupation}</div>
+              </div>
+            </div>
+            {/* Location */}
+            <div style={{ fontSize: 11, color: C.muted, marginBottom: 10 }}>📍 {profile.location}</div>
+            {/* Buyer DNA */}
+            <div style={{ background: `${profile.avatarColor}18`, border: `1px solid ${profile.avatarColor}33`, borderRadius: 8, padding: "8px 10px", marginBottom: 12 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: profile.avatarColor, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 3 }}>🧬 Buyer DNA</div>
+              <div style={{ fontSize: 11, color: C.white, lineHeight: 1.5 }}>{profile.buyerDNA}</div>
+            </div>
+            {/* Purchase windows */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6, marginBottom: 12 }}>
+              {profile.purchaseWindows.map((pw, i) => (
+                <div key={pw.window} style={{ background: C.card2, borderRadius: 8, padding: "8px 6px", textAlign: "center" }}>
+                  <div style={{ fontSize: 14, fontWeight: 900, color: windowColors[i] }}>{pw.probability}%</div>
+                  <div style={{ fontSize: 9, color: C.muted, lineHeight: 1.3 }}>{pw.window}</div>
+                </div>
+              ))}
+            </div>
+            {/* Tags */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 12 }}>
+              {profile.tags.slice(0, 3).map(tag => (
+                <span key={tag} style={{ background: `${profile.avatarColor}18`, border: `1px solid ${profile.avatarColor}33`, color: profile.avatarColor, fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 20 }}>{tag}</span>
+              ))}
+            </div>
+            {/* CTA */}
+            <div style={{ fontSize: 10, fontWeight: 700, color: profile.avatarColor, textTransform: "uppercase", letterSpacing: "0.08em" }}>View Full Journey →</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function GenericDashboard(props: GenericDashboardProps) {
   const { client, liveBase, dailyImpressions, mediaMix, ctvChannels, creatives, moods, visitors, sitePages, sitePagesLabel = "Site Pages", qr } = props;
   const [tab, setTab] = useState(0);
@@ -751,6 +813,7 @@ export default function GenericDashboard(props: GenericDashboardProps) {
     <TabCreatives mobile={mobile} C={C} creatives={creatives} />,
     <TabMoods mobile={mobile} C={C} moods={moods} />,
     <TabSitePages mobile={mobile} C={C} sitePages={sitePages} label={sitePagesLabel} dailyImpressions={dailyImpressions} accentColor={client.accentColor} />,
+    <TabPeople mobile={mobile} C={C} dashboardId={client.dashboardId as BuyerProfile["dashboardId"]} accentColor={client.accentColor} />,
   ];
 
   return (

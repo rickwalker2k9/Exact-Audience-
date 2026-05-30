@@ -24,7 +24,7 @@ const WARBY_CTV_CHANNELS = [
 export default function WarbyDashboard() {
   return (
     <GenericDashboard
-      client={{ ...WARBY_CLIENT, accentColor: "#1d4ed8" }}
+      client={{ ...WARBY_CLIENT, accentColor: "#1d4ed8", dashboardId: "warby-parker" as const }}
       liveBase={WARBY_LIVE_BASE}
       dailyImpressions={WARBY_DAILY_IMPRESSIONS}
       mediaMix={WARBY_MEDIA_MIX}

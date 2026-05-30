@@ -24,7 +24,7 @@ const PG_CTV_CHANNELS = [
 export default function PolicyGeniusDashboard() {
   return (
     <GenericDashboard
-      client={{ ...PG_CLIENT, accentColor: "#7c3aed" }}
+      client={{ ...PG_CLIENT, accentColor: "#7c3aed", dashboardId: "policygenius" as const }}
       liveBase={PG_LIVE_BASE}
       dailyImpressions={PG_DAILY_IMPRESSIONS}
       mediaMix={PG_MEDIA_MIX}
