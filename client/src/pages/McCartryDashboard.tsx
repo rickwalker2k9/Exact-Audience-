@@ -237,9 +237,32 @@ function VoteMovementTracker({ C }: { C: C }) {
   // Days remaining countdown
   const electionDay = new Date("2026-06-16");
   const today = new Date();
-  const daysLeft = Math.max(0, Math.ceil((electionDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+  const daysLeft = Math.max(1, Math.ceil((electionDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
   const pctToWin = Math.min(100, Math.round(((T.committedBase + T.movedToMcCarty) / T.winThreshold) * 100));
   const gapToWin = Math.max(0, T.winThreshold - T.committedBase - T.movedToMcCarty);
+  // Votes needed per day to hit threshold by election day
+  const votesPerDay = Math.ceil(gapToWin / daysLeft);
+  const votersPerDayPace = Math.ceil(gapToWin / daysLeft);
+
+  // High-priority undecided voters (score >= 68, still undecided)
+  const highPriorityUndecided = MCCARTY_MOVED_VOTERS
+    .filter(v => v.currentIntent === "Undecided" && v.score >= 68)
+    .sort((a, b) => b.score - a.score);
+
+  const exposuresNeeded = (score: number) => {
+    if (score >= 80) return 1;
+    if (score >= 74) return 2;
+    if (score >= 68) return 3;
+    return 4;
+  };
+
+  const recommendedAd = (voter: typeof MCCARTY_MOVED_VOTERS[0]) => {
+    if (voter.lastSignal.includes("CTV")) return "CTV :15 — 'Victims First' retarget";
+    if (voter.lastSignal.includes("Meta")) return "Meta :06 bumper — 'Accountability'";
+    if (voter.lastSignal.includes("Google") || voter.lastSignal.includes("search")) return "Google Display — 'Blueprint for Justice'";
+    if (voter.lastSignal.includes("site")) return "CTV :30 — 'Endorsement' + email follow-up";
+    return "CTV :15 — 'Modern DA' awareness";
+  };
 
   return (
     <div style={{ background: C.card, border: `2px solid ${C.red}44`, borderRadius: 16, padding: 24, marginBottom: 16 }}>
@@ -248,9 +271,24 @@ function VoteMovementTracker({ C }: { C: C }) {
           <div style={{ fontSize: 11, fontWeight: 700, color: C.red, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 4 }}>🗳️ Vote Win Tracker — June 16, 2026</div>
           <div style={{ fontSize: 13, color: C.muted }}>Target: {T.winThreshold.toLocaleString()} votes to win Tulsa County DA Republican Primary</div>
         </div>
-        <div style={{ background: `${C.red}22`, border: `1px solid ${C.red}44`, borderRadius: 12, padding: "10px 20px", textAlign: "center" }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: C.red, lineHeight: 1 }}>{daysLeft}</div>
-          <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Days to Election</div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <div style={{ background: `${C.red}22`, border: `1px solid ${C.red}44`, borderRadius: 12, padding: "10px 20px", textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 900, color: C.red, lineHeight: 1 }}>{daysLeft}</div>
+            <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Days to Election</div>
+          </div>
+          <div style={{ background: `${C.gold}22`, border: `1px solid ${C.gold}44`, borderRadius: 12, padding: "10px 20px", textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 900, color: C.gold, lineHeight: 1 }}>{votersPerDayPace}</div>
+            <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Votes/Day Needed</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Daily pace alert bar */}
+      <div style={{ background: `${C.gold}15`, border: `1px solid ${C.gold}33`, borderRadius: 10, padding: "10px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ fontSize: 16 }}>⚡</span>
+        <div>
+          <span style={{ fontSize: 12, fontWeight: 700, color: C.gold }}>Daily Pace Required: {votesPerDay} undecided voters moved per day</span>
+          <span style={{ fontSize: 11, color: C.muted }}> — to close the {gapToWin.toLocaleString()}-vote gap before June 16. Current pace: {Math.round(T.movedToMcCarty / 17)}/day (needs acceleration).</span>
         </div>
       </div>
 
@@ -285,7 +323,7 @@ function VoteMovementTracker({ C }: { C: C }) {
       </div>
 
       {/* 4 KPI boxes */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20 }}>
         {[
           { label: "Undecided Universe",   value: T.undecidedUniverse.toLocaleString(), sub: "Total movable voters in reach",          color: C.blue },
           { label: "Moved → McCarty",       value: T.movedToMcCarty.toLocaleString(),   sub: "Undecided → confirmed via media signals", color: C.green },
@@ -298,6 +336,46 @@ function VoteMovementTracker({ C }: { C: C }) {
             <div style={{ fontSize: 10, color: C.muted, marginTop: 4 }}>{k.sub}</div>
           </div>
         ))}
+      </div>
+
+      {/* High-Priority Undecided Shortlist */}
+      <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+          <span style={{ fontSize: 14 }}>🎯</span>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: C.gold, textTransform: "uppercase", letterSpacing: "0.1em" }}>High-Priority Undecided — Next Touch Targets</div>
+            <div style={{ fontSize: 11, color: C.muted }}>Voters with highest intent scores still in play — 1–3 more exposures needed to cross threshold</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {highPriorityUndecided.map(voter => (
+            <div key={voter.id} style={{
+              background: `${C.gold}0d`,
+              border: `1px solid ${C.gold}33`,
+              borderRadius: 10,
+              padding: "12px 16px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 180px 50px",
+              gap: 10,
+              alignItems: "center",
+            }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.white }}>{voter.name}</div>
+                <div style={{ fontSize: 11, color: C.muted }}>{voter.city} · {voter.exposures} exposures so far</div>
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.4 }}>{voter.lastSignal}</div>
+              <div style={{ background: `${C.blue}22`, border: `1px solid ${C.blue}33`, borderRadius: 8, padding: "6px 10px" }}>
+                <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>Recommended Next Ad</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: C.blue }}>{recommendedAd(voter)}</div>
+                <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>{exposuresNeeded(voter.score)} more exposure{exposuresNeeded(voter.score) > 1 ? "s" : ""} to threshold</div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 20, fontWeight: 900, color: C.gold }}>{voter.score}</div>
+                <div style={{ fontSize: 9, color: C.muted }}>Score</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
