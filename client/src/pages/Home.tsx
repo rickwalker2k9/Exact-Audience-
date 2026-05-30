@@ -5,7 +5,7 @@
  * Animation: Live counters, chart updates, visitor feed rotation
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -182,18 +182,27 @@ function VisitorFeed({ C }: { C: ReturnType<typeof useColors> }) {
 }
 
 // ── TAB: Overview ─────────────────────────────────────────────────────────────
+const DATE_RANGES = [
+  { label: "Last 7 Days",  days: 7 },
+  { label: "Last 14 Days", days: 14 },
+  { label: "Last 30 Days", days: 29 },
+];
+
 function TabOverview({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
   const impressions = useTick(LIVE_BASE.impressions, 1247);
   const completions = useTick(LIVE_BASE.completions, 1089);
   const reach       = useTick(LIVE_BASE.reach, 23);
   const visitors    = useTick(LIVE_BASE.siteVisitors, 1);
+  const [rangeDays, setRangeDays] = useState(14);
 
-  const chartData = DAILY_IMPRESSIONS.slice(-14).map(d => ({
+  const chartData = DAILY_IMPRESSIONS.slice(-rangeDays).map(d => ({
     day: d.day.replace("May ", ""),
     CTV: Math.round(d.ctv / 1000),
     YouTube: Math.round(d.youtube / 1000),
     Display: Math.round(d.display / 1000),
   }));
+
+  const rangeLabel = DATE_RANGES.find(r => r.days === rangeDays)?.label ?? "Last 14 Days";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -208,7 +217,21 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useC
       {/* Chart + Visitor Feed */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "3fr 1fr", gap: 16 }}>
         <Card C={C}>
-          <SectionTitle C={C}>Daily Delivery — Last 14 Days (000s)</SectionTitle>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted }}>Daily Delivery — {rangeLabel} (000s)</span>
+            <div style={{ display: "flex", gap: 4 }}>
+              {DATE_RANGES.map(r => (
+                <button key={r.days} onClick={() => setRangeDays(r.days)} style={{
+                  padding: "4px 10px", fontSize: 10, fontWeight: 700, borderRadius: 6, cursor: "pointer",
+                  border: `1px solid ${rangeDays === r.days ? C.purple2 : C.border}`,
+                  background: rangeDays === r.days ? `${C.purple2}22` : "transparent",
+                  color: rangeDays === r.days ? C.purple2 : C.muted,
+                  transition: "all 0.15s",
+                  letterSpacing: "0.04em",
+                }}>{r.label.replace("Last ", "")}</button>
+              ))}
+            </div>
+          </div>
           <ResponsiveContainer width="100%" height={mobile ? 180 : 220}>
             <AreaChart data={chartData}>
               <defs>
@@ -243,20 +266,44 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useC
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
         <Card C={C}>
           <SectionTitle C={C}>Channel Mix — Impression Share</SectionTitle>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie data={[
-                { name: "CTV Streaming", value: 68 },
-                { name: "YouTube", value: 18 },
-                { name: "DSP Display", value: 9 },
-                { name: "Local TV", value: 5 },
-              ]} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
-                {[C.purple2, C.red, C.blue, C.gold].map((c, i) => <Cell key={i} fill={c} />)}
-              </Pie>
-              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `${v}%`} />
-              <Legend wrapperStyle={{ color: C.muted, fontSize: 12 }} />
-            </PieChart>
-          </ResponsiveContainer>
+          {mobile ? (
+            // Mobile: clean horizontal bar list
+            <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingTop: 4 }}>
+              {[
+                { name: "CTV Streaming", value: 68, color: C.purple2 },
+                { name: "YouTube",       value: 18, color: C.red },
+                { name: "DSP Display",   value: 9,  color: C.blue },
+                { name: "Local TV",      value: 5,  color: C.gold },
+              ].map(item => (
+                <div key={item.name}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 13, color: C.white, fontWeight: 600 }}>
+                      <span style={{ width: 10, height: 10, borderRadius: "50%", background: item.color, flexShrink: 0 }} />
+                      {item.name}
+                    </span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: item.color }}>{item.value}%</span>
+                  </div>
+                  <ProgressBar value={item.value} max={100} color={item.color} C={C} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            // Desktop: donut chart
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie data={[
+                  { name: "CTV Streaming", value: 68 },
+                  { name: "YouTube", value: 18 },
+                  { name: "DSP Display", value: 9 },
+                  { name: "Local TV", value: 5 },
+                ]} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
+                  {[C.purple2, C.red, C.blue, C.gold].map((c, i) => <Cell key={i} fill={c} />)}
+                </Pie>
+                <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `${v}%`} />
+                <Legend wrapperStyle={{ color: C.muted, fontSize: 12 }} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
         </Card>
 
         <Card C={C}>
@@ -864,10 +911,14 @@ function ThemeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
   );
 }
 
+const TABS_LABELS = ["Overview","Channels","Creatives","Audience","Day Part","Content","Moods","People"];
+
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 export default function Home() {
   const [tab, setTab] = useState(0);
   const [time, setTime] = useState(new Date());
+  const [exporting, setExporting] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   const mobile = useIsMobile();
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
@@ -877,6 +928,39 @@ export default function Home() {
     const id = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
+
+  async function handleExport() {
+    if (exporting || !contentRef.current) return;
+    setExporting(true);
+    try {
+      const { default: jsPDF } = await import("jspdf");
+      const { default: html2canvas } = await import("html2canvas");
+      const el = contentRef.current;
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: isDark ? "#07071a" : "#f0f4f8",
+        logging: false,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pdfW = pdf.internal.pageSize.getWidth();
+      const pdfH = (canvas.height * pdfW) / canvas.width;
+      const pageH = pdf.internal.pageSize.getHeight();
+      let y = 0;
+      while (y < pdfH) {
+        if (y > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, -y, pdfW, pdfH);
+        y += pageH;
+      }
+      const tabName = TABS_LABELS[tab] ?? "Report";
+      pdf.save(`ExactAudience_${CLIENT.name.replace(/\s+/g,"_")}_${tabName}_${new Date().toISOString().slice(0,10)}.pdf`);
+    } catch (err) {
+      console.error("PDF export failed", err);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   const tabContent = [
     <TabOverview mobile={mobile} C={C} />,
@@ -927,6 +1011,26 @@ export default function Home() {
             Live
           </div>
           {!mobile && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", fontFamily: "monospace" }}>{time.toLocaleTimeString()}</div>}
+          {!mobile && (
+            <button
+              onClick={handleExport}
+              disabled={exporting}
+              title="Download PDF report of current tab"
+              style={{
+                display: "flex", alignItems: "center", gap: 5,
+                background: exporting ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: 20, padding: "5px 12px",
+                cursor: exporting ? "not-allowed" : "pointer",
+                fontSize: 11, fontWeight: 600, color: "#ffffff",
+                letterSpacing: "0.04em", transition: "all 0.2s ease",
+                flexShrink: 0, opacity: exporting ? 0.6 : 1,
+              }}
+            >
+              <span style={{ fontSize: 13 }}>{exporting ? "⏳" : "📄"}</span>
+              <span>{exporting ? "Exporting..." : "Export PDF"}</span>
+            </button>
+          )}
           <ThemeToggle isDark={isDark} onToggle={toggleTheme ?? (() => {})} />
         </div>
       </div>
@@ -949,7 +1053,7 @@ export default function Home() {
       </div>
 
       {/* Content */}
-      <div style={{ padding: mobile ? "16px 12px" : "24px 28px" }}>
+      <div ref={contentRef} style={{ padding: mobile ? "16px 12px" : "24px 28px" }}>
         {tabContent[tab]}
       </div>
 
