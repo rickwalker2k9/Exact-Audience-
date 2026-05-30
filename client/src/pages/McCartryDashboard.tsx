@@ -27,12 +27,12 @@ import {
 // McCarty palette: NO RED — deep navy + teal accent + gold
 function useColors(isDark: boolean) {
   return isDark ? {
-    bg: "#07090f", bg2: "#0c0f1a", bg3: "#111525",
-    card: "#0d1120", card2: "#111828", border: "#1a2540",
-    // Primary accent: deep navy-teal (NO red anywhere)
-    red: "#2a6496", red2: "#3a85c0", red3: "#7db8d8",
-    green: "#2dd4bf", gold: "#d4a017", blue: "#60a5fa",
-    white: "#e8eef6", muted: "#7a8aaa",
+    bg: "#080c18",
+    card: "#0d1120", card2: "#111828", border: "#1e2d45",
+    // Primary accent: bright sky-blue — readable on dark backgrounds
+    red: "#4da6e8", red2: "#60b8f5", red3: "#93d0fa",
+    green: "#2dd4bf", gold: "#e0b030", blue: "#7ec8fb",
+    white: "#e8eef6", muted: "#8fa4c0",
     headerBg: "linear-gradient(135deg,#07090f,#0d1a2e)",
     tooltipBg: "#111828", scrollTrack: "#0c0f1a", scrollThumb: "#1a2540",
   } : {
