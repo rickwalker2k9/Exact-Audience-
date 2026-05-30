@@ -17,7 +17,8 @@ import {
   MCCARTY_CLIENT, MCCARTY_LIVE_BASE, MCCARTY_DAILY_IMPRESSIONS,
   MCCARTY_MEDIA_MIX, MCCARTY_CTV_CHANNELS, MCCARTY_CREATIVES,
   MCCARTY_MOODS, MCCARTY_VISITORS, MCCARTY_QR,
-  MCCARTY_DEBATE_ENGAGEMENT, MCCARTY_VOTER_SEGMENTS
+  MCCARTY_DEBATE_ENGAGEMENT, MCCARTY_VOTER_SEGMENTS,
+  MCCARTY_VOTE_TARGET, MCCARTY_MOVED_VOTERS
 } from "@/lib/mccartryData";
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
@@ -230,6 +231,132 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
+// ── Vote Movement Tracker ───────────────────────────────────────────────────
+function VoteMovementTracker({ C }: { C: C }) {
+  const T = MCCARTY_VOTE_TARGET;
+  // Days remaining countdown
+  const electionDay = new Date("2026-06-16");
+  const today = new Date();
+  const daysLeft = Math.max(0, Math.ceil((electionDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+  const pctToWin = Math.min(100, Math.round(((T.committedBase + T.movedToMcCarty) / T.winThreshold) * 100));
+  const gapToWin = Math.max(0, T.winThreshold - T.committedBase - T.movedToMcCarty);
+
+  return (
+    <div style={{ background: C.card, border: `2px solid ${C.red}44`, borderRadius: 16, padding: 24, marginBottom: 16 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.red, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 4 }}>🗳️ Vote Win Tracker — June 16, 2026</div>
+          <div style={{ fontSize: 13, color: C.muted }}>Target: {T.winThreshold.toLocaleString()} votes to win Tulsa County DA Republican Primary</div>
+        </div>
+        <div style={{ background: `${C.red}22`, border: `1px solid ${C.red}44`, borderRadius: 12, padding: "10px 20px", textAlign: "center" }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: C.red, lineHeight: 1 }}>{daysLeft}</div>
+          <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Days to Election</div>
+        </div>
+      </div>
+
+      {/* Win Progress Bar */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+          <span style={{ fontSize: 12, color: C.white, fontWeight: 600 }}>Projected Votes: {(T.committedBase + T.movedToMcCarty).toLocaleString()}</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: pctToWin >= 100 ? C.green : C.gold }}>{pctToWin}% of win threshold</span>
+        </div>
+        <div style={{ background: C.bg3, borderRadius: 8, height: 14, overflow: "hidden", position: "relative" }}>
+          {/* Committed base */}
+          <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${Math.min(100, (T.committedBase / T.winThreshold) * 100)}%`, background: C.red, borderRadius: "8px 0 0 8px" }} />
+          {/* Moved voters */}
+          <div style={{ position: "absolute", left: `${(T.committedBase / T.winThreshold) * 100}%`, top: 0, height: "100%", width: `${Math.min(100 - (T.committedBase / T.winThreshold) * 100, (T.movedToMcCarty / T.winThreshold) * 100)}%`, background: C.green }} />
+          {/* Win threshold line */}
+          <div style={{ position: "absolute", right: 0, top: 0, height: "100%", width: 2, background: "rgba(255,255,255,0.6)" }} />
+        </div>
+        <div style={{ display: "flex", gap: 16, marginTop: 8, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 10, height: 10, borderRadius: 2, background: C.red, flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: C.muted }}>Committed Base: {T.committedBase.toLocaleString()}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 10, height: 10, borderRadius: 2, background: C.green, flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: C.muted }}>Moved from Undecided: +{T.movedToMcCarty.toLocaleString()}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 10, height: 10, borderRadius: 2, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: C.muted }}>Still needed: {gapToWin.toLocaleString()} more votes</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 4 KPI boxes */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+        {[
+          { label: "Undecided Universe",   value: T.undecidedUniverse.toLocaleString(), sub: "Total movable voters in reach",          color: C.blue },
+          { label: "Moved → McCarty",       value: T.movedToMcCarty.toLocaleString(),   sub: "Undecided → confirmed via media signals", color: C.green },
+          { label: "Still Undecided",       value: T.stillUndecided.toLocaleString(),   sub: "Active targeting priority",               color: C.gold },
+          { label: "Moved → Kunzweiler",    value: T.movedToKunzweiler.toLocaleString(), sub: "Lost from undecided pool",               color: "#64748b" },
+        ].map(k => (
+          <div key={k.label} style={{ background: C.bg3, borderRadius: 10, padding: "12px 14px", borderTop: `3px solid ${k.color}` }}>
+            <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>{k.label}</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: k.color, lineHeight: 1 }}>{k.value}</div>
+            <div style={{ fontSize: 10, color: C.muted, marginTop: 4 }}>{k.sub}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Moved Voter Log ───────────────────────────────────────────────────────────
+function MovedVoterLog({ mobile, C }: { mobile: boolean; C: C }) {
+  const [filter, setFilter] = useState<"all" | "moved" | "undecided" | "lost">("all");
+  const filtered = MCCARTY_MOVED_VOTERS.filter(v => {
+    if (filter === "moved") return v.currentIntent === "McCarty";
+    if (filter === "undecided") return v.currentIntent === "Undecided";
+    if (filter === "lost") return v.currentIntent === "Kunzweiler";
+    return true;
+  });
+
+  const intentColor = (intent: string) => {
+    if (intent === "McCarty") return C.green;
+    if (intent === "Undecided") return C.gold;
+    return "#64748b";
+  };
+  const intentLabel = (intent: string) => {
+    if (intent === "McCarty") return "✅ Moved → McCarty";
+    if (intent === "Undecided") return "⏳ Still Undecided";
+    return "❌ Moved → Kunzweiler";
+  };
+
+  return (
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 20 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.12em" }}>Undecided Voter Movement Log</div>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {(["all", "moved", "undecided", "lost"] as const).map(f => (
+            <button key={f} onClick={() => setFilter(f)} style={{
+              padding: "4px 10px", fontSize: 10, fontWeight: 700, borderRadius: 6, cursor: "pointer", border: `1px solid ${filter === f ? C.red : C.border}`,
+              background: filter === f ? `${C.red}22` : "transparent", color: filter === f ? C.red : C.muted, transition: "all 0.15s",
+            }}>{f === "all" ? "All" : f === "moved" ? "Moved → McCarty" : f === "undecided" ? "Still Undecided" : "Lost to Kunzweiler"}</button>
+          ))}
+        </div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {filtered.map(v => (
+          <div key={v.id} style={{ background: C.bg3, borderRadius: 10, padding: "12px 16px", display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 120px 80px", gap: 8, alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.white }}>{v.name}</div>
+              <div style={{ fontSize: 11, color: C.muted }}>{v.city} · {v.exposures} exposures</div>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.4 }}>{v.lastSignal}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: intentColor(v.currentIntent) }}>{intentLabel(v.currentIntent)}</div>
+            <div style={{ textAlign: mobile ? "left" : "right" }}>
+              <div style={{ fontSize: 16, fontWeight: 900, color: v.score >= 80 ? C.green : v.score >= 65 ? C.gold : "#64748b" }}>{v.score}</div>
+              <div style={{ fontSize: 9, color: C.muted }}>Intent Score</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── TAB: Voter Intelligence ───────────────────────────────────────────────────
 function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
   const PERSUASION_DATA = [
@@ -243,6 +370,34 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Vote Win Tracker — always at top */}
+      <VoteMovementTracker C={C} />
+
+      {/* Voter Intent Segmentation */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
+        {[
+          { label: "Colleen McCarty", count: 18400 + 4218, pct: 47, color: C.red, icon: "🟥", desc: "Committed + moved undecided voters" },
+          { label: "Undecided / Movable", count: 16782, pct: 35, color: C.gold, icon: "🟡", desc: "Still in play — primary ad target" },
+          { label: "Steve Kunzweiler", count: 18400 + 1840, pct: 18, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler + moved from undecided" },
+        ].map(seg => (
+          <div key={seg.label} style={{ background: C.card, border: `2px solid ${seg.color}44`, borderRadius: 14, padding: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <span style={{ fontSize: 22 }}>{seg.icon}</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: C.white }}>{seg.label}</div>
+                <div style={{ fontSize: 10, color: C.muted }}>{seg.desc}</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 32, fontWeight: 900, color: seg.color, lineHeight: 1, marginBottom: 8 }}>{seg.count.toLocaleString()}</div>
+            <ProgressBar value={seg.pct} max={100} color={seg.color} C={C} />
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>{seg.pct}% of likely primary voters</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Moved Voter Log */}
+      <MovedVoterLog mobile={mobile} C={C} />
+
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
         <KpiCard label="Total Voter Universe" value="111,093" sub="Tulsa County GOP 45+ registered" color={C.red} C={C} />
         <KpiCard label="Persuasion Threshold Met" value="42,840" sub="5+ exposures delivered" color={C.green} C={C} />
