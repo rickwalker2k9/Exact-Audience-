@@ -11,7 +11,8 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { getProfilesByDashboard } from "@/lib/buyerProfiles";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  ReferenceLine
 } from "recharts";
 import {
   MCCARTY_CLIENT, MCCARTY_LIVE_BASE, MCCARTY_DAILY_IMPRESSIONS,
@@ -143,12 +144,15 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
 
   const chartData = MCCARTY_DAILY_IMPRESSIONS.slice(-rangeDays).map(d => ({
     day: d.date.replace("May ", ""),
+    rawDate: d.date,
     CTV: Math.round(d.impressions * 0.74 / 1000),
     Meta: Math.round(d.impressions * 0.10 / 1000),
     Google: Math.round(d.impressions * 0.06 / 1000),
     YouTube: Math.round(d.impressions * 0.05 / 1000),
     Email: Math.round(d.impressions * 0.03 / 1000),
   }));
+  // Debate night x-axis labels that appear in the current slice
+  const debateLabels = ["13", "19"].filter(lbl => chartData.some(d => d.day === lbl));
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -188,6 +192,16 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
               <XAxis dataKey="day" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={30} />
               <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }} />
+              {debateLabels.map(lbl => (
+                <ReferenceLine
+                  key={lbl}
+                  x={lbl}
+                  stroke={C.gold}
+                  strokeWidth={2}
+                  strokeDasharray="4 3"
+                  label={{ value: lbl === "13" ? "📺 Debate" : "▶ Replay", position: "top", fill: C.gold, fontSize: 9, fontWeight: 700 }}
+                />
+              ))}
               <Area type="monotone" dataKey="CTV" stroke={C.red} fill="url(#gCTV)" strokeWidth={2} />
               <Area type="monotone" dataKey="Meta" stroke="#1877f2" fill="url(#gMeta)" strokeWidth={1.5} />
               <Area type="monotone" dataKey="YouTube" stroke="#ff0000" fill="url(#gYT)" strokeWidth={1.5} />
@@ -289,6 +303,55 @@ function VoteMovementTracker({ C }: { C: C }) {
         <div>
           <span style={{ fontSize: 12, fontWeight: 700, color: C.gold }}>Daily Pace Required: {votesPerDay} undecided voters moved per day</span>
           <span style={{ fontSize: 11, color: C.muted }}> — to close the {gapToWin.toLocaleString()}-vote gap before June 16. Current pace: {Math.round(T.movedToMcCarty / 17)}/day (needs acceleration).</span>
+        </div>
+      </div>
+
+      {/* Budget Urgency Calculator */}
+      <div style={{ background: `${C.red}0d`, border: `1px solid ${C.red}33`, borderRadius: 12, padding: 16, marginBottom: 16 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: C.red, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>💰 Budget Urgency — Ad Spend Required to Close the Gap</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 12 }}>
+          {[
+            {
+              label: "Spend/Day Needed",
+              value: `$${Math.ceil(3800 / daysLeft).toLocaleString()}`,
+              sub: `To deliver ${votesPerDay} exposures/day to undecided voters`,
+              color: C.red,
+            },
+            {
+              label: "Cost Per Vote Moved",
+              value: "$0.90",
+              sub: "Based on current CTV CPV × avg exposures to threshold",
+              color: C.gold,
+            },
+            {
+              label: "Remaining Budget",
+              value: `$${Math.max(0, 68400 - Math.round(68400 * (17 - daysLeft) / 17)).toLocaleString()}`,
+              sub: `Est. unspent of $68,400 total · ${daysLeft} days left`,
+              color: C.green,
+            },
+          ].map(k => (
+            <div key={k.label} style={{ background: C.bg3, borderRadius: 10, padding: "12px 14px", borderTop: `3px solid ${k.color}` }}>
+              <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>{k.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: k.color, lineHeight: 1 }}>{k.value}</div>
+              <div style={{ fontSize: 10, color: C.muted, marginTop: 4 }}>{k.sub}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          {[
+            { channel: "CTV Streaming (74%)",   dailySpend: Math.ceil(3800 * 0.74 / daysLeft), note: "Primary voter ID channel — maintain dominance" },
+            { channel: "Meta Ads (10%)",         dailySpend: Math.ceil(3800 * 0.10 / daysLeft), note: "Retarget debate viewers + lookalike undecided" },
+            { channel: "Google Ads (6%)",        dailySpend: Math.ceil(3800 * 0.06 / daysLeft), note: "Search intent — 'Tulsa DA race' keyword capture" },
+            { channel: "YouTube (5%)",           dailySpend: Math.ceil(3800 * 0.05 / daysLeft), note: "Debate replay retarget — high-intent segment" },
+          ].map(c => (
+            <div key={c.channel} style={{ background: C.bg3, borderRadius: 8, padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: C.white }}>{c.channel}</div>
+                <div style={{ fontSize: 10, color: C.muted }}>{c.note}</div>
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: C.gold, flexShrink: 0, marginLeft: 8 }}>${c.dailySpend}/day</div>
+            </div>
+          ))}
         </div>
       </div>
 
