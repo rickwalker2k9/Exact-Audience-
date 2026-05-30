@@ -28,7 +28,7 @@ export type MediaRecommendation = {
 
 export type BuyerProfile = {
   id: string;
-  dashboardId: "land-rover" | "lamborghini" | "warby-parker" | "policygenius";
+  dashboardId: "land-rover" | "lamborghini" | "warby-parker" | "policygenius" | "mccarty";
   name: string;
   age: number;
   location: string;
@@ -539,11 +539,14 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
 // LOOKUP HELPER
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { MCCARTY_VOTER_PROFILES } from "./mccartryProfiles";
+
 export const ALL_PROFILES: BuyerProfile[] = [
   ...LAND_ROVER_PROFILES,
   ...LAMBORGHINI_PROFILES,
   ...WARBY_PROFILES,
   ...POLICYGENIUS_PROFILES,
+  ...MCCARTY_VOTER_PROFILES,
 ];
 
 export function getProfilesByDashboard(dashboardId: BuyerProfile["dashboardId"]): BuyerProfile[] {

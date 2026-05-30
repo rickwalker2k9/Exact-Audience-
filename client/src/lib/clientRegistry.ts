@@ -114,9 +114,29 @@ export const CLIENTS: CampaignClient[] = [
     primaryColor: "#7c3aed",
   },
 
-  // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
   {
     id: 5,
+    slug: "colleen-mccarty",
+    name: "Colleen McCarty for DA",
+    vertical: "Political Campaign",
+    location: "Tulsa County, OK",
+    description: "Tulsa County DA Republican Primary — June 16, 2026",
+    domain: "colleenmccarty.com",
+    campaign: "Modern DA for Modern Tulsa — Primary 2026",
+    budget: "$68,400",
+    startDate: "May 1, 2026",
+    status: "active",
+    hasDashboard: true,
+    trend: risingTrend(52000),
+    impressionsToDate: 2847293,
+    reachToDate: 111093,
+    completionRate: 88.4,
+    primaryColor: "#c8102e",
+  },
+
+  // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
+  {
+    id: 6,
     slug: "black-rifle-coffee",
     name: "Black Rifle Coffee Company",
     vertical: "Coffee & Lifestyle",

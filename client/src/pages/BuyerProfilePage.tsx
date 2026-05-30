@@ -79,6 +79,7 @@ export default function BuyerProfilePage() {
     "lamborghini": "/lamborghini",
     "warby-parker": "/warby-parker",
     "policygenius": "/policygenius",
+    "mccarty": "/mccarty",
   };
 
   if (!profile) {

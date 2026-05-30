@@ -116,6 +116,7 @@ const SLUG_ROUTES: Record<string, string> = {
   "lamborghini-scottsdale":      "/lamborghini",
   "warby-parker":                "/warby-parker",
   "policygenius":                "/policygenius",
+  "colleen-mccarty":             "/mccarty",
 };
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
