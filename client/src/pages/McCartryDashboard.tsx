@@ -139,8 +139,9 @@ function VoterFeed({ C }: { C: C }) {
 const DATE_RANGES = [{ label: "7 Days", days: 7 }, { label: "14 Days", days: 14 }, { label: "30 Days", days: 16 }];
 
 function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
-  const impressions = useTick(MCCARTY_LIVE_BASE.impressions, 980);
-  const reach = useTick(MCCARTY_LIVE_BASE.reach, 18);
+  const { cumulativeImpressions, votersReached } = getCampaignDay();
+  const impressions = useTick(cumulativeImpressions, 980);
+  const reach = useTick(votersReached, 18);
   const [rangeDays, setRangeDays] = useState(14);
 
   const chartData = MCCARTY_DAILY_IMPRESSIONS.slice(-rangeDays).map(d => ({
@@ -928,6 +929,26 @@ function TabVoterProfiles({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
+// ── Campaign Day Calculator ──────────────────────────────────────────────────
+function getCampaignDay() {
+  const start = new Date("2026-05-28");
+  const election = new Date("2026-06-16");
+  const today = new Date();
+  // Clamp between day 1 and day 18
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const dayNum = Math.min(18, Math.max(1, Math.floor((today.getTime() - start.getTime()) / msPerDay) + 1));
+  const daysLeft = Math.max(0, Math.ceil((election.getTime() - today.getTime()) / msPerDay));
+  // Per-day pacing: $33,000 over 18 days = ~$1,833/day
+  const spentToDate = Math.round(1833 * dayNum);
+  const remainingBudget = Math.max(0, 33000 - spentToDate);
+  // Impressions scale: Day 1 = ~140K, grows ~8% per day with CTV saturation
+  const baseImpressions = 140000;
+  const cumulativeImpressions = Math.round(baseImpressions * ((Math.pow(1.08, dayNum) - 1) / 0.08));
+  // Voters reached: ~6,100 per day cumulative
+  const votersReached = Math.min(18420 + (dayNum - 3) * 6100, 95000);
+  return { dayNum, daysLeft, spentToDate, remainingBudget, cumulativeImpressions, votersReached };
+}
+
 // ── Main Dashboard ────────────────────────────────────────────────────────────
 const TABS = ["Overview", "Voter Intel", "Debate", "Vote Projections", "CTV", "Voter Profiles"];
 
@@ -941,6 +962,7 @@ export default function McCartryDashboard() {
   const isDark = theme === "dark";
   const C = useColors(isDark);
   const [, navigate] = useLocation();
+  const campaign = getCampaignDay();
 
   useEffect(() => { const id = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(id); }, []);
 
@@ -1020,6 +1042,34 @@ export default function McCartryDashboard() {
           <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", fontVariantNumeric: "tabular-nums" }}>
             {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
           </div>
+        </div>
+      </div>
+
+      {/* Campaign Day Progress Bar */}
+      <div style={{ background: isDark ? "#0d0010" : "#f8f0f2", borderBottom: `1px solid ${C.red}33`, padding: mobile ? "8px 16px" : "10px 28px", display: "flex", alignItems: "center", gap: mobile ? 10 : 20, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <span style={{ fontSize: 10, fontWeight: 800, color: C.red, textTransform: "uppercase", letterSpacing: "0.1em" }}>Day {campaign.dayNum} of 18</span>
+          <span style={{ fontSize: 10, color: C.muted }}>·</span>
+          <span style={{ fontSize: 10, color: C.muted }}>{campaign.daysLeft} days to June 16</span>
+        </div>
+        <div style={{ flex: 1, minWidth: 120, height: 6, background: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)", borderRadius: 3, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${(campaign.dayNum / 18) * 100}%`, background: `linear-gradient(90deg, ${C.red}, #ff6b6b)`, borderRadius: 3, transition: "width 0.6s ease" }} />
+        </div>
+        <div style={{ display: "flex", gap: mobile ? 12 : 24, flexShrink: 0 }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: C.white }}>${campaign.spentToDate.toLocaleString()}</div>
+            <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Spent</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: C.green }}>${campaign.remainingBudget.toLocaleString()}</div>
+            <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Remaining</div>
+          </div>
+          {!mobile && (
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: C.gold }}>{fmt(campaign.cumulativeImpressions)}</div>
+              <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Proj. Impressions</div>
+            </div>
+          )}
         </div>
       </div>
 
