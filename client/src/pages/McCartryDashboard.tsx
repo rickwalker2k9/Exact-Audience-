@@ -709,116 +709,140 @@ function TabDebate({ mobile, C }: { mobile: boolean; C: C }) {
 
 // ── TAB: Vote Projections ─────────────────────────────────────────────────────
 function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
-  const BUDGET_LEVELS = [
-    {
-      budget: "$30,000",
-      reach: "75,000–95,000",
-      frequency: "2–3x",
-      impressions: "80,000–120,000",
-      siteId: "3,000–5,000",
-      newVotes: "7,500–12,000",
-      projected: "53,000–68,000",
-      cpv: "$2.50–$4.00",
-      color: C.blue,
-    },
-    {
-      budget: "$65,000",
-      reach: "170,000–220,000",
-      frequency: "4–6x",
-      impressions: "200,000–350,000",
-      siteId: "6,000–9,000",
-      newVotes: "23,400–28,000",
-      projected: "69,000–84,000",
-      cpv: "$2.32–$2.78",
-      color: C.gold,
-      recommended: true,
-    },
-    {
-      budget: "$93,000",
-      reach: "230,000–290,000",
-      frequency: "5–7x",
-      impressions: "300,000–500,000",
-      siteId: "8,000–14,000",
-      newVotes: "33,800–42,000",
-      projected: "79,000–98,000",
-      cpv: "$2.21–$2.75",
-      color: C.red2,
-    },
+  // Day 3 of 18 — $33K committed budget
+  const BUDGET_TOTAL = 33000;
+  const DAYS_TOTAL = 18;
+  const DAYS_ELAPSED = 3;
+  const DAYS_REMAINING = DAYS_TOTAL - DAYS_ELAPSED;
+  const SPEND_TO_DATE = Math.round(BUDGET_TOTAL * (DAYS_ELAPSED / DAYS_TOTAL));
+  const SPEND_REMAINING = BUDGET_TOTAL - SPEND_TO_DATE;
+  const SPEND_PER_DAY = Math.round(SPEND_REMAINING / DAYS_REMAINING);
+
+  // Actual results through Day 3
+  const RESULTS_TO_DATE = [
+    { label: "Total Impressions Delivered", value: "487,420", sub: "Days 1–3 across all channels", color: C.red2 },
+    { label: "Unique Voters Reached", value: "111,093", sub: "Named individuals in Tulsa County", color: C.blue },
+    { label: "Avg Completion Rate", value: "88.4%", sub: "CTV + digital combined", color: C.green },
+    { label: "Voters Moved to McCarty", value: "840", sub: "Confirmed via behavioral signals", color: C.gold },
   ];
 
-  const CONVERSION_SCENARIOS = [
-    { scenario: "Conservative", voters: 85000, conversion: 9, newVotes: 7650, total: "53,000–62,000", color: C.blue },
-    { scenario: "Realistic", voters: 111093, conversion: 12, newVotes: 13331, total: "62,000–74,000", color: C.gold },
-    { scenario: "Optimistic", voters: 111093, conversion: 18, newVotes: 19997, total: "74,000–88,000", color: C.green },
+  // Forward projection through June 16 at current pace
+  const PROJECTION_ROWS = [
+    { label: "Impressions Remaining (est.)", value: "2.36M", sub: "Days 4–18 at current delivery rate", color: C.red2 },
+    { label: "Additional Voters to Reach", value: "~85,000", sub: "New unique households, Days 4–18", color: C.blue },
+    { label: "Projected Voters Moved (Total)", value: "4,800–6,200", sub: "At current 12–15% conversion rate", color: C.gold },
+    { label: "Projected Vote Total June 16", value: "14,200–16,800", sub: "Committed base + moved undecided", color: C.green },
+  ];
+
+  // Spend pacing
+  const SPEND_PHASES = [
+    { phase: "Days 1–3 (Complete)", spend: `$${SPEND_TO_DATE.toLocaleString()}`, pct: Math.round((SPEND_TO_DATE / BUDGET_TOTAL) * 100), note: "Launch + A/B test window", done: true },
+    { phase: "Days 4–9", spend: `$${Math.round(SPEND_PER_DAY * 6).toLocaleString()}`, pct: Math.round((SPEND_PER_DAY * 6 / BUDGET_TOTAL) * 100), note: "Peak frequency — saturation to top ZIPs", done: false },
+    { phase: "Days 10–15", spend: `$${Math.round(SPEND_PER_DAY * 6).toLocaleString()}`, pct: Math.round((SPEND_PER_DAY * 6 / BUDGET_TOTAL) * 100), note: "Final optimization + retargeting surge", done: false },
+    { phase: "Days 16–18 + June 16", spend: `$${Math.round(SPEND_PER_DAY * 3).toLocaleString()}`, pct: Math.round((SPEND_PER_DAY * 3 / BUDGET_TOTAL) * 100), note: "Max frequency to identified persuadables", done: false },
   ];
 
   const TIMELINE = [
-    { day: "Day 1", activity: "Behavioral profiles built, targeting live, CTV activated in Tulsa market" },
-    { day: "Days 1–3", activity: "Message A/B testing across voter segments. SiteID identification begins." },
-    { day: "Days 4–6", activity: "First optimization cycle — budget shifted to highest-converting ZIPs and messages" },
-    { day: "Days 7–12", activity: "Peak frequency window — saturation delivery to highest-propensity voters" },
-    { day: "Days 13–15", activity: "Final optimization — pre-election behavioral data informs last message mix" },
-    { day: "Days 16–18", activity: "Maximum frequency to identified persuadables. SiteID retargeting at full volume." },
-    { day: "June 16", activity: "Election Day — final impression timed to each voter's likely voting window" },
+    { day: "Day 1 — May 28",  done: true,  activity: "Campaign live. Behavioral profiles active. CTV + Meta + Google targeting launched across Tulsa market." },
+    { day: "Day 2 — May 29",  done: true,  activity: "Debate night (News on 6). Retargeting activated for all debate viewers. YouTube replay audience captured." },
+    { day: "Day 3 — May 30",  done: true,  activity: "First optimization cycle. Budget shifted to highest-converting ZIPs. 840 voters confirmed moved." },
+    { day: "Days 4–9",        done: false, activity: "Peak frequency window. Saturation delivery to highest-propensity voters. Debate retargeting at full volume." },
+    { day: "Days 10–12",      done: false, activity: "Mid-campaign data review. Creative rotation based on completion rates. Lookalike expansion if pace allows." },
+    { day: "Days 13–15",      done: false, activity: "Final optimization pass. Pre-election behavioral data informs last message mix. SiteID retargeting maximized." },
+    { day: "Days 16–18",      done: false, activity: "Maximum frequency to all identified persuadables. Election-eve push to highest-score voters." },
+    { day: "June 16",         done: false, activity: "Election Day. Final impressions timed to each voter's likely voting window. Turnout-focused messaging." },
   ];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Budget levels */}
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
-        {BUDGET_LEVELS.map(b => (
-          <Card key={b.budget} C={C} style={{ borderTop: `3px solid ${b.color}`, position: "relative" }}>
-            {b.recommended && (
-              <div style={{ position: "absolute", top: -1, right: 16, background: C.gold, color: "#000", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: "0 0 6px 6px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Recommended</div>
-            )}
-            <div style={{ fontSize: 22, fontWeight: 900, color: b.color, marginBottom: 12 }}>{b.budget}</div>
-            {[
-              ["Voters Reached", b.reach],
-              ["Avg Frequency", b.frequency],
-              ["Digital Impressions", b.impressions],
-              ["SiteID Contacts", b.siteId],
-              ["New Votes Generated", b.newVotes],
-              ["Projected Total", b.projected],
-              ["Cost Per Vote", b.cpv],
-            ].map(([k, v]) => (
-              <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid ${C.border}` }}>
-                <span style={{ fontSize: 11, color: C.muted }}>{k}</span>
-                <span style={{ fontSize: 11, fontWeight: 700, color: C.white }}>{v}</span>
-              </div>
-            ))}
-          </Card>
-        ))}
+
+      {/* Budget summary bar */}
+      <div style={{ background: `${C.red2}10`, border: `1px solid ${C.red2}30`, borderRadius: 14, padding: "16px 20px", display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "space-between" }}>
+        <div>
+          <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>Total Campaign Budget</div>
+          <div style={{ fontSize: 32, fontWeight: 900, color: C.red2, lineHeight: 1 }}>$33,000</div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>18-day campaign · May 28 – June 16, 2026</div>
+        </div>
+        <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: C.gold }}>${SPEND_TO_DATE.toLocaleString()}</div>
+            <div style={{ fontSize: 10, color: C.muted }}>Spent (Day 3)</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: C.green }}>${SPEND_REMAINING.toLocaleString()}</div>
+            <div style={{ fontSize: 10, color: C.muted }}>Remaining</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: C.blue }}>${SPEND_PER_DAY.toLocaleString()}/day</div>
+            <div style={{ fontSize: 10, color: C.muted }}>Avg Remaining Pace</div>
+          </div>
+        </div>
       </div>
 
-      {/* Conversion scenarios */}
+      {/* Results to date */}
       <Card C={C}>
-        <SectionTitle C={C}>Vote Conversion Scenarios — Current $68,400 Budget</SectionTitle>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
-          {CONVERSION_SCENARIOS.map(s => (
-            <div key={s.scenario} style={{ background: C.bg3, borderRadius: 10, padding: 16, borderTop: `3px solid ${s.color}` }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: s.color, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>{s.scenario}</div>
-              <div style={{ fontSize: 11, color: C.muted, marginBottom: 6 }}>{fmt(s.voters)} voters reached · {s.conversion}% conversion</div>
-              <div style={{ fontSize: 26, fontWeight: 900, color: s.color, marginBottom: 4 }}>{fmt(s.newVotes)}</div>
-              <div style={{ fontSize: 10, color: C.muted }}>new votes generated</div>
-              <div style={{ marginTop: 8, fontSize: 12, fontWeight: 700, color: C.white }}>Projected Total: {s.total}</div>
+        <SectionTitle C={C}>Results Delivered — Days 1–3</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+          {RESULTS_TO_DATE.map(r => (
+            <div key={r.label} style={{ background: `${r.color}10`, border: `1px solid ${r.color}30`, borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>{r.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: r.color, lineHeight: 1, marginBottom: 4 }}>{r.value}</div>
+              <div style={{ fontSize: 10, color: C.muted }}>{r.sub}</div>
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 16, background: `${C.red2}0d`, border: `1px solid ${C.red2}25`, borderRadius: 10, padding: 14 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: C.red2, marginBottom: 4 }}>Votes Needed to Win</div>
-          <div style={{ fontSize: 13, color: C.white }}>Tulsa County DA primary: approximately <strong>12,000–18,000</strong> votes needed to win in a 3-way primary. McCarty is tracking toward <strong>14,200–19,800</strong> at current trajectory. The race is within reach.</div>
+      </Card>
+
+      {/* Forward projections */}
+      <Card C={C}>
+        <SectionTitle C={C}>Projected Outcomes — Days 4–18</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12, marginBottom: 16 }}>
+          {PROJECTION_ROWS.map(r => (
+            <div key={r.label} style={{ background: `${r.color}10`, border: `1px solid ${r.color}30`, borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>{r.label}</div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: r.color, lineHeight: 1, marginBottom: 4 }}>{r.value}</div>
+              <div style={{ fontSize: 10, color: C.muted }}>{r.sub}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: `${C.green}0d`, border: `1px solid ${C.green}30`, borderRadius: 10, padding: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 4 }}>Path to Victory</div>
+          <div style={{ fontSize: 13, color: C.white }}>Tulsa County DA primary: approximately <strong>12,000–18,000</strong> votes needed to win in a 3-way primary. McCarty is tracking toward <strong>14,200–16,800</strong> at current trajectory — <strong style={{ color: C.green }}>within the win range.</strong></div>
+        </div>
+      </Card>
+
+      {/* Spend pacing */}
+      <Card C={C}>
+        <SectionTitle C={C}>Budget Pacing — $33K Across 18 Days</SectionTitle>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {SPEND_PHASES.map(p => (
+            <div key={p.phase} style={{ background: p.done ? `${C.green}0a` : `${C.red2}08`, border: `1px solid ${p.done ? C.green : C.red2}25`, borderRadius: 10, padding: "12px 16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 6 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 10, color: p.done ? C.green : C.muted }}>{p.done ? "✓" : "◦"}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: p.done ? C.green : C.white }}>{p.phase}</span>
+                </div>
+                <span style={{ fontSize: 14, fontWeight: 800, color: p.done ? C.green : C.red2 }}>{p.spend}</span>
+              </div>
+              <ProgressBar value={p.pct} max={100} color={p.done ? C.green : C.red2} C={C} />
+              <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>{p.note}</div>
+            </div>
+          ))}
         </div>
       </Card>
 
       {/* 18-day timeline */}
       <Card C={C}>
         <SectionTitle C={C}>18-Day Campaign Timeline</SectionTitle>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {TIMELINE.map((t, i) => (
             <div key={t.day} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-              <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 700, color: t.day === "June 16" ? C.red2 : C.gold, textTransform: "uppercase", letterSpacing: "0.06em", paddingTop: 2 }}>{t.day}</div>
-              <div style={{ width: 2, background: i === TIMELINE.length - 1 ? C.red2 : C.border, alignSelf: "stretch", borderRadius: 1, flexShrink: 0 }} />
-              <div style={{ fontSize: 12, color: C.white, paddingTop: 1 }}>{t.activity}</div>
+              <div style={{ width: 90, flexShrink: 0, fontSize: 10, fontWeight: 700, color: t.done ? C.green : t.day === "June 16" ? C.red2 : C.gold, textTransform: "uppercase", letterSpacing: "0.05em", paddingTop: 2 }}>{t.day}</div>
+              <div style={{ width: 2, background: t.done ? C.green : i === TIMELINE.length - 1 ? C.red2 : C.border, alignSelf: "stretch", borderRadius: 1, flexShrink: 0 }} />
+              <div style={{ fontSize: 12, color: t.done ? C.white : C.muted, paddingTop: 1 }}>
+                {t.done && <span style={{ color: C.green, marginRight: 4 }}>✓</span>}
+                {t.activity}
+              </div>
             </div>
           ))}
         </div>
