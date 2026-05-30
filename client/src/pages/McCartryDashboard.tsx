@@ -371,8 +371,8 @@ function VoteMovementTracker({ C, mobile }: { C: C; mobile: boolean }) {
             },
             {
               label: "Remaining Budget",
-              value: `$${Math.max(0, 68400 - Math.round(68400 * (17 - daysLeft) / 17)).toLocaleString()}`,
-              sub: `Est. unspent of $68,400 total · ${daysLeft} days left`,
+              value: `$${remainingBudget.toLocaleString()}`,
+              sub: `Est. unspent of $33,000 total · ${daysLeft} days left`,
               color: C.green,
             },
           ].map(k => (
@@ -654,7 +654,7 @@ function TabDebate({ mobile, C }: { mobile: boolean; C: C }) {
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
         <KpiCard label="Total Debate Viewers" value={fmt(DE.totalDebateViewers)} sub="Across all platforms" color={C.red2} C={C} />
         <KpiCard label="News on 6 Live" value={fmt(DE.newsOn6Live)} sub="KOTV live broadcast" color={C.gold} C={C} />
-        <KpiCard label="YouTube Replay" value={fmt(DE.youtubeReplay)} sub="Post-debate replay views" color="#e05a6a" C={C} />
+        <KpiCard label="YouTube Replay" value={fmt(DE.youtubeReplay)} sub="Post-debate replay views" color={C.blue} C={C} />
         <KpiCard label="Social Media Clips" value={fmt(DE.socialMediaClips)} sub="Facebook + Instagram clips" color={C.blue} C={C} />
       </div>
 
@@ -743,9 +743,9 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
   ];
 
   const TIMELINE = [
-    { day: "Day 1 — May 28",  done: true,  activity: "Campaign live. Behavioral profiles active. CTV + Meta + Google targeting launched across Tulsa market." },
-    { day: "Day 2 — May 29",  done: true,  activity: "Debate night (News on 6). Retargeting activated for all debate viewers. YouTube replay audience captured." },
-    { day: "Day 3 — May 30",  done: true,  activity: "First optimization cycle. Budget shifted to highest-converting ZIPs. 840 voters confirmed moved." },
+    { day: "Day 1 — May 28",  done: true,  activity: "Campaign live + Debate night (News on 6 / KOTV, 6:30pm). CTV + Meta + Google targeting launched. Retargeting activated for all debate viewers." },
+    { day: "Day 2 — May 29",  done: true,  activity: "YouTube debate replay audience captured. Post-debate search traffic captured via Google. Behavioral signals spiking." },
+    { day: "Day 3 — May 30",  done: true,  activity: "First optimization cycle. Budget shifted to highest-converting ZIPs. 840 voters confirmed moved to McCarty." },
     { day: "Days 4–9",        done: false, activity: "Peak frequency window. Saturation delivery to highest-propensity voters. Debate retargeting at full volume." },
     { day: "Days 10–12",      done: false, activity: "Mid-campaign data review. Creative rotation based on completion rates. Lookalike expansion if pace allows." },
     { day: "Days 13–15",      done: false, activity: "Final optimization pass. Pre-election behavioral data informs last message mix. SiteID retargeting maximized." },
@@ -807,7 +807,7 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
         </div>
         <div style={{ background: `${C.green}0d`, border: `1px solid ${C.green}30`, borderRadius: 10, padding: 14 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 4 }}>Path to Victory</div>
-          <div style={{ fontSize: 13, color: C.white }}>Tulsa County DA primary: approximately <strong>12,000–18,000</strong> votes needed to win in a 3-way primary. McCarty is tracking toward <strong>14,200–16,800</strong> at current trajectory — <strong style={{ color: C.green }}>within the win range.</strong></div>
+          <div style={{ fontSize: 13, color: C.white }}>Tulsa County DA Republican primary: <strong>2-person race</strong> — winner is the next DA (no general election opponent). ~191,000 registered Republicans eligible; expected turnout ~28,000–38,000 votes. Win threshold: <strong>~16,000 votes (50%+1)</strong>. McCarty is tracking toward <strong>14,200–18,600</strong> at current trajectory — <strong style={{ color: C.green }}>on pace with 15 days remaining.</strong></div>
         </div>
       </Card>
 
@@ -925,15 +925,22 @@ function TabCTV({ mobile, C }: { mobile: boolean; C: C }) {
       </Card>
 
       <Card C={C}>
-        <SectionTitle C={C}>Creative Performance</SectionTitle>
+        <SectionTitle C={C}>Creative Performance — 2 Ads Rotating Evenly</SectionTitle>
+        <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>Both :15 spots are running at equal weight (50/50 rotation) across all CTV and digital channels.</div>
         {MCCARTY_CREATIVES.map(cr => (
-          <div key={cr.name} style={{ marginBottom: 14 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-              <span style={{ fontSize: 12, color: C.white }}>{cr.name}</span>
-              <span style={{ fontSize: 11, color: C.muted }}>{fmt(cr.impressions)} impressions · CTR {cr.ctr}%</span>
+          <div key={cr.name} style={{ background: C.bg3, borderRadius: 10, padding: "14px 16px", marginBottom: 12, borderLeft: `3px solid ${cr.color}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6, flexWrap: "wrap", gap: 6 }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: C.white }}>{cr.name}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, background: `${cr.color}22`, color: cr.color, border: `1px solid ${cr.color}44`, borderRadius: 20, padding: "2px 8px", textTransform: "uppercase", letterSpacing: "0.08em" }}>50% rotation</span>
+                </div>
+                <div style={{ fontSize: 11, color: C.muted }}>{(cr as any).note}</div>
+              </div>
+              <span style={{ fontSize: 11, color: C.muted, flexShrink: 0 }}>{fmt(cr.impressions)} impressions · CTR {cr.ctr}%</span>
             </div>
             <ProgressBar value={cr.completionRate} max={100} color={cr.color} C={C} />
-            <div style={{ fontSize: 10, color: C.muted, marginTop: 3 }}>{cr.completionRate}% completion rate</div>
+            <div style={{ fontSize: 10, color: C.muted, marginTop: 4 }}>{cr.completionRate}% completion rate · {fmt(cr.completions)} completed views</div>
           </div>
         ))}
       </Card>

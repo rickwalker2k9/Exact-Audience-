@@ -28,37 +28,41 @@ export const MCCARTY_LIVE_BASE = {
 };
 
 // ── Vote Win Target Model ─────────────────────────────────────────────────────
-// Tulsa County DA Republican Primary 2026 — realistic local race scale
-// Expected turnout: ~28,000–32,000 votes in a 3-way primary
-// Win threshold: ~12,000–14,000 votes (plurality in 3-way race)
-// McCarty committed base: ~5,200 (strong supporters identified via SiteID)
-// Votes still needed: ~6,960 from undecided/movable universe
+// Tulsa County DA Republican Primary 2026 — 2-PERSON RACE (winner-take-all)
+// Registered Republicans in Tulsa County: ~191,215 (April 2026 official data)
+// Expected primary turnout: ~28,000–38,000 votes (2-person race, higher engagement than 2018 3-way)
+// Win threshold: 50%+1 of actual turnout — estimated ~15,000–19,000 votes needed
+// 2018 Republican DA primary (3-way): 74,888 total; Kunzweiler won with 32,011 (42.7%)
+// McCarty committed base: ~5,200 (strong supporters identified via behavioral signals)
+// Undecided universe: ~60% of likely voters per internal polling
 // Campaign is Day 3 of 18 (started May 28, election June 16)
 export const MCCARTY_VOTE_TARGET = {
-  totalExpectedVotes: 30000,
-  winThreshold: 14000,
-  committedBase: 5200,
-  votesNeeded: 6960,
-  undecidedUniverse: 12400,   // total undecided/movable voters in reach
-  movedToMcCarty: 840,        // undecided voters moved by media so far (Day 3)
-  movedToKunzweiler: 620,     // undecided voters who moved toward Kunzweiler
-  stillUndecided: 10940,      // remaining undecided voters still in play
+  totalExpectedVotes: 32000,    // 2-person race, ~17% of 191K registered Republicans
+  winThreshold: 16001,          // 50%+1 of 32,000 expected votes
+  committedBase: 5200,          // strong supporters confirmed via behavioral signals
+  votesNeeded: 10801,           // 16,001 - 5,200 = still needed from undecided pool
+  undecidedUniverse: 19200,     // ~60% of 32,000 expected voters = undecided/persuadable
+  movedToMcCarty: 840,          // undecided voters moved by media so far (Day 3)
+  movedToKunzweiler: 620,       // undecided voters who moved toward Kunzweiler
+  stillUndecided: 17740,        // remaining undecided voters still in play
   electionDate: "2026-06-16",
-  campaignDay: 3,             // Day 3 of 18
-  daysRemaining: 15,          // 15 days left
-  projectedFinalVotes: 6040,  // base + moved so far = 5,200 + 840
-  projectedMargin: "On pace — 6,040 projected vs 14,000 needed. 15 days to close gap.",
-  gapToWin: 7960,
+  campaignDay: 3,               // Day 3 of 18
+  daysRemaining: 15,            // 15 days left
+  projectedFinalVotes: 6040,    // base + moved so far = 5,200 + 840
+  projectedMargin: "On pace — 6,040 projected vs 16,001 needed. 15 days to close gap.",
+  gapToWin: 9961,               // 16,001 - 6,040
+  raceType: "2-person Republican primary — winner IS the next DA (no general election opponent)",
+  eligibleVoters: 191215,       // registered Republicans in Tulsa County (April 2026)
 };
 
 // ── Undecided → Moved Voter Feed (daily movement log) ────────────────────────
 export const MCCARTY_MOVED_VOTERS = [
   // Voters who started undecided and have been moved to McCarty by media
-  { id: "mv-001", name: "Leesa Cornish",    city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Victims First' :15 — 6th CTV completion", movedDate: "May 30", score: 86 },
-  { id: "mv-002", name: "Derek DeMott",     city: "Newalla",       originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Visited site after QR scan, read Blueprint for Justice", movedDate: "May 30", score: 82 },
-  { id: "mv-003", name: "Alison Taylor",    city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 7, lastSignal: "Watched debate replay (May 28) + email open + site visit", movedDate: "May 29", score: 88 },
-  { id: "mv-004", name: "Will Zhou",        city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Searched 'Colleen McCarty prosecutor record' post-debate", movedDate: "May 29", score: 79 },
-  { id: "mv-005", name: "Christian Dean",   city: "Edmond",        originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Reddit engagement + CTV 4x completion", movedDate: "May 29", score: 83 },
+  { id: "mv-001", name: "Leesa Cornish",    city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Victims First' :15 — 6th CTV completion", movedDate: "May 30", score: 86 },
+  { id: "mv-002", name: "Derek DeMott",     city: "Broken Arrow",  originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Visited site after QR scan, read Blueprint for Justice", movedDate: "May 30", score: 82 },
+  { id: "mv-003", name: "Alison Taylor",    city: "Bixby",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 7, lastSignal: "Watched debate replay (May 28) + email open + site visit", movedDate: "May 29", score: 88 },
+  { id: "mv-004", name: "Will Zhou",        city: "Owasso",        originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Searched 'Colleen McCarty prosecutor record' post-debate", movedDate: "May 29", score: 79 },
+  { id: "mv-005", name: "Christian Dean",   city: "Jenks",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Reddit engagement + CTV 4x completion", movedDate: "May 29", score: 83 },
   { id: "mv-006", name: "Suzie Sells",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Facebook comment on debate post (May 28) + site visit", movedDate: "May 29", score: 80 },
   { id: "mv-007", name: "Tracy Hatfield",   city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Accountability' :30 on Fox News 3x", movedDate: "May 28", score: 84 },
   { id: "mv-008", name: "Jane Emerick",     city: "Broken Arrow",  originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Email open + clicked 'Blueprint for Justice' link", movedDate: "May 28", score: 81 },
@@ -74,7 +78,7 @@ export const MCCARTY_MOVED_VOTERS = [
   { id: "mv-017", name: "Dan Sandberg",     city: "Collinsville",  originalIntent: "Undecided", currentIntent: "Undecided", exposures: 4, lastSignal: "Google search + CTV 2x — needs 1–2 more", movedDate: null, score: 72 },
   // Moved toward Kunzweiler
   { id: "mv-018", name: "Jose Martin",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 2, lastSignal: "Visited Kunzweiler campaign site after CTV impression", movedDate: "May 29", score: 41 },
-  { id: "mv-019", name: "Brian Horn",       city: "Edmond",        originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 1, lastSignal: "Watched Kunzweiler TV ad — no McCarty exposure yet", movedDate: "May 28", score: 38 },
+  { id: "mv-019", name: "Brian Horn",       city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 1, lastSignal: "Watched Kunzweiler TV ad — no McCarty exposure yet", movedDate: "May 28", score: 38 },
 ];
 
 // Campaign started May 28 — Day 3 of 18 as of May 30
@@ -110,12 +114,8 @@ export const MCCARTY_CTV_CHANNELS = [
 ];
 
 export const MCCARTY_CREATIVES = [
-  { name: "Name ID — 'Colleen' :30",     impressions: 162400, completions: 147200, ctr: 0.71, completionRate: 90.5, color: "#2a6496" },
-  { name: "Accountability — 'Enough' :30", impressions: 118600, completions: 107200, ctr: 0.68, completionRate: 90.3, color: "#3a85c0" },
-  { name: "Victims First :15",           impressions:  84200, completions:  75400, ctr: 0.64, completionRate: 89.4, color: "#f97316" },
-  { name: "Debate Highlight :15",        impressions:  68400, completions:  62100, ctr: 0.82, completionRate: 90.8, color: "#f59e0b" },
-  { name: "Taxpayer Waste :30",          impressions:  42800, completions:  38400, ctr: 0.58, completionRate: 89.5, color: "#10b981" },
-  { name: "Endorsement — Law Enforcement :30", impressions: 11020, completions:  9860, ctr: 0.74, completionRate: 89.4, color: "#6366f1" },
+  { name: "Contrast :15",  impressions: 244000, completions: 216000, ctr: 0.74, completionRate: 88.5, color: "#3a85c0", note: "Rotating 50% — contrast messaging vs. Kunzweiler" },
+  { name: "Bio :15",       impressions: 243420, completions: 215800, ctr: 0.69, completionRate: 88.6, color: "#f59e0b", note: "Rotating 50% — Colleen McCarty name ID & background" },
 ];
 
 export const MCCARTY_MOODS = [
@@ -128,23 +128,23 @@ export const MCCARTY_MOODS = [
 
 // ── Live Voter Feed — with intent classification ──────────────────────────────
 export const MCCARTY_VISITORS = [
-  { id: "v1",  name: "Carol Bentley",    city: "Muskogee",       mood: "Civic Duty",      score: 94, signal: "Watched News on 6 debate replay",         intent: "McCarty"    as const },
-  { id: "v2",  name: "Cindy Fierro",     city: "Oklahoma City",  mood: "Crime Concerned", score: 91, signal: "Searched 'Tulsa DA race 2026'",            intent: "McCarty"    as const },
+  { id: "v1",  name: "Carol Bentley",    city: "Tulsa",          mood: "Civic Duty",      score: 94, signal: "Watched News on 6 debate replay",         intent: "McCarty"    as const },
+  { id: "v2",  name: "Cindy Fierro",     city: "Broken Arrow",   mood: "Crime Concerned", score: 91, signal: "Searched 'Tulsa DA race 2026'",            intent: "McCarty"    as const },
   { id: "v3",  name: "DeEtte Doerr",     city: "Tulsa",          mood: "Reform Minded",   score: 88, signal: "Watched debate on YouTube",                intent: "McCarty"    as const },
   { id: "v4",  name: "Renee Golas",      city: "Bixby",          mood: "Civic Duty",      score: 86, signal: "Clicked Meta ad — 'Accountability'",       intent: "McCarty"    as const },
-  { id: "v5",  name: "Leesa Cornish",    city: "Oklahoma City",  mood: "Undecided",       score: 79, signal: "Visited colleenmccarty.com — moved",        intent: "Moved→McCarty" as const },
-  { id: "v6",  name: "Jewelene Kastner", city: "El Reno",        mood: "Crime Concerned", score: 85, signal: "Watched CTV ad 3x on Tubi",                intent: "McCarty"    as const },
+  { id: "v5",  name: "Leesa Cornish",    city: "Tulsa",          mood: "Undecided",       score: 79, signal: "Visited colleenmccarty.com — moved",        intent: "Moved→McCarty" as const },
+  { id: "v6",  name: "Jewelene Kastner", city: "Owasso",         mood: "Crime Concerned", score: 85, signal: "Watched CTV ad 3x on Tubi",                intent: "McCarty"    as const },
   { id: "v7",  name: "Randy Lopp",       city: "Tulsa",          mood: "Civic Duty",      score: 92, signal: "Shared debate clip on Facebook",            intent: "McCarty"    as const },
   { id: "v8",  name: "Sidney Mooring",   city: "Tulsa",          mood: "Reform Minded",   score: 83, signal: "Googled 'Steve Kunzweiler record'",         intent: "McCarty"    as const },
   { id: "v9",  name: "Marcia Reid",      city: "Broken Arrow",   mood: "Crime Concerned", score: 87, signal: "Watched Fox News segment on DA race",       intent: "McCarty"    as const },
-  { id: "v10", name: "Derek DeMott",     city: "Newalla",        mood: "Undecided",       score: 74, signal: "Saw QR code — moved after site visit",      intent: "Moved→McCarty" as const },
+  { id: "v10", name: "Derek DeMott",     city: "Broken Arrow",   mood: "Undecided",       score: 74, signal: "Saw QR code — moved after site visit",      intent: "Moved→McCarty" as const },
   { id: "v11", name: "Kathleen Petersen",city: "Broken Arrow",   mood: "Civic Duty",      score: 96, signal: "Donated to campaign, watched debate",       intent: "McCarty"    as const },
-  { id: "v12", name: "Christian Dean",   city: "Edmond",         mood: "Reform Minded",   score: 81, signal: "Reddit thread — moved after 6 exposures",   intent: "Moved→McCarty" as const },
-  { id: "v13", name: "Will Zhou",        city: "Oklahoma City",  mood: "Awareness Stage", score: 68, signal: "First CTV impression — Samsung TV Plus",     intent: "Undecided"  as const },
+  { id: "v12", name: "Christian Dean",   city: "Jenks",          mood: "Reform Minded",   score: 81, signal: "Reddit thread — moved after 6 exposures",   intent: "Moved→McCarty" as const },
+  { id: "v13", name: "Will Zhou",        city: "Owasso",         mood: "Awareness Stage", score: 68, signal: "First CTV impression — Samsung TV Plus",     intent: "Undecided"  as const },
   { id: "v14", name: "Shelly Koontz",    city: "Tulsa",          mood: "Crime Concerned", score: 89, signal: "Watched 'Victims First' ad to completion",   intent: "McCarty"    as const },
   { id: "v15", name: "Melissa Luster",   city: "Tulsa",          mood: "Civic Duty",      score: 93, signal: "Clicked Google ad — 'Colleen McCarty DA'",  intent: "McCarty"    as const },
-  { id: "v16", name: "Alison Taylor",    city: "Oklahoma City",  mood: "Undecided",       score: 77, signal: "Watched debate live — moved after 7 exposures", intent: "Moved→McCarty" as const },
-  { id: "v17", name: "Brian Horn",       city: "Edmond",         mood: "Crime Concerned", score: 84, signal: "Watched 'Taxpayer Waste' ad twice",         intent: "McCarty"    as const },
+  { id: "v16", name: "Alison Taylor",    city: "Bixby",          mood: "Undecided",       score: 77, signal: "Watched debate live — moved after 7 exposures", intent: "Moved→McCarty" as const },
+  { id: "v17", name: "Brian Horn",       city: "Tulsa",          mood: "Crime Concerned", score: 84, signal: "Watched 'Accountability' :15 twice on Fox News", intent: "McCarty"    as const },
   { id: "v18", name: "Suzie Sells",      city: "Tulsa",          mood: "Reform Minded",   score: 80, signal: "Facebook comment on debate post",           intent: "Moved→McCarty" as const },
   { id: "v19", name: "Patricia Foster",  city: "Tulsa",          mood: "Civic Duty",      score: 90, signal: "Watched endorsement ad on Court TV",        intent: "McCarty"    as const },
   { id: "v20", name: "Richard Stokes",   city: "Tulsa",          mood: "Crime Concerned", score: 88, signal: "Searched 'Colleen McCarty prosecutor'",     intent: "McCarty"    as const },
