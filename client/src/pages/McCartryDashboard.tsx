@@ -811,18 +811,27 @@ function TabCTV({ mobile, C }: { mobile: boolean; C: C }) {
                 <tr key={ch.name} style={{ background: i % 2 === 0 ? "transparent" : C.bg3 }}>
                   <td style={{ padding: "8px 10px", color: C.white, fontWeight: 600 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      {getNetworkLogo(ch.name) ? (
-                        <img
-                          src={getNetworkLogo(ch.name)!}
-                          alt={ch.name}
-                          width={20}
-                          height={20}
-                          style={{ borderRadius: 4, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                        />
-                      ) : (
-                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
-                      )}
+                      {(() => {
+                        const logoUrl = getNetworkLogo(ch.name);
+                        return logoUrl ? (
+                          <img
+                            src={logoUrl}
+                            alt={ch.name}
+                            width={24}
+                            height={24}
+                            style={{ borderRadius: 5, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
+                            onError={(e) => {
+                              const img = e.target as HTMLImageElement;
+                              img.style.display = "none";
+                              const dot = document.createElement("span");
+                              dot.style.cssText = `width:6px;height:6px;border-radius:50%;background:${ch.color};flex-shrink:0;display:inline-block`;
+                              img.parentNode?.insertBefore(dot, img);
+                            }}
+                          />
+                        ) : (
+                          <span style={{ width: 6, height: 6, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
+                        );
+                      })()}
                       {ch.name}
                     </div>
                   </td>
