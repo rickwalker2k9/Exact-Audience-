@@ -252,15 +252,19 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
 // ── Vote Movement Tracker ───────────────────────────────────────────────────
 function VoteMovementTracker({ C }: { C: C }) {
   const T = MCCARTY_VOTE_TARGET;
+  // Use shared campaign day calculator for consistent day/budget values
+  const { dayNum, daysLeft: daysLeftCalc, spentToDate, remainingBudget } = getCampaignDay();
   // Days remaining countdown
   const electionDay = new Date("2026-06-16");
   const today = new Date();
-  const daysLeft = Math.max(1, Math.ceil((electionDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+  const daysLeft = Math.max(1, daysLeftCalc);
   const pctToWin = Math.min(100, Math.round(((T.committedBase + T.movedToMcCarty) / T.winThreshold) * 100));
   const gapToWin = Math.max(0, T.winThreshold - T.committedBase - T.movedToMcCarty);
   // Votes needed per day to hit threshold by election day
   const votesPerDay = Math.ceil(gapToWin / daysLeft);
   const votersPerDayPace = Math.ceil(gapToWin / daysLeft);
+  // Campaign timeline progress (Day X of 18)
+  const campaignPct = Math.round((dayNum / 18) * 100);
 
   // High-priority undecided voters (score >= 68, still undecided)
   const highPriorityUndecided = MCCARTY_MOVED_VOTERS
@@ -284,6 +288,41 @@ function VoteMovementTracker({ C }: { C: C }) {
 
   return (
     <div style={{ background: C.card, border: `2px solid ${C.red}44`, borderRadius: 16, padding: 24, marginBottom: 16 }}>
+
+      {/* ── Day X of 18 Campaign Timeline Strip ── */}
+      <div style={{ background: `${C.red}0d`, border: `1px solid ${C.red}33`, borderRadius: 10, padding: "12px 16px", marginBottom: 20 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 13, fontWeight: 900, color: C.red }}>📅 Day {dayNum} of 18</span>
+            <span style={{ fontSize: 11, color: C.muted }}>Campaign Timeline · Started May 28</span>
+          </div>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 11, color: C.muted }}>
+              <span style={{ fontWeight: 700, color: C.white }}>{daysLeft}</span> days to June 16
+            </span>
+            <span style={{ fontSize: 11, color: C.muted }}>
+              <span style={{ fontWeight: 700, color: C.green }}>${remainingBudget.toLocaleString()}</span> budget remaining
+            </span>
+            <span style={{ fontSize: 11, color: C.muted }}>
+              <span style={{ fontWeight: 700, color: C.gold }}>{votesPerDay}</span> votes/day needed
+            </span>
+          </div>
+        </div>
+        {/* Progress bar */}
+        <div style={{ background: `${C.red}22`, borderRadius: 6, height: 10, overflow: "hidden", position: "relative" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${campaignPct}%`, background: `linear-gradient(90deg, ${C.red}, #ff6b6b)`, borderRadius: 6, transition: "width 0.6s ease" }} />
+        </div>
+        {/* Day tick marks */}
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+          {[1, 3, 6, 9, 12, 15, 18].map(d => (
+            <div key={d} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+              <div style={{ width: 1, height: 4, background: d <= dayNum ? C.red : C.border }} />
+              <span style={{ fontSize: 9, color: d <= dayNum ? C.red : C.muted, fontWeight: d === dayNum ? 900 : 400 }}>D{d}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
         <div>
           <div style={{ fontSize: 11, fontWeight: 700, color: C.red, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 4 }}>🗳️ Vote Win Tracker — June 16, 2026</div>
