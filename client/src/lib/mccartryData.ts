@@ -54,18 +54,18 @@ export const MCCARTY_VOTE_TARGET = {
 // ── Undecided → Moved Voter Feed (daily movement log) ────────────────────────
 export const MCCARTY_MOVED_VOTERS = [
   // Voters who started undecided and have been moved to McCarty by media
-  { id: "mv-001", name: "Leesa Cornish",    city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Victims First' :15 — 6th CTV completion", movedDate: "May 28", score: 86 },
-  { id: "mv-002", name: "Derek DeMott",     city: "Newalla",       originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Visited site after QR scan, read Blueprint for Justice", movedDate: "May 27", score: 82 },
-  { id: "mv-003", name: "Alison Taylor",    city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 7, lastSignal: "Watched debate replay + email open + site visit", movedDate: "May 26", score: 88 },
-  { id: "mv-004", name: "Will Zhou",        city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Searched 'Colleen McCarty prosecutor record'", movedDate: "May 25", score: 79 },
-  { id: "mv-005", name: "Christian Dean",   city: "Edmond",        originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Reddit engagement + CTV 4x completion", movedDate: "May 24", score: 83 },
-  { id: "mv-006", name: "Suzie Sells",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Facebook comment on debate post + site visit", movedDate: "May 23", score: 80 },
-  { id: "mv-007", name: "Tracy Hatfield",   city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Accountability' :30 on Fox News 3x", movedDate: "May 22", score: 84 },
-  { id: "mv-008", name: "Jane Emerick",     city: "Broken Arrow",  originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Email open + clicked 'Blueprint for Justice' link", movedDate: "May 21", score: 81 },
-  { id: "mv-009", name: "Annette Intrieri", city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 7, lastSignal: "Watched debate live + YouTube replay + site visit", movedDate: "May 20", score: 91 },
-  { id: "mv-010", name: "Gary Tian",        city: "Owasso",        originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "CTV 5x completion across Samsung + Tubi", movedDate: "May 19", score: 78 },
-  { id: "mv-011", name: "Sharon Maxey",     city: "Jenks",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Endorsement' :30 on Court TV + email open", movedDate: "May 18", score: 85 },
-  { id: "mv-012", name: "Matthew Enslein",  city: "Sand Springs",  originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Google search 'Tulsa DA race' + site visit 2x", movedDate: "May 17", score: 77 },
+  { id: "mv-001", name: "Leesa Cornish",    city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Victims First' :15 — 6th CTV completion", movedDate: "May 30", score: 86 },
+  { id: "mv-002", name: "Derek DeMott",     city: "Newalla",       originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Visited site after QR scan, read Blueprint for Justice", movedDate: "May 30", score: 82 },
+  { id: "mv-003", name: "Alison Taylor",    city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 7, lastSignal: "Watched debate replay (May 28) + email open + site visit", movedDate: "May 29", score: 88 },
+  { id: "mv-004", name: "Will Zhou",        city: "Oklahoma City", originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Searched 'Colleen McCarty prosecutor record' post-debate", movedDate: "May 29", score: 79 },
+  { id: "mv-005", name: "Christian Dean",   city: "Edmond",        originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Reddit engagement + CTV 4x completion", movedDate: "May 29", score: 83 },
+  { id: "mv-006", name: "Suzie Sells",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Facebook comment on debate post (May 28) + site visit", movedDate: "May 29", score: 80 },
+  { id: "mv-007", name: "Tracy Hatfield",   city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Accountability' :30 on Fox News 3x", movedDate: "May 28", score: 84 },
+  { id: "mv-008", name: "Jane Emerick",     city: "Broken Arrow",  originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Email open + clicked 'Blueprint for Justice' link", movedDate: "May 28", score: 81 },
+  { id: "mv-009", name: "Annette Intrieri", city: "Tulsa",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 7, lastSignal: "Watched News on 6 debate live (May 28) + YouTube replay + site visit", movedDate: "May 28", score: 91 },
+  { id: "mv-010", name: "Gary Tian",        city: "Owasso",        originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "CTV 5x completion across Samsung + Tubi", movedDate: "May 28", score: 78 },
+  { id: "mv-011", name: "Sharon Maxey",     city: "Jenks",         originalIntent: "Undecided", currentIntent: "McCarty", exposures: 6, lastSignal: "Watched 'Endorsement' :30 on Court TV + email open", movedDate: "May 28", score: 85 },
+  { id: "mv-012", name: "Matthew Enslein",  city: "Sand Springs",  originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Google search 'Tulsa DA race' + site visit 2x", movedDate: "May 28", score: 77 },
   // Still undecided — in progress
   { id: "mv-013", name: "Janis Vogel",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Undecided", exposures: 3, lastSignal: "CTV 3x completion — near threshold", movedDate: null, score: 71 },
   { id: "mv-014", name: "Michael Beumer",   city: "Collinsville",  originalIntent: "Undecided", currentIntent: "Undecided", exposures: 2, lastSignal: "YouTube pre-roll completion", movedDate: null, score: 64 },
@@ -73,8 +73,8 @@ export const MCCARTY_MOVED_VOTERS = [
   { id: "mv-016", name: "Irene Epifani",    city: "Sapulpa",       originalIntent: "Undecided", currentIntent: "Undecided", exposures: 3, lastSignal: "Visited site — 1:12 session, did not convert", movedDate: null, score: 68 },
   { id: "mv-017", name: "Dan Sandberg",     city: "Collinsville",  originalIntent: "Undecided", currentIntent: "Undecided", exposures: 4, lastSignal: "Google search + CTV 2x — needs 1–2 more", movedDate: null, score: 72 },
   // Moved toward Kunzweiler
-  { id: "mv-018", name: "Jose Martin",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 2, lastSignal: "Visited Kunzweiler campaign site after CTV impression", movedDate: "May 25", score: 41 },
-  { id: "mv-019", name: "Brian Horn",       city: "Edmond",        originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 1, lastSignal: "Watched Kunzweiler TV ad — no McCarty exposure yet", movedDate: "May 22", score: 38 },
+  { id: "mv-018", name: "Jose Martin",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 2, lastSignal: "Visited Kunzweiler campaign site after CTV impression", movedDate: "May 29", score: 41 },
+  { id: "mv-019", name: "Brian Horn",       city: "Edmond",        originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 1, lastSignal: "Watched Kunzweiler TV ad — no McCarty exposure yet", movedDate: "May 28", score: 38 },
 ];
 
 // Campaign started May 28 — Day 3 of 18 as of May 30
@@ -170,9 +170,9 @@ export const MCCARTY_DEBATE_ENGAGEMENT = {
   socialMediaClips: 1640,
   podcastMentions: 760,
   debateDates: [
-    { date: "May 13", platform: "News on 6 / KOTV", viewers: 3840, postAdImpressions: 12400 },
-    { date: "May 19", platform: "YouTube Replay",   viewers: 2180, postAdImpressions:  8600 },
-    { date: "May 21", platform: "Social Media Clips",viewers: 1640, postAdImpressions:  6200 },
+    { date: "May 28", platform: "News on 6 / KOTV (Live)", viewers: 3840, postAdImpressions: 12400 },
+    { date: "May 29", platform: "YouTube Replay",          viewers: 2180, postAdImpressions:  8600 },
+    { date: "May 30", platform: "Social Media Clips",      viewers: 1640, postAdImpressions:  6200 },
   ],
   retargetingWindow: [
     { label: "Watched full debate",      count: 3840, retargetPriority: "HIGH",   recommendedAd: "Debate Highlight :15 — reinforce key moment" },
