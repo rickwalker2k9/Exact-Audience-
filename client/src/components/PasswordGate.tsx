@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 
 const PASSPHRASE = "exactaudience2026";
 const STORAGE_KEY = "ea_dashboard_auth";
@@ -14,6 +15,7 @@ interface PasswordGateProps {
 }
 
 export default function PasswordGate({ children }: PasswordGateProps) {
+  const [, navigate] = useLocation();
   const [authenticated, setAuthenticated] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
@@ -34,6 +36,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
       localStorage.setItem(STORAGE_KEY, PASSPHRASE);
       setAuthenticated(true);
       setError(false);
+      navigate("/campaigns");
     } else {
       setError(true);
       setShake(true);
@@ -94,7 +97,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
           Campaign Intelligence
         </div>
         <div style={{ fontSize: 13, color: "#8892b0", marginBottom: 36, lineHeight: 1.5 }}>
-          Enter your access passphrase to view<br />the live campaign dashboard.
+          Enter your access passphrase to view<br />the Exact Audience campaign intelligence platform.
         </div>
 
         <form onSubmit={handleSubmit} style={{ animation: shake ? "shake 0.6s ease" : "none" }}>
@@ -145,7 +148,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
         </form>
 
         <div style={{ marginTop: 28, fontSize: 11, color: "#4a5568" }}>
-          Pinnacle Luxury Motors · Spring Conquest 2026
+          Exact Audience · exactaudience.ai · siteid.ai
         </div>
       </div>
     </div>

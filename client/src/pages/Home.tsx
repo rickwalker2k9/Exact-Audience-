@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "wouter";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -1068,6 +1069,7 @@ const TABS_LABELS = ["Overview","Channels","Creatives","Audience","Day Part","Co
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 export default function Home() {
+  const [, navigate] = useLocation();
   const [tab, setTab] = useState(0);
   const [time, setTime] = useState(new Date());
   const [exporting, setExporting] = useState(false);
@@ -1149,6 +1151,8 @@ export default function Home() {
         position: "sticky", top: 0, zIndex: 200,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: mobile ? 10 : 16, minWidth: 0 }}>
+          <button onClick={() => navigate("/campaigns")} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, padding: "5px 10px", color: "#f1f5f9", fontSize: 11, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>← Campaigns</button>
+          <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
           <div style={{ fontSize: mobile ? 10 : 12, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ width: 8, height: 8, background: "#a855f7", borderRadius: "50%", boxShadow: `0 0 10px #a855f7`, animation: "pdot 2s ease-in-out infinite", flexShrink: 0 }} />
             <span style={{ color: "#ffffff" }}>{mobile ? "EA" : "EXACT AUDIENCE"}</span>

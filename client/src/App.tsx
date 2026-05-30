@@ -5,32 +5,40 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import PasswordGate from "./components/PasswordGate";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
 
+// Pages
+import Campaigns from "./pages/Campaigns";
+import Home from "./pages/Home";
+import LamborghiniDashboard from "./pages/LamborghiniDashboard";
+import WarbyDashboard from "./pages/WarbyDashboard";
+import PolicyGeniusDashboard from "./pages/PolicyGeniusDashboard";
+import CampaignPlaceholder from "./pages/CampaignPlaceholder";
 
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
+      {/* Campaign directory — post-login home */}
+      <Route path="/campaigns" component={Campaigns} />
+
+      {/* Full dashboards */}
+      <Route path="/" component={Home} />
+      <Route path="/lamborghini" component={LamborghiniDashboard} />
+      <Route path="/warby-parker" component={WarbyDashboard} />
+      <Route path="/policygenius" component={PolicyGeniusDashboard} />
+
+      {/* Placeholder for campaigns without a full dashboard */}
+      <Route path="/campaign/:slug" component={CampaignPlaceholder} />
+
+      <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="dark"
-        switchable
-      >
+      <ThemeProvider defaultTheme="dark" switchable>
         <TooltipProvider>
           <Toaster />
           <PasswordGate>
