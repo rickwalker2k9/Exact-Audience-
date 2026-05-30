@@ -28,18 +28,20 @@ function useColors(isDark: boolean) {
   return isDark ? {
     bg: "#0a0a0f", bg2: "#0f0f1a", bg3: "#141420",
     card: "#0f0f1e", card2: "#141428", border: "#1e1e3a",
-    red: "#c8102e", red2: "#ef4444", red3: "#fca5a5",
+    // Softer deep crimson — less aggressive than bright red
+    red: "#9b2335", red2: "#c0394a", red3: "#e8a0aa",
     green: "#4ade80", gold: "#f59e0b", blue: "#38bdf8",
     white: "#f1f5f9", muted: "#8892b0",
-    headerBg: "linear-gradient(135deg,#1a0000,#3a0010)",
+    headerBg: "linear-gradient(135deg,#120810,#1e0d18)",
     tooltipBg: "#141428", scrollTrack: "#0f0f1a", scrollThumb: "#1e1e3a",
   } : {
-    bg: "#f0f4f8", bg2: "#e8edf5", bg3: "#dde4ef",
+    bg: "#f2f4f7", bg2: "#e8edf5", bg3: "#dde4ef",
     card: "#ffffff", card2: "#f8fafc", border: "#c8d4e8",
-    red: "#c8102e", red2: "#dc2626", red3: "#ef4444",
+    // Softer deep crimson for light mode
+    red: "#8b1a2a", red2: "#a8263a", red3: "#c0394a",
     green: "#16a34a", gold: "#d97706", blue: "#0284c7",
     white: "#1e293b", muted: "#64748b",
-    headerBg: "linear-gradient(135deg,#1a0000,#3a0010)",
+    headerBg: "linear-gradient(135deg,#120810,#1e0d18)",
     tooltipBg: "#ffffff", scrollTrack: "#e8edf5", scrollThumb: "#c8d4e8",
   };
 }
@@ -75,7 +77,7 @@ function KpiCard({ label, value, sub, color, C }: { label: string; value: string
 function SectionTitle({ children, C }: { children: React.ReactNode; C: C }) {
   return (
     <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
-      <span style={{ width: 3, height: 14, background: C.red, borderRadius: 2, display: "inline-block", flexShrink: 0 }} />
+      <span style={{ width: 3, height: 14, background: C.red2, borderRadius: 2, display: "inline-block", flexShrink: 0, opacity: 0.7 }} />
       {children}
     </div>
   );
@@ -126,9 +128,9 @@ function VoterFeed({ C }: { C: C }) {
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 10, background: `${C.red}22`, border: `1px solid ${C.red}44`, borderRadius: 8, padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 11, color: C.red3 }}>Voter Mood Signal</span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: C.red2 }}>{v.mood}</span>
+        <div style={{ marginTop: 10, background: `${C.gold}15`, border: `1px solid ${C.gold}33`, borderRadius: 8, padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontSize: 11, color: C.muted }}>Voter Mood Signal</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: C.gold }}>{v.mood}</span>
         </div>
       </div>
     </div>
@@ -159,7 +161,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
-        <KpiCard label="Total Impressions" value={fmt(impressions)} sub="↑ 4.1% vs last week" color={C.red} C={C} />
+        <KpiCard label="Total Impressions" value={fmt(impressions)} sub="↑ 4.1% vs last week" color={C.red2} C={C} />
         <KpiCard label="Voters Reached" value={fmt(reach)} sub={`${MCCARTY_LIVE_BASE.frequency}x avg frequency`} color={C.green} C={C} />
         <KpiCard label="Completion Rate" value={`${MCCARTY_LIVE_BASE.completionRate}%`} sub="CTV ad completions" color={C.blue} C={C} />
         <KpiCard label="SiteID Voters ID'd" value="1,842" sub="Name, address, phone matched" color={C.gold} C={C} />
@@ -173,9 +175,9 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
               {DATE_RANGES.map(r => (
                 <button key={r.days} onClick={() => setRangeDays(r.days)} style={{
                   padding: "4px 10px", fontSize: 10, fontWeight: 700, borderRadius: 6, cursor: "pointer",
-                  border: `1px solid ${rangeDays === r.days ? C.red : C.border}`,
-                  background: rangeDays === r.days ? `${C.red}22` : "transparent",
-                  color: rangeDays === r.days ? C.red : C.muted, transition: "all 0.15s",
+                  border: `1px solid ${rangeDays === r.days ? C.red2 : C.border}`,
+                  background: rangeDays === r.days ? `${C.red2}18` : "transparent",
+                  color: rangeDays === r.days ? C.red2 : C.muted, transition: "all 0.15s",
                 }}>{r.label}</button>
               ))}
             </div>
@@ -183,7 +185,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
           <ResponsiveContainer width="100%" height={mobile ? 180 : 220}>
             <AreaChart data={chartData}>
               <defs>
-                {[["gCTV", C.red], ["gMeta", "#1877f2"], ["gYT", "#ff0000"]].map(([id, color]) => (
+                {[["gCTV", C.red], ["gMeta", "#1877f2"], ["gYT", "#e05a6a"]].map(([id, color]) => (
                   <linearGradient key={id} id={id} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={color} stopOpacity={0.4} />
                     <stop offset="95%" stopColor={color} stopOpacity={0} />
@@ -206,7 +208,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
               ))}
               <Area type="monotone" dataKey="CTV" stroke={C.red} fill="url(#gCTV)" strokeWidth={2} />
               <Area type="monotone" dataKey="Meta" stroke="#1877f2" fill="url(#gMeta)" strokeWidth={1.5} />
-              <Area type="monotone" dataKey="YouTube" stroke="#ff0000" fill="url(#gYT)" strokeWidth={1.5} />
+              <Area type="monotone" dataKey="YouTube" stroke="#e05a6a" fill="url(#gYT)" strokeWidth={1.5} />
             </AreaChart>
           </ResponsiveContainer>
         </Card>
@@ -231,7 +233,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ background: C.bg3, borderRadius: 10, padding: 16 }}>
               <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Campaign Budget</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: C.red }}>$33,000</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: C.red2 }}>$33,000</div>
               <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>18-day primary campaign · May 28 – June 16, 2026 · Day 3</div>
             </div>
             <div style={{ background: C.bg3, borderRadius: 10, padding: 16 }}>
@@ -287,7 +289,7 @@ function VoteMovementTracker({ C }: { C: C }) {
   };
 
   return (
-    <div style={{ background: C.card, border: `2px solid ${C.red}44`, borderRadius: 16, padding: 24, marginBottom: 16 }}>
+    <div style={{ background: C.card, border: `1px solid ${C.red2}33`, borderRadius: 16, padding: 24, marginBottom: 16 }}>
 
       {/* ── Day X of 18 Campaign Timeline Strip ── */}
       <div style={{ background: `${C.red}0d`, border: `1px solid ${C.red}33`, borderRadius: 10, padding: "12px 16px", marginBottom: 20 }}>
@@ -310,7 +312,7 @@ function VoteMovementTracker({ C }: { C: C }) {
         </div>
         {/* Progress bar */}
         <div style={{ background: `${C.red}22`, borderRadius: 6, height: 10, overflow: "hidden", position: "relative" }}>
-          <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${campaignPct}%`, background: `linear-gradient(90deg, ${C.red}, #ff6b6b)`, borderRadius: 6, transition: "width 0.6s ease" }} />
+          <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${campaignPct}%`, background: `linear-gradient(90deg, ${C.red}, ${C.red2})`, borderRadius: 6, transition: "width 0.6s ease" }} />
         </div>
         {/* Day tick marks */}
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
@@ -325,12 +327,12 @@ function VoteMovementTracker({ C }: { C: C }) {
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: C.red, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 4 }}>🗳️ Vote Win Tracker — June 16, 2026</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.red2, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 4 }}>🗳️ Vote Win Tracker — June 16, 2026</div>
           <div style={{ fontSize: 13, color: C.muted }}>Target: {T.winThreshold.toLocaleString()} votes to win Tulsa County DA Republican Primary</div>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <div style={{ background: `${C.red}22`, border: `1px solid ${C.red}44`, borderRadius: 12, padding: "10px 20px", textAlign: "center" }}>
-            <div style={{ fontSize: 28, fontWeight: 900, color: C.red, lineHeight: 1 }}>{daysLeft}</div>
+          <div style={{ background: `${C.red2}15`, border: `1px solid ${C.red2}30`, borderRadius: 12, padding: "10px 20px", textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 900, color: C.red2, lineHeight: 1 }}>{daysLeft}</div>
             <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Days to Election</div>
           </div>
           <div style={{ background: `${C.gold}22`, border: `1px solid ${C.gold}44`, borderRadius: 12, padding: "10px 20px", textAlign: "center" }}>
@@ -350,15 +352,15 @@ function VoteMovementTracker({ C }: { C: C }) {
       </div>
 
       {/* Budget Urgency Calculator */}
-      <div style={{ background: `${C.red}0d`, border: `1px solid ${C.red}33`, borderRadius: 12, padding: 16, marginBottom: 16 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: C.red, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>💰 Budget Urgency — Ad Spend Required to Close the Gap</div>
+      <div style={{ background: `${C.red2}0a`, border: `1px solid ${C.red2}25`, borderRadius: 12, padding: 16, marginBottom: 16 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: C.red2, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>💰 Budget Urgency — Ad Spend Required to Close the Gap</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 12 }}>
           {[
             {
               label: "Spend/Day Needed",
               value: `$${Math.ceil(3800 / daysLeft).toLocaleString()}`,
               sub: `To deliver ${votesPerDay} exposures/day to undecided voters`,
-              color: C.red,
+              color: C.red2,
             },
             {
               label: "Cost Per Vote Moved",
@@ -406,7 +408,7 @@ function VoteMovementTracker({ C }: { C: C }) {
         </div>
         <div style={{ background: C.bg3, borderRadius: 8, height: 14, overflow: "hidden", position: "relative" }}>
           {/* Committed base */}
-          <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${Math.min(100, (T.committedBase / T.winThreshold) * 100)}%`, background: C.red, borderRadius: "8px 0 0 8px" }} />
+          <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${Math.min(100, (T.committedBase / T.winThreshold) * 100)}%`, background: C.red2, borderRadius: "8px 0 0 8px" }} />
           {/* Moved voters */}
           <div style={{ position: "absolute", left: `${(T.committedBase / T.winThreshold) * 100}%`, top: 0, height: "100%", width: `${Math.min(100 - (T.committedBase / T.winThreshold) * 100, (T.movedToMcCarty / T.winThreshold) * 100)}%`, background: C.green }} />
           {/* Win threshold line */}
@@ -414,7 +416,7 @@ function VoteMovementTracker({ C }: { C: C }) {
         </div>
         <div style={{ display: "flex", gap: 16, marginTop: 8, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 10, height: 10, borderRadius: 2, background: C.red, flexShrink: 0 }} />
+            <span style={{ width: 10, height: 10, borderRadius: 2, background: C.red2, flexShrink: 0 }} />
             <span style={{ fontSize: 11, color: C.muted }}>Committed Base: {T.committedBase.toLocaleString()}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -515,8 +517,8 @@ function MovedVoterLog({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {(["all", "moved", "undecided", "lost"] as const).map(f => (
             <button key={f} onClick={() => setFilter(f)} style={{
-              padding: "4px 10px", fontSize: 10, fontWeight: 700, borderRadius: 6, cursor: "pointer", border: `1px solid ${filter === f ? C.red : C.border}`,
-              background: filter === f ? `${C.red}22` : "transparent", color: filter === f ? C.red : C.muted, transition: "all 0.15s",
+              padding: "4px 10px", fontSize: 10, fontWeight: 700, borderRadius: 6, cursor: "pointer", border: `1px solid ${filter === f ? C.red2 : C.border}`,
+              background: filter === f ? `${C.red2}18` : "transparent", color: filter === f ? C.red2 : C.muted, transition: "all 0.15s",
             }}>{f === "all" ? "All" : f === "moved" ? "Moved → McCarty" : f === "undecided" ? "Still Undecided" : "Lost to Kunzweiler"}</button>
           ))}
         </div>
@@ -560,7 +562,7 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
       {/* Voter Intent Segmentation */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
         {[
-          { label: "Colleen McCarty", count: 5200 + 840, pct: 43, color: C.red, icon: "🟥", desc: "Committed + moved undecided voters (Day 3)" },
+          { label: "Colleen McCarty", count: 5200 + 840, pct: 43, color: C.red2, icon: "🟥", desc: "Committed + moved undecided voters (Day 3)" },
           { label: "Undecided / Movable", count: 10940, pct: 36, color: C.gold, icon: "🟡", desc: "Still in play — primary ad target" },
           { label: "Steve Kunzweiler", count: 8100 + 620, pct: 21, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler + moved from undecided" },
         ].map(seg => (
@@ -583,7 +585,7 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
       <MovedVoterLog mobile={mobile} C={C} />
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
-        <KpiCard label="Total Voter Universe" value="30,240" sub="Tulsa County GOP 45+ registered" color={C.red} C={C} />
+        <KpiCard label="Total Voter Universe" value="30,240" sub="Tulsa County GOP 45+ registered" color={C.red2} C={C} />
         <KpiCard label="Persuasion Threshold Met" value="4,840" sub="5+ exposures delivered (Day 3)" color={C.green} C={C} />
         <KpiCard label="SiteID Matched" value="1,842" sub="62% match rate on site visitors" color={C.gold} C={C} />
         <KpiCard label="Avg Persuasion Score" value="64.2" sub="Across all reached voters" color={C.blue} C={C} />
@@ -649,9 +651,9 @@ function TabDebate({ mobile, C }: { mobile: boolean; C: C }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
-        <KpiCard label="Total Debate Viewers" value={fmt(DE.totalDebateViewers)} sub="Across all platforms" color={C.red} C={C} />
+        <KpiCard label="Total Debate Viewers" value={fmt(DE.totalDebateViewers)} sub="Across all platforms" color={C.red2} C={C} />
         <KpiCard label="News on 6 Live" value={fmt(DE.newsOn6Live)} sub="KOTV live broadcast" color={C.gold} C={C} />
-        <KpiCard label="YouTube Replay" value={fmt(DE.youtubeReplay)} sub="Post-debate replay views" color="#ff0000" C={C} />
+        <KpiCard label="YouTube Replay" value={fmt(DE.youtubeReplay)} sub="Post-debate replay views" color="#e05a6a" C={C} />
         <KpiCard label="Social Media Clips" value={fmt(DE.socialMediaClips)} sub="Facebook + Instagram clips" color={C.blue} C={C} />
       </div>
 
@@ -693,9 +695,9 @@ function TabDebate({ mobile, C }: { mobile: boolean; C: C }) {
                   <div style={{ fontSize: 13, fontWeight: 700, color: C.white }}>{d.date} — {d.platform}</div>
                   <div style={{ fontSize: 11, color: C.muted }}>{fmt(d.viewers)} viewers · {fmt(d.postAdImpressions)} post-debate impressions served</div>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 900, color: C.red }}>+{Math.round(d.postAdImpressions / d.viewers * 100)}%</div>
+                <div style={{ fontSize: 20, fontWeight: 900, color: C.red2 }}>+{Math.round(d.postAdImpressions / d.viewers * 100)}%</div>
               </div>
-              <ProgressBar value={d.postAdImpressions} max={15000} color={C.red} C={C} />
+              <ProgressBar value={d.postAdImpressions} max={15000} color={C.red2} C={C} />
             </div>
           ))}
         </div>
@@ -739,7 +741,7 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
       newVotes: "33,800–42,000",
       projected: "79,000–98,000",
       cpv: "$2.21–$2.75",
-      color: C.red,
+      color: C.red2,
     },
   ];
 
@@ -801,7 +803,7 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 16, background: `${C.red}11`, border: `1px solid ${C.red}33`, borderRadius: 10, padding: 14 }}>
+        <div style={{ marginTop: 16, background: `${C.red2}0d`, border: `1px solid ${C.red2}25`, borderRadius: 10, padding: 14 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: C.red2, marginBottom: 4 }}>Votes Needed to Win</div>
           <div style={{ fontSize: 13, color: C.white }}>Tulsa County DA primary: approximately <strong>12,000–18,000</strong> votes needed to win in a 3-way primary. McCarty is tracking toward <strong>14,200–19,800</strong> at current trajectory. The race is within reach.</div>
         </div>
@@ -813,8 +815,8 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {TIMELINE.map((t, i) => (
             <div key={t.day} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-              <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 700, color: t.day === "June 16" ? C.red : C.gold, textTransform: "uppercase", letterSpacing: "0.06em", paddingTop: 2 }}>{t.day}</div>
-              <div style={{ width: 2, background: i === TIMELINE.length - 1 ? C.red : C.border, alignSelf: "stretch", borderRadius: 1, flexShrink: 0 }} />
+              <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 700, color: t.day === "June 16" ? C.red2 : C.gold, textTransform: "uppercase", letterSpacing: "0.06em", paddingTop: 2 }}>{t.day}</div>
+              <div style={{ width: 2, background: i === TIMELINE.length - 1 ? C.red2 : C.border, alignSelf: "stretch", borderRadius: 1, flexShrink: 0 }} />
               <div style={{ fontSize: 12, color: C.white, paddingTop: 1 }}>{t.activity}</div>
             </div>
           ))}
@@ -829,7 +831,7 @@ function TabCTV({ mobile, C }: { mobile: boolean; C: C }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
-        <KpiCard label="CTV Impressions" value="2.11M" sub="74% of total campaign" color={C.red} C={C} />
+        <KpiCard label="CTV Impressions" value="2.11M" sub="74% of total campaign" color={C.red2} C={C} />
         <KpiCard label="Avg Completion Rate" value="90.4%" sub="Across all CTV channels" color={C.green} C={C} />
         <KpiCard label="Avg CPM" value="$17.82" sub="Blended CTV rate" color={C.gold} C={C} />
         <KpiCard label="Channels Active" value="13" sub="Samsung, Tubi, Fox News + 10 more" color={C.blue} C={C} />
@@ -1049,14 +1051,14 @@ export default function McCartryDashboard() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background: C.headerBg, borderBottom: "1px solid rgba(200,16,46,0.3)", padding: mobile ? "12px 16px" : "14px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 200 }}>
+      <div style={{ background: C.headerBg, borderBottom: "1px solid rgba(155,35,53,0.25)", padding: mobile ? "12px 16px" : "14px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 200 }}>
         <div style={{ display: "flex", alignItems: "center", gap: mobile ? 10 : 16, minWidth: 0 }}>
           <button onClick={() => navigate("/campaigns")} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, padding: "5px 10px", color: "#f1f5f9", fontSize: 11, cursor: "pointer", flexShrink: 0 }}>
             ← Campaigns
           </button>
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <span style={{ width: 8, height: 8, background: C.red, borderRadius: "50%", boxShadow: `0 0 10px ${C.red}`, animation: "pdot 2s ease-in-out infinite" }} />
+            <span style={{ width: 8, height: 8, background: C.red2, borderRadius: "50%", boxShadow: `0 0 8px ${C.red2}88`, animation: "pdot 2s ease-in-out infinite" }} />
             <span style={{ fontSize: mobile ? 10 : 12, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#ffffff" }}>{mobile ? "EA" : "EXACT AUDIENCE"}</span>
           </div>
           {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
@@ -1085,14 +1087,14 @@ export default function McCartryDashboard() {
       </div>
 
       {/* Campaign Day Progress Bar */}
-      <div style={{ background: isDark ? "#0d0010" : "#f8f0f2", borderBottom: `1px solid ${C.red}33`, padding: mobile ? "8px 16px" : "10px 28px", display: "flex", alignItems: "center", gap: mobile ? 10 : 20, flexWrap: "wrap" }}>
+      <div style={{ background: isDark ? "#0d0a0e" : "#f7f2f4", borderBottom: `1px solid ${C.red}22`, padding: mobile ? "8px 16px" : "10px 28px", display: "flex", alignItems: "center", gap: mobile ? 10 : 20, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <span style={{ fontSize: 10, fontWeight: 800, color: C.red, textTransform: "uppercase", letterSpacing: "0.1em" }}>Day {campaign.dayNum} of 18</span>
           <span style={{ fontSize: 10, color: C.muted }}>·</span>
           <span style={{ fontSize: 10, color: C.muted }}>{campaign.daysLeft} days to June 16</span>
         </div>
         <div style={{ flex: 1, minWidth: 120, height: 6, background: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)", borderRadius: 3, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${(campaign.dayNum / 18) * 100}%`, background: `linear-gradient(90deg, ${C.red}, #ff6b6b)`, borderRadius: 3, transition: "width 0.6s ease" }} />
+          <div style={{ height: "100%", width: `${(campaign.dayNum / 18) * 100}%`, background: `linear-gradient(90deg, ${C.red}, ${C.red2})`, borderRadius: 3, transition: "width 0.6s ease" }} />
         </div>
         <div style={{ display: "flex", gap: mobile ? 12 : 24, flexShrink: 0 }}>
           <div style={{ textAlign: "center" }}>
@@ -1118,8 +1120,8 @@ export default function McCartryDashboard() {
           <button key={t} onClick={() => setTab(i)} style={{
             padding: mobile ? "10px 12px" : "12px 18px", fontSize: mobile ? 10 : 11, fontWeight: 700,
             letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap",
-            background: "transparent", border: "none", borderBottom: `2px solid ${tab === i ? C.red : "transparent"}`,
-            color: tab === i ? C.red : C.muted, transition: "all 0.15s",
+            background: "transparent", border: "none", borderBottom: `2px solid ${tab === i ? C.red2 : "transparent"}`,
+            color: tab === i ? C.red2 : C.muted, transition: "all 0.15s",
           }}>{t}</button>
         ))}
       </div>
