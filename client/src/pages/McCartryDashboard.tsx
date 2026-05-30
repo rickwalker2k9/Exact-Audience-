@@ -253,7 +253,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
 }
 
 // ── Vote Movement Tracker ───────────────────────────────────────────────────
-function VoteMovementTracker({ C }: { C: C }) {
+function VoteMovementTracker({ C, mobile }: { C: C; mobile: boolean }) {
   const T = MCCARTY_VOTE_TARGET;
   // Use shared campaign day calculator for consistent day/budget values
   const { dayNum, daysLeft: daysLeftCalc, spentToDate, remainingBudget } = getCampaignDay();
@@ -355,7 +355,7 @@ function VoteMovementTracker({ C }: { C: C }) {
       {/* Budget Urgency Calculator */}
       <div style={{ background: `${C.red2}0a`, border: `1px solid ${C.red2}25`, borderRadius: 12, padding: 16, marginBottom: 16 }}>
         <div style={{ fontSize: 11, fontWeight: 700, color: C.red2, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>💰 Budget Urgency — Ad Spend Required to Close the Gap</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 10, marginBottom: 12 }}>
           {[
             {
               label: "Spend/Day Needed",
@@ -383,7 +383,7 @@ function VoteMovementTracker({ C }: { C: C }) {
             </div>
           ))}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 8 }}>
           {[
             { channel: "CTV Streaming (74%)",   dailySpend: Math.ceil(3800 * 0.74 / daysLeft), note: "Primary voter ID channel — maintain dominance" },
             { channel: "Meta Ads (10%)",         dailySpend: Math.ceil(3800 * 0.10 / daysLeft), note: "Retarget debate viewers + lookalike undecided" },
@@ -432,7 +432,7 @@ function VoteMovementTracker({ C }: { C: C }) {
       </div>
 
       {/* 4 KPI boxes */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 10, marginBottom: 20 }}>
         {[
           { label: "Undecided Universe",   value: T.undecidedUniverse.toLocaleString(), sub: "Total movable voters in reach",          color: C.blue },
           { label: "Moved → McCarty",       value: T.movedToMcCarty.toLocaleString(),   sub: "Undecided → confirmed via media signals", color: C.green },
@@ -464,7 +464,7 @@ function VoteMovementTracker({ C }: { C: C }) {
               borderRadius: 10,
               padding: "12px 16px",
               display: "grid",
-              gridTemplateColumns: "1fr 1fr 180px 50px",
+              gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 180px 50px",
               gap: 10,
               alignItems: "center",
             }}>
@@ -558,7 +558,7 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Vote Win Tracker — always at top */}
-      <VoteMovementTracker C={C} />
+      <VoteMovementTracker C={C} mobile={mobile} />
 
       {/* Voter Intent Segmentation */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
