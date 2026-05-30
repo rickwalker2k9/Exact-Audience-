@@ -12,7 +12,8 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
+import { getNetworkLogo } from "../lib/networkLogos";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 export interface DashClientInfo {
@@ -420,7 +421,18 @@ function TabChannels({ mobile, C, ctvChannels, mediaMix, qr }: {
                 <tr key={ch.name} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : C.bg3 }}>
                   <td style={{ padding: "9px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
+                      {getNetworkLogo(ch.name) ? (
+                        <img
+                          src={getNetworkLogo(ch.name)!}
+                          alt={ch.name}
+                          width={20}
+                          height={20}
+                          style={{ borderRadius: 4, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                        />
+                      ) : (
+                        <span style={{ width: 8, height: 8, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
+                      )}
                       {ch.name}
                     </span>
                   </td>

@@ -11,8 +11,8 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
-import {
-  CLIENT, LIVE_BASE, DAILY_IMPRESSIONS, CTV_CHANNELS, LOCAL_CHANNELS,
+import { getNetworkLogo } from "../lib/networkLogos";
+import { CLIENT, LIVE_BASE, DAILY_IMPRESSIONS, CTV_CHANNELS, LOCAL_CHANNELS,
   YOUTUBE, DSP, SITE_VISITORS, DEMOGRAPHICS, MOODS, CONTENT_SEGMENTS,
   DAYPARTS, CREATIVES, DEFENDER_PAGE_VIEWS, DEFENDER_PAGE_TOTALS
 } from "@/lib/dashboardData";
@@ -368,7 +368,18 @@ function TabChannels({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useC
                 <tr key={ch.name} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : C.bg3 }}>
                   <td style={{ padding: "9px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
+                      {getNetworkLogo(ch.name) ? (
+                        <img
+                          src={getNetworkLogo(ch.name)!}
+                          alt={ch.name}
+                          width={20}
+                          height={20}
+                          style={{ borderRadius: 4, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                        />
+                      ) : (
+                        <span style={{ width: 8, height: 8, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
+                      )}
                       {ch.name}
                     </span>
                   </td>
