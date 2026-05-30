@@ -13,7 +13,7 @@ import {
 import {
   CLIENT, LIVE_BASE, DAILY_IMPRESSIONS, CTV_CHANNELS, LOCAL_CHANNELS,
   YOUTUBE, DSP, SITE_VISITORS, DEMOGRAPHICS, MOODS, CONTENT_SEGMENTS,
-  DAYPARTS, CREATIVES
+  DAYPARTS, CREATIVES, DEFENDER_PAGE_VIEWS, DEFENDER_PAGE_TOTALS
 } from "@/lib/dashboardData";
 import { PEOPLE } from "@/lib/peopleData";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -65,7 +65,7 @@ function useColors(isDark: boolean) {
 
 const TABS = [
   "Overview", "Channels", "Creatives",
-  "Audience", "Day Part", "Content", "Moods", "People"
+  "Audience", "Day Part", "Content", "Moods", "People", "Defender Pages"
 ];
 
 // ── Responsive hook ───────────────────────────────────────────────────────────
@@ -338,7 +338,7 @@ function TabChannels({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useC
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Card C={C}>
         <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", gap: 12, marginBottom: 16 }}>
-          <SectionTitle C={C}>CTV Streaming — Vibe.co Inventory</SectionTitle>
+          <SectionTitle C={C}>CTV Streaming — Channel Inventory</SectionTitle>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {(["impressions", "cpm", "completionRate"] as const).map(k => (
               <button key={k} onClick={() => setSort(k)} style={{
@@ -911,7 +911,160 @@ function ThemeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
   );
 }
 
-const TABS_LABELS = ["Overview","Channels","Creatives","Audience","Day Part","Content","Moods","People"];
+// ── TAB: Defender Pages ─────────────────────────────────────────────────────────────
+function TabDefenderPages({ mobile, C }: { mobile: boolean; C: ReturnType<typeof useColors> }) {
+  const [rangeDays, setRangeDays] = useState(14);
+  const chartData = DEFENDER_PAGE_VIEWS.slice(-rangeDays).map(d => ({
+    day: d.day.replace("May ", ""),
+    "Def. 90":  d.defender90,
+    "Def. 110": d.defender110,
+    "Def. 130": d.defender130,
+    "Overview": d.defenderOverview,
+    "Range Rover": d.rangeRover,
+    "Discovery": d.discovery,
+  }));
+
+  const totals = Object.values(DEFENDER_PAGE_TOTALS);
+  const totalDefenderViews = totals.filter(p => p.label.startsWith("Defender")).reduce((s, p) => s + p.views, 0);
+  const totalAllViews = totals.reduce((s, p) => s + p.views, 0);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Defender KPI summary row */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4,1fr)", gap: 12 }}>
+        <KpiCard label="Defender Page Views" value={totalDefenderViews.toLocaleString()} sub="Campaign to date" color={C.green} C={C} />
+        <KpiCard label="Defender 110 Views" value={DEFENDER_PAGE_TOTALS.defender110.views.toLocaleString()} sub="Top Defender model" color={C.purple2} C={C} />
+        <KpiCard label="Defender Overview" value={DEFENDER_PAGE_TOTALS.defenderOverview.views.toLocaleString()} sub="Landing page visits" color={C.gold} C={C} />
+        <KpiCard label="Defender Share" value={`${Math.round(totalDefenderViews / totalAllViews * 100)}%`} sub="Of all site page views" color={C.blue} C={C} />
+      </div>
+
+      {/* Page view trend chart */}
+      <Card C={C}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
+          <SectionTitle C={C}>Page Views by Model — Daily Trend</SectionTitle>
+          <div style={{ display: "flex", gap: 4 }}>
+            {[{label:"7 Days",days:7},{label:"14 Days",days:14},{label:"30 Days",days:29}].map(r => (
+              <button key={r.days} onClick={() => setRangeDays(r.days)} style={{
+                padding: "4px 10px", fontSize: 10, fontWeight: 700, borderRadius: 6, cursor: "pointer",
+                border: `1px solid ${rangeDays === r.days ? C.purple2 : C.border}`,
+                background: rangeDays === r.days ? `${C.purple2}22` : "transparent",
+                color: rangeDays === r.days ? C.purple2 : C.muted,
+                transition: "all 0.15s", letterSpacing: "0.04em",
+              }}>{r.label}</button>
+            ))}
+          </div>
+        </div>
+        <ResponsiveContainer width="100%" height={mobile ? 200 : 260}>
+          <AreaChart data={chartData}>
+            <defs>
+              {[
+                { id: "gD90",  color: C.green   },
+                { id: "gD110", color: C.purple2 },
+                { id: "gD130", color: C.blue    },
+                { id: "gDOv",  color: C.gold    },
+                { id: "gRR",   color: C.red     },
+                { id: "gDis",  color: "#fb923c" },
+              ].map(g => (
+                <linearGradient key={g.id} id={g.id} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={g.color} stopOpacity={0.35} />
+                  <stop offset="95%" stopColor={g.color} stopOpacity={0} />
+                </linearGradient>
+              ))}
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+            <XAxis dataKey="day" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={36} />
+            <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 11 }} />
+            <Legend wrapperStyle={{ color: C.muted, fontSize: 10 }} />
+            <Area type="monotone" dataKey="Def. 90"    stroke={C.green}   fill="url(#gD90)"  strokeWidth={2} />
+            <Area type="monotone" dataKey="Def. 110"   stroke={C.purple2} fill="url(#gD110)" strokeWidth={2.5} />
+            <Area type="monotone" dataKey="Def. 130"   stroke={C.blue}    fill="url(#gD130)" strokeWidth={2} />
+            <Area type="monotone" dataKey="Overview"   stroke={C.gold}    fill="url(#gDOv)"  strokeWidth={2} />
+            <Area type="monotone" dataKey="Range Rover" stroke={C.red}    fill="url(#gRR)"   strokeWidth={1.5} strokeDasharray="4 2" />
+            <Area type="monotone" dataKey="Discovery"  stroke="#fb923c"   fill="url(#gDis)"  strokeWidth={1.5} strokeDasharray="4 2" />
+          </AreaChart>
+        </ResponsiveContainer>
+      </Card>
+
+      {/* Per-page breakdown cards */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 1fr", gap: 12 }}>
+        {totals.map(page => (
+          <div key={page.label} style={{
+            background: C.card, border: `1px solid ${C.border}`, borderRadius: 12,
+            padding: 20, borderLeft: `4px solid ${page.color}`,
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.white, marginBottom: 3 }}>{page.label}</div>
+                <div style={{ fontSize: 10, color: C.muted, letterSpacing: "0.04em" }}>{page.url}</div>
+              </div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: page.color }}>{page.views.toLocaleString()}</div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={{ background: C.bg3, borderRadius: 8, padding: "8px 12px" }}>
+                <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>Avg. Time on Page</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.white }}>{page.avgTime}</div>
+              </div>
+              <div style={{ background: C.bg3, borderRadius: 8, padding: "8px 12px" }}>
+                <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>Bounce Rate</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: page.bounce < 38 ? C.green : page.bounce < 44 ? C.gold : C.red }}>{page.bounce}%</div>
+              </div>
+            </div>
+            <div style={{ marginTop: 10 }}>
+              <ProgressBar value={page.views} max={totalAllViews} color={page.color} C={C} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Defender vs non-Defender share */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <Card C={C}>
+          <SectionTitle C={C}>Defender vs. Other Models — Page Share</SectionTitle>
+          <ResponsiveContainer width="100%" height={220}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: "Defender 110", value: DEFENDER_PAGE_TOTALS.defender110.views },
+                  { name: "Defender Overview", value: DEFENDER_PAGE_TOTALS.defenderOverview.views },
+                  { name: "Defender 90", value: DEFENDER_PAGE_TOTALS.defender90.views },
+                  { name: "Defender 130", value: DEFENDER_PAGE_TOTALS.defender130.views },
+                  { name: "Range Rover", value: DEFENDER_PAGE_TOTALS.rangeRover.views },
+                  { name: "Discovery", value: DEFENDER_PAGE_TOTALS.discovery.views },
+                ]}
+                cx="50%" cy="50%" innerRadius={55} outerRadius={88} paddingAngle={3} dataKey="value"
+              >
+                {[C.purple2, C.gold, C.green, C.blue, C.red, "#fb923c"].map((c, i) => <Cell key={i} fill={c} />)}
+              </Pie>
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 11 }} />
+              <Legend wrapperStyle={{ color: C.muted, fontSize: 11 }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </Card>
+
+        <Card C={C}>
+          <SectionTitle C={C}>Engagement Quality by Page</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 4 }}>
+            {totals.map(page => (
+              <div key={page.label}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: C.white, fontWeight: 600 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: page.color, flexShrink: 0 }} />
+                    {page.label}
+                  </span>
+                  <span style={{ fontSize: 11, color: C.muted }}>{page.avgTime} avg · <span style={{ color: page.bounce < 38 ? C.green : page.bounce < 44 ? C.gold : C.red }}>{page.bounce}% bounce</span></span>
+                </div>
+                <ProgressBar value={100 - page.bounce} max={100} color={page.color} C={C} />
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+const TABS_LABELS = ["Overview","Channels","Creatives","Audience","Day Part","Content","Moods","People","Defender Pages"];
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 export default function Home() {
@@ -971,6 +1124,7 @@ export default function Home() {
     <TabContent mobile={mobile} C={C} />,
     <TabMoods mobile={mobile} C={C} />,
     <TabPeople mobile={mobile} C={C} />,
+    <TabDefenderPages mobile={mobile} C={C} />,
   ];
 
   return (
@@ -1060,7 +1214,7 @@ export default function Home() {
       {/* Footer */}
       <div style={{ borderTop: `1px solid ${C.border}`, padding: mobile ? "12px 16px" : "14px 28px", display: "flex", flexDirection: mobile ? "column" : "row", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", gap: 4, fontSize: 10, color: C.muted }}>
         <span>Exact Audience · exactaudience.ai · siteid.ai</span>
-        <span>Powered by Vibe.co · Google DV360 · SiteID Intelligence</span>
+        <span>Powered by Google DV360 · SiteID Intelligence</span>
         {!mobile && <span>Data refreshes every 8 seconds</span>}
       </div>
     </div>
