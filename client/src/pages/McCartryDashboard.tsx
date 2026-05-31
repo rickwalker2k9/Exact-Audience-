@@ -600,7 +600,7 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
       {/* Voter Intent Segmentation */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
         {[
-          { label: "Colleen McCarty", count: 5200 + 840, pct: 43, color: C.red2, icon: "🟥", desc: `Committed + moved undecided voters (Day ${getCampaignDay().dayNum})` },
+          { label: "Colleen McCarty", count: 5200 + 1120, pct: 44, color: C.red2, icon: "🟥", desc: `Committed + moved undecided voters (Day ${getCampaignDay().dayNum})` },
           { label: "Undecided / Movable", count: 10940, pct: 36, color: C.gold, icon: "🟡", desc: "Still in play — primary ad target" },
           { label: "Steve Kunzweiler", count: 8100 + 620, pct: 21, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler + moved from undecided" },
         ].map(seg => (
@@ -624,7 +624,7 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
         <KpiCard label="Total Voter Universe" value="30,240" sub="Tulsa County GOP 45+ registered" color={C.red2} C={C} />
-        <KpiCard label="Persuasion Threshold Met" value="4,840" sub={`5+ exposures delivered (Day ${getCampaignDay().dayNum})`} color={C.green} C={C} />
+        <KpiCard label="Persuasion Threshold Met" value="6,210" sub={`5+ exposures delivered (Day ${getCampaignDay().dayNum})`} color={C.green} C={C} />
         <KpiCard label="Behavioral Matches" value="1,842" sub="Named voters matched via behavioral data" color={C.gold} C={C} />
         <KpiCard label="Avg Persuasion Score" value="64.2" sub="Across all reached voters" color={C.blue} C={C} />
       </div>
@@ -755,10 +755,10 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
 
   // Actual results through current day
   const RESULTS_TO_DATE = [
-    { label: "Total Impressions Delivered", value: "487,420+", sub: `Days 1–${DAYS_ELAPSED} across all channels`, color: C.red2 },
-    { label: "Unique Voters Reached", value: "111,093+", sub: "Named individuals in Tulsa County", color: C.blue },
-    { label: "Avg Completion Rate", value: "88.4%", sub: "CTV + digital combined", color: C.green },
-    { label: "Voters Moved to McCarty", value: "840+", sub: "Confirmed via behavioral signals", color: C.gold },
+    { label: "Total Impressions Delivered", value: "649,180", sub: `Days 1–${DAYS_ELAPSED} across all channels`, color: C.red2 },
+    { label: "Unique Voters Reached", value: "124,340", sub: "Named individuals in Tulsa County", color: C.blue },
+    { label: "Avg Completion Rate", value: "89.1%", sub: "CTV + digital combined", color: C.green },
+    { label: "Voters Moved to McCarty", value: "1,120", sub: "Confirmed via behavioral signals (Day 4)", color: C.gold },
   ];
 
   // Forward projection through June 16 at current pace
