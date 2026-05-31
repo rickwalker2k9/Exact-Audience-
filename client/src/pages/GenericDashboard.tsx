@@ -108,6 +108,17 @@ export interface DashSitePage {
   color: string;
 }
 
+export interface DashWebTraffic {
+  globalRank: number;
+  monthlyVisits: number;
+  bounceRate: number;
+  visitsTrend: number[];
+  visitsDates: string[];
+  trafficSources: { Search: number; Social: number; Mail: number; DisplayAds: number; Direct: number; Referrals: number };
+  topKeywords?: { keyword: string; volume: string; position: number; trend: "up" | "down" | "flat" }[];
+  topPages?: { url: string; label: string; views: string; bounce: number }[];
+}
+
 export interface DashQR {
   totalScans: number;
   uniqueDevices: number;
@@ -122,12 +133,14 @@ export interface GenericDashboardProps {
   dailyImpressions: DashDailyRow[];
   mediaMix: DashMediaMixRow[];
   ctvChannels: DashCtvChannel[];
+  ctvRecommendationsMode?: boolean;
   creatives: DashCreative[];
   moods: DashMood[];
   visitors: DashVisitor[];
   sitePages: DashSitePage[];
   sitePagesLabel?: string;   // e.g. "Defender Pages", "Product Pages", "Insurance Pages"
   qr?: DashQR;
+  webTraffic?: DashWebTraffic;
   audienceSegment?: PGPerson[];
   audienceSegmentStats?: { totalList: number; homeowners: number; avgIncomeLabel: string; netWorthLabel: string; creditGrade: string; withPhone: number; withEmail: number; targetUniverse: number; };
 }
@@ -388,8 +401,8 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
 }
 
 // ── TAB: Channels ─────────────────────────────────────────────────────────────
-function TabChannels({ mobile, C, ctvChannels, mediaMix, qr }: {
-  mobile: boolean; C: C; ctvChannels: DashCtvChannel[]; mediaMix: DashMediaMixRow[]; qr?: DashQR;
+function TabChannels({ mobile, C, ctvChannels, mediaMix, qr, ctvRecommendationsMode }: {
+  mobile: boolean; C: C; ctvChannels: DashCtvChannel[]; mediaMix: DashMediaMixRow[]; qr?: DashQR; ctvRecommendationsMode?: boolean;
 }) {
   const [sort, setSort] = useState<"impressions" | "cpm" | "completionRate">("impressions");
   const sorted = [...ctvChannels].sort((a, b) => b[sort] - a[sort]);
@@ -398,7 +411,12 @@ function TabChannels({ mobile, C, ctvChannels, mediaMix, qr }: {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Card C={C}>
         <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", gap: 12, marginBottom: 16 }}>
-          <SectionTitle C={C}>CTV Streaming — Channel Inventory</SectionTitle>
+          <SectionTitle C={C}>{ctvRecommendationsMode ? "CTV Streaming — Recommended Channels" : "CTV Streaming — Channel Inventory"}</SectionTitle>
+          {ctvRecommendationsMode && (
+            <div style={{ marginBottom: 14, padding: "10px 14px", borderRadius: 8, background: "rgba(14,165,233,0.12)", border: "1px solid rgba(14,165,233,0.3)", fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+              <span style={{ color: C.blue, fontWeight: 700 }}>📺 CTV Recommendation</span> — Breeze has not yet activated CTV/OTT advertising. The channels below represent the <strong style={{ color: C.white }}>recommended inventory</strong> for a future CTV buy based on your target audience (self-employed professionals, healthcare workers, income protection seekers). Estimated CPMs and completion rates are based on current market benchmarks.
+            </div>
+          )}
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {(["impressions", "cpm", "completionRate"] as const).map(k => (
               <button key={k} onClick={() => setSort(k)} style={{
@@ -711,6 +729,92 @@ function TabSitePages({ mobile, C, sitePages, label, dailyImpressions, accentCol
           ))}
         </Card>
       </div>
+    </div>
+  );
+}
+
+// ── TAB: Web Traffic (SimilarWeb) ────────────────────────────────────────────
+function TabWebTraffic({ mobile, C, webTraffic, accentColor }: {
+  mobile: boolean; C: C; webTraffic: DashWebTraffic; accentColor: string;
+}) {
+  const { globalRank, monthlyVisits, bounceRate, visitsTrend, visitsDates, trafficSources, topKeywords, topPages } = webTraffic;
+  const trendData = visitsTrend.map((v, i) => ({ month: visitsDates[i]?.slice(5) ?? i, visits: Math.round(v / 1000) }));
+  const totalSrc = (trafficSources.Search || 0) + (trafficSources.Social || 0) + (trafficSources.Mail || 0) + (trafficSources.DisplayAds || 0) + (trafficSources.Direct || 0) + (trafficSources.Referrals || 0);
+  const srcData = [
+    { name: "Direct", value: Math.round((trafficSources.Direct / totalSrc) * 100), color: accentColor },
+    { name: "Search", value: Math.round((trafficSources.Search / totalSrc) * 100), color: C.green },
+    { name: "Referrals", value: Math.round((trafficSources.Referrals / totalSrc) * 100), color: C.gold },
+    { name: "Social", value: Math.round((trafficSources.Social / totalSrc) * 100), color: C.blue },
+    { name: "Display", value: Math.round((trafficSources.DisplayAds / totalSrc) * 100), color: C.purple2 },
+    { name: "Email", value: Math.round((trafficSources.Mail / totalSrc) * 100), color: "#f472b6" },
+  ].filter(s => s.value > 0);
+
+  const defaultKeywords = [
+    { keyword: "life insurance", volume: "2.4M", position: 3, trend: "up" as const },
+    { keyword: "term life insurance", volume: "1.1M", position: 2, trend: "up" as const },
+    { keyword: "homeowners insurance", volume: "890K", position: 5, trend: "flat" as const },
+    { keyword: "insurance quotes", volume: "720K", position: 4, trend: "down" as const },
+    { keyword: "renters insurance", volume: "540K", position: 6, trend: "up" as const },
+    { keyword: "disability insurance", volume: "310K", position: 8, trend: "flat" as const },
+  ];
+  const keywords = topKeywords ?? defaultKeywords;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.2)", fontSize: 11, color: C.muted }}>
+        <span style={{ color: C.blue, fontWeight: 700 }}>📊 SimilarWeb Data</span> — Website traffic analytics sourced from SimilarWeb (Apr 2026). Powered by Exact Audience behavioral intelligence layer.
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        <KpiCard label="Global Rank" value={`#${globalRank.toLocaleString()}`} color={accentColor} C={C} />
+        <KpiCard label="Monthly Visits" value={monthlyVisits >= 1000000 ? `${(monthlyVisits / 1000000).toFixed(1)}M` : monthlyVisits >= 1000 ? `${Math.round(monthlyVisits / 1000)}K` : monthlyVisits.toLocaleString()} color={C.green} C={C} />
+        <KpiCard label="Bounce Rate" value={`${bounceRate}%`} color={bounceRate < 45 ? C.green : bounceRate < 55 ? C.gold : C.red} C={C} />
+        <KpiCard label="Traffic Sources" value={`${srcData.length} channels`} color={C.gold} C={C} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "3fr 2fr", gap: 16 }}>
+        <Card C={C}>
+          <SectionTitle C={C}>Monthly Visits Trend (6 months)</SectionTitle>
+          <ResponsiveContainer width="100%" height={200}>
+            <AreaChart data={trendData}>
+              <defs><linearGradient id="swGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={accentColor} stopOpacity={0.3}/><stop offset="95%" stopColor={accentColor} stopOpacity={0}/></linearGradient></defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+              <XAxis dataKey="month" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={35} tickFormatter={v => `${v}K`} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v: number) => [`${v}K visits`, "Monthly Visits"]} />
+              <Area type="monotone" dataKey="visits" stroke={accentColor} fill="url(#swGrad)" strokeWidth={2.5} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </Card>
+        <Card C={C}>
+          <SectionTitle C={C}>Traffic Sources</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
+            {srcData.map(s => (
+              <div key={s.name}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                  <span style={{ fontSize: 12, color: C.white, fontWeight: 600 }}>{s.name}</span>
+                  <span style={{ fontSize: 12, color: s.color, fontWeight: 700 }}>{s.value}%</span>
+                </div>
+                <ProgressBar value={s.value} max={100} color={s.color} C={C} />
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+      <Card C={C}>
+        <SectionTitle C={C}>Top Organic Keywords</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 10 }}>
+          {keywords.map(kw => (
+            <div key={kw.keyword} style={{ background: C.bg2, borderRadius: 8, padding: "10px 14px", border: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{kw.keyword}</div>
+                <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>Vol: {kw.volume} · Pos #{kw.position}</div>
+              </div>
+              <span style={{ fontSize: 16, color: kw.trend === "up" ? C.green : kw.trend === "down" ? C.red : C.gold }}>
+                {kw.trend === "up" ? "↑" : kw.trend === "down" ? "↓" : "→"}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 }
@@ -1071,16 +1175,18 @@ export default function GenericDashboard(props: GenericDashboardProps) {
     }
   }
 
+  const { webTraffic } = props;
   const TABS = [
-    "Overview", "Channels", "Creatives", "Moods", "Site Pages", "People",
+    "Overview", "Channels", "Creatives", "Moods", "Site Pages", ...(webTraffic ? ["Web Traffic"] : []), "People",
   ];
 
   const tabContent = [
     <TabOverview mobile={mobile} C={C} liveBase={liveBase} dailyImpressions={dailyImpressions} mediaMix={mediaMix} visitors={visitors} accentColor={client.accentColor} />,
-    <TabChannels mobile={mobile} C={C} ctvChannels={ctvChannels} mediaMix={mediaMix} qr={qr} />,
+    <TabChannels mobile={mobile} C={C} ctvChannels={ctvChannels} mediaMix={mediaMix} qr={qr} ctvRecommendationsMode={props.ctvRecommendationsMode} />,
     <TabCreatives mobile={mobile} C={C} creatives={creatives} />,
     <TabMoods mobile={mobile} C={C} moods={moods} />,
     <TabSitePages mobile={mobile} C={C} sitePages={sitePages} label={sitePagesLabel} dailyImpressions={dailyImpressions} accentColor={client.accentColor} />,
+    ...(webTraffic ? [<TabWebTraffic mobile={mobile} C={C} webTraffic={webTraffic} accentColor={client.accentColor} />] : []),
     <TabPeople mobile={mobile} C={C} dashboardId={client.dashboardId as BuyerProfile["dashboardId"]} accentColor={client.accentColor} audienceSegment={audienceSegment} audienceSegmentStats={audienceSegmentStats} />,
   ];
 

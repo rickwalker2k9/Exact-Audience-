@@ -40,7 +40,7 @@ export const CLIENTS: CampaignClient[] = [
   // ── FULL DASHBOARDS ──────────────────────────────────────────────────────────
   {
     id: 1,
-    slug: "land-rover-north-scottsdale",
+    slug: "land-rover",
     name: "Land Rover North Scottsdale",
     vertical: "Luxury Automotive",
     location: "Scottsdale, AZ",
@@ -157,6 +157,26 @@ export const CLIENTS: CampaignClient[] = [
     reachToDate: 184210,
     completionRate: 84.2,
     primaryColor: "#0ea5e9",
+  },
+
+  {
+    id: 7,
+    slug: "starling",
+    name: "Jeff Starling for AG",
+    vertical: "Political Campaign",
+    location: "Oklahoma (Statewide)",
+    description: "Oklahoma Attorney General Republican Primary — June 16, 2026 · PITCH",
+    domain: "jeffstarling.com",
+    campaign: "Oklahoma AG Race — Precision Media Pitch",
+    budget: "$30K–$93K",
+    startDate: "May 30, 2026",
+    status: "pending" as ClientStatus,
+    hasDashboard: true,
+    trend: risingTrend(48000),
+    impressionsToDate: 0,
+    reachToDate: 0,
+    completionRate: 0,
+    primaryColor: "#c0392b",
   },
 
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────

@@ -8,6 +8,7 @@ import {
   WARBY_MEDIA_MIX, WARBY_VISITORS, WARBY_MOODS, WARBY_CREATIVES, WARBY_SITE_PAGES,
 } from "@/lib/warbyData";
 import { WARBY_PEOPLE, WARBY_SEGMENT_STATS } from "@/lib/warbyParkerPeopleSegment";
+import { WARBYPARKER_WEB_TRAFFIC } from "@/lib/webTrafficData";
 
 const WARBY_CTV_CHANNELS = [
   { name: "Hulu",              impressions: 842400, completions: 757800, cpm: 21.40, frequency: 2.84, completionRate: 90.0, color: "#1ce783" },
@@ -37,6 +38,7 @@ export default function WarbyDashboard() {
       sitePagesLabel="Product Pages"
       audienceSegment={WARBY_PEOPLE as any}
       audienceSegmentStats={WARBY_SEGMENT_STATS}
+      webTraffic={WARBYPARKER_WEB_TRAFFIC}
     />
   );
 }

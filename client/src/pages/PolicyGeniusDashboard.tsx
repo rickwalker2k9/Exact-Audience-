@@ -8,6 +8,7 @@ import {
   PG_MEDIA_MIX, PG_VISITORS, PG_MOODS, PG_CREATIVES, PG_INSURANCE_PAGES,
 } from "@/lib/policyGeniusData";
 import { PG_PEOPLE_SEGMENT, PG_SEGMENT_STATS } from "@/lib/policyGeniusPeopleSegment";
+import { POLICYGENIUS_WEB_TRAFFIC } from "@/lib/webTrafficData";
 
 const PG_CTV_CHANNELS = [
   { name: "Hulu",              impressions: 712400, completions: 598400, cpm: 19.80, frequency: 2.64, completionRate: 84.0, color: "#1ce783" },
@@ -37,6 +38,7 @@ export default function PolicyGeniusDashboard() {
       sitePagesLabel="Insurance Pages"
       audienceSegment={PG_PEOPLE_SEGMENT}
       audienceSegmentStats={PG_SEGMENT_STATS}
+      webTraffic={POLICYGENIUS_WEB_TRAFFIC}
     />
   );
 }

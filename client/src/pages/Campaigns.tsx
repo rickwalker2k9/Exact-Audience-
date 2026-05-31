@@ -145,11 +145,13 @@ function CampaignCard({ client, dark, onClick }: { client: CampaignClient; dark:
 
 // ── Slug → route map ──────────────────────────────────────────────────────────
 const SLUG_ROUTES: Record<string, string> = {
-  "land-rover-north-scottsdale": "/",
+  "land-rover":                  "/land-rover",
   "lamborghini-scottsdale":      "/lamborghini",
   "warby-parker":                "/warby-parker",
   "policygenius":                "/policygenius",
   "colleen-mccarty":             "/mccarty",
+  "breeze-insurance":            "/breeze-insurance",
+  "starling":                    "/starling",
 };
 
 // ── Main Page ─────────────────────────────────────────────────────────────────

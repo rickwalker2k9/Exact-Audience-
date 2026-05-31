@@ -9,6 +9,7 @@ import {
   LAMBO_MOODS, LAMBO_VISITORS, LAMBO_QR,
 } from "@/lib/lamborghiniData";
 import { LAMBO_PEOPLE, LAMBO_SEGMENT_STATS } from "@/lib/lamborghiniPeopleSegment";
+import { LAMBORGHINI_WEB_TRAFFIC } from "@/lib/webTrafficData";
 
 const LAMBO_SITE_PAGES = [
   { label: "Urus",         views: 11284, avgTime: "4:42", bounce: 24, color: "#d4a017" },
@@ -35,6 +36,7 @@ export default function LamborghiniDashboard() {
       qr={LAMBO_QR}
       audienceSegment={LAMBO_PEOPLE as any}
       audienceSegmentStats={LAMBO_SEGMENT_STATS}
+      webTraffic={LAMBORGHINI_WEB_TRAFFIC}
     />
   );
 }

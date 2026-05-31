@@ -10,6 +10,7 @@ import {
   BREEZE_MOODS, BREEZE_VISITORS, BREEZE_SITE_PAGES, BREEZE_QR,
 } from "@/lib/breezeData";
 import { BREEZE_PEOPLE, BREEZE_SEGMENT_STATS } from "@/lib/breezeInsurancePeopleSegment";
+import { BREEZE_WEB_TRAFFIC } from "@/lib/webTrafficData";
 
 export default function BreezeDashboard() {
   return (
@@ -25,8 +26,10 @@ export default function BreezeDashboard() {
       sitePages={BREEZE_SITE_PAGES}
       sitePagesLabel="Product Pages"
       qr={BREEZE_QR}
+      ctvRecommendationsMode={true}
       audienceSegment={BREEZE_PEOPLE as any}
       audienceSegmentStats={BREEZE_SEGMENT_STATS as any}
+      webTraffic={BREEZE_WEB_TRAFFIC}
     />
   );
 }
