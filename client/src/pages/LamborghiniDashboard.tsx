@@ -8,6 +8,7 @@ import {
   LAMBO_MEDIA_MIX, LAMBO_CTV_CHANNELS, LAMBO_CREATIVES,
   LAMBO_MOODS, LAMBO_VISITORS, LAMBO_QR,
 } from "@/lib/lamborghiniData";
+import { LAMBO_PEOPLE, LAMBO_SEGMENT_STATS } from "@/lib/lamborghiniPeopleSegment";
 
 const LAMBO_SITE_PAGES = [
   { label: "Urus",         views: 11284, avgTime: "4:42", bounce: 24, color: "#d4a017" },
@@ -32,6 +33,8 @@ export default function LamborghiniDashboard() {
       sitePages={LAMBO_SITE_PAGES}
       sitePagesLabel="Model Pages"
       qr={LAMBO_QR}
+      audienceSegment={LAMBO_PEOPLE as any}
+      audienceSegmentStats={LAMBO_SEGMENT_STATS}
     />
   );
 }

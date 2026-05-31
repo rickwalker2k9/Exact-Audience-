@@ -736,18 +736,43 @@ function ThemeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
 
 // ── Main Component ────────────────────────────────────────────────────────────
 // ── TabPeople ─────────────────────────────────────────────────────────────────
-function TabPeople({ mobile, C, dashboardId, accentColor }: { mobile: boolean; C: C; dashboardId: BuyerProfile["dashboardId"]; accentColor: string }) {
+function TabPeople({ mobile, C, dashboardId, accentColor, audienceSegment, audienceSegmentStats }: {
+  mobile: boolean; C: C; dashboardId: BuyerProfile["dashboardId"]; accentColor: string;
+  audienceSegment?: PGPerson[];
+  audienceSegmentStats?: { totalList: number; homeowners: number; avgIncomeLabel: string; netWorthLabel: string; creditGrade: string; withPhone: number; withEmail: number; targetUniverse: number; };
+}) {
   const [, navigate] = useLocation();
   const profiles = getProfilesByDashboard(dashboardId);
   const windowColors = ["#4ade80", "#f59e0b", "#38bdf8"];
+  const [search, setSearch] = useState("");
+  const [filterState, setFilterState] = useState("All");
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [filterGender, setFilterGender] = useState("All");
+  const [showCount, setShowCount] = useState(20);
+
+  const people = audienceSegment || [];
+  const states = ["All", ...Array.from(new Set(people.map(p => p.state))).sort()];
+  const statuses = ["All", "hot", "warm", "reached", "pending"];
+  const genders = ["All", "Male", "Female"];
+  const filtered = people.filter(p => {
+    const q = search.toLowerCase();
+    const matchSearch = !q || `${p.firstName} ${p.lastName}`.toLowerCase().includes(q) || p.city.toLowerCase().includes(q) || p.state.toLowerCase().includes(q);
+    const matchState = filterState === "All" || p.state === filterState;
+    const matchStatus = filterStatus === "All" || p.status === filterStatus;
+    const matchGender = filterGender === "All" || p.gender === filterGender;
+    return matchSearch && matchState && matchStatus && matchGender;
+  });
+  const statusColor = (s: string) => s === "hot" ? "#f59e0b" : s === "warm" ? accentColor : s === "reached" ? "#38bdf8" : "#6b7280";
+  const statusLabel = (s: string) => s === "hot" ? "HOT" : s === "warm" ? "WARM" : s === "reached" ? "REACHED" : "PENDING";
 
   return (
     <div style={{ padding: mobile ? "16px" : "24px 28px" }}>
+      {/* Featured Profiles */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ fontSize: 16, fontWeight: 800, color: C.white, marginBottom: 4 }}>Featured Buyer Profiles</div>
         <div style={{ fontSize: 12, color: C.muted }}>3 identified individuals — click any profile to view their full buyer journey, intent signals, and personalized media recommendations.</div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>
         {profiles.map(profile => (
           <div
             key={profile.id}
@@ -756,7 +781,6 @@ function TabPeople({ mobile, C, dashboardId, accentColor }: { mobile: boolean; C
             onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.transform = "translateY(-3px)"; el.style.boxShadow = `0 8px 28px ${profile.avatarColor}22`; el.style.borderColor = profile.avatarColor; }}
             onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; el.style.borderColor = C.border; }}
           >
-            {/* Avatar + name */}
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
               <div style={{ width: 44, height: 44, borderRadius: "50%", background: profile.avatarColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "#fff", flexShrink: 0, boxShadow: `0 0 12px ${profile.avatarColor}44` }}>{profile.avatar}</div>
               <div>
@@ -764,14 +788,11 @@ function TabPeople({ mobile, C, dashboardId, accentColor }: { mobile: boolean; C
                 <div style={{ fontSize: 11, color: C.muted }}>{profile.age} · {profile.occupation}</div>
               </div>
             </div>
-            {/* Location */}
             <div style={{ fontSize: 11, color: C.muted, marginBottom: 10 }}>📍 {profile.location}</div>
-            {/* Buyer DNA */}
             <div style={{ background: `${profile.avatarColor}18`, border: `1px solid ${profile.avatarColor}33`, borderRadius: 8, padding: "8px 10px", marginBottom: 12 }}>
               <div style={{ fontSize: 9, fontWeight: 700, color: profile.avatarColor, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 3 }}>🧬 Buyer DNA</div>
               <div style={{ fontSize: 11, color: C.white, lineHeight: 1.5 }}>{profile.buyerDNA}</div>
             </div>
-            {/* Purchase windows */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6, marginBottom: 12 }}>
               {profile.purchaseWindows.map((pw, i) => (
                 <div key={pw.window} style={{ background: C.card2, borderRadius: 8, padding: "8px 6px", textAlign: "center" }}>
@@ -780,17 +801,108 @@ function TabPeople({ mobile, C, dashboardId, accentColor }: { mobile: boolean; C
                 </div>
               ))}
             </div>
-            {/* Tags */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 12 }}>
               {profile.tags.slice(0, 3).map(tag => (
                 <span key={tag} style={{ background: `${profile.avatarColor}18`, border: `1px solid ${profile.avatarColor}33`, color: profile.avatarColor, fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 20 }}>{tag}</span>
               ))}
             </div>
-            {/* CTA */}
             <div style={{ fontSize: 10, fontWeight: 700, color: profile.avatarColor, textTransform: "uppercase", letterSpacing: "0.08em" }}>View Full Journey →</div>
           </div>
         ))}
       </div>
+
+      {/* Full Audience List — shown when audienceSegment is provided */}
+      {people.length > 0 && audienceSegmentStats && (
+        <div>
+          <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 24, marginBottom: 16 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: C.white, marginBottom: 4 }}>Target Audience List</div>
+            <div style={{ fontSize: 12, color: C.muted }}>Full identified audience — search, filter, and explore every person in the target universe.</div>
+          </div>
+          {/* Stats */}
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 12, marginBottom: 16 }}>
+            {[
+              { label: "Total List", value: audienceSegmentStats.totalList.toLocaleString(), sub: "Identified targets", color: accentColor },
+              { label: "Homeowners", value: "100%", sub: `All ${audienceSegmentStats.homeowners.toLocaleString()} verified`, color: "#4ade80" },
+              { label: "With Email", value: audienceSegmentStats.withEmail.toLocaleString(), sub: "Personal emails on file", color: "#38bdf8" },
+              { label: "With Phone", value: audienceSegmentStats.withPhone.toLocaleString(), sub: "Mobile reachable", color: "#f59e0b" },
+            ].map(s => (
+              <div key={s.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 14px" }}>
+                <div style={{ fontSize: 20, fontWeight: 900, color: s.color }}>{s.value}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.white, marginTop: 2 }}>{s.label}</div>
+                <div style={{ fontSize: 10, color: C.muted }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
+          {/* Filters */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12, alignItems: "center" }}>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name, city, state..."
+              style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: "7px 12px", color: C.white, fontSize: 12, outline: "none", minWidth: 180, flex: 1 }} />
+            {[{ label: "State", value: filterState, set: setFilterState, opts: states },
+              { label: "Status", value: filterStatus, set: setFilterStatus, opts: statuses },
+              { label: "Gender", value: filterGender, set: setFilterGender, opts: genders },
+            ].map(f => (
+              <select key={f.label} value={f.value} onChange={e => f.set(e.target.value)}
+                style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: "7px 10px", color: C.white, fontSize: 11, outline: "none", cursor: "pointer" }}>
+                {f.opts.map(o => <option key={o} value={o}>{f.label === "Status" && o !== "All" ? o.toUpperCase() : o}</option>)}
+              </select>
+            ))}
+            <div style={{ fontSize: 11, color: C.muted }}>{filtered.length.toLocaleString()} of {people.length}</div>
+          </div>
+          {/* Table */}
+          <div style={{ overflowX: "auto", borderRadius: 12, border: `1px solid ${C.border}` }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+              <thead>
+                <tr style={{ background: C.card2 }}>
+                  {["Name","City","State","Age","Gender","Income","Net Worth","Credit","Ads","Completion","Product Interest","Status"].map(h => (
+                    <th key={h} style={{ padding: "9px 10px", textAlign: "left", color: C.muted, fontWeight: 700, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap", borderBottom: `1px solid ${C.border}` }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.slice(0, showCount).map((p, i) => (
+                  <tr key={p.id} style={{ background: i % 2 === 0 ? C.card : C.card2, transition: "background 0.12s" }}
+                    onMouseEnter={e => (e.currentTarget.style.background = `${accentColor}18`)}
+                    onMouseLeave={e => (e.currentTarget.style.background = i % 2 === 0 ? C.card : C.card2)}>
+                    <td style={{ padding: "8px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ width: 28, height: 28, borderRadius: "50%", background: accentColor + "33", border: `1px solid ${accentColor}55`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: accentColor, flexShrink: 0 }}>{p.firstName[0]}{p.lastName[0]}</div>
+                        {p.firstName} {p.lastName}
+                      </div>
+                    </td>
+                    <td style={{ padding: "8px 10px", color: C.muted }}>{p.city}</td>
+                    <td style={{ padding: "8px 10px", color: C.muted }}>{p.state}</td>
+                    <td style={{ padding: "8px 10px", color: C.muted }}>{p.ageRange}</td>
+                    <td style={{ padding: "8px 10px", color: C.muted }}>{p.gender}</td>
+                    <td style={{ padding: "8px 10px", color: C.white, whiteSpace: "nowrap" }}>{p.incomeRange.replace(" to ", "–")}</td>
+                    <td style={{ padding: "8px 10px", color: C.white, whiteSpace: "nowrap" }}>{p.netWorth.replace(" to ", "–")}</td>
+                    <td style={{ padding: "8px 10px" }}>
+                      <span style={{ background: p.creditRating === "A" ? "#4ade8033" : p.creditRating === "B" ? "#38bdf833" : "#f59e0b33", color: p.creditRating === "A" ? "#4ade80" : p.creditRating === "B" ? "#38bdf8" : "#f59e0b", padding: "2px 7px", borderRadius: 20, fontSize: 10, fontWeight: 800 }}>{p.creditRating}</span>
+                    </td>
+                    <td style={{ padding: "8px 10px", color: C.white, textAlign: "center" }}>{p.adsSeen}</td>
+                    <td style={{ padding: "8px 10px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <div style={{ flex: 1, height: 4, background: C.border, borderRadius: 2, minWidth: 40 }}>
+                          <div style={{ height: "100%", width: `${p.completionRate}%`, background: accentColor, borderRadius: 2 }} />
+                        </div>
+                        <span style={{ color: C.muted, fontSize: 10 }}>{p.completionRate}%</span>
+                      </div>
+                    </td>
+                    <td style={{ padding: "8px 10px", color: C.muted, whiteSpace: "nowrap" }}>{p.productInterest}</td>
+                    <td style={{ padding: "8px 10px" }}>
+                      <span style={{ background: statusColor(p.status) + "22", color: statusColor(p.status), padding: "2px 8px", borderRadius: 20, fontSize: 9, fontWeight: 800, letterSpacing: "0.05em" }}>{statusLabel(p.status)}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {filtered.length > showCount && (
+            <div style={{ textAlign: "center", marginTop: 14 }}>
+              <button onClick={() => setShowCount(c => c + 20)} style={{ background: accentColor, color: "#fff", border: "none", borderRadius: 8, padding: "8px 20px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Show 20 more ({filtered.length - showCount} remaining)</button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -960,9 +1072,7 @@ export default function GenericDashboard(props: GenericDashboardProps) {
   }
 
   const TABS = [
-    "Overview", "Channels", "Creatives", "Moods", "Site Pages",
-    ...(audienceSegment ? ["Audience"] : []),
-    "People",
+    "Overview", "Channels", "Creatives", "Moods", "Site Pages", "People",
   ];
 
   const tabContent = [
@@ -971,8 +1081,7 @@ export default function GenericDashboard(props: GenericDashboardProps) {
     <TabCreatives mobile={mobile} C={C} creatives={creatives} />,
     <TabMoods mobile={mobile} C={C} moods={moods} />,
     <TabSitePages mobile={mobile} C={C} sitePages={sitePages} label={sitePagesLabel} dailyImpressions={dailyImpressions} accentColor={client.accentColor} />,
-    ...(audienceSegment && audienceSegmentStats ? [<TabAudienceSegment mobile={mobile} C={C} accentColor={client.accentColor} people={audienceSegment} stats={audienceSegmentStats} />] : []),
-    <TabPeople mobile={mobile} C={C} dashboardId={client.dashboardId as BuyerProfile["dashboardId"]} accentColor={client.accentColor} />,
+    <TabPeople mobile={mobile} C={C} dashboardId={client.dashboardId as BuyerProfile["dashboardId"]} accentColor={client.accentColor} audienceSegment={audienceSegment} audienceSegmentStats={audienceSegmentStats} />,
   ];
 
   return (

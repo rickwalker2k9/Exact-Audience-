@@ -28,7 +28,7 @@ export type MediaRecommendation = {
 
 export type BuyerProfile = {
   id: string;
-  dashboardId: "land-rover" | "lamborghini" | "warby-parker" | "policygenius" | "mccarty";
+  dashboardId: "land-rover" | "lamborghini" | "warby-parker" | "policygenius" | "mccarty" | "breeze-insurance";
   name: string;
   age: number;
   location: string;

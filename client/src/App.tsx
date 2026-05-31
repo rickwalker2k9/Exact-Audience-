@@ -15,6 +15,7 @@ import PolicyGeniusDashboard from "./pages/PolicyGeniusDashboard";
 import CampaignPlaceholder from "./pages/CampaignPlaceholder";
 import BuyerProfilePage from "./pages/BuyerProfilePage";
 import McCartryDashboard from "./pages/McCartryDashboard";
+import BreezeDashboard from "./pages/BreezeDashboard";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/warby-parker" component={WarbyDashboard} />
       <Route path="/policygenius" component={PolicyGeniusDashboard} />
       <Route path="/mccarty" component={McCartryDashboard} />
+      <Route path="/breeze-insurance" component={BreezeDashboard} />
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />
