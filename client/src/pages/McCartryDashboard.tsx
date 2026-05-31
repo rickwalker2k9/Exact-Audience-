@@ -246,6 +246,43 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         </div>
       </Card>
 
+      {/* Campaign Message & Issues */}
+      <Card C={C}>
+        <SectionTitle C={C}>Campaign Messaging — Colleen McCarty for DA</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 16 }}>
+          {/* Closing message from debate */}
+          <div style={{ background: `${C.red2}0d`, border: `1px solid ${C.red2}30`, borderRadius: 12, padding: 16 }}>
+            <div style={{ fontSize: 10, color: C.red2, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 8 }}>Closing Statement — May 28 Debate</div>
+            <div style={{ fontSize: 13, color: C.white, lineHeight: 1.6, fontStyle: "italic", marginBottom: 8 }}>
+              &ldquo;I will build a tough and ethical justice system that protects victims, holds criminals accountable, and restores trust in the DA&rsquo;s office.&rdquo;
+            </div>
+            <div style={{ fontSize: 10, color: C.muted }}>News on 6 / KOTV · May 28, 2026</div>
+          </div>
+          {/* Race stakes */}
+          <div style={{ background: `${C.green}0d`, border: `1px solid ${C.green}30`, borderRadius: 12, padding: 16 }}>
+            <div style={{ fontSize: 10, color: C.green, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 8 }}>Why This Race Matters</div>
+            <div style={{ fontSize: 12, color: C.white, lineHeight: 1.7 }}>
+              Republican primary winner <strong style={{ color: C.green }}>IS the next Tulsa County DA</strong> — no Democratic opponent in the general. The winner of June 16 takes office. This is the election.
+            </div>
+          </div>
+        </div>
+        {/* Key Issues */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Key Issues Driving Voter Movement</div>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 10 }}>
+          {[
+            { icon: "⚖️", label: "Accountability", desc: "Challenging Kunzweiler's 12-year record — calling for fresh leadership and prosecutorial reform", color: C.red2 },
+            { icon: "🛡️", label: "Domestic Violence Reform", desc: "Championed the Oklahoma Survivors Act — protecting DV victims through policy change", color: C.blue },
+            { icon: "🔍", label: "Richard Glossip Case", desc: "Raised concerns about the Glossip execution — accountability and integrity in capital cases", color: C.gold },
+          ].map(issue => (
+            <div key={issue.label} style={{ background: C.bg3, borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 18, marginBottom: 6 }}>{issue.icon}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: issue.color, marginBottom: 4 }}>{issue.label}</div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{issue.desc}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
       {/* SiteID Voter Feed — moved below media mix */}
       <VoterFeed C={C} />
     </div>
@@ -1144,6 +1181,25 @@ export default function McCartryDashboard() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Race Context Banner */}
+      <div style={{ background: isDark ? "#0a1020" : "#e8f0f8", borderBottom: `1px solid ${C.border}`, padding: mobile ? "8px 16px" : "9px 28px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, background: `${C.red2}18`, border: `1px solid ${C.red2}40`, borderRadius: 20, padding: "3px 10px", flexShrink: 0 }}>
+          <span style={{ fontSize: 9, fontWeight: 800, color: C.red2, textTransform: "uppercase", letterSpacing: "0.1em" }}>🗳️ Republican Primary</span>
+        </div>
+        <span style={{ fontSize: 10, color: C.muted }}>·</span>
+        <span style={{ fontSize: 10, color: C.white, fontWeight: 600 }}>June 16, 2026</span>
+        <span style={{ fontSize: 10, color: C.muted }}>·</span>
+        <span style={{ fontSize: 10, color: C.muted }}>2-person race: McCarty vs. Kunzweiler</span>
+        <span style={{ fontSize: 10, color: C.muted }}>·</span>
+        <span style={{ fontSize: 10, color: C.green, fontWeight: 700 }}>Winner becomes next Tulsa County DA — no general election opponent</span>
+        {!mobile && (
+          <>
+            <span style={{ fontSize: 10, color: C.muted }}>·</span>
+            <span style={{ fontSize: 10, color: C.muted }}>~191,000 eligible Republican voters · Win threshold: ~16,001 votes</span>
+          </>
+        )}
       </div>
 
       {/* Tabs */}
