@@ -14,7 +14,7 @@ export const MCCARTY_VOTER_PROFILES: BuyerProfile[] = [
     dashboardId: "mccarty",
     name: "Carol Bentley",
     age: 68,
-    location: "Muskogee, OK 74403",
+    location: "Tulsa, OK 74136",
     occupation: "Retired Educator",
     avatar: "CB",
     avatarColor: "#2a6496",

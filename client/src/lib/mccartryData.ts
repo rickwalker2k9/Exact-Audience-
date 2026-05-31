@@ -72,10 +72,10 @@ export const MCCARTY_MOVED_VOTERS = [
   { id: "mv-012", name: "Matthew Enslein",  city: "Sand Springs",  originalIntent: "Undecided", currentIntent: "McCarty", exposures: 5, lastSignal: "Google search 'Tulsa DA race' + site visit 2x", movedDate: "May 28", score: 77 },
   // Still undecided — in progress
   { id: "mv-013", name: "Janis Vogel",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Undecided", exposures: 3, lastSignal: "CTV 3x completion — near threshold", movedDate: null, score: 71 },
-  { id: "mv-014", name: "Michael Beumer",   city: "Collinsville",  originalIntent: "Undecided", currentIntent: "Undecided", exposures: 2, lastSignal: "YouTube pre-roll completion", movedDate: null, score: 64 },
+  { id: "mv-014", name: "Michael Beumer",   city: "Owasso",        originalIntent: "Undecided", currentIntent: "Undecided", exposures: 2, lastSignal: "YouTube pre-roll completion", movedDate: null, score: 64 },
   { id: "mv-015", name: "Regina Brutus",    city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Undecided", exposures: 4, lastSignal: "Meta ad engagement — 'Accountability' creative", movedDate: null, score: 74 },
   { id: "mv-016", name: "Irene Epifani",    city: "Sapulpa",       originalIntent: "Undecided", currentIntent: "Undecided", exposures: 3, lastSignal: "Visited site — 1:12 session, did not convert", movedDate: null, score: 68 },
-  { id: "mv-017", name: "Dan Sandberg",     city: "Collinsville",  originalIntent: "Undecided", currentIntent: "Undecided", exposures: 4, lastSignal: "Google search + CTV 2x — needs 1–2 more", movedDate: null, score: 72 },
+  { id: "mv-017", name: "Dan Sandberg",     city: "Owasso",        originalIntent: "Undecided", currentIntent: "Undecided", exposures: 4, lastSignal: "Google search + CTV 2x — needs 1–2 more", movedDate: null, score: 72 },
   // Moved toward Kunzweiler
   { id: "mv-018", name: "Jose Martin",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 2, lastSignal: "Visited Kunzweiler campaign site after CTV impression", movedDate: "May 29", score: 41 },
   { id: "mv-019", name: "Brian Horn",       city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 1, lastSignal: "Watched Kunzweiler TV ad — no McCarty exposure yet", movedDate: "May 28", score: 38 },
@@ -149,7 +149,7 @@ export const MCCARTY_VISITORS = [
   { id: "v19", name: "Patricia Foster",  city: "Tulsa",          mood: "DV Reform Voters",       score: 90, signal: "Watched endorsement ad on Court TV",        intent: "McCarty"    as const },
   { id: "v20", name: "Richard Stokes",   city: "Tulsa",          mood: "Glossip / Integrity",    score: 88, signal: "Searched 'Colleen McCarty prosecutor'",     intent: "McCarty"    as const },
   { id: "v21", name: "Janis Vogel",      city: "Tulsa",          mood: "Undecided",              score: 71, signal: "CTV 3x completion — 2 more needed",         intent: "Undecided"  as const },
-  { id: "v22", name: "Dan Sandberg",     city: "Collinsville",   mood: "Undecided",              score: 72, signal: "Google search + CTV 2x — near threshold",   intent: "Undecided"  as const },
+    { id: "v22", name: "Dan Sandberg",      city: "Owasso",         mood: "Undecided",              score: 72, signal: "Google search + CTV 2x — near threshold",   intent: "Undecided"  as const },
   { id: "v23", name: "Regina Brutus",    city: "Tulsa",          mood: "Undecided",              score: 74, signal: "Meta ad engagement — needs 1 more touch",   intent: "Undecided"  as const },
   { id: "v24", name: "Jose Martin",      city: "Tulsa",          mood: "Accountability Voters",  score: 41, signal: "Visited Kunzweiler site after CTV impression", intent: "Kunzweiler" as const },
   { id: "v25", name: "Gary Tian",        city: "Owasso",         mood: "Accountability Voters",  score: 78, signal: "CTV 5x completion — moved to McCarty",      intent: "Moved→McCarty" as const },
