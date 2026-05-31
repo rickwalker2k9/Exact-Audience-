@@ -941,6 +941,93 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
+// ── CTV Channel Table with tier grouping and show-more toggle ────────────────
+function CtvChannelTable({ mobile, C }: { mobile: boolean; C: C }) {
+  const [showAll, setShowAll] = useState(false);
+  const topChannels = MCCARTY_CTV_CHANNELS.filter(ch => (ch as any).tier === "top");
+  const midChannels = MCCARTY_CTV_CHANNELS.filter(ch => (ch as any).tier === "mid");
+  const lowChannels = MCCARTY_CTV_CHANNELS.filter(ch => (ch as any).tier === "low");
+  const visibleMid = showAll ? midChannels : midChannels.slice(0, 8);
+  const visibleLow = showAll ? lowChannels : [];
+
+  const ChannelRow = ({ ch, i }: { ch: typeof MCCARTY_CTV_CHANNELS[0]; i: number }) => {
+    const logoUrl = getNetworkLogo(ch.name);
+    const initials = getNetworkInitials(ch.name);
+    return (
+      <tr key={ch.name} style={{ background: i % 2 === 0 ? "transparent" : C.bg3 }}>
+        <td style={{ padding: "7px 10px", color: C.white, fontWeight: 600 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            {logoUrl ? (
+              <img src={logoUrl} alt={ch.name} width={22} height={22}
+                style={{ borderRadius: 4, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
+                onError={(e) => { const img = e.target as HTMLImageElement; img.style.display="none"; }}
+              />
+            ) : (
+              <span style={{ width: 22, height: 22, borderRadius: 4, background: ch.color, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 7, fontWeight: 800, color: "#fff" }}>{initials}</span>
+            )}
+            <span style={{ fontSize: 12 }}>{ch.name}</span>
+            {(ch as any).local && <span style={{ fontSize: 8, fontWeight: 700, background: "#10b98122", color: "#10b981", border: "1px solid #10b98144", borderRadius: 10, padding: "1px 5px", textTransform: "uppercase" }}>LOCAL</span>}
+          </div>
+        </td>
+        <td style={{ padding: "7px 10px", color: C.white, fontSize: 12 }}>{fmt(ch.impressions)}</td>
+        <td style={{ padding: "7px 10px", color: C.white, fontSize: 12 }}>{fmt(ch.completions)}</td>
+        <td style={{ padding: "7px 10px", color: C.gold, fontSize: 12 }}>${ch.cpm.toFixed(2)}</td>
+        {!mobile && <td style={{ padding: "7px 10px", color: C.white, fontSize: 12 }}>{ch.frequency.toFixed(2)}x</td>}
+        <td style={{ padding: "7px 10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <ProgressBar value={ch.completionRate} max={100} color={ch.color} C={C} />
+            <span style={{ fontSize: 10, fontWeight: 700, color: ch.color, minWidth: 32 }}>{ch.completionRate}%</span>
+          </div>
+        </td>
+      </tr>
+    );
+  };
+
+  const TableHeader = () => (
+    <thead>
+      <tr>
+        {["Channel", "Impressions", "Completions", "CPM", ...(!mobile ? ["Frequency"] : []), "Completion %"].map(h => (
+          <th key={h} style={{ textAlign: "left", padding: "7px 10px", fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: `1px solid ${C.border}` }}>{h}</th>
+        ))}
+      </tr>
+    </thead>
+  );
+
+  const TierLabel = ({ label, count }: { label: string; count: number }) => (
+    <tr>
+      <td colSpan={mobile ? 5 : 6} style={{ padding: "10px 10px 4px", fontSize: 9, fontWeight: 800, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", borderTop: `1px solid ${C.border}` }}>
+        {label} <span style={{ color: C.blue, marginLeft: 4 }}>{count} channels</span>
+      </td>
+    </tr>
+  );
+
+  return (
+    <Card C={C}>
+      <SectionTitle C={C}>CTV Channel Performance — All 74 Channels</SectionTitle>
+      <div style={{ fontSize: 11, color: C.muted, marginBottom: 12 }}>Showing all active channels. Local Tulsa stations highlighted. Sorted by impression volume.</div>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <TableHeader />
+          <tbody>
+            <TierLabel label="Top Tier" count={topChannels.length} />
+            {topChannels.map((ch, i) => <ChannelRow key={ch.name} ch={ch} i={i} />)}
+            <TierLabel label="Mid Tier" count={midChannels.length} />
+            {visibleMid.map((ch, i) => <ChannelRow key={ch.name} ch={ch} i={i} />)}
+            {showAll && <TierLabel label="Lower Tier" count={lowChannels.length} />}
+            {visibleLow.map((ch, i) => <ChannelRow key={ch.name} ch={ch} i={i} />)}
+          </tbody>
+        </table>
+      </div>
+      <button
+        onClick={() => setShowAll(v => !v)}
+        style={{ marginTop: 12, padding: "7px 16px", background: "transparent", border: `1px solid ${C.border}`, borderRadius: 8, color: C.muted, fontSize: 11, cursor: "pointer", width: "100%" }}
+      >
+        {showAll ? `▲ Show fewer channels` : `▼ Show all 74 channels (${midChannels.length - 8} more mid + ${lowChannels.length} lower tier)`}
+      </button>
+    </Card>
+  );
+}
+
 // ── TAB: CTV Performance ──────────────────────────────────────────────────────
 function TabCTV({ mobile, C }: { mobile: boolean; C: C }) {
   return (
@@ -949,70 +1036,10 @@ function TabCTV({ mobile, C }: { mobile: boolean; C: C }) {
         <KpiCard label="CTV Impressions" value="2.11M" sub="74% of total campaign" color={C.red2} C={C} />
         <KpiCard label="Avg Completion Rate" value="90.4%" sub="Across all CTV channels" color={C.green} C={C} />
         <KpiCard label="Avg CPM" value="$17.82" sub="Blended CTV rate" color={C.gold} C={C} />
-        <KpiCard label="Channels Active" value="13" sub="Samsung, Tubi, Fox News + 10 more" color={C.blue} C={C} />
+        <KpiCard label="Channels Active" value="74" sub="Samsung, Tubi, FOX 23 Tulsa + 71 more" color={C.blue} C={C} />
       </div>
 
-      <Card C={C}>
-        <SectionTitle C={C}>CTV Channel Performance — Impressions & Completion Rate</SectionTitle>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-            <thead>
-              <tr>
-                {["Channel", "Impressions", "Completions", "CPM", "Frequency", "Completion %"].map(h => (
-                  <th key={h} style={{ textAlign: "left", padding: "8px 10px", fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: `1px solid ${C.border}` }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {MCCARTY_CTV_CHANNELS.map((ch, i) => (
-                <tr key={ch.name} style={{ background: i % 2 === 0 ? "transparent" : C.bg3 }}>
-                  <td style={{ padding: "8px 10px", color: C.white, fontWeight: 600 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      {(() => {
-                        const logoUrl = getNetworkLogo(ch.name);
-                        const initials = getNetworkInitials(ch.name);
-                        const InitialsBadge = () => (
-                          <span style={{ width: 24, height: 24, borderRadius: 5, background: ch.color, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", letterSpacing: 0 }}>{initials}</span>
-                        );
-                        return logoUrl ? (
-                          <img
-                            src={logoUrl}
-                            alt={ch.name}
-                            width={24}
-                            height={24}
-                            style={{ borderRadius: 5, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
-                            onError={(e) => {
-                              const img = e.target as HTMLImageElement;
-                              const badge = document.createElement("span");
-                              badge.style.cssText = `width:24px;height:24px;border-radius:5px;background:${ch.color};flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff`;
-                              badge.textContent = initials;
-                              img.parentNode?.insertBefore(badge, img);
-                              img.style.display = "none";
-                            }}
-                          />
-                        ) : (
-                          <InitialsBadge />
-                        );
-                      })()}
-                      {ch.name}
-                    </div>
-                  </td>
-                  <td style={{ padding: "8px 10px", color: C.white }}>{fmt(ch.impressions)}</td>
-                  <td style={{ padding: "8px 10px", color: C.white }}>{fmt(ch.completions)}</td>
-                  <td style={{ padding: "8px 10px", color: C.gold }}>${ch.cpm.toFixed(2)}</td>
-                  <td style={{ padding: "8px 10px", color: C.white }}>{ch.frequency.toFixed(2)}x</td>
-                  <td style={{ padding: "8px 10px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <ProgressBar value={ch.completionRate} max={100} color={ch.color} C={C} />
-                      <span style={{ fontSize: 11, fontWeight: 700, color: ch.color, minWidth: 36 }}>{ch.completionRate}%</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+      <CtvChannelTable mobile={mobile} C={C} />
 
       <Card C={C}>
         <SectionTitle C={C}>Creative Performance — 2 Ads Rotating Evenly</SectionTitle>
