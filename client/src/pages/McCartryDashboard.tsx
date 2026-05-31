@@ -95,7 +95,7 @@ function Card({ children, style, C }: { children: React.ReactNode; style?: React
 function ProgressBar({ value, max, color, C }: { value: number; max: number; color?: string; C: C }) {
   return (
     <div style={{ background: C.bg3, borderRadius: 4, height: 6, overflow: "hidden" }}>
-      <div style={{ width: `${Math.min(100, (value / max) * 100)}%`, background: color ?? C.red, height: "100%", borderRadius: 4, transition: "width 0.6s ease" }} />
+      <div style={{ width: `${Math.min(100, (value / max) * 100)}%`, background: color ?? C.blue, height: "100%", borderRadius: 4, transition: "width 0.6s ease" }} />
     </div>
   );
 }
@@ -186,7 +186,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
           <ResponsiveContainer width="100%" height={mobile ? 180 : 220}>
             <AreaChart data={chartData}>
               <defs>
-                {[["gCTV", C.red], ["gMeta", "#1877f2"], ["gYT", "#e05a6a"]].map(([id, color]) => (
+                {[["gCTV", C.blue], ["gMeta", "#1877f2"], ["gYT", "#e05a6a"]].map(([id, color]) => (
                   <linearGradient key={id} id={id} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={color} stopOpacity={0.4} />
                     <stop offset="95%" stopColor={color} stopOpacity={0} />
@@ -207,7 +207,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
                   label={{ value: lbl === "13" ? "📺 Debate" : "▶ Replay", position: "top", fill: C.gold, fontSize: 9, fontWeight: 700 }}
                 />
               ))}
-              <Area type="monotone" dataKey="CTV" stroke={C.red} fill="url(#gCTV)" strokeWidth={2} />
+              <Area type="monotone" dataKey="CTV" stroke={C.blue} fill="url(#gCTV)" strokeWidth={2} />
               <Area type="monotone" dataKey="Meta" stroke="#1877f2" fill="url(#gMeta)" strokeWidth={1.5} />
               <Area type="monotone" dataKey="YouTube" stroke="#e05a6a" fill="url(#gYT)" strokeWidth={1.5} />
             </AreaChart>
@@ -380,10 +380,10 @@ function VoteMovementTracker({ C, mobile }: { C: C; mobile: boolean }) {
     <div style={{ background: C.card, border: `1px solid ${C.red2}33`, borderRadius: 16, padding: 24, marginBottom: 16 }}>
 
       {/* ── Day X of 18 Campaign Timeline Strip ── */}
-      <div style={{ background: `${C.red}0d`, border: `1px solid ${C.red}33`, borderRadius: 10, padding: "12px 16px", marginBottom: 20 }}>
+      <div style={{ background: `${C.blue}0d`, border: `1px solid ${C.blue}33`, borderRadius: 10, padding: "12px 16px", marginBottom: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 13, fontWeight: 900, color: C.red }}>📅 Day {dayNum} of 18</span>
+            <span style={{ fontSize: 13, fontWeight: 900, color: C.blue }}>📅 Day {dayNum} of 18</span>
             <span style={{ fontSize: 11, color: C.muted }}>Campaign Timeline · Started May 28</span>
           </div>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
@@ -399,15 +399,15 @@ function VoteMovementTracker({ C, mobile }: { C: C; mobile: boolean }) {
           </div>
         </div>
         {/* Progress bar */}
-        <div style={{ background: `${C.red}22`, borderRadius: 6, height: 10, overflow: "hidden", position: "relative" }}>
-          <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${campaignPct}%`, background: `linear-gradient(90deg, ${C.red}, ${C.red2})`, borderRadius: 6, transition: "width 0.6s ease" }} />
+        <div style={{ background: `${C.blue}22`, borderRadius: 6, height: 10, overflow: "hidden", position: "relative" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${campaignPct}%`, background: `linear-gradient(90deg, ${C.blue}, ${C.red2})`, borderRadius: 6, transition: "width 0.6s ease" }} />
         </div>
         {/* Day tick marks */}
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
           {[1, 3, 6, 9, 12, 15, 18].map(d => (
             <div key={d} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-              <div style={{ width: 1, height: 4, background: d <= dayNum ? C.red : C.border }} />
-              <span style={{ fontSize: 9, color: d <= dayNum ? C.red : C.muted, fontWeight: d === dayNum ? 900 : 400 }}>D{d}</span>
+              <div style={{ width: 1, height: 4, background: d <= dayNum ? C.blue : C.border }} />
+              <span style={{ fontSize: 9, color: d <= dayNum ? C.blue : C.muted, fontWeight: d === dayNum ? 900 : 400 }}>D{d}</span>
             </div>
           ))}
         </div>
@@ -755,9 +755,9 @@ function TabDebate({ mobile, C }: { mobile: boolean; C: C }) {
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                   <span style={{
                     fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 20,
-                    background: r.retargetPriority === "URGENT" ? `${C.red}33` : r.retargetPriority === "HIGH" ? `${C.green}22` : `${C.gold}22`,
+                    background: r.retargetPriority === "URGENT" ? `${C.blue}33` : r.retargetPriority === "HIGH" ? `${C.green}22` : `${C.gold}22`,
                     color: r.retargetPriority === "URGENT" ? C.red2 : r.retargetPriority === "HIGH" ? C.green : C.gold,
-                    border: `1px solid ${r.retargetPriority === "URGENT" ? C.red + "44" : r.retargetPriority === "HIGH" ? C.green + "33" : C.gold + "33"}`,
+                    border: `1px solid ${r.retargetPriority === "URGENT" ? C.blue + "44" : r.retargetPriority === "HIGH" ? C.green + "33" : C.gold + "33"}`,
                     textTransform: "uppercase", letterSpacing: "0.08em",
                   }}>{r.retargetPriority}</span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: C.white }}>{r.label}</span>
@@ -1218,12 +1218,12 @@ export default function McCartryDashboard() {
       {/* Campaign Day Progress Bar */}
       <div style={{ background: isDark ? "#080c18" : "#eef3f8", borderBottom: `1px solid ${C.border}`, padding: mobile ? "8px 16px" : "10px 28px", display: "flex", alignItems: "center", gap: mobile ? 10 : 20, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <span style={{ fontSize: 10, fontWeight: 800, color: C.red, textTransform: "uppercase", letterSpacing: "0.1em" }}>Day {campaign.dayNum} of 18</span>
+          <span style={{ fontSize: 10, fontWeight: 800, color: C.blue, textTransform: "uppercase", letterSpacing: "0.1em" }}>Day {campaign.dayNum} of 18</span>
           <span style={{ fontSize: 10, color: C.muted }}>·</span>
           <span style={{ fontSize: 10, color: C.muted }}>{campaign.daysLeft} days to June 16</span>
         </div>
         <div style={{ flex: 1, minWidth: 120, height: 6, background: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)", borderRadius: 3, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${(campaign.dayNum / 18) * 100}%`, background: `linear-gradient(90deg, ${C.red}, ${C.red2})`, borderRadius: 3, transition: "width 0.6s ease" }} />
+          <div style={{ height: "100%", width: `${(campaign.dayNum / 18) * 100}%`, background: `linear-gradient(90deg, ${C.blue}, ${C.red2})`, borderRadius: 3, transition: "width 0.6s ease" }} />
         </div>
         <div style={{ display: "flex", gap: mobile ? 12 : 24, flexShrink: 0 }}>
           <div style={{ textAlign: "center" }}>
