@@ -22,6 +22,7 @@ import {
   MCCARTY_DEBATE_ENGAGEMENT, MCCARTY_VOTER_SEGMENTS,
   MCCARTY_VOTE_TARGET, MCCARTY_MOVED_VOTERS
 } from "@/lib/mccartryData";
+import { MCCARTY_PEOPLE_SEGMENT, SEGMENT_STATS, type VoterRecord } from "@/lib/mccartryPeopleSegment";
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 // McCarty palette: NO RED — deep navy + teal accent + gold
@@ -1119,6 +1120,141 @@ function TabVoterProfiles({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
+// ── TAB: People Segment ──────────────────────────────────────────────────────
+function TabPeopleSegment({ mobile, C }: { mobile: boolean; C: C }) {
+  const [search, setSearch] = useState("");
+  const [filterCity, setFilterCity] = useState("All");
+  const [filterGender, setFilterGender] = useState("All");
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [sortBy, setSortBy] = useState<"name" | "age" | "score">("score");
+
+  const cities = ["All", ...Array.from(new Set(MCCARTY_PEOPLE_SEGMENT.map(v => v.city))).sort()];
+  const statusColors: Record<VoterRecord["status"], string> = {
+    moved: "#4ade80",
+    engaged: C.blue,
+    reached: C.gold,
+    pending: C.muted,
+  };
+  const statusLabels: Record<VoterRecord["status"], string> = {
+    moved: "✓ Moved",
+    engaged: "◉ Engaged",
+    reached: "◎ Reached",
+    pending: "○ Pending",
+  };
+
+  const filtered = MCCARTY_PEOPLE_SEGMENT
+    .filter(v => {
+      const q = search.toLowerCase();
+      const nameMatch = !q || `${v.firstName} ${v.lastName}`.toLowerCase().includes(q) || v.city.toLowerCase().includes(q) || v.zip.includes(q);
+      const cityMatch = filterCity === "All" || v.city === filterCity;
+      const genderMatch = filterGender === "All" || v.gender === filterGender;
+      const statusMatch = filterStatus === "All" || v.status === filterStatus;
+      return nameMatch && cityMatch && genderMatch && statusMatch;
+    })
+    .sort((a, b) => {
+      if (sortBy === "name") return a.lastName.localeCompare(b.lastName);
+      if (sortBy === "age") return b.age - a.age;
+      return b.persuasionScore - a.persuasionScore;
+    });
+
+  const movedCount = MCCARTY_PEOPLE_SEGMENT.filter(v => v.status === "moved").length;
+  const engagedCount = MCCARTY_PEOPLE_SEGMENT.filter(v => v.status === "engaged").length;
+
+  return (
+    <div style={{ padding: mobile ? "12px" : "20px 28px" }}>
+      {/* Header stats */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 10, marginBottom: 16 }}>
+        {[
+          { label: "Target Universe", value: "83,076", sub: "45+ Tulsa County GOP", color: C.blue },
+          { label: "Voters Reached", value: "68,420", sub: "82% of universe", color: C.gold },
+          { label: "Moved to McCarty", value: "1,120", sub: "Day 4 total", color: "#4ade80" },
+          { label: "Mobile Reachable", value: "87%", sub: "Have mobile on file", color: C.blue },
+        ].map(s => (
+          <div key={s.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 14px" }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: C.white, marginTop: 2 }}>{s.label}</div>
+            <div style={{ fontSize: 10, color: C.muted }}>{s.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 14, display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search name, city, ZIP…"
+          style={{ flex: "1 1 180px", background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 7, padding: "7px 12px", color: C.white, fontSize: 12, outline: "none" }}
+        />
+        {[
+          { label: "City", value: filterCity, set: setFilterCity, opts: cities },
+          { label: "Gender", value: filterGender, set: setFilterGender, opts: ["All", "F", "M"] },
+          { label: "Status", value: filterStatus, set: setFilterStatus, opts: ["All", "moved", "engaged", "reached", "pending"] },
+          { label: "Sort", value: sortBy, set: (v: string) => setSortBy(v as "name" | "age" | "score"), opts: ["score", "name", "age"] },
+        ].map(f => (
+          <select key={f.label} value={f.value} onChange={e => f.set(e.target.value)}
+            style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 7, padding: "7px 10px", color: C.white, fontSize: 11, cursor: "pointer" }}>
+            {f.opts.map(o => <option key={o} value={o}>{f.label === "Sort" ? `Sort: ${o}` : o === "All" ? `${f.label}: All` : o}</option>)}
+          </select>
+        ))}
+        <span style={{ fontSize: 11, color: C.muted, marginLeft: "auto" }}>{filtered.length} of {MCCARTY_PEOPLE_SEGMENT.length} shown</span>
+      </div>
+
+      {/* Voter grid */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(2, 1fr)", gap: 10 }}>
+        {filtered.map(voter => (
+          <div key={voter.id} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 14px", borderLeft: `3px solid ${statusColors[voter.status]}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: "50%", background: statusColors[voter.status] + "33", border: `2px solid ${statusColors[voter.status]}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: statusColors[voter.status], flexShrink: 0 }}>
+                  {voter.firstName[0]}{voter.lastName[0]}
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.white }}>{voter.firstName} {voter.lastName}</div>
+                  <div style={{ fontSize: 10, color: C.muted }}>{voter.city}, OK {voter.zip} · Age {voter.age} · {voter.gender === "F" ? "Female" : "Male"}</div>
+                </div>
+              </div>
+              <span style={{ fontSize: 9, fontWeight: 700, background: statusColors[voter.status] + "22", color: statusColors[voter.status], border: `1px solid ${statusColors[voter.status]}44`, borderRadius: 20, padding: "2px 8px", whiteSpace: "nowrap" }}>
+                {statusLabels[voter.status]}
+              </span>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 8 }}>
+              <div style={{ background: C.bg3, borderRadius: 6, padding: "5px 6px", textAlign: "center" }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: C.blue }}>{voter.adsSeen}</div>
+                <div style={{ fontSize: 8, color: C.muted }}>Ads Seen</div>
+              </div>
+              <div style={{ background: C.bg3, borderRadius: 6, padding: "5px 6px", textAlign: "center" }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: C.gold }}>{voter.completionRate}%</div>
+                <div style={{ fontSize: 8, color: C.muted }}>Completion</div>
+              </div>
+              <div style={{ background: C.bg3, borderRadius: 6, padding: "5px 6px", textAlign: "center" }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: statusColors[voter.status] }}>{voter.persuasionScore}</div>
+                <div style={{ fontSize: 8, color: C.muted }}>Persuasion</div>
+              </div>
+              <div style={{ background: C.bg3, borderRadius: 6, padding: "5px 6px", textAlign: "center" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: C.white }}>{voter.hasMobile ? "📱" : "📞"}</div>
+                <div style={{ fontSize: 8, color: C.muted }}>{voter.hasMobile ? "Mobile" : "Landline"}</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 9, color: C.muted }}>Issue:</span>
+              <span style={{ fontSize: 9, fontWeight: 700, background: C.blue + "22", color: C.blue, border: `1px solid ${C.blue}33`, borderRadius: 10, padding: "1px 6px" }}>{voter.mood}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {filtered.length === 0 && (
+        <div style={{ textAlign: "center", padding: "40px 20px", color: C.muted, fontSize: 13 }}>No voters match your filters.</div>
+      )}
+
+      <div style={{ marginTop: 16, padding: "10px 14px", background: C.bg3, borderRadius: 8, fontSize: 10, color: C.muted, textAlign: "center" }}>
+        Showing a representative sample of 60 voters from the 83,076-voter Tulsa County GOP 45+ target universe. Full list: 111,000 registered GOP voters on file.
+      </div>
+    </div>
+  );
+}
+
 // ── Campaign Day Calculator ──────────────────────────────────────────────────
 function getCampaignDay() {
   const start = new Date("2026-05-28");
@@ -1147,7 +1283,7 @@ function getCampaignDay() {
 }
 
 // ── Main Dashboard ────────────────────────────────────────────────────────────
-const TABS = ["Overview", "Voter Intel", "Debate", "Vote Projections", "CTV", "Voter Profiles"];
+const TABS = ["Overview", "Voter Intel", "Debate", "Vote Projections", "CTV", "People Segment", "Voter Profiles"];
 
 export default function McCartryDashboard() {
   const [tab, setTab] = useState(0);
@@ -1192,6 +1328,7 @@ export default function McCartryDashboard() {
     <TabDebate mobile={mobile} C={C} />,
     <TabVoteProjections mobile={mobile} C={C} />,
     <TabCTV mobile={mobile} C={C} />,
+    <TabPeopleSegment mobile={mobile} C={C} />,
     <TabVoterProfiles mobile={mobile} C={C} />,
   ];
 
