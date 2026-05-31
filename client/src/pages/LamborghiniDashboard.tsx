@@ -14,7 +14,7 @@ import { LAMBORGHINI_WEB_TRAFFIC } from "@/lib/webTrafficData";
 const LAMBO_SITE_PAGES = [
   { label: "Urus",         views: 11284, avgTime: "4:42", bounce: 24, color: "#d4a017" },
   { label: "Huracán",      views: 7412,  avgTime: "4:18", bounce: 27, color: "#f59e0b" },
-  { label: "Revuelto",     views: 5284,  avgTime: "5:01", bounce: 22, color: "#ef4444" },
+  { label: "Revuelto",     views: 5284,  avgTime: "5:01", bounce: 22, color: "#14b8a6" },
   { label: "Build & Price",views: 9847,  avgTime: "7:24", bounce: 16, color: "#4ade80" },
   { label: "Inventory",    views: 8412,  avgTime: "3:58", bounce: 31, color: "#38bdf8" },
   { label: "Contact Us",   views: 4184,  avgTime: "2:14", bounce: 44, color: "#a78bfa" },

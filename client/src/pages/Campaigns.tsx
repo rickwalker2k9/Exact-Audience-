@@ -207,7 +207,7 @@ export default function Campaigns() {
         <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ width: 10, height: 10, background: "#a855f7", borderRadius: "50%", boxShadow: "0 0 14px #a855f7", animation: "pulse-dot 2s ease-in-out infinite" }} />
-            <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: "0.18em", color: "#f1f5f9" }}>EXACT AUDIENCE</span>
+            <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: 26, objectFit: "contain", filter: "brightness(1.1)" }} />
             <span style={{ color: "#4a5568", margin: "0 4px" }}>|</span>
             <span style={{ fontSize: 13, color: "#8892b0", fontWeight: 500 }}>Campaign Intelligence</span>
           </div>

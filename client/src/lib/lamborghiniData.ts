@@ -68,7 +68,7 @@ export const LAMBO_MEDIA_MIX = [
   { channel: "QR Activation",   impressions: 412800,  spend: 8900,  pct: 7.9,  color: "#f59e0b" },
   { channel: "Meta Ads",        impressions: 387200,  spend: 8300,  pct: 7.4,  color: "#1877f2" },
   { channel: "Google Ads",      impressions: 248700,  spend: 5300,  pct: 4.8,  color: "#34a853" },
-  { channel: "YouTube",         impressions: 187400,  spend: 4000,  pct: 3.6,  color: "#ff0000" },
+  { channel: "YouTube",         impressions: 187400,  spend: 4000,  pct: 3.6,  color: "#60a5fa" },
   { channel: "Email Marketing", impressions: 98700,   spend: 2100,  pct: 1.9,  color: "#7c3aed" },
   { channel: "DSP Display",     impressions: 67300,   spend: 1500,  pct: 1.3,  color: "#0ea5e9" },
 ];
@@ -77,14 +77,14 @@ export const LAMBO_MEDIA_MIX = [
 export const LAMBO_CTV_CHANNELS = [
   { name: "Samsung TV Plus",      impressions: 1024200, completions: 921800, cpm: 18.40, frequency: 2.41, completionRate: 90.0, color: "#1428A0" },
   { name: "Roku Channel",         impressions: 487400,  completions: 438600, cpm: 19.20, frequency: 3.10, completionRate: 89.9, color: "#6C1D45" },
-  { name: "Tubi",                 impressions: 412800,  completions: 330200, cpm: 57.11, frequency: 1.62, completionRate: 80.0, color: "#FA4616" },
+  { name: "Tubi",                 impressions: 412800,  completions: 330200, cpm: 57.11, frequency: 1.62, completionRate: 80.0, color: "#f97316" },
   { name: "Fox News",             impressions: 298400,  completions: 268600, cpm: 22.40, frequency: 2.31, completionRate: 90.0, color: "#003366" },
   { name: "CNBC",                 completions: 187400,  impressions: 187400, cpm: 28.43, frequency: 1.82, completionRate: 100,  color: "#003087" },
   { name: "Fox Business Network", impressions: 164200,  completions: 164200, cpm: 16.10, frequency: 1.71, completionRate: 100,  color: "#003366" },
   { name: "Sling TV",             impressions: 298400,  completions: 252600, cpm: 27.44, frequency: 2.73, completionRate: 84.6, color: "#00AEEF" },
   { name: "Pluto TV",             impressions: 187400,  completions: 159400, cpm: 17.86, frequency: 1.24, completionRate: 85.1, color: "#F7C948" },
   { name: "DIRECTV",              impressions: 198700,  completions: 163200, cpm: 13.91, frequency: 2.04, completionRate: 82.1, color: "#00A8E0" },
-  { name: "ESPN2",                impressions: 87400,   completions: 78700,  cpm: 24.10, frequency: 1.41, completionRate: 90.0, color: "#CC0000" },
+  { name: "ESPN2",                impressions: 87400,   completions: 78700,  cpm: 24.10, frequency: 1.41, completionRate: 90.0, color: "#0369a1" },
   { name: "Golf Channel",         impressions: 164200,  completions: 152700, cpm: 26.80, frequency: 2.14, completionRate: 93.0, color: "#1a6b3c" },
   { name: "Performance Network",  impressions: 201400,  completions: 161100, cpm:  8.77, frequency: 2.11, completionRate: 80.0, color: "#7C3AED" },
 ];

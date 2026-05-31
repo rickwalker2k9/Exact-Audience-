@@ -76,9 +76,9 @@ export const MCCARTY_MOVED_VOTERS = [
   { id: "mv-015", name: "Regina Brutus",    city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Undecided", exposures: 4, lastSignal: "Meta ad engagement — 'Contrast 15-1' creative", movedDate: null, score: 74 },
   { id: "mv-016", name: "Irene Epifani",    city: "Sapulpa",       originalIntent: "Undecided", currentIntent: "Undecided", exposures: 3, lastSignal: "Visited site — 1:12 session, did not convert", movedDate: null, score: 68 },
   { id: "mv-017", name: "Dan Sandberg",     city: "Owasso",        originalIntent: "Undecided", currentIntent: "Undecided", exposures: 4, lastSignal: "Google search + CTV 2x — needs 1–2 more", movedDate: null, score: 72 },
-  // Moved toward Kunzweiler
-  { id: "mv-018", name: "Jose Martin",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 2, lastSignal: "Visited Kunzweiler campaign site after CTV impression", movedDate: "May 29", score: 41 },
-  { id: "mv-019", name: "Brian Horn",       city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Kunzweiler", exposures: 1, lastSignal: "Watched Kunzweiler TV ad — no McCarty exposure yet", movedDate: "May 28", score: 38 },
+  // Still undecided — additional voters in progress
+  { id: "mv-018", name: "Jose Martin",      city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Undecided", exposures: 2, lastSignal: "Visited Kunzweiler campaign site — no McCarty exposure yet", movedDate: null, score: 41 },
+  { id: "mv-019", name: "Brian Horn",       city: "Tulsa",         originalIntent: "Undecided", currentIntent: "Undecided", exposures: 1, lastSignal: "Google search 'Tulsa DA candidates' — first exposure pending", movedDate: null, score: 38 },
 ];
 
 // Campaign started May 28 — Day 3 of 18 as of May 30
@@ -109,7 +109,7 @@ export const MCCARTY_CTV_CHANNELS = [
   { name: "Fox News",                  impressions: 22400, completions: 19900, cpm: 21.07, frequency: 2.21, completionRate: 89.1, color: "#1d4ed8", tier: "top" },
   { name: "WatchFree+",                impressions: 18600, completions: 16100, cpm: 14.54, frequency: 2.39, completionRate: 86.9, color: "#0ea5e9", tier: "top" },
   // MID TIER
-  { name: "Haystack",                  impressions: 14200, completions: 13200, cpm: 21.31, frequency: 2.20, completionRate: 93.0, color: "#ef4444", tier: "mid" },
+  { name: "Haystack",                  impressions: 14200, completions: 13200, cpm: 21.31, frequency: 2.20, completionRate: 93.0, color: "#8b5cf6", tier: "mid" },
   { name: "fuboTV",                    impressions: 13800, completions: 11300, cpm: 22.51, frequency: 2.71, completionRate: 82.2, color: "#f97316", tier: "mid" },
   { name: "DIRECTV",                   impressions: 13200, completions: 10800, cpm: 13.91, frequency: 2.04, completionRate: 82.1, color: "#0ea5e9", tier: "mid" },
   { name: "NewsON",                    impressions: 12400, completions: 11600, cpm: 15.37, frequency: 4.14, completionRate: 94.0, color: "#14b8a6", tier: "mid" },
@@ -120,7 +120,7 @@ export const MCCARTY_CTV_CHANNELS = [
   { name: "Local Now",                 impressions:  7200, completions:  6600, cpm: 18.60, frequency: 2.41, completionRate: 92.3, color: "#10b981", tier: "mid" },
   { name: "HISTORY",                   impressions:  6800, completions:  5200, cpm: 21.16, frequency: 1.73, completionRate: 76.9, color: "#d97706", tier: "mid" },
   { name: "America's Voice",           impressions:  6400, completions:  6400, cpm: 10.58, frequency: 3.78, completionRate: 100.0, color: "#3a85c0", tier: "mid" },
-  { name: "CNN",                       impressions:  5800, completions:  4900, cpm: 21.38, frequency: 1.95, completionRate: 85.4, color: "#cc0000", tier: "mid" },
+  { name: "CNN",                       impressions:  5800, completions:  4900, cpm: 21.38, frequency: 1.95, completionRate: 85.4, color: "#f97316", tier: "mid" },
   { name: "Lifetime",                  impressions:  5400, completions:  3900, cpm: 17.23, frequency: 2.33, completionRate: 71.4, color: "#ec4899", tier: "mid" },
   { name: "Weather Nation",            impressions:  5000, completions:  4600, cpm: 18.01, frequency: 2.31, completionRate: 91.9, color: "#60a5fa", tier: "mid" },
   { name: "TV Land",                   impressions:  4600, completions:  4100, cpm: 22.35, frequency: 3.86, completionRate: 88.9, color: "#a78bfa", tier: "mid" },
@@ -133,7 +133,7 @@ export const MCCARTY_CTV_CHANNELS = [
   // LOWER TIER
   { name: "XUMO",                      impressions:  2600, completions:  2300, cpm: 15.47, frequency: 3.20, completionRate: 87.5, color: "#6366f1", tier: "low" },
   { name: "Comedy Central",            impressions:  2400, completions:  2400, cpm: 24.46, frequency: 1.50, completionRate: 100.0, color: "#f59e0b", tier: "low" },
-  { name: "Great American Family",     impressions:  2200, completions:  1600, cpm: 24.08, frequency: 5.00, completionRate: 73.3, color: "#dc2626", tier: "low" },
+  { name: "Great American Family",     impressions:  2200, completions:  1600, cpm: 24.08, frequency: 5.00, completionRate: 73.3, color: "#0ea5e9", tier: "low" },
   { name: "A&E Network",               impressions:  2000, completions:  2000, cpm: 15.71, frequency: 1.36, completionRate: 100.0, color: "#7c3aed", tier: "low" },
   { name: "Court TV",                  impressions:  1800, completions:  1600, cpm: 14.76, frequency: 2.22, completionRate: 90.0, color: "#374151", tier: "low" },
   { name: "WETV",                      impressions:  1600, completions:  1000, cpm: 13.71, frequency: 1.75, completionRate: 61.9, color: "#be185d", tier: "low" },
@@ -149,7 +149,7 @@ export const MCCARTY_CTV_CHANNELS = [
   { name: "Fox Sports 1",              impressions:   720, completions:    576, cpm: 22.83, frequency: 5.00, completionRate: 80.0, color: "#1d4ed8", tier: "low" },
   { name: "Smithsonian Channel",       impressions:   700, completions:    700, cpm: 22.40, frequency: 2.50, completionRate: 100.0, color: "#0369a1", tier: "low" },
   { name: "MLB",                       impressions:   680, completions:    510, cpm: 23.97, frequency: 4.00, completionRate: 75.0, color: "#1d4ed8", tier: "low" },
-  { name: "ESPN2",                     impressions:   660, completions:    660, cpm: 23.97, frequency: 1.33, completionRate: 100.0, color: "#dc2626", tier: "low" },
+  { name: "ESPN2",                     impressions:   660, completions:    660, cpm: 23.97, frequency: 1.33, completionRate: 100.0, color: "#0369a1", tier: "low" },
   { name: "Fuse",                      impressions:   640, completions:    256, cpm: 17.96, frequency: 2.50, completionRate: 40.0, color: "#7c3aed", tier: "low" },
   { name: "Tiny House Nation",         impressions:   620, completions:    620, cpm: 14.30, frequency: 3.00, completionRate: 100.0, color: "#84cc16", tier: "low" },
   { name: "Fox Business Network",      impressions:   600, completions:    600, cpm: 16.10, frequency: 1.67, completionRate: 100.0, color: "#1d4ed8", tier: "low" },

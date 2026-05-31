@@ -1223,9 +1223,9 @@ export default function Home() {
         <div style={{ display: "flex", alignItems: "center", gap: mobile ? 10 : 16, minWidth: 0 }}>
           <button onClick={() => navigate("/campaigns")} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, padding: "5px 10px", color: "#f1f5f9", fontSize: 11, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>← Campaigns</button>
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
-          <div style={{ fontSize: mobile ? 10 : 12, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ width: 8, height: 8, background: "#a855f7", borderRadius: "50%", boxShadow: `0 0 10px #a855f7`, animation: "pdot 2s ease-in-out infinite", flexShrink: 0 }} />
-            <span style={{ color: "#ffffff" }}>{mobile ? "EA" : "EXACT AUDIENCE"}</span>
+            <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: mobile ? 16 : 20, objectFit: "contain", filter: "brightness(1.1)" }} />
           </div>
           {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
           <div style={{ minWidth: 0 }}>

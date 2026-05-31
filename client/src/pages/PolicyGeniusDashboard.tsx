@@ -18,7 +18,7 @@ const PG_CTV_CHANNELS = [
   { name: "Pluto TV",          impressions: 248700, completions: 199000, cpm: 11.40, frequency: 1.74, completionRate: 80.0, color: "#F7C948" },
   { name: "Roku Channel",      impressions: 198700, completions: 166900, cpm: 16.60, frequency: 2.14, completionRate: 84.0, color: "#6C1D45" },
   { name: "DIRECTV",           impressions: 164200, completions: 131400, cpm: 12.40, frequency: 1.54, completionRate: 80.0, color: "#00A8E0" },
-  { name: "CNN",               impressions: 124800, completions: 104900, cpm: 22.80, frequency: 1.44, completionRate: 84.0, color: "#cc0000" },
+  { name: "CNN",               impressions: 124800, completions: 104900, cpm: 22.80, frequency: 1.44, completionRate: 84.0, color: "#f97316" },
   { name: "MSNBC",             impressions: 98700,  completions: 82900,  cpm: 20.40, frequency: 1.34, completionRate: 84.0, color: "#0078d4" },
   { name: "Performance Network",impressions: 95600, completions: 76500,  cpm:  7.80, frequency: 1.14, completionRate: 80.0, color: "#7c3aed" },
 ];
@@ -31,6 +31,7 @@ export default function PolicyGeniusDashboard() {
       dailyImpressions={PG_DAILY_IMPRESSIONS}
       mediaMix={PG_MEDIA_MIX}
       ctvChannels={PG_CTV_CHANNELS}
+      ctvRecommendationsMode={true}
       creatives={PG_CREATIVES}
       moods={PG_MOODS}
       visitors={PG_VISITORS}

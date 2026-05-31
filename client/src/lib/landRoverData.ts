@@ -64,7 +64,7 @@ export const LANDROVER_MEDIA_MIX = [
   { channel: "Meta Ads",        impressions: 362400,  spend: 7200,  pct: 7.4,  color: "#1877f2" },
   { channel: "QR Activation",   impressions: 341800,  spend: 6800,  pct: 7.0,  color: "#f59e0b" },
   { channel: "Google Ads",      impressions: 233200,  spend: 4700,  pct: 4.8,  color: "#34a853" },
-  { channel: "YouTube",         impressions: 175400,  spend: 3500,  pct: 3.6,  color: "#ff0000" },
+  { channel: "YouTube",         impressions: 175400,  spend: 3500,  pct: 3.6,  color: "#60a5fa" },
   { channel: "Email Marketing", impressions: 92400,   spend: 1800,  pct: 1.9,  color: "#7c3aed" },
   { channel: "DSP Display",     impressions: 62900,   spend: 1300,  pct: 1.3,  color: "#0ea5e9" },
   { channel: "SiteID",          impressions: 32000,   spend: 800,   pct: 0.7,  color: "#10b981" },
@@ -73,7 +73,7 @@ export const LANDROVER_MEDIA_MIX = [
 export const LANDROVER_CTV_CHANNELS = [
   { name: "Samsung TV Plus",      impressions: 958400,  completions: 862600, cpm: 18.20, frequency: 2.38, completionRate: 90.0, color: "#1428A0" },
   { name: "Roku Channel",         impressions: 456200,  completions: 410600, cpm: 19.10, frequency: 3.05, completionRate: 90.0, color: "#6C1D45" },
-  { name: "Tubi",                 impressions: 386400,  completions: 309100, cpm: 14.80, frequency: 1.58, completionRate: 80.0, color: "#FA4616" },
+  { name: "Tubi",                 impressions: 386400,  completions: 309100, cpm: 14.80, frequency: 1.58, completionRate: 80.0, color: "#f97316" },
   { name: "Pluto TV",             impressions: 312800,  completions: 265900, cpm: 13.20, frequency: 2.14, completionRate: 85.0, color: "#F7C948" },
   { name: "Hulu",                 impressions: 284200,  completions: 255800, cpm: 22.40, frequency: 2.84, completionRate: 90.0, color: "#1ce783" },
   { name: "Peacock",              impressions: 241600,  completions: 217400, cpm: 19.20, frequency: 2.41, completionRate: 90.0, color: "#000000" },
@@ -85,9 +85,9 @@ export const LANDROVER_CTV_CHANNELS = [
   { name: "NewsON",               impressions: 98400,   completions: 92500,  cpm: 15.37, frequency: 4.14, completionRate: 94.0, color: "#14b8a6" },
   { name: "Fox Business Network", impressions: 84200,   completions: 84200,  cpm: 16.10, frequency: 1.67, completionRate: 100.0, color: "#1d4ed8" },
   { name: "CNBC",                 impressions: 72400,   completions: 72400,  cpm: 28.43, frequency: 1.80, completionRate: 100.0, color: "#1d4ed8" },
-  { name: "ESPN2",                impressions: 58200,   completions: 58200,  cpm: 23.97, frequency: 1.33, completionRate: 100.0, color: "#dc2626" },
+  { name: "ESPN2",                impressions: 58200,   completions: 58200,  cpm: 23.97, frequency: 1.33, completionRate: 100.0, color: "#0369a1" },
   { name: "Golf Channel",         impressions: 48400,   completions: 43600,  cpm: 24.80, frequency: 2.10, completionRate: 90.0, color: "#1a6b3c" },
-  { name: "Haystack",             impressions: 38200,   completions: 35500,  cpm: 21.31, frequency: 2.20, completionRate: 93.0, color: "#ef4444" },
+  { name: "Haystack",             impressions: 38200,   completions: 35500,  cpm: 21.31, frequency: 2.20, completionRate: 93.0, color: "#8b5cf6" },
   { name: "Plex",                 impressions: 28400,   completions: 25100,  cpm: 23.66, frequency: 2.90, completionRate: 88.5, color: "#6366f1" },
 ];
 

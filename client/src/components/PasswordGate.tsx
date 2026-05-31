@@ -64,7 +64,6 @@ export default function PasswordGate({ children }: PasswordGateProps) {
           60%{transform:translateX(-6px)}
           80%{transform:translateX(6px)}
         }
-        @keyframes pdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
         @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         .gate-card { animation: fadeIn 0.5s ease-out; }
         .gate-input:focus { outline: none; border-color: #a855f7 !important; box-shadow: 0 0 0 3px rgba(168,85,247,0.2); }
@@ -78,19 +77,17 @@ export default function PasswordGate({ children }: PasswordGateProps) {
         borderRadius: 20,
         padding: "48px 40px",
         width: "100%",
-        maxWidth: 400,
+        maxWidth: 420,
         textAlign: "center",
         backdropFilter: "blur(12px)",
       }}>
-        {/* Logo mark */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 32 }}>
-          <span style={{
-            width: 10, height: 10, background: "#a855f7", borderRadius: "50%",
-            boxShadow: "0 0 14px #a855f7", animation: "pdot 2s ease-in-out infinite",
-          }} />
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "#f1f5f9" }}>
-            EXACT AUDIENCE
-          </span>
+        {/* EA Logo */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 32 }}>
+          <img
+            src="/manus-storage/ea-logo_6e5af419.png"
+            alt="Exact Audience"
+            style={{ height: 40, objectFit: "contain", filter: "brightness(1.1)" }}
+          />
         </div>
 
         <div style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>
@@ -111,7 +108,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
             style={{
               width: "100%",
               background: "#12123a",
-              border: `1px solid ${error ? "#f87171" : "#252560"}`,
+              border: `1px solid ${error ? "#f59e0b" : "#252560"}`,
               borderRadius: 10,
               padding: "14px 18px",
               color: "#f1f5f9",
@@ -122,7 +119,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
             }}
           />
           {error && (
-            <div style={{ fontSize: 12, color: "#f87171", marginBottom: 12, textAlign: "left" }}>
+            <div style={{ fontSize: 12, color: "#f59e0b", marginBottom: 12, textAlign: "left" }}>
               Incorrect passphrase. Please try again.
             </div>
           )}
@@ -148,7 +145,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
         </form>
 
         <div style={{ marginTop: 28, fontSize: 11, color: "#4a5568" }}>
-          Exact Audience · exactaudience.ai · siteid.ai
+          exactaudience.ai · siteid.ai
         </div>
       </div>
     </div>

@@ -525,7 +525,7 @@ function VoteMovementTracker({ C, mobile }: { C: C; mobile: boolean }) {
           { label: "Undecided Universe",   value: T.undecidedUniverse.toLocaleString(), sub: "Total movable voters in reach",          color: C.blue },
           { label: "Moved → McCarty",       value: T.movedToMcCarty.toLocaleString(),   sub: "Undecided → confirmed via media signals", color: C.green },
           { label: "Still Undecided",       value: T.stillUndecided.toLocaleString(),   sub: "Active targeting priority",               color: C.gold },
-          { label: "Moved → Kunzweiler",    value: T.movedToKunzweiler.toLocaleString(), sub: "Lost from undecided pool",               color: "#64748b" },
+          { label: "Needs More Exposure", value: T.movedToKunzweiler.toLocaleString(), sub: "In reach — additional touches needed",    color: "#64748b" },
         ].map(k => (
           <div key={k.label} style={{ background: C.bg3, borderRadius: 10, padding: "12px 14px", borderTop: `3px solid ${k.color}` }}>
             <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>{k.label}</div>
@@ -584,7 +584,7 @@ function MovedVoterLog({ mobile, C }: { mobile: boolean; C: C }) {
   const filtered = MCCARTY_MOVED_VOTERS.filter(v => {
     if (filter === "moved") return v.currentIntent === "McCarty";
     if (filter === "undecided") return v.currentIntent === "Undecided";
-    if (filter === "lost") return v.currentIntent === "Kunzweiler";
+    if (filter === "lost") return v.currentIntent !== "McCarty" && v.currentIntent !== "Undecided";
     return true;
   });
 
@@ -596,7 +596,7 @@ function MovedVoterLog({ mobile, C }: { mobile: boolean; C: C }) {
   const intentLabel = (intent: string) => {
     if (intent === "McCarty") return "✅ Moved → McCarty";
     if (intent === "Undecided") return "⏳ Still Undecided";
-    return "❌ Moved → Kunzweiler";
+    return "⏳ Needs More Exposure";
   };
 
   return (
@@ -608,7 +608,7 @@ function MovedVoterLog({ mobile, C }: { mobile: boolean; C: C }) {
             <button key={f} onClick={() => setFilter(f)} style={{
               padding: "4px 10px", fontSize: 10, fontWeight: 700, borderRadius: 6, cursor: "pointer", border: `1px solid ${filter === f ? C.red2 : C.border}`,
               background: filter === f ? `${C.red2}18` : "transparent", color: filter === f ? C.red2 : C.muted, transition: "all 0.15s",
-            }}>{f === "all" ? "All" : f === "moved" ? "Moved → McCarty" : f === "undecided" ? "Still Undecided" : "Lost to Kunzweiler"}</button>
+            }}>{f === "all" ? "All" : f === "moved" ? "Moved → McCarty" : f === "undecided" ? "Still Undecided" : "Needs More Exposure"}</button>
           ))}
         </div>
       </div>
@@ -653,7 +653,7 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
         {[
           { label: "Colleen McCarty", count: 5200 + 1120, pct: 44, color: C.red2, icon: "🟥", desc: `Committed + moved undecided voters (Day ${getCampaignDay().dayNum})` },
           { label: "Undecided / Movable", count: 10940, pct: 36, color: C.gold, icon: "🟡", desc: "Still in play — primary ad target" },
-          { label: "Steve Kunzweiler", count: 8100 + 620, pct: 21, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler + moved from undecided" },
+          { label: "Steve Kunzweiler", count: 8100 + 620, pct: 21, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler voters — outside current reach" },
         ].map(seg => (
           <div key={seg.label} style={{ background: C.card, border: `2px solid ${seg.color}44`, borderRadius: 14, padding: 20 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
@@ -1352,7 +1352,7 @@ export default function McCartryDashboard() {
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ width: 8, height: 8, background: C.red2, borderRadius: "50%", boxShadow: `0 0 8px ${C.red2}88`, animation: "pdot 2s ease-in-out infinite" }} />
-            <span style={{ fontSize: mobile ? 10 : 12, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#ffffff" }}>{mobile ? "EA" : "EXACT AUDIENCE"}</span>
+            <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: mobile ? 18 : 22, objectFit: "contain", filter: "brightness(1.15)" }} />
           </div>
           {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
           <div style={{ minWidth: 0 }}>

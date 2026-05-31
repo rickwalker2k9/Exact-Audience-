@@ -230,7 +230,7 @@ export const STARLING_MOODS = [
 export const STARLING_CTV_CHANNELS = [
   // TOP TIER
   { name: "Samsung TV Plus",          tier: "top",  color: "#1428A0" },
-  { name: "Tubi",                     tier: "top",  color: "#FA4616" },
+  { name: "Tubi",                     tier: "top",  color: "#f97316" },
   { name: "Roku Channel",             tier: "top",  color: "#6C1D45" },
   { name: "Sling TV",                 tier: "top",  color: "#3b82f6" },
   { name: "Pluto TV",                 tier: "top",  color: "#F7C948" },
@@ -238,7 +238,7 @@ export const STARLING_CTV_CHANNELS = [
   { name: "Fox News",                 tier: "top",  color: "#1d4ed8" },
   { name: "WatchFree+",               tier: "top",  color: "#0ea5e9" },
   // MID TIER
-  { name: "Haystack",                 tier: "mid",  color: "#ef4444" },
+  { name: "Haystack",                 tier: "mid",  color: "#8b5cf6" },
   { name: "fuboTV",                   tier: "mid",  color: "#f97316" },
   { name: "DIRECTV",                  tier: "mid",  color: "#0ea5e9" },
   { name: "NewsON",                   tier: "mid",  color: "#14b8a6" },
@@ -249,7 +249,7 @@ export const STARLING_CTV_CHANNELS = [
   { name: "Local Now",                tier: "mid",  color: "#10b981" },
   { name: "HISTORY",                  tier: "mid",  color: "#d97706" },
   { name: "America's Voice",          tier: "mid",  color: "#3a85c0" },
-  { name: "CNN",                      tier: "mid",  color: "#cc0000" },
+  { name: "CNN",                      tier: "mid",  color: "#f97316" },
   { name: "Lifetime",                 tier: "mid",  color: "#ec4899" },
   { name: "Weather Nation",           tier: "mid",  color: "#60a5fa" },
   { name: "TV Land",                  tier: "mid",  color: "#a78bfa" },
@@ -261,7 +261,7 @@ export const STARLING_CTV_CHANNELS = [
   // LOWER TIER
   { name: "XUMO",                     tier: "low",  color: "#6366f1" },
   { name: "Comedy Central",           tier: "low",  color: "#f59e0b" },
-  { name: "Great American Family",    tier: "low",  color: "#dc2626" },
+  { name: "Great American Family",    tier: "low",  color: "#0ea5e9" },
   { name: "A&E Network",              tier: "low",  color: "#7c3aed" },
   { name: "Court TV",                 tier: "low",  color: "#374151" },
   { name: "WETV",                     tier: "low",  color: "#be185d" },
@@ -277,7 +277,7 @@ export const STARLING_CTV_CHANNELS = [
   { name: "Fox Sports 1",             tier: "low",  color: "#1d4ed8" },
   { name: "Smithsonian Channel",      tier: "low",  color: "#0369a1" },
   { name: "MLB",                      tier: "low",  color: "#1d4ed8" },
-  { name: "ESPN2",                    tier: "low",  color: "#dc2626" },
+  { name: "ESPN2",                    tier: "low",  color: "#0369a1" },
   { name: "Fuse",                     tier: "low",  color: "#7c3aed" },
   { name: "Tiny House Nation",        tier: "low",  color: "#84cc16" },
   { name: "Fox Business Network",     tier: "low",  color: "#1d4ed8" },
@@ -316,11 +316,11 @@ export const STARLING_CTV_CHANNELS = [
 export const STARLING_DIGITAL_CHANNELS = [
   // Social Media
   { name: "Meta (Facebook + Instagram)", category: "Social", color: "#1877f2", note: "Conservative voter targeting, 45+ Facebook-heavy demographic", priority: "high" },
-  { name: "YouTube", category: "Video", color: "#ff0000", note: "Pre-roll on political, news, and conservative content", priority: "high" },
+  { name: "YouTube", category: "Video", color: "#60a5fa", note: "Pre-roll on political, news, and conservative content", priority: "high" },
   { name: "TikTok", category: "Social", color: "#010101", note: "Younger Republican voters — outsider/bio narrative", priority: "medium" },
-  { name: "Reddit", category: "Social", color: "#ff4500", note: "r/oklahoma, r/okc, r/tulsa — organic + paid targeting", priority: "medium" },
+  { name: "Reddit", category: "Social", color: "#f97316", note: "r/oklahoma, r/okc, r/tulsa — organic + paid targeting", priority: "medium" },
   // Oklahoma-Specific Digital
-  { name: "The Lost Ogle", category: "Oklahoma Media", color: "#c0392b", note: "Oklahoma's most-read political blog — informed voters of all ages", priority: "high" },
+  { name: "The Lost Ogle", category: "Oklahoma Media", color: "#0ea5e9", note: "Oklahoma's most-read political blog — informed voters of all ages", priority: "high" },
   { name: "NonDoc.com", category: "Oklahoma Media", color: "#1d4ed8", note: "Oklahoma political journalism — engaged primary voters", priority: "high" },
   { name: "Oklahoma Watch", category: "Oklahoma Media", color: "#0ea5e9", note: "Investigative journalism — anti-corruption voter segment", priority: "medium" },
   { name: "Tulsa World Digital", category: "Oklahoma Media", color: "#374151", note: "Tulsa market digital display and pre-roll", priority: "medium" },
@@ -330,7 +330,7 @@ export const STARLING_DIGITAL_CHANNELS = [
   { name: "Digital Display / Pre-roll", category: "Programmatic", color: "#4f46e5", note: "Statewide Republican voter targeting via behavioral data", priority: "high" },
   { name: "SiteID Retargeting", category: "Behavioral", color: "#10b981", note: "60% match rate on jeffstarling.com visitors — follow-up sequence", priority: "high" },
   // Conservative Digital
-  { name: "NewsMax Digital", category: "Conservative Media", color: "#dc2626", note: "Conservative primary voters — contrast messaging", priority: "medium" },
+  { name: "NewsMax Digital", category: "Conservative Media", color: "#f97316", note: "Conservative primary voters — contrast messaging", priority: "medium" },
   { name: "OAN Digital", category: "Conservative Media", color: "#1a1a2e", note: "Hard-right conservative segment", priority: "medium" },
   { name: "Fox News Digital", category: "Conservative Media", color: "#003366", note: "Broad conservative reach — OKC and Tulsa markets", priority: "high" },
 ];

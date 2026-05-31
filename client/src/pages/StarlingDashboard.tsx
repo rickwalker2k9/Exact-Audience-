@@ -6,7 +6,7 @@
  * Design: Deep navy + crimson red + gold — Oklahoma political authority
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import {
   STARLING_TIERS,
@@ -27,8 +27,8 @@ const C = {
   navyMid: "#0f1f3d",
   navyLight: "#1a2f52",
   navyBorder: "#1e3a5f",
-  red: "#c0392b",
-  redLight: "#e74c3c",
+  red: "#d4a017",
+  redLight: "#e8b84b",
   gold: "#d4a017",
   goldLight: "#e8b84b",
   white: "#f8fafc",
@@ -50,6 +50,7 @@ const TABS = [
   { id: "intelligence", label: "Voter Intelligence" },
   { id: "timeline", label: "18-Day Plan" },
   { id: "ads", label: "Ad Concepts" },
+  { id: "voters", label: "Undecided Voters" },
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -72,7 +73,7 @@ function RaceContextBanner() {
     <div
       style={{
         background: `linear-gradient(135deg, ${C.navyMid} 0%, #1a0a0a 100%)`,
-        borderBottom: `2px solid ${C.red}`,
+        borderBottom: `2px solid ${C.gold}`,
         padding: "10px 20px",
         display: "flex",
         flexWrap: "wrap",
@@ -105,7 +106,7 @@ function TabOverview() {
       <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "28px 32px" }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
           <div style={{ flex: 1, minWidth: 280 }}>
-            <div style={{ color: C.red, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
+            <div style={{ color: C.gold, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
               Behavioral Intelligence &amp; Precision Media Strategy
             </div>
             <h2 style={{ color: C.white, fontSize: 26, fontWeight: 800, lineHeight: 1.2, margin: "0 0 12px" }}>
@@ -131,7 +132,7 @@ function TabOverview() {
             </div>
             <div style={{ background: C.navyLight, borderRadius: 10, padding: "14px 18px", border: `1px solid ${C.navyBorder}` }}>
               <div style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>Votes Needed to Win</div>
-              <div style={{ color: C.redLight, fontSize: 28, fontWeight: 800 }}>116K–142K</div>
+              <div style={{ color: C.blueLight, fontSize: 28, fontWeight: 800 }}>116K–142K</div>
               <div style={{ color: C.textDim, fontSize: 12 }}>50%+1 of expected turnout</div>
             </div>
           </div>
@@ -149,7 +150,7 @@ function TabOverview() {
               <div style={{ display: "flex", gap: 16 }}>
                 <div>
                   <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Echols</div>
-                  <div style={{ color: C.redLight, fontWeight: 700, fontSize: 18 }}>{m.echols}%</div>
+                  <div style={{ color: C.mutedDark, fontWeight: 700, fontSize: 18 }}>{m.echols}%</div>
                 </div>
                 <div>
                   <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Starling</div>
@@ -203,7 +204,7 @@ function TabOverview() {
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {STARLING_VISITORS.slice(0, 10).map((v, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 12px", background: C.navyLight, borderRadius: 8, flexWrap: "wrap" }}>
-              {v.hot && <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.redLight, flexShrink: 0 }} />}
+              {v.hot && <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.gold, flexShrink: 0 }} />}
               {!v.hot && <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.mutedDark, flexShrink: 0 }} />}
               <span style={{ color: C.white, fontWeight: 600, fontSize: 13, minWidth: 80 }}>{v.name}</span>
               <span style={{ color: C.textDim, fontSize: 12, minWidth: 100 }}>{v.city}, {v.state} {v.zip}</span>
@@ -428,7 +429,7 @@ function TabChannels() {
       {/* Oklahoma Local TV */}
       <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-          <span style={{ background: C.red, color: C.white, fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, textTransform: "uppercase" }}>LOCAL</span>
+          <span style={{ background: C.blue, color: C.white, fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, textTransform: "uppercase" }}>LOCAL</span>
           <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: 0 }}>Oklahoma TV Stations</h3>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
@@ -436,7 +437,7 @@ function TabChannels() {
             <div key={ch.name} style={{ background: C.navyLight, borderRadius: 8, padding: "12px 14px", border: `1px solid ${ch.color}44`, display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
               <span style={{ color: C.text, fontSize: 13, fontWeight: 600 }}>{ch.name}</span>
-              <span style={{ marginLeft: "auto", background: C.red, color: C.white, fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3 }}>LOCAL</span>
+              <span style={{ marginLeft: "auto", background: C.blue, color: C.white, fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3 }}>LOCAL</span>
             </div>
           ))}
         </div>
@@ -710,6 +711,168 @@ function TabAds() {
   );
 }
 
+// ── Undecided Voters Tab ─────────────────────────────────────────────────────
+type Voter = {
+  first: string; last: string; addr: string; city: string; state: string; zip: string;
+  email: string; ageRange: string; age: number; gender: string; married: string;
+  children: string; homeowner: string; mobile: string; mobileDnc: string;
+  directPhone: string; directDnc: string; education: string; incomeRange: string;
+  linkedin: string; netWorth: string; creditRtg: string; company: string;
+  jobTitle: string; domain: string; employees: string; coCity: string;
+  coState: string; busEmail: string; dbMatches: number;
+};
+
+function TabUndecidedVoters() {
+  const [voters, setVoters] = useState<Voter[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filterCity, setFilterCity] = useState("All");
+  const [filterGender, setFilterGender] = useState("All");
+  const [filterAge, setFilterAge] = useState("All");
+  const [filterHomeowner, setFilterHomeowner] = useState("All");
+  const [filterCredit, setFilterCredit] = useState("All");
+  const [showCount, setShowCount] = useState(50);
+
+  useEffect(() => {
+    fetch("/manus-storage/starling_voters_5bc24ff0.json")
+      .then(r => r.json())
+      .then(d => { setVoters(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const cities = ["All", ...Array.from(new Set(voters.map(v => v.city).filter(Boolean))).sort()];
+  const ageRanges = ["All", ...Array.from(new Set(voters.map(v => v.ageRange).filter(Boolean))).sort()];
+  const creditRatings = ["All", ...Array.from(new Set(voters.map(v => v.creditRtg).filter(Boolean))).sort()];
+
+  const filtered = voters.filter(v => {
+    const q = search.toLowerCase();
+    const matchSearch = !q || `${v.first} ${v.last}`.toLowerCase().includes(q) ||
+      v.city.toLowerCase().includes(q) || v.zip.includes(q) ||
+      v.email.toLowerCase().includes(q) || v.company.toLowerCase().includes(q);
+    const matchCity = filterCity === "All" || v.city === filterCity;
+    const matchGender = filterGender === "All" || v.gender === filterGender;
+    const matchAge = filterAge === "All" || v.ageRange === filterAge;
+    const matchHomeowner = filterHomeowner === "All" || v.homeowner === filterHomeowner;
+    const matchCredit = filterCredit === "All" || v.creditRtg === filterCredit;
+    return matchSearch && matchCity && matchGender && matchAge && matchHomeowner && matchCredit;
+  });
+
+  const creditColor = (c: string) => c === "A" ? "#4ade80" : c === "B" ? "#38bdf8" : c === "C" ? "#f59e0b" : c === "D" ? "#fb923c" : "#8892b0";
+
+  if (loading) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 300, color: C.muted, fontSize: 14 }}>
+      Loading 12,575 undecided voters...
+    </div>
+  );
+
+  return (
+    <div>
+      {/* Header stats */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12, marginBottom: 20 }}>
+        {[
+          { label: "Total Undecided", value: voters.length.toLocaleString(), color: C.gold },
+          { label: "With Email", value: voters.filter(v => v.email).length.toLocaleString(), color: C.blueLight },
+          { label: "With Mobile", value: voters.filter(v => v.mobile).length.toLocaleString(), color: C.blueLight },
+          { label: "Homeowners", value: voters.filter(v => v.homeowner === "Y").length.toLocaleString(), color: "#4ade80" },
+          { label: "With LinkedIn", value: voters.filter(v => v.linkedin).length.toLocaleString(), color: "#a855f7" },
+          { label: "Avg DB Matches", value: (voters.reduce((s, v) => s + (v.dbMatches || 0), 0) / voters.length).toFixed(1), color: C.gold },
+        ].map(s => (
+          <div key={s.label} style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 10, padding: "14px 16px" }}>
+            <div style={{ fontSize: 22, fontWeight: 900, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14, alignItems: "center" }}>
+        <input
+          value={search}
+          onChange={e => { setSearch(e.target.value); setShowCount(50); }}
+          placeholder="Search name, city, zip, email, company..."
+          style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 8, padding: "7px 12px", color: C.white, fontSize: 12, outline: "none", minWidth: 220, flex: 1 }}
+        />
+        {[
+          { label: "City", value: filterCity, set: (v: string) => { setFilterCity(v); setShowCount(50); }, opts: cities.slice(0, 50) },
+          { label: "Age Range", value: filterAge, set: (v: string) => { setFilterAge(v); setShowCount(50); }, opts: ageRanges },
+          { label: "Gender", value: filterGender, set: (v: string) => { setFilterGender(v); setShowCount(50); }, opts: ["All", "M", "F"] },
+          { label: "Homeowner", value: filterHomeowner, set: (v: string) => { setFilterHomeowner(v); setShowCount(50); }, opts: ["All", "Y", "N"] },
+          { label: "Credit", value: filterCredit, set: (v: string) => { setFilterCredit(v); setShowCount(50); }, opts: creditRatings },
+        ].map(f => (
+          <select key={f.label} value={f.value} onChange={e => f.set(e.target.value)}
+            style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 8, padding: "7px 10px", color: C.white, fontSize: 11, outline: "none", cursor: "pointer" }}>
+            {f.opts.map(o => <option key={o} value={o}>{o === "All" ? `All ${f.label}s` : o}</option>)}
+          </select>
+        ))}
+        <div style={{ fontSize: 11, color: C.muted, whiteSpace: "nowrap" }}>{filtered.length.toLocaleString()} of {voters.length.toLocaleString()}</div>
+      </div>
+
+      {/* Table */}
+      <div style={{ overflowX: "auto", borderRadius: 12, border: `1px solid ${C.navyBorder}` }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+          <thead>
+            <tr style={{ background: C.navyMid }}>
+              {["Name","City","State","ZIP","Age","Gender","Email","Mobile","Homeowner","Married","Children","Education","Income","Net Worth","Credit","Company","Job Title","Co City","Co State","LinkedIn","DB Matches"].map(h => (
+                <th key={h} style={{ padding: "10px 10px", textAlign: "left", color: C.muted, fontWeight: 700, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap", borderBottom: `1px solid ${C.navyBorder}` }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.slice(0, showCount).map((v, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${C.navyBorder}22`, background: i % 2 === 0 ? "transparent" : `${C.navyMid}66` }}
+                onMouseEnter={e => (e.currentTarget as HTMLTableRowElement).style.background = `${C.navyLight}88`}
+                onMouseLeave={e => (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? "transparent" : `${C.navyMid}66`}>
+                <td style={{ padding: "8px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>{v.first} {v.last}</td>
+                <td style={{ padding: "8px 10px", color: C.text, whiteSpace: "nowrap" }}>{v.city}</td>
+                <td style={{ padding: "8px 10px", color: C.text }}>{v.state}</td>
+                <td style={{ padding: "8px 10px", color: C.text }}>{v.zip}</td>
+                <td style={{ padding: "8px 10px", color: C.text }}>{v.ageRange || v.age}</td>
+                <td style={{ padding: "8px 10px", color: C.text }}>{v.gender}</td>
+                <td style={{ padding: "8px 10px", color: C.blueLight, maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {v.email ? <a href={`mailto:${v.email}`} style={{ color: C.blueLight, textDecoration: "none" }}>{v.email}</a> : <span style={{ color: C.mutedDark }}>—</span>}
+                </td>
+                <td style={{ padding: "8px 10px", color: C.text }}>{v.mobile || <span style={{ color: C.mutedDark }}>—</span>}</td>
+                <td style={{ padding: "8px 10px", textAlign: "center" }}>
+                  <span style={{ background: v.homeowner === "Y" ? "#4ade8022" : "transparent", color: v.homeowner === "Y" ? "#4ade80" : C.mutedDark, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>{v.homeowner || "—"}</span>
+                </td>
+                <td style={{ padding: "8px 10px", color: C.text, textAlign: "center" }}>{v.married || "—"}</td>
+                <td style={{ padding: "8px 10px", color: C.text, textAlign: "center" }}>{v.children || "—"}</td>
+                <td style={{ padding: "8px 10px", color: C.text, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.education || "—"}</td>
+                <td style={{ padding: "8px 10px", color: C.gold, whiteSpace: "nowrap" }}>{v.incomeRange || "—"}</td>
+                <td style={{ padding: "8px 10px", color: C.gold, whiteSpace: "nowrap" }}>{v.netWorth || "—"}</td>
+                <td style={{ padding: "8px 10px", textAlign: "center" }}>
+                  {v.creditRtg ? <span style={{ background: `${creditColor(v.creditRtg)}22`, color: creditColor(v.creditRtg), padding: "2px 7px", borderRadius: 20, fontSize: 10, fontWeight: 800 }}>{v.creditRtg}</span> : <span style={{ color: C.mutedDark }}>—</span>}
+                </td>
+                <td style={{ padding: "8px 10px", color: C.text, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.company || "—"}</td>
+                <td style={{ padding: "8px 10px", color: C.text, maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.jobTitle || "—"}</td>
+                <td style={{ padding: "8px 10px", color: C.text, whiteSpace: "nowrap" }}>{v.coCity || "—"}</td>
+                <td style={{ padding: "8px 10px", color: C.text }}>{v.coState || "—"}</td>
+                <td style={{ padding: "8px 10px" }}>
+                  {v.linkedin ? <a href={v.linkedin} target="_blank" rel="noreferrer" style={{ color: "#60a5fa", fontSize: 10, fontWeight: 700 }}>View ↗</a> : <span style={{ color: C.mutedDark }}>—</span>}
+                </td>
+                <td style={{ padding: "8px 10px", textAlign: "center" }}>
+                  <span style={{ background: v.dbMatches >= 5 ? "#4ade8022" : v.dbMatches >= 3 ? "#f59e0b22" : "transparent", color: v.dbMatches >= 5 ? "#4ade80" : v.dbMatches >= 3 ? "#f59e0b" : C.muted, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>{v.dbMatches}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Load more */}
+      {showCount < filtered.length && (
+        <div style={{ textAlign: "center", marginTop: 16 }}>
+          <button
+            onClick={() => setShowCount(c => c + 100)}
+            style={{ background: C.gold, color: C.navy, border: "none", borderRadius: 8, padding: "10px 24px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
+            Show 100 more ({(filtered.length - showCount).toLocaleString()} remaining)
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function StarlingDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -717,7 +880,7 @@ export default function StarlingDashboard() {
   return (
     <div style={{ minHeight: "100vh", background: C.navy, color: C.text, fontFamily: "'Inter', system-ui, sans-serif" }}>
       {/* Header */}
-      <div style={{ background: C.navyMid, borderBottom: `2px solid ${C.red}`, padding: "0 20px" }}>
+      <div style={{ background: C.navyMid, borderBottom: `2px solid ${C.gold}`, padding: "0 20px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0", flexWrap: "wrap", gap: 12 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -729,7 +892,7 @@ export default function StarlingDashboard() {
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ color: C.white, fontWeight: 800, fontSize: 18 }}>Jeff Starling</span>
                   <span style={{ color: C.muted, fontSize: 14 }}>for Oklahoma Attorney General</span>
-                  <span style={{ background: C.red, color: C.white, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, textTransform: "uppercase" }}>PITCH</span>
+                  <span style={{ background: C.gold, color: C.navy, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, textTransform: "uppercase" }}>PITCH</span>
                 </div>
                 <div style={{ color: C.muted, fontSize: 12, marginTop: 2 }}>
                   Exact Audience · exactaudience.ai · siteid.ai · Presented by Rick Walker
@@ -763,7 +926,7 @@ export default function StarlingDashboard() {
               style={{
                 background: "transparent",
                 border: "none",
-                borderBottom: `3px solid ${activeTab === tab.id ? C.red : "transparent"}`,
+                borderBottom: `3px solid ${activeTab === tab.id ? C.gold : "transparent"}`,
                 color: activeTab === tab.id ? C.white : C.muted,
                 padding: "14px 18px",
                 cursor: "pointer",
@@ -787,6 +950,7 @@ export default function StarlingDashboard() {
         {activeTab === "intelligence" && <TabIntelligence />}
         {activeTab === "timeline" && <TabTimeline />}
         {activeTab === "ads" && <TabAds />}
+        {activeTab === "voters" && <TabUndecidedVoters />}
       </div>
 
       {/* Footer */}

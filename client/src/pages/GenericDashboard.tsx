@@ -41,7 +41,7 @@ export interface DashLiveBase {
 
 export interface DashDailyRow {
   day: string;
-  ctv: number;
+  ctv?: number;
   youtube: number;
   display: number;
   meta?: number;
@@ -152,7 +152,7 @@ function useColors(isDark: boolean) {
     card: "#0f0f2e", card2: "#141440", border: "#252560",
     purple: "#7c3aed", purple2: "#a855f7", purple3: "#c084fc",
     green: "#4ade80", gold: "#f59e0b", blue: "#38bdf8",
-    red: "#f87171", white: "#f1f5f9", muted: "#8892b0",
+    red: "#fb923c", white: "#f1f5f9", muted: "#8892b0",
     headerBg: "linear-gradient(135deg,#0a0a22,#1a0840)",
     tooltipBg: "#141440", scrollTrack: "#0d0d28", scrollThumb: "#252560",
   } : {
@@ -160,7 +160,7 @@ function useColors(isDark: boolean) {
     card: "#ffffff", card2: "#f8fafc", border: "#c8d4e8",
     purple: "#7c3aed", purple2: "#7c3aed", purple3: "#9333ea",
     green: "#16a34a", gold: "#d97706", blue: "#0284c7",
-    red: "#dc2626", white: "#1e293b", muted: "#64748b",
+    red: "#ea580c", white: "#1e293b", muted: "#64748b",
     headerBg: "linear-gradient(135deg,#1e1b4b,#312e81)",
     tooltipBg: "#ffffff", scrollTrack: "#e8edf5", scrollThumb: "#c8d4e8",
   };
@@ -282,7 +282,7 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
 
   const chartData = dailyImpressions.slice(-rangeDays).map(d => ({
     day: d.day.replace("May ", ""),
-    CTV: Math.round(d.ctv / 1000),
+    ...(d.ctv ? { CTV: Math.round(d.ctv / 1000) } : {}),
     YouTube: Math.round(d.youtube / 1000),
     Display: Math.round(d.display / 1000),
     ...(d.meta ? { Meta: Math.round(d.meta / 1000) } : {}),
@@ -661,7 +661,7 @@ function TabSitePages({ mobile, C, sitePages, label, dailyImpressions, accentCol
   const totalViews = sitePages.reduce((s, p) => s + p.views, 0);
 
   const chartData = dailyImpressions.slice(-rangeDays).map((d, i) => {
-    const base = d.ctv / 1000;
+    const base = (d.ctv ?? d.youtube) / 1000;
     return {
       day: d.day.replace("May ", ""),
       ...Object.fromEntries(sitePages.map((p, pi) => [
@@ -1210,7 +1210,7 @@ export default function GenericDashboard(props: GenericDashboardProps) {
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ width: 8, height: 8, background: client.accentColor, borderRadius: "50%", boxShadow: `0 0 10px ${client.accentColor}`, animation: "pdot 2s ease-in-out infinite" }} />
-            <span style={{ fontSize: mobile ? 10 : 12, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#ffffff" }}>{mobile ? "EA" : "EXACT AUDIENCE"}</span>
+            <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: mobile ? 18 : 22, objectFit: "contain", filter: "brightness(1.15)" }} />
           </div>
           {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
           <div style={{ minWidth: 0 }}>

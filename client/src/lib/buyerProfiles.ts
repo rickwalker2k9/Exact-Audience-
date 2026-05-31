@@ -72,6 +72,8 @@ export const LAND_ROVER_PROFILES: BuyerProfile[] = [
       { date: "May 23", channel: "Email", action: "Opened + clicked", detail: "Spring Conquest offer email — clicked 'Schedule Test Drive' but did not submit form", strength: "high" },
       { date: "May 27", channel: "Meta", action: "Ad engagement", detail: "Liked Defender 110 video post, saved it to collection", strength: "medium" },
       { date: "May 29", channel: "Website", action: "Return visit", detail: "Checked financing calculator — $1,200/mo at 72 months on $89K Defender 110", strength: "very-high" },
+      { date: "May 30", channel: "3rd-Party Data", action: "Financial site visit", detail: "Visited LightStream.com auto loan page — compared dealer financing vs. outside loan at 6.49% APR", strength: "very-high" },
+      { date: "May 31", channel: "3rd-Party Data", action: "Accessory research", detail: "Browsed Defender 110 18\" Gloss Black Satin wheels ($2,800) and Roof Rack System ($1,400) on LR accessories site", strength: "high" },
     ],
     purchaseWindows: [
       { window: "7 days", probability: 28, reasoning: "High engagement but still in comparison phase. Reddit activity suggests he's validating the decision socially before committing." },
@@ -110,6 +112,8 @@ export const LAND_ROVER_PROFILES: BuyerProfile[] = [
       { date: "May 22", channel: "Google Search", action: "Keyword search", detail: '"Defender 90 vs BMW X5 safety ratings" and "Land Rover Scottsdale service reviews"', strength: "high" },
       { date: "May 25", channel: "Email", action: "Opened", detail: "Opened Spring Conquest email but did not click — opened again 2 days later", strength: "medium" },
       { date: "May 28", channel: "Website", action: "Return visit", detail: "Visited 'Certified Pre-Owned' section — browsed 2023 Defender 90 options under $70K", strength: "very-high" },
+      { date: "May 29", channel: "3rd-Party Data", action: "Financial site visit", detail: "Visited Chase Auto Finance and Capital One Auto Navigator — pre-qualification check for $65K–$75K vehicle loan", strength: "very-high" },
+      { date: "May 30", channel: "3rd-Party Data", action: "Accessory research", detail: "Searched Defender 90 all-weather floor mats, cargo liner, and tow hitch accessories — total accessory basket ~$1,200", strength: "medium" },
     ],
     purchaseWindows: [
       { window: "7 days", probability: 15, reasoning: "Still in research phase, comparing to her current vehicle. CPO browsing suggests she may be price-sensitive or testing the market." },
@@ -148,6 +152,8 @@ export const LAND_ROVER_PROFILES: BuyerProfile[] = [
       { date: "May 21", channel: "Reddit", action: "Forum activity", detail: 'r/overlanding: "Anyone running a Defender 90 on 33s? Worth the cost vs. Wrangler?" — active thread', strength: "high" },
       { date: "May 24", channel: "Meta", action: "Ad engagement", detail: "Clicked on Defender 90 accessories Instagram post, followed Land Rover North Scottsdale account", strength: "medium" },
       { date: "May 27", channel: "Website", action: "Return visit", detail: "Visited 'Current Offers' page — viewed lease deals on Defender 90 starting at $899/mo", strength: "very-high" },
+      { date: "May 28", channel: "3rd-Party Data", action: "Financial site visit", detail: "Visited Carvana and CarMax to check Jeep Wrangler trade-in value ($28,400 estimate) — preparing to trade in", strength: "very-high" },
+      { date: "May 30", channel: "3rd-Party Data", action: "Accessory research", detail: "Browsed Defender 90 18\" Gloss Black Satin wheels ($2,800), Old Spice Orange roof rack ($1,800), and ARB recovery kit ($620) on overlanding forums", strength: "high" },
     ],
     purchaseWindows: [
       { window: "7 days", probability: 8, reasoning: "Lease curiosity is early-stage. He's comparing options and his Jeep lease may not be up yet. Not a short-term close." },
@@ -183,7 +189,7 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
     location: "Paradise Valley, AZ",
     occupation: "Private Equity Partner",
     avatar: "NR",
-    avatarColor: "#dc2626",
+    avatarColor: "#d4a017",
     buyerDNA: "Trophy buyer. Researching Urus S as a 3rd vehicle — has a Ferrari 488 and a Bentley Bentayga. Wants exclusivity and personalization.",
     engagementScore: 91,
     signals: [
@@ -194,6 +200,8 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
       { date: "May 21", channel: "Website", action: "Return visit", detail: "Visited 'Ad Personam' custom order page — spent 11 min reviewing bespoke options", strength: "very-high" },
       { date: "May 24", channel: "Email", action: "Opened + clicked", detail: "Opened VIP event invitation email, clicked RSVP but did not complete", strength: "high" },
       { date: "May 28", channel: "Phone/Inquiry", action: "Inbound call", detail: "Called dealership asking about Urus S allocation timeline and deposit requirements", strength: "very-high" },
+      { date: "May 29", channel: "3rd-Party Data", action: "Financial site visit", detail: "Visited Lamborghini Financial Services site — reviewed balloon payment (PCP) vs. outright purchase options on $280K+ vehicle", strength: "very-high" },
+      { date: "May 31", channel: "3rd-Party Data", action: "Accessory research", detail: "Browsed Urus S Ad Personam accessories: Senso Unico carbon fiber package ($18K), custom Giallo Inti brake calipers ($4,200), and Lamborghini luggage set ($3,800)", strength: "high" },
     ],
     purchaseWindows: [
       { window: "7 days", probability: 42, reasoning: "Inbound call about allocation and deposit = serious buyer. He's deciding between waiting for his custom build vs. taking a stock unit. A personal call from the GM could close this week." },
@@ -205,7 +213,7 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
       body: "Nathaniel, thank you for your call last week. I wanted to personally reach out to let you know we have an incoming Urus S allocation arriving in 6 weeks — Giallo Inti with a Nero Noctis interior, which I believe aligns closely with the build you configured online. Given your interest in the Ad Personam program, I'd like to invite you to a private preview evening at the dealership where you can review the full bespoke options with our Lamborghini specialist before we open this allocation to the broader list. This is an exclusive opportunity for a select group of clients. I'll hold your spot if you can confirm by Friday.",
     },
     mediaRecommendations: [
-      { channel: "CTV (Premium)", allocation: 35, tactic: "Serve Urus S 'Expect the Unexpected' 60-sec spot on Hulu and Peacock premium inventory. Target Paradise Valley + Scottsdale 85253/85255 zip codes. Evening hours only.", color: "#dc2626" },
+      { channel: "CTV (Premium)", allocation: 35, tactic: "Serve Urus S 'Expect the Unexpected' 60-sec spot on Hulu and Peacock premium inventory. Target Paradise Valley + Scottsdale 85253/85255 zip codes. Evening hours only.", color: "#7c3aed" },
       { channel: "Email (VIP 1:1)", allocation: 30, tactic: "Personal email from GM/Sales Director — not a mass campaign. Invite to private allocation preview. Handwritten tone.", color: "#7c3aed" },
       { channel: "Meta (Luxury Retargeting)", allocation: 18, tactic: "Retarget with Urus S Ad Personam bespoke configurator content. Target HHI $500K+, luxury auto owners in Paradise Valley.", color: "#1877f2" },
       { channel: "Direct Mail (Luxury)", allocation: 12, tactic: "Send a physical Urus S brochure with a handwritten note and QR code to his saved configuration. Premium matte print.", color: "#f59e0b" },
@@ -232,6 +240,8 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
       { date: "May 19", channel: "Reddit", action: "Forum activity", detail: 'r/Lamborghini: "First Lambo — Huracán EVO Spyder or wait for the Revuelto?" — 28 replies, very active', strength: "very-high" },
       { date: "May 22", channel: "Google Search", action: "Keyword search", detail: '"Lamborghini financing Scottsdale" and "Huracán EVO Spyder monthly payment $250K"', strength: "very-high" },
       { date: "May 26", channel: "Meta", action: "Ad engagement", detail: "Shared Lamborghini Scottsdale Instagram post to his story with caption 'soon 👀'", strength: "very-high" },
+      { date: "May 28", channel: "3rd-Party Data", action: "Financial site visit", detail: "Visited JM&A Group and Lamborghini Financial Services — compared 60 vs. 72-month financing on $248K Huracán EVO Spyder; also checked pre-approval on Capital One Auto", strength: "very-high" },
+      { date: "May 30", channel: "3rd-Party Data", action: "Accessory research", detail: "Browsed Huracán EVO Spyder aftermarket: Novitec exhaust system ($12,400), OEM carbon fiber door sills ($2,800), and custom Arancio Borealis car cover ($890)", strength: "high" },
     ],
     purchaseWindows: [
       { window: "7 days", probability: 22, reasoning: "Reddit thread shows he's still weighing Huracán vs. waiting for Revuelto. Financing research is active but he hasn't requested a quote yet." },
@@ -243,7 +253,7 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
       body: "Tyler, we noticed you've been researching the Huracán EVO Spyder — and honestly, the Arancio Borealis unit we have in stock right now is one of the best-looking cars on our floor. On the Revuelto question: we're currently looking at 14–18 month allocation waits for most configurations, so if you want to be driving a Lamborghini this summer, the EVO Spyder is your move. On financing: at current rates, a 60-month term on this unit comes to approximately $3,800/mo with 20% down. We can have a pre-approval back to you within 24 hours — no commitment required. Want us to hold the orange one for 48 hours while you think it over?",
     },
     mediaRecommendations: [
-      { channel: "CTV Retargeting", allocation: 30, tactic: "Serve Huracán EVO Spyder 'Born to Be Wild' spot on Peacock and Hulu. Target Scottsdale 85251/85257 zip codes, age 28-40, HHI $300K+.", color: "#dc2626" },
+      { channel: "CTV Retargeting", allocation: 30, tactic: "Serve Huracán EVO Spyder 'Born to Be Wild' spot on Peacock and Hulu. Target Scottsdale 85251/85257 zip codes, age 28-40, HHI $300K+.", color: "#7c3aed" },
       { channel: "Meta (Retargeting)", allocation: 28, tactic: "Retarget with Huracán EVO Spyder inventory carousel + 'Financing from $3,800/mo' CTA. He shared our post — he's warm. Use social proof messaging.", color: "#1877f2" },
       { channel: "Email (Financing Focus)", allocation: 22, tactic: "Send financing pre-approval offer with specific monthly payment on the Arancio Borealis unit. Subject line: 'Your Huracán EVO Spyder financing — 24-hour pre-approval'.", color: "#7c3aed" },
       { channel: "YouTube Retargeting", allocation: 14, tactic: "Run 15-sec non-skippable pre-roll on Lamborghini content and automotive review channels. 'The orange one is still here. For now.'", color: "#f59e0b" },
@@ -270,6 +280,8 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
       { date: "May 20", channel: "Meta", action: "Ad engagement", detail: "Clicked on Urus Performante Instagram ad — saved the post", strength: "medium" },
       { date: "May 25", channel: "Website", action: "Return visit", detail: "Visited Urus Performante configurator — built in Bianco Monocerus (white) with Alcantara interior", strength: "very-high" },
       { date: "May 28", channel: "Email", action: "Opened", detail: "Opened VIP client event email — did not click but opened 3 times over 2 days", strength: "medium" },
+      { date: "May 29", channel: "3rd-Party Data", action: "Financial site visit", detail: "Visited Porsche Financial Services to check Cayenne Turbo GT trade-in/payoff value ($118K residual) — evaluating equity position before upgrade", strength: "very-high" },
+      { date: "May 31", channel: "3rd-Party Data", action: "Accessory research", detail: "Browsed Urus Performante carbon fiber front splitter ($6,200), Bianco Monocerus painted brake calipers ($3,400), and Lamborghini Squadra Corse floor mats ($1,200)", strength: "high" },
     ],
     purchaseWindows: [
       { window: "7 days", probability: 12, reasoning: "Still in comparison mode. The Cayenne Turbo GT is a serious competitor for her. She needs a performance differentiator that justifies the premium." },
@@ -281,7 +293,7 @@ export const LAMBORGHINI_PROFILES: BuyerProfile[] = [
       body: "Sandra, we'd like to invite you to an exclusive private driving experience at Scottsdale Performance Driving School — just you and a Lamborghini Urus Performante on a closed course. No sales pressure, no audience. Just 45 minutes to feel the difference between 657hp in a Lambo and everything else on the road. We know you've been comparing the Performante to the Cayenne Turbo GT — we think one lap will answer that question better than any spec sheet. We have two dates available in the next 10 days. Would either work for your schedule?",
     },
     mediaRecommendations: [
-      { channel: "CTV (Performance)", allocation: 32, tactic: "Serve Urus Performante track/performance creative on Hulu premium. Target Fountain Hills + North Scottsdale, female 40-55, HHI $400K+.", color: "#dc2626" },
+      { channel: "CTV (Performance)", allocation: 32, tactic: "Serve Urus Performante track/performance creative on Hulu premium. Target Fountain Hills + North Scottsdale, female 40-55, HHI $400K+.", color: "#7c3aed" },
       { channel: "Email (Experience)", allocation: 30, tactic: "Private track day invitation — personalized, from the dealership principal. Emphasize exclusivity and no-pressure experience.", color: "#9333ea" },
       { channel: "Meta (Retargeting)", allocation: 20, tactic: "Retarget with Urus Performante performance specs carousel. 'The Cayenne Turbo GT is impressive. The Urus Performante is unforgettable.' messaging.", color: "#1877f2" },
       { channel: "Google (Conquest)", allocation: 12, tactic: "Bid on 'Urus Performante vs Cayenne Turbo GT', 'Lamborghini Scottsdale test drive'. Capture her comparison search intent.", color: "#2563eb" },
@@ -449,7 +461,7 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
     },
     mediaRecommendations: [
       { channel: "Email (Application Recovery)", allocation: 40, tactic: "Application abandonment email with advisor call CTA. Emphasize 'your family is protected starting this month' urgency. Send within 24 hours of abandonment.", color: "#7c3aed" },
-      { channel: "CTV Retargeting", allocation: 25, tactic: "Serve 'Protect What Matters' spot on Hulu during evening hours. Target Denver, male 32-42, new parent signals.", color: "#dc2626" },
+      { channel: "CTV Retargeting", allocation: 25, tactic: "Serve 'Protect What Matters' spot on Hulu during evening hours. Target Denver, male 32-42, new parent signals.", color: "#7c3aed" },
       { channel: "Google Retargeting", allocation: 18, tactic: "Display retargeting on PolicyGenius application page. Bid on 'term life insurance new parent', 'PolicyGenius application help'.", color: "#2563eb" },
       { channel: "Meta (Retargeting)", allocation: 12, tactic: "Retarget with 'Your family deserves this protection' messaging. Show the $750K 20-year term quote he received.", color: "#1877f2" },
       { channel: "SMS/Advisor Outreach", allocation: 5, tactic: "Advisor outbound call or SMS: 'Hi Brian, I'm your PolicyGenius advisor — I can help you finish your application in 10 minutes. When's a good time?'", color: "#f59e0b" },
@@ -525,7 +537,7 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
     },
     mediaRecommendations: [
       { channel: "Email (Urgency)", allocation: 42, tactic: "Coverage gap urgency email with no-exam, 48-hour approval CTA. Specific monthly price from his saved quote. Send within 24 hours.", color: "#16a34a" },
-      { channel: "CTV Retargeting", allocation: 22, tactic: "Serve 'Get covered in 48 hours' spot on Tubi and Pluto TV. Target Nashville, male 28-36, healthcare worker signals.", color: "#dc2626" },
+      { channel: "CTV Retargeting", allocation: 22, tactic: "Serve 'Get covered in 48 hours' spot on Tubi and Pluto TV. Target Nashville, male 28-36, healthcare worker signals.", color: "#7c3aed" },
       { channel: "Google Retargeting", allocation: 18, tactic: "Retarget on PolicyGenius quote page. Bid on 'life insurance no medical exam', 'term life insurance fast approval'.", color: "#2563eb" },
       { channel: "Meta (Urgency)", allocation: 14, tactic: "Retarget with 'Your coverage gap closes in 48 hours' messaging. Show his $500K quote and monthly price.", color: "#1877f2" },
       { channel: "SMS/Push", allocation: 4, tactic: "Day 3 follow-up: 'James — your $500K quote expires in 48 hours. Complete your application in 8 minutes.' with direct link.", color: "#f59e0b" },
