@@ -116,7 +116,7 @@ function VoterFeed({ C }: { C: C }) {
     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20, borderLeft: `3px solid ${C.green}` }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
         <span style={{ width: 8, height: 8, background: C.green, borderRadius: "50%", boxShadow: `0 0 8px ${C.green}`, animation: "blink 1.2s infinite", flexShrink: 0 }} />
-        <span style={{ fontSize: 11, fontWeight: 700, color: C.green, textTransform: "uppercase", letterSpacing: "0.1em" }}>SiteID — Live Voter Identified</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: C.green, textTransform: "uppercase", letterSpacing: "0.1em" }}>Live Voter Signal — Behavioral Intelligence</span>
       </div>
       <div style={{ opacity: fade ? 1 : 0, transition: "opacity 0.4s" }}>
         <div style={{ fontSize: 18, fontWeight: 800, color: C.white, marginBottom: 4 }}>{v.name}</div>
@@ -165,7 +165,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         <KpiCard label="Total Impressions" value={fmt(impressions)} sub="↑ 4.1% vs last week" color={C.red2} C={C} />
         <KpiCard label="Voters Reached" value={fmt(reach)} sub={`${MCCARTY_LIVE_BASE.frequency}x avg frequency`} color={C.green} C={C} />
         <KpiCard label="Completion Rate" value={`${MCCARTY_LIVE_BASE.completionRate}%`} sub="CTV ad completions" color={C.blue} C={C} />
-        <KpiCard label="SiteID Voters ID'd" value="1,842" sub="Name, address, phone matched" color={C.gold} C={C} />
+        <KpiCard label="Voters Behaviorally Matched" value="1,842" sub="Named individuals via behavioral data" color={C.gold} C={C} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
@@ -283,7 +283,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         </div>
       </Card>
 
-      {/* SiteID Voter Feed — moved below media mix */}
+      {/* Live Voter Signal Feed */}
       <VoterFeed C={C} />
     </div>
   );
@@ -625,7 +625,7 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
         <KpiCard label="Total Voter Universe" value="30,240" sub="Tulsa County GOP 45+ registered" color={C.red2} C={C} />
         <KpiCard label="Persuasion Threshold Met" value="4,840" sub="5+ exposures delivered (Day 3)" color={C.green} C={C} />
-        <KpiCard label="SiteID Matched" value="1,842" sub="62% match rate on site visitors" color={C.gold} C={C} />
+        <KpiCard label="Behavioral Matches" value="1,842" sub="Named voters matched via behavioral data" color={C.gold} C={C} />
         <KpiCard label="Avg Persuasion Score" value="64.2" sub="Across all reached voters" color={C.blue} C={C} />
       </div>
 
@@ -747,13 +747,19 @@ function TabDebate({ mobile, C }: { mobile: boolean; C: C }) {
 // ── TAB: Vote Projections ─────────────────────────────────────────────────────
 function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
   // Day 3 of 18 — $33K committed budget
+  // Pacing: surge last 4 days at 2–3x normal daily rate
+  // Phase 1 (Days 1–3):  $5,500  (~$1,833/day)
+  // Phase 2 (Days 4–9):  $8,400  (~$1,400/day)
+  // Phase 3 (Days 10–14): $7,000  (~$1,400/day)
+  // Phase 4 (Days 15–18): $12,100 (~$3,025/day = 2.16x)
+  // Total: $33,000
   const BUDGET_TOTAL = 33000;
   const DAYS_TOTAL = 18;
   const DAYS_ELAPSED = 3;
-  const DAYS_REMAINING = DAYS_TOTAL - DAYS_ELAPSED;
-  const SPEND_TO_DATE = Math.round(BUDGET_TOTAL * (DAYS_ELAPSED / DAYS_TOTAL));
+  const SPEND_TO_DATE = 5500;
   const SPEND_REMAINING = BUDGET_TOTAL - SPEND_TO_DATE;
-  const SPEND_PER_DAY = Math.round(SPEND_REMAINING / DAYS_REMAINING);
+  const SPEND_PER_DAY = 1400; // baseline daily rate (phases 2–3)
+  const SURGE_PER_DAY = 3025; // last 4 days surge rate (~2.16x baseline)
 
   // Actual results through Day 3
   const RESULTS_TO_DATE = [
@@ -771,12 +777,12 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
     { label: "Projected Vote Total June 16", value: "14,200–16,800", sub: "Committed base + moved undecided", color: C.green },
   ];
 
-  // Spend pacing
+  // Spend pacing — surge last 4 days at 2–3x baseline
   const SPEND_PHASES = [
-    { phase: "Days 1–3 (Complete)", spend: `$${SPEND_TO_DATE.toLocaleString()}`, pct: Math.round((SPEND_TO_DATE / BUDGET_TOTAL) * 100), note: "Launch + A/B test window", done: true },
-    { phase: "Days 4–9", spend: `$${Math.round(SPEND_PER_DAY * 6).toLocaleString()}`, pct: Math.round((SPEND_PER_DAY * 6 / BUDGET_TOTAL) * 100), note: "Peak frequency — saturation to top ZIPs", done: false },
-    { phase: "Days 10–15", spend: `$${Math.round(SPEND_PER_DAY * 6).toLocaleString()}`, pct: Math.round((SPEND_PER_DAY * 6 / BUDGET_TOTAL) * 100), note: "Final optimization + retargeting surge", done: false },
-    { phase: "Days 16–18 + June 16", spend: `$${Math.round(SPEND_PER_DAY * 3).toLocaleString()}`, pct: Math.round((SPEND_PER_DAY * 3 / BUDGET_TOTAL) * 100), note: "Max frequency to identified persuadables", done: false },
+    { phase: "Days 1–3 (Complete)", spend: "$5,500",  pct: Math.round(5500  / BUDGET_TOTAL * 100), note: "Campaign launch + debate night + A/B test window · ~$1,833/day", done: true },
+    { phase: "Days 4–9",            spend: "$8,400",  pct: Math.round(8400  / BUDGET_TOTAL * 100), note: "Peak frequency — saturation to top voter ZIPs · ~$1,400/day", done: false },
+    { phase: "Days 10–14",           spend: "$7,000",  pct: Math.round(7000  / BUDGET_TOTAL * 100), note: "Final optimization + retargeting of near-threshold voters · ~$1,400/day", done: false },
+    { phase: "Days 15–18 — SURGE 🚀", spend: "$12,100", pct: Math.round(12100 / BUDGET_TOTAL * 100), note: "Election-eve surge — 2–3x daily spend · ~$3,025/day · Max frequency to all identified persuadables", done: false },
   ];
 
   const TIMELINE = [
@@ -785,8 +791,8 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
     { day: "Day 3 — May 30",  done: true,  activity: "First optimization cycle. Budget shifted to highest-converting ZIPs. 840 voters confirmed moved to McCarty." },
     { day: "Days 4–9",        done: false, activity: "Peak frequency window. Saturation delivery to highest-propensity voters. Debate retargeting at full volume." },
     { day: "Days 10–12",      done: false, activity: "Mid-campaign data review. Creative rotation based on completion rates. Lookalike expansion if pace allows." },
-    { day: "Days 13–15",      done: false, activity: "Final optimization pass. Pre-election behavioral data informs last message mix. SiteID retargeting maximized." },
-    { day: "Days 16–18",      done: false, activity: "Maximum frequency to all identified persuadables. Election-eve push to highest-score voters." },
+    { day: "Days 13–14",      done: false, activity: "Final optimization pass. Pre-election behavioral data informs last message mix. Retargeting maximized on highest-intent voters." },
+    { day: "Days 15–18 🚀",   done: false, activity: "SURGE PHASE: Spend increases to 2–3x baseline (~$3,025/day). Maximum frequency to all identified persuadables. Election-eve push to highest-score voters. $12,100 deployed in final 4 days." },
     { day: "June 16",         done: false, activity: "Election Day. Final impressions timed to each voter's likely voting window. Turnout-focused messaging." },
   ];
 
@@ -811,7 +817,11 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
           </div>
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: 22, fontWeight: 800, color: C.blue }}>${SPEND_PER_DAY.toLocaleString()}/day</div>
-            <div style={{ fontSize: 10, color: C.muted }}>Avg Remaining Pace</div>
+            <div style={{ fontSize: 10, color: C.muted }}>Baseline Daily Rate</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: C.gold }}>${SURGE_PER_DAY.toLocaleString()}/day</div>
+            <div style={{ fontSize: 10, color: C.muted }}>Surge Rate (Days 15–18)</div>
           </div>
         </div>
       </div>
@@ -1221,7 +1231,7 @@ export default function McCartryDashboard() {
 
       {/* Footer */}
       <div style={{ padding: "16px 28px", borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-        <div style={{ fontSize: 10, color: C.muted }}>Powered by Exact Audience · SiteID Intelligence · exactaudience.ai</div>
+        <div style={{ fontSize: 10, color: C.muted }}>Powered by Exact Audience · Behavioral Intelligence · exactaudience.ai</div>
         <div style={{ fontSize: 10, color: C.muted }}>Colleen McCarty for Tulsa County DA · June 16, 2026 Republican Primary</div>
       </div>
     </div>
