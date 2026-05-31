@@ -215,6 +215,56 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         </Card>
       </div>
 
+      {/* Daily Voter Movement Chart */}
+      <Card C={C}>
+        <SectionTitle C={C}>Daily Voters Moved to McCarty</SectionTitle>
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 11, color: C.muted }}>Voters confirmed moved per day via behavioral signals · Cumulative: <strong style={{ color: C.gold }}>1,120</strong></div>
+        </div>
+        <ResponsiveContainer width="100%" height={mobile ? 160 : 200}>
+          <BarChart data={[
+            { day: "May 28", voters: 280, label: "D1" },
+            { day: "May 29", voters: 320, label: "D2" },
+            { day: "May 30", voters: 240, label: "D3" },
+            { day: "May 31", voters: 280, label: "D4" },
+          ]} barSize={36}>
+            <CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false} />
+            <XAxis dataKey="label" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={30} domain={[0, 400]} />
+            <Tooltip
+              contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }}
+              formatter={(val: number, _: string, entry: { payload?: { day?: string } }) => [`${val} voters moved`, entry.payload?.day ?? ""]}
+            />
+            <Bar dataKey="voters" fill={C.blue} radius={[6, 6, 0, 0]}>
+              {[
+                { day: "May 28", voters: 280, label: "D1" },
+                { day: "May 29", voters: 320, label: "D2" },
+                { day: "May 30", voters: 240, label: "D3" },
+                { day: "May 31", voters: 280, label: "D4" },
+              ].map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={index === 3 ? C.gold : C.blue} />
+              ))}
+            </Bar>
+            <ReferenceLine y={280} stroke={C.green} strokeDasharray="4 3" strokeWidth={1.5}
+              label={{ value: "Avg 280/day", position: "right", fill: C.green, fontSize: 9, fontWeight: 700 }} />
+          </BarChart>
+        </ResponsiveContainer>
+        <div style={{ display: "flex", gap: 16, marginTop: 8, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: C.blue }} />
+            <span style={{ fontSize: 10, color: C.muted }}>Voters moved (prior days)</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: C.gold }} />
+            <span style={{ fontSize: 10, color: C.muted }}>Today (Day 4)</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 10, height: 2, background: C.green }} />
+            <span style={{ fontSize: 10, color: C.muted }}>Daily average</span>
+          </div>
+        </div>
+      </Card>
+
       {/* Media Mix */}
       <Card C={C}>
         <SectionTitle C={C}>Media Mix — Budget Allocation</SectionTitle>
