@@ -9,7 +9,7 @@ import {
   BREEZE_MEDIA_MIX, BREEZE_CTV_CHANNELS, BREEZE_CREATIVES,
   BREEZE_MOODS, BREEZE_VISITORS, BREEZE_SITE_PAGES, BREEZE_QR,
 } from "@/lib/breezeData";
-import { BREEZE_PEOPLE, BREEZE_SEGMENT_STATS } from "@/lib/breezeInsurancePeopleSegment";
+import { BREEZE_REAL_LEADS, BREEZE_REAL_LEADS_STATS } from "@/lib/breezeRealLeads";
 import { BREEZE_WEB_TRAFFIC } from "@/lib/webTrafficData";
 
 export default function BreezeDashboard() {
@@ -27,8 +27,8 @@ export default function BreezeDashboard() {
       sitePagesLabel="Product Pages"
       qr={BREEZE_QR}
       ctvRecommendationsMode={true}
-      audienceSegment={BREEZE_PEOPLE as any}
-      audienceSegmentStats={BREEZE_SEGMENT_STATS as any}
+      audienceSegment={BREEZE_REAL_LEADS}
+      audienceSegmentStats={BREEZE_REAL_LEADS_STATS}
       webTraffic={BREEZE_WEB_TRAFFIC}
     />
   );

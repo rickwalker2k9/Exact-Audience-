@@ -553,6 +553,7 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { MCCARTY_VOTER_PROFILES } from "./mccartryProfiles";
+import { BREEZE_BUYER_PROFILES } from "./breezeProfiles";
 
 export const ALL_PROFILES: BuyerProfile[] = [
   ...LAND_ROVER_PROFILES,
@@ -560,6 +561,7 @@ export const ALL_PROFILES: BuyerProfile[] = [
   ...WARBY_PROFILES,
   ...POLICYGENIUS_PROFILES,
   ...MCCARTY_VOTER_PROFILES,
+  ...BREEZE_BUYER_PROFILES,
 ];
 
 export function getProfilesByDashboard(dashboardId: BuyerProfile["dashboardId"]): BuyerProfile[] {
