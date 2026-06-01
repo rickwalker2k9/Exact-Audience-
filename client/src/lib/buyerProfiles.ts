@@ -11,6 +11,7 @@ export type IntentSignal = {
   action: string;
   detail: string;
   strength: "low" | "medium" | "high" | "very-high";
+  phase?: "lookback" | "campaign"; // lookback = pre-campaign 30-day window; campaign = active campaign period
 };
 
 export type PurchaseWindow = {

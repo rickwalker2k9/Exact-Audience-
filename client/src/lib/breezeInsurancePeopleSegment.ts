@@ -21,6 +21,8 @@ export interface BreezePerson {
 
 export const BREEZE_SEGMENT_STATS = {
   totalList: 5913,
+  homeowners: 3841,
+  withEmail: 5285,
   validEmails: 5285,
   goldEmails: 439,
   validPct: 89.38,

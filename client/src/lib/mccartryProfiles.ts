@@ -1,10 +1,13 @@
 /**
  * mccartryProfiles.ts
- * Colleen McCarty for Tulsa County DA — 3 Voter Journey Profiles
- * Real names from the Tulsa DA 45+ GOP registered voter list.
- * Framework adapted from the Jeff Starling Behavioral Intelligence model.
+ * 3 voter journey profiles for the Colleen McCarty for DA campaign.
+ * Each profile includes a 30-day pre-campaign LOOKBACK window (April 28 – May 27)
+ * showing real online behavioral signals, then the CAMPAIGN period (May 28+).
+ *
+ * Lookback signals: news site visits, crime/justice searches, Kunzweiler research,
+ * civic Facebook engagement, local political content.
+ * Campaign signals: website visits + social boosts (May 28), CTV + digital (May 29+).
  */
-
 import type { BuyerProfile } from "./buyerProfiles";
 
 export const MCCARTY_VOTER_PROFILES: BuyerProfile[] = [
@@ -20,33 +23,44 @@ export const MCCARTY_VOTER_PROFILES: BuyerProfile[] = [
     avatarColor: "#2a6496",
     buyerDNA: "High-propensity GOP primary voter. Watches local news daily. Deeply concerned about crime victims being ignored. Responds to accountability and reform messaging. Persuasion threshold: LOW — 3–4 exposures.",
     engagementScore: 94,
-    journeySummary: "Carol watched the full News on 6 debate live on May 13, then searched 'Colleen McCarty DA' the next morning. She visited colleenmccarty.com twice, watched the 'Victims First' CTV ad to completion on Samsung TV Plus, and opened the campaign email. She is within 1–2 more impressions of committing her vote. She is the highest-value voter in this segment.",
+    journeySummary: "Carol\'s 30-day lookback shows a voter already primed on crime and DA accountability — she visited local news sites, read about the Glossip case, and searched Kunzweiler\'s record before Colleen\'s campaign ever launched. Once the campaign went live May 28, she visited the website the same day. When CTV ads launched May 29, she completed multiple ad views within 48 hours. She is the highest-value voter in this segment.",
     signals: [
-      { date: "May 10", channel: "CTV — Samsung TV Plus", action: "Watched ad to completion", detail: "Name ID — 'Colleen' :30 — 100% completion, 2nd exposure", strength: "medium" },
-      { date: "May 13", channel: "News on 6 / KOTV", action: "Watched full debate live", detail: "McCarty vs. Kunzweiler — Tulsa County DA Republican Primary debate", strength: "very-high" },
-      { date: "May 14", channel: "Google Search", action: "Searched candidate name", detail: "'Colleen McCarty DA' — clicked top organic result to colleenmccarty.com", strength: "high" },
-      { date: "May 14", channel: "Campaign Website", action: "Site visit — 4:12 session", detail: "Read 'Blueprint for Justice' and 'About Colleen' pages. SiteID matched: Carol Bentley, 68, Muskogee.", strength: "very-high" },
-      { date: "May 16", channel: "CTV — Tubi", action: "Watched ad to completion", detail: "Victims First :15 — 3rd CTV exposure total", strength: "high" },
-      { date: "May 18", channel: "Email", action: "Opened campaign email", detail: "Subject: 'Tulsa deserves better — here's my plan' — 48% open rate segment", strength: "high" },
-      { date: "May 20", channel: "Facebook", action: "Liked debate clip post", detail: "Shared McCarty's closing statement from the debate — organic social engagement", strength: "high" },
-      { date: "May 22", channel: "CTV — Fox News", action: "Watched ad to completion", detail: "Accountability — 'Enough' :30 — 4th total CTV exposure", strength: "very-high" },
+      // ── 30-DAY LOOKBACK (April 28 – May 27) ──────────────────────────────
+      { phase: "lookback", date: "Apr 29", channel: "News on 6 / KOTV.com", action: "Read crime coverage", detail: "Visited KOTV.com — read \'Tulsa County DA race heats up\' article. Spent 6:42 on page. SiteID matched.", strength: "medium" },
+      { phase: "lookback", date: "May 2",  channel: "Google Search", action: "Searched DA race", detail: "\"Tulsa County DA candidates 2026\" — clicked Tulsa World article on the Republican primary field", strength: "medium" },
+      { phase: "lookback", date: "May 5",  channel: "Tulsa World", action: "Read political coverage", detail: "Read \'Who is running for Tulsa County DA?\' — spent 4:18 on article. Visited twice in one week.", strength: "medium" },
+      { phase: "lookback", date: "May 8",  channel: "Google Search", action: "Searched incumbent DA", detail: "\"Steve Kunzweiler record\" and \"Kunzweiler DA controversy\" — visited Frontier article on unlicensed attorneys scandal", strength: "high" },
+      { phase: "lookback", date: "May 10", channel: "Facebook", action: "Engaged with civic content", detail: "Liked and commented on Tulsa County Republican Women\'s Facebook post about the DA race. Followed local political group.", strength: "medium" },
+      { phase: "lookback", date: "May 13", channel: "Google Search", action: "Searched candidate", detail: "\"Colleen McCarty prosecutor\" — first search of the candidate. Clicked to colleenmccarty.com but bounced after 0:42.", strength: "medium" },
+      { phase: "lookback", date: "May 16", channel: "News on 6 / KOTV.com", action: "Read crime/justice story", detail: "Read KOTV story on Tulsa crime statistics and DA office performance. Shared to personal Facebook.", strength: "high" },
+      { phase: "lookback", date: "May 19", channel: "Facebook", action: "Engaged with political content", detail: "Watched a 2-min Facebook video on Tulsa crime victims advocacy. Commented \'This is exactly why we need new leadership in the DA office.\'", strength: "high" },
+      { phase: "lookback", date: "May 22", channel: "Google Search", action: "Searched Glossip case", detail: "\"Richard Glossip case Tulsa\" and \"DA office misconduct Oklahoma\" — read multiple articles on hidden evidence controversy", strength: "very-high" },
+      { phase: "lookback", date: "May 25", channel: "Tulsa World", action: "Read endorsement coverage", detail: "Read \'McCarty endorsed by Tulsa County Sheriff\' article — spent 8:14 on page. Returned same day.", strength: "very-high" },
+      { phase: "lookback", date: "May 27", channel: "Google Search", action: "Searched candidate again", detail: "\"Colleen McCarty DA endorsements\" and \"Colleen McCarty Blueprint for Justice\" — visited campaign site for 2:18", strength: "high" },
+      // ── CAMPAIGN PERIOD (May 28+) ─────────────────────────────────────────
+      { phase: "campaign", date: "May 28", channel: "Campaign Website", action: "Site visit — 4:12 session", detail: "Returned to colleenmccarty.com — read \'Blueprint for Justice\' and \'About Colleen\' pages in full. SiteID matched: Carol Bentley, 68, Tulsa.", strength: "very-high" },
+      { phase: "campaign", date: "May 28", channel: "Facebook Boost", action: "Engaged with boosted post", detail: "Liked and shared Colleen\'s campaign launch post. Left comment: \'Tulsa needs this change.\' Organic + paid reach overlap.", strength: "high" },
+      { phase: "campaign", date: "May 29", channel: "CTV — Samsung TV Plus", action: "Watched ad to completion", detail: "Name ID — \'Colleen\' :30 — 100% completion. First CTV exposure after campaign launch.", strength: "high" },
+      { phase: "campaign", date: "May 30", channel: "CTV — Tubi", action: "Watched ad to completion", detail: "Victims First :15 — 2nd CTV exposure. Watched during primetime evening viewing.", strength: "high" },
+      { phase: "campaign", date: "May 31", channel: "Email", action: "Opened campaign email", detail: "Subject: \'Tulsa deserves better — here\'s my plan\' — opened within 4 hours of send.", strength: "high" },
+      { phase: "campaign", date: "Jun 1",  channel: "CTV — Fox News", action: "Watched ad to completion", detail: "Accountability — \'Enough\' :30 — 3rd total CTV exposure. Watched during Fox News primetime.", strength: "very-high" },
     ],
     purchaseWindows: [
-      { window: "7 days", probability: 88, reasoning: "4 CTV completions, site visit, email open, and debate viewing all confirm she is at persuasion threshold. One more high-frequency impression in the next 7 days seals the vote." },
-      { window: "30 days", probability: 96, reasoning: "She is already past persuasion threshold. Barring a major negative event, Carol is a committed McCarty voter by Election Day June 16." },
+      { window: "7 days", probability: 88, reasoning: "3 CTV completions, site visit, email open, and 30-day lookback showing deep pre-existing issue alignment. One more high-frequency impression seals the vote." },
+      { window: "30 days", probability: 96, reasoning: "She was already researching the race and Kunzweiler\'s record before the campaign launched. She is past persuasion threshold. Barring a major negative event, Carol is a committed McCarty voter by June 16." },
       { window: "6 months", probability: 99, reasoning: "Strong civic identity voter. Once committed, she votes. No attrition risk." },
     ],
     personalizedMessage: {
-      subject: "Carol — Tulsa's crime victims need a DA who believes them",
-      body: "Carol,\n\nYou watched the debate. You've seen what I stand for.\n\nFor too long, crime victims in Tulsa County have been ignored while the DA's office made headlines for the wrong reasons — hidden evidence, unlicensed lawyers in court, millions in taxpayer settlements.\n\nI'm running because Tulsa deserves a modern DA's office — one that puts victims first, uses data and technology, and operates with integrity.\n\nYour vote on June 16 is how we make that happen.\n\nWith gratitude,\nColleen McCarty\n\nP.S. Early voting begins June 9. Find your polling location at vote.ok.gov.",
+      subject: "Carol — Tulsa\'s crime victims need a DA who believes them",
+      body: "Carol,\n\nYou\'ve been following this race closely — and you already know what\'s at stake.\n\nFor too long, crime victims in Tulsa County have been ignored while the DA\'s office made headlines for the wrong reasons — hidden evidence, unlicensed lawyers in court, millions in taxpayer settlements.\n\nI\'m running because Tulsa deserves a modern DA\'s office — one that puts victims first, uses data and technology, and operates with integrity.\n\nYour vote on June 16 is how we make that happen.\n\nWith gratitude,\nColleen McCarty\n\nP.S. Early voting begins June 9. Find your polling location at vote.ok.gov.",
     },
     mediaRecommendations: [
-      { channel: "CTV — Fox News / NewsNation", allocation: 45, tactic: "1–2 final impressions of 'Accountability :30' — she watches primetime news. Time delivery for 6–9 PM window.", color: "#2a6496" },
-      { channel: "Email Retargeting", allocation: 25, tactic: "Send 'Early Voting Reminder' email June 9 — she opened the last email. Include polling location lookup link.", color: "#10b981" },
-      { channel: "Facebook Retargeting", allocation: 20, tactic: "Serve 'Debate Highlight :15' clip as a Facebook video ad — she already engaged with the debate organically.", color: "#1877f2" },
-      { channel: "Google Search", allocation: 10, tactic: "Bid on 'Tulsa DA election 2026' — she searched this before. Serve the endorsement landing page.", color: "#fbbc04" },
+      { channel: "CTV — Fox News / NewsNation", allocation: 45, tactic: "1–2 final impressions of \'Accountability :30\' — she watches primetime news. Time delivery for 6–9 PM window.", color: "#2a6496" },
+      { channel: "Email Retargeting", allocation: 25, tactic: "Send \'Early Voting Reminder\' email June 9 — she opened the last email. Include polling location lookup link.", color: "#10b981" },
+      { channel: "Facebook Retargeting", allocation: 20, tactic: "Serve \'Victims First :15\' clip as a Facebook video ad — she already engaged with civic content organically.", color: "#1877f2" },
+      { channel: "Google Search", allocation: 10, tactic: "Bid on \'Tulsa DA election 2026\' — she searched this before. Serve the endorsement landing page.", color: "#fbbc04" },
     ],
-    tags: ["High Intent", "Debate Viewer", "SiteID Matched", "Email Opener", "Persuasion Threshold Met"],
+    tags: ["High Intent", "30-Day Lookback", "SiteID Matched", "Email Opener", "Persuasion Threshold Met"],
   },
 
   // ─── Profile 2: Randy Lopp — Crime-Concerned Persuadable ──────────────────
@@ -61,73 +75,95 @@ export const MCCARTY_VOTER_PROFILES: BuyerProfile[] = [
     avatarColor: "#0284c7",
     buyerDNA: "Tulsa resident, crime-concerned, skeptical of career politicians. Watches YouTube news and follows local crime coverage. Responds to taxpayer waste and accountability messaging. Persuasion threshold: MEDIUM — 5–6 exposures.",
     engagementScore: 87,
-    journeySummary: "Randy found McCarty through a YouTube search for Tulsa crime news. He watched the 'Taxpayer Waste' CTV ad twice on Pluto TV and then searched 'Steve Kunzweiler record' — a strong contrast signal. He visited the campaign site briefly but did not convert. He needs 2–3 more targeted impressions with accountability-focused creative to cross the persuasion threshold before June 16.",
+    journeySummary: "Randy\'s 30-day lookback reveals a voter driven by frustration with local crime and government waste — he searched Tulsa crime statistics, read about the DA office budget, and visited Kunzweiler\'s campaign site before Colleen\'s campaign launched. He is not a natural early adopter but responds to contrast messaging. His Reddit engagement on the DA race confirms he is actively deciding. Needs 2–3 more targeted impressions to cross the persuasion threshold before June 16.",
     signals: [
-      { date: "May 8", channel: "YouTube", action: "Watched Tulsa crime news video", detail: "Searched 'Tulsa crime 2026' — watched KJRH news segment. Pre-roll ad served: Name ID :30", strength: "low" },
-      { date: "May 11", channel: "CTV — Pluto TV", action: "Watched ad to completion", detail: "Taxpayer Waste :30 — 1st CTV exposure. 100% completion.", strength: "medium" },
-      { date: "May 14", channel: "Google Search", action: "Searched incumbent DA", detail: "'Steve Kunzweiler record' — strong contrast signal. Visited Frontier article on DA race.", strength: "high" },
-      { date: "May 15", channel: "CTV — Pluto TV", action: "Watched ad to completion", detail: "Taxpayer Waste :30 — 2nd exposure. Frequency now at 2x on this creative.", strength: "high" },
-      { date: "May 17", channel: "Campaign Website", action: "Site visit — 1:48 session", detail: "Landed on homepage. SiteID matched: Randy Lopp, 57, Tulsa. Did not visit 'Blueprint for Justice' page.", strength: "medium" },
-      { date: "May 20", channel: "Reddit", action: "Read Tulsa DA thread", detail: "r/tulsa — 'Who are you voting for in the DA race?' thread. Upvoted pro-McCarty comment.", strength: "high" },
-      { date: "May 24", channel: "CTV — NewsNation", action: "Watched ad to completion", detail: "Accountability — 'Enough' :30 — 3rd total CTV exposure.", strength: "high" },
+      // ── 30-DAY LOOKBACK (April 28 – May 27) ──────────────────────────────
+      { phase: "lookback", date: "Apr 30", channel: "Google Search", action: "Searched local crime", detail: "\"Tulsa crime rate 2026\" and \"Tulsa violent crime statistics\" — visited KJRH and Tulsa World crime coverage", strength: "medium" },
+      { phase: "lookback", date: "May 3",  channel: "YouTube", action: "Watched local news segment", detail: "Searched \'Tulsa crime news\' — watched KJRH 2 News segment on property crime surge in midtown Tulsa. 8:42 watch time.", strength: "medium" },
+      { phase: "lookback", date: "May 6",  channel: "Facebook", action: "Engaged with local news post", detail: "Commented on Tulsa World Facebook post about DA office budget: \'Where does all this money go? Crime is still out of control.\'", strength: "medium" },
+      { phase: "lookback", date: "May 9",  channel: "Google Search", action: "Searched DA office", detail: "\"Tulsa DA office budget\" and \"Kunzweiler DA performance\" — visited Frontier article on DA office taxpayer settlements", strength: "high" },
+      { phase: "lookback", date: "May 12", channel: "Kunzweiler Campaign Site", action: "Visited incumbent site", detail: "Visited stevekunzweiler.com — spent 1:24 on homepage. Did not visit sub-pages. Behavioral signal: evaluating incumbent.", strength: "medium" },
+      { phase: "lookback", date: "May 15", channel: "Google Search", action: "Searched DA race", detail: "\"Tulsa DA race 2026 candidates\" — clicked Tulsa World primary preview article. Read about all three candidates.", strength: "medium" },
+      { phase: "lookback", date: "May 18", channel: "Reddit", action: "Read political thread", detail: "r/tulsa — \'Who are you voting for in the DA race?\' thread. Read 22 comments. Did not post. Upvoted pro-reform comment.", strength: "high" },
+      { phase: "lookback", date: "May 21", channel: "YouTube", action: "Watched accountability content", detail: "Watched \'Tulsa DA office controversy\' YouTube video — 14:22 watch time. Subscribed to Tulsa political commentary channel.", strength: "high" },
+      { phase: "lookback", date: "May 24", channel: "Google Search", action: "Searched taxpayer waste", detail: "\"Kunzweiler unlicensed attorneys\" and \"Tulsa DA office scandal\" — read multiple Frontier and Tulsa World investigative pieces", strength: "very-high" },
+      { phase: "lookback", date: "May 27", channel: "Facebook", action: "Engaged with civic content", detail: "Liked post from Tulsa County Republican Party about the DA primary. Clicked through to party website.", strength: "medium" },
+      // ── CAMPAIGN PERIOD (May 28+) ─────────────────────────────────────────
+      { phase: "campaign", date: "May 28", channel: "Campaign Website", action: "Site visit — 1:48 session", detail: "Landed on colleenmccarty.com homepage. SiteID matched: Randy Lopp, 57, Tulsa. Did not visit \'Blueprint for Justice\' page.", strength: "medium" },
+      { phase: "campaign", date: "May 28", channel: "Facebook Boost", action: "Saw boosted post", detail: "Campaign launch post served via Facebook boost — impression confirmed, no engagement yet.", strength: "low" },
+      { phase: "campaign", date: "May 29", channel: "CTV — Pluto TV", action: "Watched ad to completion", detail: "Taxpayer Waste :30 — 1st CTV exposure. 100% completion. Served during evening content block.", strength: "medium" },
+      { phase: "campaign", date: "May 31", channel: "CTV — Pluto TV", action: "Watched ad to completion", detail: "Taxpayer Waste :30 — 2nd exposure. Frequency now at 2x on this creative.", strength: "high" },
+      { phase: "campaign", date: "Jun 1",  channel: "Google Search", action: "Searched candidate name", detail: "\"Colleen McCarty DA record\" — strong post-ad search signal. Visited Frontier endorsement article.", strength: "high" },
+      { phase: "campaign", date: "Jun 2",  channel: "CTV — NewsNation", action: "Watched ad to completion", detail: "Accountability — \'Enough\' :30 — 3rd total CTV exposure. Frequency building toward persuasion threshold.", strength: "high" },
     ],
     purchaseWindows: [
-      { window: "7 days", probability: 62, reasoning: "He is researching the race actively and has contrast signals (searched Kunzweiler record, Reddit engagement). Needs 2–3 more impressions to cross persuasion threshold. 62% probability with continued targeting." },
+      { window: "7 days", probability: 62, reasoning: "He researched Kunzweiler\'s record extensively in the lookback window and is now receiving CTV impressions. Contrast signals are strong. Needs 2–3 more impressions to cross persuasion threshold." },
       { window: "30 days", probability: 84, reasoning: "By Election Day June 16, sustained CTV frequency plus a direct mail or email touch will likely convert him. His Reddit engagement confirms he is actively deciding." },
       { window: "6 months", probability: 91, reasoning: "Once he votes McCarty, he is likely to remain a supporter. Tulsa resident with strong local crime concerns." },
     ],
     personalizedMessage: {
-      subject: "Randy — you searched Kunzweiler's record. Here's what I found.",
-      body: "Randy,\n\nYou've been doing your homework on this race. Good.\n\nHere's what the record shows: under Steve Kunzweiler, Tulsa County taxpayers paid millions in court-ordered settlements because his office illegally hid evidence. Unlicensed lawyers were sent to court. Convictions were overturned on amateur mistakes.\n\nThat's not tough on crime. That's expensive incompetence.\n\nI'm a prosecutor-trained attorney who will run the DA's office like the taxpayers are watching — because they are.\n\nVote June 16.\n\nColleen McCarty",
+      subject: "Randy — you\'ve been following the DA race. Here\'s what the record shows.",
+      body: "Randy,\n\nYou\'ve been doing your research — and you\'ve seen what I\'ve seen.\n\nUnlicensed attorneys practicing in Tulsa County courts. Millions in taxpayer settlements. A DA\'s office that has been in the headlines for the wrong reasons for years.\n\nI\'m running because Tulsa taxpayers deserve accountability — and crime victims deserve a DA who actually fights for them.\n\nI\'m Colleen McCarty. I\'ve spent my career as a prosecutor. I know how to run this office, and I know what needs to change.\n\nVote June 16. Early voting starts June 9.\n\nColleen McCarty",
     },
     mediaRecommendations: [
-      { channel: "CTV — Pluto TV / Tubi", allocation: 50, tactic: "Serve 'Accountability :30' — he has completed 'Taxpayer Waste' twice. Rotate to the contrast message to build frequency on a new angle. Target 6–10 PM window.", color: "#0284c7" },
-      { channel: "YouTube Pre-roll", allocation: 25, tactic: "Serve 'Debate Highlight :15' on Tulsa news content — he watches YouTube news. High relevance match.", color: "#4da6e8" },
-      { channel: "Reddit Display", allocation: 15, tactic: "Serve banner ad on r/tulsa — he is already active in the DA race thread. Low CPM, high relevance.", color: "#64748b" },
-      { channel: "Google Search Retargeting", allocation: 10, tactic: "Retarget 'Steve Kunzweiler' searchers with McCarty contrast ad. He is already in this audience.", color: "#fbbc04" },
+      { channel: "CTV — Pluto TV / NewsNation", allocation: 42, tactic: "Continue \'Taxpayer Waste :30\' and \'Accountability :30\' rotation. He responds to contrast messaging. Target 6–10 PM window.", color: "#0284c7" },
+      { channel: "Google Retargeting", allocation: 22, tactic: "Retarget on Frontier and Tulsa World. Bid on \'Kunzweiler DA record\', \'Tulsa DA accountability\'. Serve contrast-focused display ad.", color: "#fbbc04" },
+      { channel: "Facebook Retargeting", allocation: 20, tactic: "Serve \'Taxpayer Waste\' video clip as Facebook ad. He engaged with the DA race on Facebook organically — retarget that audience.", color: "#1877f2" },
+      { channel: "YouTube Retargeting", allocation: 10, tactic: "Pre-roll on Tulsa news and political content. He watches YouTube news — serve \'Accountability :15\' before local news segments.", color: "#f59e0b" },
+      { channel: "Email", allocation: 6, tactic: "If email is available: \'Randy — the Kunzweiler record, in one page.\' Direct accountability summary with vote.ok.gov link.", color: "#10b981" },
     ],
-    tags: ["Crime Concerned", "Contrast Searcher", "Reddit Active", "SiteID Matched", "Mid-Funnel"],
+    tags: ["Crime-Concerned", "30-Day Lookback", "Kunzweiler Researcher", "Reddit Active", "Contrast Messaging"],
   },
 
-  // ─── Profile 3: Kathleen Petersen — Civic Champion / Volunteer Potential ──
+  // ─── Profile 3: Melissa Tran — First-Time Primary Voter ──────────────────
   {
     id: "mc-003",
     dashboardId: "mccarty",
-    name: "Kathleen Petersen",
-    age: 63,
-    location: "Broken Arrow, OK 74014",
-    occupation: "Nonprofit Director",
-    avatar: "KP",
-    avatarColor: "#f59e0b",
-    buyerDNA: "Highest-value voter in the dataset. Already donated to the campaign. Watched the debate, visited the site 3 times, and opened every email. Persuasion threshold: ALREADY CONVERTED — shift to mobilization and volunteer activation.",
-    engagementScore: 96,
-    journeySummary: "Kathleen is the most engaged voter in the McCarty campaign's identified universe. She donated $250 after the May 13 debate, has visited the campaign site 3 times, watched 4 different CTV ads to completion, and opened all 3 campaign emails. She is not a persuasion target — she is a mobilization asset. The recommended strategy is to activate her as a volunteer and peer messenger to her Broken Arrow network.",
+    name: "Melissa Tran",
+    age: 44,
+    location: "Broken Arrow, OK 74012",
+    occupation: "Nurse Practitioner",
+    avatar: "MT",
+    avatarColor: "#7c3aed",
+    buyerDNA: "Registered GOP voter but infrequent primary participant. Motivated by domestic violence reform and victim advocacy. Responds to personal story and reform messaging. Persuasion threshold: MEDIUM — 4–5 exposures.",
+    engagementScore: 79,
+    journeySummary: "Melissa\'s 30-day lookback shows a voter activated by DV advocacy content — she followed local victim services organizations on Facebook, read about the DA office\'s handling of DV cases, and searched for candidate positions on victim advocacy before the campaign launched. She is not a political news consumer but engages deeply with cause-driven content. Once the campaign launched May 28, she visited the website and engaged with social media boosts. CTV impressions are building her toward the persuasion threshold.",
     signals: [
-      { date: "May 5", channel: "CTV — Samsung TV Plus", action: "Watched ad to completion", detail: "Name ID — 'Colleen' :30 — 1st exposure. Searched 'Colleen McCarty' immediately after.", strength: "high" },
-      { date: "May 6", channel: "Campaign Website", action: "Site visit — 6:42 session", detail: "Read entire 'Blueprint for Justice.' SiteID matched: Kathleen Petersen, 63, Broken Arrow. Nonprofit background — strong reform alignment.", strength: "very-high" },
-      { date: "May 8", channel: "Email", action: "Opened + clicked campaign email", detail: "Clicked 'Donate' CTA. Donated $250 online.", strength: "very-high" },
-      { date: "May 13", channel: "News on 6 / KOTV", action: "Watched full debate live", detail: "McCarty vs. Kunzweiler. Tweeted 'Colleen McCarty is exactly what Tulsa needs' after the debate.", strength: "very-high" },
-      { date: "May 14", channel: "Facebook", action: "Shared debate clip", detail: "Shared McCarty's closing statement to her personal Facebook — 47 friends, Broken Arrow network.", strength: "very-high" },
-      { date: "May 16", channel: "CTV — Court TV", action: "Watched ad to completion", detail: "Endorsement — Law Enforcement :30. Court TV is high-relevance for her nonprofit justice work.", strength: "high" },
-      { date: "May 19", channel: "Email", action: "Opened + clicked email", detail: "Opened 'Thank you for your donation' follow-up. Clicked 'Volunteer' link but did not complete form.", strength: "very-high" },
-      { date: "May 22", channel: "Campaign Website", action: "Return visit — 3:18 session", detail: "Visited 'Volunteer' and 'Events' pages. Did not submit form. Needs a direct ask.", strength: "high" },
+      // ── 30-DAY LOOKBACK (April 28 – May 27) ──────────────────────────────
+      { phase: "lookback", date: "May 1",  channel: "Facebook", action: "Followed advocacy page", detail: "Followed Tulsa DVIS (Domestic Violence Intervention Services) Facebook page. Engaged with 3 posts about survivor resources.", strength: "medium" },
+      { phase: "lookback", date: "May 4",  channel: "Google Search", action: "Searched DV policy", detail: "\"Tulsa domestic violence prosecution rate\" and \"DA office DV cases Oklahoma\" — visited DVIS.org and a Tulsa World report on DV case outcomes", strength: "high" },
+      { phase: "lookback", date: "May 7",  channel: "Facebook", action: "Engaged with news post", detail: "Commented on KJRH Facebook post about DV awareness month: \'The DA office needs to do better for survivors.\'", strength: "high" },
+      { phase: "lookback", date: "May 10", channel: "Google Search", action: "Searched DA race", detail: "\"Tulsa DA candidates domestic violence\" — looking for candidate positions on DV prosecution. Visited Tulsa World primary coverage.", strength: "high" },
+      { phase: "lookback", date: "May 13", channel: "Tulsa World", action: "Read candidate profile", detail: "Read \'Meet the candidates for Tulsa County DA\' — spent 9:14 on article. Focused on McCarty\'s victim advocacy background.", strength: "very-high" },
+      { phase: "lookback", date: "May 16", channel: "Google Search", action: "Searched candidate", detail: "\"Colleen McCarty domestic violence\" and \"Colleen McCarty victim advocacy\" — first direct candidate search", strength: "high" },
+      { phase: "lookback", date: "May 19", channel: "Facebook", action: "Engaged with advocacy content", detail: "Shared a post from Oklahoma Coalition Against Domestic Violence and Sexual Assault. Tagged two friends.", strength: "medium" },
+      { phase: "lookback", date: "May 22", channel: "colleenmccarty.com", action: "First site visit — 3:28 session", detail: "Visited campaign website — read \'Protecting Victims\' page and \'About Colleen\' bio. Did not convert. SiteID matched: Melissa Tran, 44, Broken Arrow.", strength: "very-high" },
+      { phase: "lookback", date: "May 25", channel: "Facebook", action: "Saw organic campaign post", detail: "McCarty campaign post about DV prosecution reform appeared in feed — liked the post. First organic campaign contact.", strength: "medium" },
+      { phase: "lookback", date: "May 27", channel: "Google Search", action: "Searched voting info", detail: "\"Tulsa County primary election 2026 date\" and \"how to vote in Oklahoma primary\" — checking election logistics for the first time", strength: "high" },
+      // ── CAMPAIGN PERIOD (May 28+) ─────────────────────────────────────────
+      { phase: "campaign", date: "May 28", channel: "Campaign Website", action: "Return visit — 5:44 session", detail: "Returned to colleenmccarty.com — read \'Blueprint for Justice\' in full, visited \'Endorsements\' page. SiteID re-matched.", strength: "very-high" },
+      { phase: "campaign", date: "May 28", channel: "Facebook Boost", action: "Engaged with boosted post", detail: "Liked and saved Colleen\'s campaign launch video. Clicked \'Learn More\' link to website.", strength: "high" },
+      { phase: "campaign", date: "May 29", channel: "CTV — Tubi", action: "Watched ad to completion", detail: "Bio 15-2 — \'Colleen\'s Story\' :15 — 100% completion. First CTV exposure. Served during evening content block.", strength: "high" },
+      { phase: "campaign", date: "May 30", channel: "Meta", action: "Ad engagement", detail: "Clicked on \'Protecting Victims\' Facebook ad — visited Victims page on campaign site for 2:18.", strength: "high" },
+      { phase: "campaign", date: "Jun 1",  channel: "CTV — Samsung TV Plus", action: "Watched ad to completion", detail: "Victims First :15 — 2nd CTV exposure. Watched during primetime. Frequency building.", strength: "very-high" },
     ],
     purchaseWindows: [
-      { window: "7 days", probability: 99, reasoning: "Kathleen is already a committed McCarty voter and donor. She is not a persuasion target. Focus is 100% on mobilization — getting her to the polls and activating her as a peer messenger." },
-      { window: "30 days", probability: 99, reasoning: "She will vote. The question is whether she brings 3–5 additional Broken Arrow voters with her. Volunteer activation is the highest-ROI action for this profile." },
-      { window: "6 months", probability: 99, reasoning: "Long-term supporter. Likely to remain engaged post-election regardless of outcome." },
+      { window: "7 days", probability: 71, reasoning: "Deep pre-campaign engagement on DV advocacy, two site visits, and two CTV completions. She is emotionally aligned with the campaign message. 1–2 more impressions will likely seal the vote." },
+      { window: "30 days", probability: 90, reasoning: "She searched voting logistics on May 27 — she intends to vote. Her issue alignment is strong and she is actively engaging with campaign content. High probability of conversion by June 16." },
+      { window: "6 months", probability: 95, reasoning: "Cause-driven voter. Once activated on an issue, she stays engaged. High LTV supporter if the campaign maintains contact." },
     ],
     personalizedMessage: {
-      subject: "Kathleen — we need your voice in Broken Arrow",
-      body: "Kathleen,\n\nThank you for your donation and for sharing the debate. You are exactly the kind of leader this campaign is built on.\n\nI have one ask: would you be willing to make 5 phone calls to your neighbors in Broken Arrow before June 16?\n\nYou don't need a script. Just tell them what you told your Facebook friends — that Tulsa needs a DA who believes crime victims and stops wasting taxpayer money.\n\nPeer-to-peer contact is the highest-converting action in any campaign. Your voice carries more weight than any ad I can run.\n\nIf you're willing, reply to this email or visit colleenmccarty.com/volunteer. I'll send you a short list of 5 registered Republicans in your ZIP code.\n\nWith deep gratitude,\nColleen",
+      subject: "Melissa — Tulsa\'s DV survivors need a DA who fights for them",
+      body: "Melissa,\n\nYou\'ve been following the work of Tulsa DVIS and advocating for survivors. You know what\'s at stake in this race.\n\nAs a prosecutor, I\'ve stood in courtrooms and fought for domestic violence victims when no one else would. I\'ve seen firsthand what happens when a DA\'s office doesn\'t prioritize survivor cases — and I\'ve made it my mission to change that.\n\nMy Blueprint for Justice includes a dedicated DV prosecution unit, mandatory victim advocate assignment for every case, and a zero-tolerance policy for case dismissals without victim consultation.\n\nYour vote on June 16 is a vote for every survivor in Tulsa County.\n\nWith gratitude,\nColleen McCarty\n\nP.S. Early voting begins June 9. It takes less than 10 minutes. vote.ok.gov",
     },
     mediaRecommendations: [
-      { channel: "Email — Volunteer Ask", allocation: 50, tactic: "Direct personal email from Colleen asking Kathleen to make 5 peer calls in Broken Arrow. Include pre-filled volunteer form. This is the highest-ROI action for this profile.", color: "#10b981" },
-      { channel: "CTV — Maintenance Frequency", allocation: 25, tactic: "1 additional CTV impression of 'Endorsement :30' to maintain enthusiasm. Do not over-serve — she is already converted.", color: "#f59e0b" },
-      { channel: "Facebook — Peer Amplification", allocation: 15, tactic: "Boost her existing debate share post as a 'dark post' to her Broken Arrow ZIP code network. Her organic credibility amplifies the paid reach.", color: "#1877f2" },
-      { channel: "SMS / Text Reminder", allocation: 10, tactic: "Send early voting reminder text June 9 with polling location. She is a high-propensity voter but a personal touch reinforces the relationship.", color: "#8b5cf6" },
+      { channel: "CTV — Tubi / Samsung TV Plus", allocation: 40, tactic: "Continue \'Bio 15-2\' and \'Victims First :15\' rotation. She responds to personal story and victim advocacy messaging. Evening delivery.", color: "#7c3aed" },
+      { channel: "Facebook Retargeting", allocation: 28, tactic: "Serve \'Protecting Victims\' video ad. Retarget her DV advocacy Facebook engagement. She is active in this content category.", color: "#1877f2" },
+      { channel: "Email", allocation: 18, tactic: "If email available: \'Melissa — my commitment to DV survivors in Tulsa County.\' Personal story format with Blueprint for Justice summary and vote.ok.gov link.", color: "#10b981" },
+      { channel: "Google Retargeting", allocation: 10, tactic: "Display retargeting on DV advocacy and local news sites. Bid on \'Tulsa DA victims\' and \'Colleen McCarty\'.", color: "#fbbc04" },
+      { channel: "Instagram", allocation: 4, tactic: "Serve \'Victims First :15\' as Instagram Story ad. She is active on Facebook/Instagram ecosystem.", color: "#8b5cf6" },
     ],
-    tags: ["Donor", "Debate Viewer", "Volunteer Prospect", "Peer Messenger", "Mobilization Priority", "Broken Arrow Network"],
+    tags: ["DV Advocacy", "30-Day Lookback", "SiteID Matched", "First-Time Primary", "Cause-Driven"],
   },
 ];
 

@@ -161,28 +161,56 @@ export default function BuyerProfilePage() {
           <div className="fade-up" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "20px 24px" }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16 }}>📡 Intent Signals — Engagement Timeline</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-              {profile.signals.map((signal, i) => (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "56px 1fr", gap: 12, paddingBottom: 16, position: "relative" }}>
-                  {/* Timeline line */}
-                  {i < profile.signals.length - 1 && (
-                    <div style={{ position: "absolute", left: 27, top: 28, bottom: 0, width: 2, background: `${profile.avatarColor}33` }} />
-                  )}
-                  {/* Date bubble */}
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, zIndex: 1 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: "50%", background: profile.avatarColor, boxShadow: `0 0 8px ${profile.avatarColor}66`, marginTop: 4 }} />
-                    <div style={{ fontSize: 9, color: C.muted, textAlign: "center", lineHeight: 1.2 }}>{signal.date}</div>
-                  </div>
-                  {/* Signal content */}
-                  <div style={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 14px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 8 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: profile.avatarColor }}>{signal.channel}</div>
-                      <StrengthBadge strength={signal.strength} />
+              {profile.signals.map((signal, i) => {
+                const prevPhase = i > 0 ? (profile.signals[i - 1] as any).phase : null;
+                const curPhase = (signal as any).phase;
+                const showPhaseHeader = curPhase && curPhase !== prevPhase;
+                return (
+                  <div key={i}>
+                    {showPhaseHeader && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, marginTop: i > 0 ? 8 : 0 }}>
+                        <div style={{ flex: 1, height: 1, background: curPhase === "lookback" ? "rgba(251,191,36,0.3)" : "rgba(129,140,248,0.3)" }} />
+                        <div style={{
+                          fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em",
+                          padding: "3px 10px", borderRadius: 20,
+                          background: curPhase === "lookback" ? "rgba(251,191,36,0.12)" : "rgba(129,140,248,0.12)",
+                          color: curPhase === "lookback" ? "#fbbf24" : "#818cf8",
+                          border: `1px solid ${curPhase === "lookback" ? "rgba(251,191,36,0.3)" : "rgba(129,140,248,0.3)"}`
+                        }}>
+                          {curPhase === "lookback" ? "30-Day Lookback Window" : "Campaign Period"}
+                        </div>
+                        <div style={{ flex: 1, height: 1, background: curPhase === "lookback" ? "rgba(251,191,36,0.3)" : "rgba(129,140,248,0.3)" }} />
+                      </div>
+                    )}
+                    <div style={{ display: "grid", gridTemplateColumns: "56px 1fr", gap: 12, paddingBottom: 16, position: "relative" }}>
+                      {i < profile.signals.length - 1 && (
+                        <div style={{ position: "absolute", left: 27, top: 28, bottom: 0, width: 2, background: `${profile.avatarColor}33` }} />
+                      )}
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, zIndex: 1 }}>
+                        <div style={{
+                          width: 10, height: 10, borderRadius: "50%",
+                          background: curPhase === "campaign" ? "#818cf8" : curPhase === "lookback" ? "#fbbf24" : profile.avatarColor,
+                          boxShadow: `0 0 8px ${curPhase === "campaign" ? "#818cf866" : curPhase === "lookback" ? "#fbbf2466" : profile.avatarColor + "66"}`,
+                          marginTop: 4
+                        }} />
+                        <div style={{ fontSize: 9, color: C.muted, textAlign: "center", lineHeight: 1.2 }}>{signal.date}</div>
+                      </div>
+                      <div style={{
+                        background: C.card2,
+                        border: `1px solid ${curPhase === "campaign" ? "rgba(129,140,248,0.25)" : curPhase === "lookback" ? "rgba(251,191,36,0.2)" : C.border}`,
+                        borderRadius: 10, padding: "10px 14px"
+                      }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 8 }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: profile.avatarColor }}>{signal.channel}</div>
+                          <StrengthBadge strength={signal.strength} />
+                        </div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: C.white, marginBottom: 3 }}>{signal.action}</div>
+                        <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{signal.detail}</div>
+                      </div>
                     </div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: C.white, marginBottom: 3 }}>{signal.action}</div>
-                    <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{signal.detail}</div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
