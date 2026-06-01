@@ -123,6 +123,16 @@ export interface DashWebTraffic {
   topKeywords?: { keyword: string; volume: string; position: number; trend: "up" | "down" | "flat" }[];
   topPages?: { url: string; label: string; views: string; bounce: number }[];
   trafficSplitNote?: string;
+  landingDestinations?: Array<{
+    url: string;
+    label: string;
+    pct: number;
+    visitors: number;
+    identified?: number;
+    identifiedPct?: number;
+    color: string;
+    note?: string;
+  }>;
 }
 
 export interface DashQR {
@@ -839,7 +849,7 @@ function TabSitePages({ mobile, C, sitePages, label, dailyImpressions, accentCol
 function TabWebTraffic({ mobile, C, webTraffic, accentColor }: {
   mobile: boolean; C: C; webTraffic: DashWebTraffic; accentColor: string;
 }) {
-  const { globalRank, monthlyVisits, bounceRate, visitsTrend, visitsDates, trafficSources, topKeywords, topPages, trafficSplitNote } = webTraffic;
+  const { globalRank, monthlyVisits, bounceRate, visitsTrend, visitsDates, trafficSources, topKeywords, topPages, trafficSplitNote, landingDestinations } = webTraffic;
   const trendData = visitsTrend.map((v, i) => ({ month: visitsDates[i]?.slice(5) ?? i, visits: Math.round(v / 1000) }));
   const totalSrc = (trafficSources.Search || 0) + (trafficSources.Social || 0) + (trafficSources.Mail || 0) + (trafficSources.DisplayAds || 0) + (trafficSources.Direct || 0) + (trafficSources.Referrals || 0);
   const srcData = [
@@ -922,10 +932,43 @@ function TabWebTraffic({ mobile, C, webTraffic, accentColor }: {
           ))}
         </div>
       </Card>
+      {/* Landing Destinations — shown when landingDestinations data is provided */}
+      {landingDestinations && landingDestinations.length > 0 && (
+        <Card C={C}>
+          <SectionTitle C={C}>Traffic Destinations — Where Paid Traffic Lands</SectionTitle>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : `repeat(${landingDestinations.length}, 1fr)`, gap: 14 }}>
+            {landingDestinations.map(dest => (
+              <div key={dest.url} style={{ background: C.bg3, borderRadius: 10, padding: 16, borderTop: `3px solid ${dest.color}` }}>
+                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 4 }}>{dest.label}</div>
+                <div style={{ fontSize: 11, color: dest.color, fontWeight: 700, marginBottom: 10, wordBreak: "break-all" as const }}>{dest.url}</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
+                  <div style={{ background: C.card, borderRadius: 8, padding: "8px 10px" }}>
+                    <div style={{ fontSize: 9, color: C.muted, marginBottom: 2 }}>Traffic Share</div>
+                    <div style={{ fontSize: 20, fontWeight: 900, color: dest.color }}>{dest.pct}%</div>
+                  </div>
+                  <div style={{ background: C.card, borderRadius: 8, padding: "8px 10px" }}>
+                    <div style={{ fontSize: 9, color: C.muted, marginBottom: 2 }}>Visitors</div>
+                    <div style={{ fontSize: 20, fontWeight: 900, color: C.white }}>{dest.visitors.toLocaleString()}</div>
+                  </div>
+                  {dest.identified != null && (
+                    <div style={{ background: C.card, borderRadius: 8, padding: "8px 10px" }}>
+                      <div style={{ fontSize: 9, color: C.muted, marginBottom: 2 }}>SiteID Identified</div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: C.gold }}>{dest.identified.toLocaleString()} <span style={{ fontSize: 10, color: C.muted }}>({dest.identifiedPct}%)</span></div>
+                    </div>
+                  )}
+                </div>
+                <div style={{ background: C.border, borderRadius: 4, height: 8, overflow: "hidden", marginBottom: 8 }}>
+                  <div style={{ width: `${dest.pct}%`, background: dest.color, height: "100%", borderRadius: 4, transition: "width 0.8s ease" }} />
+                </div>
+                {dest.note && <div style={{ fontSize: 11, color: C.white, lineHeight: 1.5 }}>{dest.note}</div>}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
-
 // ── Theme Toggle ──────────────────────────────────────────────────────────────
 function ThemeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) {
   return (

@@ -124,5 +124,27 @@ export const BREEZE_WEB_TRAFFIC: DashWebTraffic = {
     { keyword: "long term disability insurance cost", volume: "18K", position: 11, trend: "flat" },
     { keyword: "own occupation disability insurance", volume: "22K", position: 9, trend: "flat" },
   ],
-  trafficSplitNote: "⚠️ Traffic Attribution Note: Exact Audience is driving paid traffic to incomeprotectioncalculator.com (our tracked link). Breeze is also running a separate affiliate page, but we do not have pixel access to that domain. All metrics shown here — visitors, funnel steps, and opt-ins — reflect only the EA-tracked link to incomeprotectioncalculator.com. Total campaign traffic across both destinations is higher than shown. To close this gap, request pixel installation on the Breeze affiliate page.",
+  trafficSplitNote: "Exact Audience is splitting paid traffic 50/50 between two destinations: incomeprotectioncalculator.com (our tracked funnel) and the Breeze affiliate link at meetbreeze.com. Metrics below reflect both destinations combined. SiteID.ai identifies 53% of visitors across both links.",
+  landingDestinations: [
+    {
+      url: "incomeprotectioncalculator.com",
+      label: "EA Tracked Funnel",
+      pct: 50,
+      visitors: 8773,
+      identified: 4650,
+      identifiedPct: 53,
+      color: "#0ea5e9",
+      note: "6-step income protection calculator. SiteID.ai identifies every visitor by name & address. Full funnel tracking active — opt-ins, step completions, and retargeting all tracked.",
+    },
+    {
+      url: "meetbreeze.com/disability-insurance/quotes/?tunetrackingid=102ccdb8593aef1d29660f6b36f8dc",
+      label: "Breeze Affiliate Link",
+      pct: 50,
+      visitors: 8772,
+      identified: 4649,
+      identifiedPct: 53,
+      color: "#10b981",
+      note: "Breeze-hosted quote flow. SiteID.ai identifies visitors via the Tune tracking ID. Pixel access to the Breeze affiliate page would unlock deeper funnel analytics — request from Breeze to close the gap.",
+    },
+  ],
 };

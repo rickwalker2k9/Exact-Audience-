@@ -132,7 +132,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
       <div style={{ background: `linear-gradient(135deg, ${C.accent}18 0%, ${C.blue2}12 100%)`, border: `1px solid ${C.accent2}40`, borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "flex-start", gap: 16 }}>
         <div style={{ fontSize: 32, flexShrink: 0 }}>🎯</div>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 900, color: C.white, marginBottom: 6 }}>Find Them. Reach Them. Win.</div>
+          <div style={{ fontSize: 16, fontWeight: 900, color: C.white, marginBottom: 6 }}>Right Person. Right Message. Right Time.</div>
           <div style={{ fontSize: 13, color: C.white, lineHeight: 1.7, fontWeight: 400 }}>
             Exact Audience has identified <strong style={{ color: C.accent2 }}>200,035 undecided Republican primary voters</strong> across Oklahoma — by name, address, mobile number, and email. We know exactly what they are watching, reading, and searching right now. We put the right message in front of the right voter at the right time. That is Exact Audience.
           </div>
