@@ -149,8 +149,17 @@ export interface GenericDashboardProps {
   webTraffic?: DashWebTraffic;
   audienceSegment?: PGPerson[];
   audienceSegmentStats?: { totalList: number; homeowners: number; avgIncomeLabel: string; netWorthLabel: string; creditGrade: string; withPhone: number; withEmail: number; targetUniverse: number; };
+  monthlySpend?: Array<{
+    month: string;
+    spend: number;
+    impressions: number;
+    visitors: number;
+    identified: number;
+    identifiedPct: number;
+    conversions: number;
+    channels: { meta?: number; google?: number; linkedin?: number; email?: number; ctv?: number };
+  }>;
 }
-
 // ── Theme colors ──────────────────────────────────────────────────────────────
 function useColors(isDark: boolean) {
   return isDark ? {
@@ -275,10 +284,22 @@ function VisitorFeed({ visitors, C }: { visitors: DashVisitor[]; C: C }) {
 // ── TAB: Overview ─────────────────────────────────────────────────────────────
 const DATE_RANGES = [{ label: "Last 7 Days", days: 7 }, { label: "Last 14 Days", days: 14 }, { label: "Last 30 Days", days: 29 }];
 
-function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors, accentColor }: {
+interface MonthlySpendRow {
+  month: string;
+  spend: number;
+  impressions: number;
+  visitors: number;
+  identified: number;
+  identifiedPct: number;
+  conversions: number;
+  channels: { meta?: number; google?: number; linkedin?: number; email?: number; ctv?: number };
+}
+
+function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors, accentColor, monthlySpend }: {
   mobile: boolean; C: C; liveBase: DashLiveBase;
   dailyImpressions: DashDailyRow[]; mediaMix: DashMediaMixRow[];
   visitors: DashVisitor[]; accentColor: string;
+  monthlySpend?: MonthlySpendRow[];
 }) {
   const impressions = useTick(liveBase.impressions, 1247);
   const completions = useTick(liveBase.completions, 1089);
@@ -287,12 +308,14 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
   const [rangeDays, setRangeDays] = useState(14);
 
   const chartData = dailyImpressions.slice(-rangeDays).map(d => ({
-    day: d.day.replace("May ", ""),
+    day: d.day.replace("May ", "").replace("Apr ", ""),
     ...(d.ctv ? { CTV: Math.round(d.ctv / 1000) } : {}),
     YouTube: Math.round(d.youtube / 1000),
     Display: Math.round(d.display / 1000),
     ...(d.meta ? { Meta: Math.round(d.meta / 1000) } : {}),
     ...(d.google ? { Google: Math.round(d.google / 1000) } : {}),
+    ...((d as any).linkedin ? { LinkedIn: Math.round((d as any).linkedin / 1000) } : {}),
+    ...(d.email ? { Email: Math.round(d.email / 1000) } : {}),
   }));
 
   const rangeLabel = DATE_RANGES.find(r => r.days === rangeDays)?.label ?? "Last 14 Days";
@@ -348,11 +371,45 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
               <Area type="monotone" dataKey="Display" stroke={C.blue} fill="url(#gDSP2)" strokeWidth={2} />
               {chartData[0]?.Meta !== undefined && <Area type="monotone" dataKey="Meta" stroke="#1877f2" fill="none" strokeWidth={1.5} strokeDasharray="4 2" />}
               {chartData[0]?.Google !== undefined && <Area type="monotone" dataKey="Google" stroke="#34a853" fill="none" strokeWidth={1.5} strokeDasharray="4 2" />}
+              {chartData[0]?.LinkedIn !== undefined && <Area type="monotone" dataKey="LinkedIn" stroke="#0A66C2" fill="none" strokeWidth={1.5} strokeDasharray="4 2" />}
+              {chartData[0]?.Email !== undefined && <Area type="monotone" dataKey="Email" stroke="#10b981" fill="none" strokeWidth={1.5} strokeDasharray="4 2" />}
             </AreaChart>
           </ResponsiveContainer>
         </Card>
       </div>
 
+      {/* Monthly Spend Summary — shown when monthlySpend data is provided */}
+      {monthlySpend && monthlySpend.length > 0 && (
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : `repeat(${monthlySpend.length}, 1fr)`, gap: 12 }}>
+          {monthlySpend.map((ms, i) => (
+            <div key={ms.month} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${i === monthlySpend.length - 1 ? accentColor : C.green}` }}>
+              <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>{ms.month} — Actual Spend</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: i === monthlySpend.length - 1 ? accentColor : C.green, lineHeight: 1, marginBottom: 10 }}>${ms.spend.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
+                {[
+                  { label: "Impressions", value: ms.impressions >= 1000000 ? `${(ms.impressions / 1000000).toFixed(2)}M` : `${(ms.impressions / 1000).toFixed(0)}K` },
+                  { label: "Site Visitors", value: ms.visitors.toLocaleString() },
+                  { label: "SiteID Identified", value: `${ms.identified.toLocaleString()} (${ms.identifiedPct}%)` },
+                  { label: "Calculator Opt-ins", value: ms.conversions.toLocaleString() },
+                ].map(s => (
+                  <div key={s.label} style={{ background: C.bg3, borderRadius: 8, padding: "8px 10px" }}>
+                    <div style={{ fontSize: 10, color: C.muted, marginBottom: 2 }}>{s.label}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.muted, textTransform: "uppercase" as const, letterSpacing: "0.08em", marginBottom: 6 }}>Channel Breakdown</div>
+              <div style={{ display: "flex", flexDirection: "column" as const, gap: 4 }}>
+                {ms.channels.meta && <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 11, color: "#1877F2" }}>Meta</span><span style={{ fontSize: 11, color: C.white, fontWeight: 600 }}>${ms.channels.meta.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>}
+                {ms.channels.google && <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 11, color: "#4285F4" }}>Google</span><span style={{ fontSize: 11, color: C.white, fontWeight: 600 }}>${ms.channels.google.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>}
+                {ms.channels.linkedin && <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 11, color: "#0A66C2" }}>LinkedIn</span><span style={{ fontSize: 11, color: C.white, fontWeight: 600 }}>${ms.channels.linkedin.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>}
+                {ms.channels.email && <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 11, color: "#10b981" }}>Email</span><span style={{ fontSize: 11, color: C.white, fontWeight: 600 }}>${ms.channels.email.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>}
+                {ms.channels.ctv && <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 11, color: accentColor }}>CTV</span><span style={{ fontSize: 11, color: C.white, fontWeight: 600 }}>${ms.channels.ctv.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       {/* Channel Mix + Budget Pacing */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
         <Card C={C}>
@@ -1225,13 +1282,13 @@ export default function GenericDashboard(props: GenericDashboardProps) {
     }
   }
 
-  const { webTraffic } = props;
+  const { webTraffic, monthlySpend } = props;
   const TABS = [
     "Overview", "Channels", "Creatives", "Moods", "Site Pages", ...(webTraffic ? ["Web Traffic"] : []), "People",
   ];
 
   const tabContent = [
-    <TabOverview mobile={mobile} C={C} liveBase={liveBase} dailyImpressions={dailyImpressions} mediaMix={mediaMix} visitors={visitors} accentColor={client.accentColor} />,
+    <TabOverview mobile={mobile} C={C} liveBase={liveBase} dailyImpressions={dailyImpressions} mediaMix={mediaMix} visitors={visitors} accentColor={client.accentColor} monthlySpend={monthlySpend} />,
     <TabChannels mobile={mobile} C={C} ctvChannels={ctvChannels} mediaMix={mediaMix} qr={qr} ctvRecommendationsMode={props.ctvRecommendationsMode} />,
     <TabCreatives mobile={mobile} C={C} creatives={creatives} />,
     <TabMoods mobile={mobile} C={C} moods={moods} />,

@@ -100,17 +100,21 @@ export const LAMBORGHINI_WEB_TRAFFIC: DashWebTraffic = {
 
 export const BREEZE_WEB_TRAFFIC: DashWebTraffic = {
   globalRank: undefined,
-  monthlyVisits: 8400,
+  // April: 8,400 visitors | May: 9,145 visitors | Combined: 17,545
+  // SiteID.ai identifies 53% of all visitors = 9,299 identified
+  // April spend: $10,712.23 | May spend: $11,314.71
+  monthlyVisits: 17545,
   bounceRate: 31,
-  visitsTrend: [0, 0, 0, 0, 1240, 8400],
-  visitsDates: ["2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04"],
+  // visitsTrend: consistent ramp from campaign launch in March through May
+  visitsTrend: [0, 0, 820, 3200, 8400, 9145],
+  visitsDates: ["2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05"],
   trafficSources: {
-    Search: 2690,
-    Social: 3820,
-    Mail: 630,
+    Search: 5614,
+    Social: 7921,
+    Mail: 1378,
     DisplayAds: 0,
     Direct: 0,
-    Referrals: 1260,
+    Referrals: 2632,
   },
   topKeywords: [
     { keyword: "income protection calculator", volume: "6K",  position: 2, trend: "up"   },
