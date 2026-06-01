@@ -261,7 +261,7 @@ export default function Campaigns() {
       </div>
 
       <div style={{ textAlign: "center", padding: "24px", fontSize: 11, color: dark ? "#2d3748" : "#94a3b8" }}>
-        Exact Audience · Campaign Intelligence Platform · Powered by SiteID · {new Date().getFullYear()}
+        Exact Audience · Campaign Intelligence Platform · {new Date().getFullYear()}
       </div>
     </div>
   );

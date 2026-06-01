@@ -1287,8 +1287,8 @@ export default function Home() {
 
       {/* Footer */}
       <div style={{ borderTop: `1px solid ${C.border}`, padding: mobile ? "12px 16px" : "14px 28px", display: "flex", flexDirection: mobile ? "column" : "row", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", gap: 4, fontSize: 10, color: C.muted }}>
-        <span>Exact Audience · exactaudience.ai · siteid.ai</span>
-        <span>Powered by Google DV360 · SiteID Intelligence</span>
+        <span>Exact Audience · exactaudience.ai</span>
+        <span>Powered by Google DV360 · Exact Audience Intelligence</span>
         {!mobile && <span>Data refreshes every 8 seconds</span>}
       </div>
     </div>

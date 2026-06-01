@@ -145,7 +145,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
         </form>
 
         <div style={{ marginTop: 28, fontSize: 11, color: "#4a5568" }}>
-          exactaudience.ai · siteid.ai
+          exactaudience.ai
         </div>
       </div>
     </div>
