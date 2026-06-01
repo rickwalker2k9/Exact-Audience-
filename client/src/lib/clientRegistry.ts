@@ -258,7 +258,7 @@ export const CLIENTS: CampaignClient[] = [
     impressionsToDate: 3187200,
     reachToDate: 128400,
     completionRate: 85.2,
-    primaryColor: "#dc2626",
+    primaryColor: "#e67e22",
   },
   {
     id: 10,
@@ -278,7 +278,7 @@ export const CLIENTS: CampaignClient[] = [
     impressionsToDate: 6841200,
     reachToDate: 274800,
     completionRate: 88.4,
-    primaryColor: "#b91c1c",
+    primaryColor: "#d97706",
   },
   {
     id: 11,
@@ -657,7 +657,7 @@ export const CLIENTS: CampaignClient[] = [
     impressionsToDate: 2787200,
     reachToDate: 114400,
     completionRate: 82.6,
-    primaryColor: "#dc2626",
+    primaryColor: "#f97316",
   },
   {
     id: 30,
@@ -697,7 +697,7 @@ export const CLIENTS: CampaignClient[] = [
     impressionsToDate: 2214800,
     reachToDate: 92400,
     completionRate: 81.4,
-    primaryColor: "#b91c1c",
+    primaryColor: "#7c3aed",
   },
   {
     id: 32,
@@ -717,7 +717,7 @@ export const CLIENTS: CampaignClient[] = [
     impressionsToDate: 1887200,
     reachToDate: 78400,
     completionRate: 80.8,
-    primaryColor: "#dc2626",
+    primaryColor: "#0891b2",
   },
   {
     id: 33,
@@ -796,6 +796,6 @@ export const CLIENTS: CampaignClient[] = [
     impressionsToDate: 0,
     reachToDate: 0,
     completionRate: 0,
-    primaryColor: "#c0392b",
+    primaryColor: "#4f46e5",
   },
 ];

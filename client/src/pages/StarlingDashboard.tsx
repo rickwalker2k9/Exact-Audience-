@@ -15,7 +15,7 @@ import {
 type C = typeof DARK_C;
 const DARK_C = {
   bg: "#0a0e1a", bg2: "#0d1224", bg3: "#111827", card: "#111827",
-  border: "#1e293b", white: "#f1f5f9", muted: "#64748b",
+  border: "#1e293b", white: "#f1f5f9", muted: "#94a3b8",
   accent: "#6366f1", accent2: "#818cf8", blue2: "#38bdf8",
   green: "#10b981", gold: "#d4a017", amber: "#f59e0b",
   purple: "#a855f7", teal: "#14b8a6",
@@ -23,7 +23,7 @@ const DARK_C = {
 };
 const LIGHT_C = {
   bg: "#f8fafc", bg2: "#f1f5f9", bg3: "#e2e8f0", card: "#ffffff",
-  border: "#cbd5e1", white: "#0f172a", muted: "#64748b",
+  border: "#cbd5e1", white: "#0f172a", muted: "#475569",
   accent: "#4f46e5", accent2: "#6366f1", blue2: "#0284c7",
   green: "#059669", gold: "#b45309", amber: "#d97706",
   purple: "#9333ea", teal: "#0d9488",
@@ -129,7 +129,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ fontSize: 28 }}>🗳️</div>
         <div>
           <div style={{ fontSize: 14, fontWeight: 800, color: C.white, marginBottom: 4 }}>Jeff Starling — Oklahoma AG Race</div>
-          <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+          <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
             This is a strategic media proposal from Exact Audience. We have identified a large statewide universe of undecided Republican primary voters — and we know exactly what they are watching, reading, and searching. The data below shows what we can do for this campaign at three investment levels.
           </div>
         </div>
@@ -173,7 +173,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
       {/* Voter Mood Segments */}
       <Card C={C}>
         <SectionTitle C={C}>Statewide Voter Mood Segments — What They Are Watching</SectionTitle>
-        <div style={{ fontSize: 11, color: C.muted, marginBottom: 14, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 12, color: "#cbd5e1", marginBottom: 14, lineHeight: 1.6 }}>
           Our behavioral data shows how undecided Oklahoma Republican primary voters are consuming media right now. Each mood segment maps directly to the channels where they can be reached.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 12 }}>
@@ -183,7 +183,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
                 <span style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{m.label}</span>
                 <span style={{ fontSize: 14, fontWeight: 900, color: m.color }}>{m.pct}%</span>
               </div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5, marginBottom: 8 }}>{m.desc}</div>
+              <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.5, marginBottom: 8 }}>{m.desc}</div>
               <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 4 }}>
                 {m.channels.map((ch: string) => (
                   <span key={ch} style={{ fontSize: 9, color: m.color, background: `${m.color}15`, border: `1px solid ${m.color}30`, borderRadius: 8, padding: "2px 7px" }}>{ch}</span>
@@ -202,7 +202,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
             <div key={a.title} style={{ background: C.bg3, borderRadius: 10, padding: 14, borderTop: `2px solid ${a.color}` }}>
               <div style={{ fontSize: 20, marginBottom: 8 }}>{a.icon}</div>
               <div style={{ fontSize: 12, fontWeight: 700, color: C.white, marginBottom: 6 }}>{a.title}</div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{a.desc}</div>
+              <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.5 }}>{a.desc}</div>
             </div>
           ))}
         </div>
@@ -222,7 +222,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
                 <div style={{ flex: "1 1 160px", minWidth: 140, background: C.card, border: `2px solid ${s.color}`, borderRadius: 10, padding: "18px 16px", textAlign: "center" as const }}>
                   <div style={{ fontSize: 10, color: C.muted, marginBottom: 6, letterSpacing: "0.08em" }}>{s.range}</div>
                   <div style={{ fontSize: 18, fontWeight: 900, color: C.white, marginBottom: 6 }}>{s.stage}</div>
-                  <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5 }}>{s.desc}</div>
+                  <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.5 }}>{s.desc}</div>
                 </div>
                 {i < 2 && (
                   <div style={{ fontSize: 22, color: C.accent2, padding: "0 10px", flexShrink: 0, alignSelf: "center" }}>→</div>
@@ -230,7 +230,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
               </React.Fragment>
             ))}
           </div>
-          <div style={{ marginTop: 16, fontSize: 11, color: C.muted, textAlign: "center" as const, lineHeight: 1.6 }}>
+          <div style={{ marginTop: 16, fontSize: 12, color: "#cbd5e1", textAlign: "center" as const, lineHeight: 1.6 }}>
             Digital delivery ensures repeated exposure after initial reach is created by television. Our $65K recommended tier delivers <strong style={{ color: C.white }}>22.6× average frequency</strong> — well into the Decision zone for every voter we touch.
           </div>
         </div>
@@ -272,8 +272,61 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
             </tbody>
           </table>
         </div>
-        <div style={{ marginTop: 14, background: C.bg3, borderRadius: 8, padding: "12px 16px", fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+        <div style={{ marginTop: 14, background: C.bg3, borderRadius: 8, padding: "12px 16px", fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
           This model is built on registered Republican voter counts by county (Oklahoma State Election Board, Jan 2026) and a 20% primary turnout projection. Current support is estimated at Starling's March 2026 polling baseline of 11%. Votes to Gain represents the additional votes needed to reach the 22–25% runoff threshold.
+        </div>
+      </Card>
+
+      {/* SEO Comparison */}
+      <Card C={C}>
+        <SectionTitle C={C}>Website & SEO Intelligence — jeffstarling.com vs jonechols.com</SectionTitle>
+        <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6, marginBottom: 14 }}>
+          Source: Ubersuggest, May 2026. Neither candidate is running paid search — all traffic is organic.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 16 }}>
+          <div style={{ background: `${C.accent}12`, border: `1px solid ${C.accent}30`, borderRadius: 10, padding: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: C.accent2, marginBottom: 12 }}>✅ jeffstarling.com</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {[
+                { label: "Monthly Organic Visits", value: "26", note: "100% organic" },
+                { label: "Domain Authority", value: "17", note: "Growing" },
+                { label: "Ranking Keywords", value: "14", note: "All organic" },
+                { label: "Backlinks", value: "48", note: "6 nofollow" },
+              ].map(s => (
+                <div key={s.label} style={{ background: C.bg3, borderRadius: 8, padding: "10px 12px" }}>
+                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>{s.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: C.white }}>{s.value}</div>
+                  <div style={{ fontSize: 10, color: C.accent2 }}>{s.note}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 12, fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
+              <strong style={{ color: C.green }}>Top keyword:</strong> "jeff starling oklahoma" — 260 searches/mo, ranking #2, driving 22 visits. Campaign name recognition is already generating organic search demand.
+            </div>
+          </div>
+          <div style={{ background: `${C.gold}08`, border: `1px solid ${C.gold}25`, borderRadius: 10, padding: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: C.gold, marginBottom: 12 }}>⚠️ jonechols.com</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {[
+                { label: "Monthly Organic Visits", value: "4", note: "100% organic" },
+                { label: "Domain Authority", value: "24", note: "Established" },
+                { label: "Ranking Keywords", value: "10", note: "All organic" },
+                { label: "Backlinks", value: "22,929", note: "72 nofollow" },
+              ].map(s => (
+                <div key={s.label} style={{ background: C.bg3, borderRadius: 8, padding: "10px 12px" }}>
+                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 4, textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>{s.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: C.white }}>{s.value}</div>
+                  <div style={{ fontSize: 10, color: C.gold }}>{s.note}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 12, fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
+              <strong style={{ color: C.gold }}>Key insight:</strong> Echols has 22,929 backlinks from his 14-year legislative career but only 4 organic visitors/month. His site generates no campaign interest — his name recognition is incumbency, not digital presence.
+            </div>
+          </div>
+        </div>
+        <div style={{ background: `${C.teal}10`, border: `1px solid ${C.teal}30`, borderRadius: 8, padding: "12px 16px", fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
+          <strong style={{ color: C.teal }}>Strategic implication:</strong> Starling is already winning the organic search battle for his own name. Paid digital amplification of “jeff starling oklahoma attorney general” and contrast keywords (“echols tax increases”, “echols RINO”) would capture high-intent voters who are already searching — and Echols is running zero paid search to defend his position.
         </div>
       </Card>
 
@@ -285,7 +338,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
             <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
               <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 700, color: t.election ? C.green : C.accent2, paddingTop: 2 }}>{t.days}</div>
               <div style={{ width: 3, flexShrink: 0, background: t.election ? C.green : C.blue2, borderRadius: 2, alignSelf: "stretch", minHeight: 20 }} />
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{t.activity}</div>
+              <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.5 }}>{t.activity}</div>
             </div>
           ))}
         </div>
@@ -302,7 +355,7 @@ function TabVoterUniverse({ mobile, C }: { mobile: boolean; C: C }) {
       {/* Universe intro */}
       <div style={{ background: `${C.accent}10`, border: `1px solid ${C.accent2}30`, borderRadius: 12, padding: "16px 20px" }}>
         <div style={{ fontSize: 13, fontWeight: 800, color: C.white, marginBottom: 6 }}>Statewide Undecided Republican Primary Voter Universe</div>
-        <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
           Exact Audience has identified and profiled a large statewide universe of undecided Republican primary voters across Oklahoma. Every person below is identified by name, address, mobile number, email, and behavioral data — not modeled estimates. These are real, reachable voters.
         </div>
       </div>
@@ -432,7 +485,7 @@ function TabVoterUniverse({ mobile, C }: { mobile: boolean; C: C }) {
               <span style={{ fontSize: 18, flexShrink: 0 }}>{s.icon}</span>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: C.white, marginBottom: 2 }}>{s.signal}</div>
-                <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.4 }}>{s.detail}</div>
+                <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.4 }}>{s.detail}</div>
               </div>
             </div>
           ))}
@@ -448,7 +501,7 @@ function TabVoterUniverse({ mobile, C }: { mobile: boolean; C: C }) {
               <span style={{ fontSize: 14, fontWeight: 800, color: C.white }}>Recommended Add-On: SiteID.ai</span>
               <span style={{ fontSize: 9, fontWeight: 700, color: C.teal, background: `${C.teal}20`, border: `1px solid ${C.teal}40`, borderRadius: 10, padding: "2px 8px", textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>High ROI</span>
             </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
               Right now, voters are visiting <strong style={{ color: C.white }}>jeffstarling.com</strong> and leaving anonymously. SiteID.ai identifies those visitors by name, address, and voter file — turning anonymous website traffic into a named, targetable audience for CTV and digital retargeting.
             </div>
           </div>
@@ -462,7 +515,7 @@ function TabVoterUniverse({ mobile, C }: { mobile: boolean; C: C }) {
             <div key={item.label} style={{ background: C.bg3, borderRadius: 10, padding: 14, borderTop: `2px solid ${item.color}` }}>
               <div style={{ fontSize: 20, marginBottom: 6 }}>{item.icon}</div>
               <div style={{ fontSize: 16, fontWeight: 900, color: item.color, marginBottom: 4 }}>{item.stat}</div>
-              <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.4 }}>{item.label}</div>
+              <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.4 }}>{item.label}</div>
             </div>
           ))}
         </div>
@@ -478,14 +531,14 @@ function TabVoterUniverse({ mobile, C }: { mobile: boolean; C: C }) {
             ].map(s => (
               <div key={s.step} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <div style={{ width: 20, height: 20, borderRadius: "50%", background: `${s.color}25`, border: `1px solid ${s.color}50`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: s.color, flexShrink: 0, marginTop: 1 }}>{s.step}</div>
-                <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{s.text}</div>
+                <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.5 }}>{s.text}</div>
               </div>
             ))}
           </div>
         </div>
         <div style={{ background: `${C.teal}10`, border: `1px solid ${C.teal}30`, borderRadius: 10, padding: "12px 16px", display: "flex", alignItems: "flex-start", gap: 10 }}>
           <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
-          <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+          <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
             <strong style={{ color: C.teal }}>Why this matters for June 16th:</strong> The voters already visiting jeffstarling.com are the most persuadable people in the entire universe — they are self-selecting as interested. Without SiteID.ai, that signal is invisible. With it, every site visitor becomes a named, targetable voter you can hit with CTV, pre-roll, and display until Election Day.
           </div>
         </div>
@@ -505,7 +558,7 @@ function TabWhatWeCanDo({ mobile, C }: { mobile: boolean; C: C }) {
       {/* Intro */}
       <div style={{ background: `${C.blue2}10`, border: `1px solid ${C.blue2}30`, borderRadius: 12, padding: "14px 18px" }}>
         <div style={{ fontSize: 12, color: C.white, fontWeight: 700, marginBottom: 4 }}>Three Investment Levels — Three Outcomes</div>
-        <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>
           Every dollar goes toward reaching identified, named, undecided Republican primary voters in Oklahoma — by name, on the exact streaming channels they watch. Below is what each investment level delivers in reach, frequency, and estimated votes moved.
         </div>
       </div>
@@ -522,7 +575,7 @@ function TabWhatWeCanDo({ mobile, C }: { mobile: boolean; C: C }) {
             {t.recommended && <div style={{ fontSize: 9, fontWeight: 700, color: tierColors[i], textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 4 }}>★ Recommended</div>}
             <div style={{ fontSize: mobile ? 14 : 18, fontWeight: 900, color: tierColors[i] }}>${(t.total / 1000).toFixed(0)}K</div>
             <div style={{ fontSize: 10, color: C.white, fontWeight: 600, marginTop: 2 }}>{t.label}</div>
-            <div style={{ fontSize: 9, color: C.muted, marginTop: 4, lineHeight: 1.4 }}>{t.tagline}</div>
+            <div style={{ fontSize: 9, color: "#cbd5e1", marginTop: 4, lineHeight: 1.4 }}>{t.tagline}</div>
           </button>
         ))}
       </div>
@@ -664,7 +717,7 @@ function TabCTVUniverse({ mobile, C }: { mobile: boolean; C: C }) {
             <div key={item.title} style={{ background: C.bg3, borderRadius: 10, padding: 14 }}>
               <div style={{ fontSize: 24, marginBottom: 8 }}>{item.icon}</div>
               <div style={{ fontSize: 12, fontWeight: 700, color: C.white, marginBottom: 6 }}>{item.title}</div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{item.desc}</div>
+              <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.5 }}>{item.desc}</div>
             </div>
           ))}
         </div>
@@ -718,7 +771,7 @@ function TabCTVUniverse({ mobile, C }: { mobile: boolean; C: C }) {
           {STARLING_CREATIVES.map((cr: any) => (
             <div key={cr.title} style={{ background: C.bg3, borderRadius: 10, padding: 14, borderLeft: `3px solid ${C.accent2}` }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: C.white, marginBottom: 4 }}>{cr.title}</div>
-              <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5, marginBottom: 8 }}>{cr.hook}</div>
+              <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.5, marginBottom: 8 }}>{cr.hook}</div>
               <div style={{ fontSize: 10, color: C.accent2, fontStyle: "italic" as const }}>"{cr.cta}"</div>
             </div>
           ))}
@@ -762,7 +815,7 @@ function TabUndecidedVoters({ mobile, C }: { mobile: boolean; C: C }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ background: `${C.accent}10`, border: `1px solid ${C.accent2}30`, borderRadius: 12, padding: "14px 18px" }}>
         <div style={{ fontSize: 13, fontWeight: 800, color: C.white, marginBottom: 4 }}>Statewide Undecided Voter Universe</div>
-        <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>
+        <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.5 }}>
           Every voter below is identified by name, address, and behavioral data. This is a sample of the statewide undecided Republican primary voter universe available for targeting. Search, filter, and explore.
         </div>
       </div>
