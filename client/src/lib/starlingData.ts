@@ -5,7 +5,7 @@
 export const STARLING_RACE = {
   candidate: "Jeff Starling",
   opponent: "Jon Echols",
-  incumbent: "Gentner Drummond (running for Governor)",
+  raceType: "Two-candidate GOP Primary (open seat)",
   office: "Oklahoma Attorney General",
   primaryDate: "June 16, 2026",
   electionDate: "June 16, 2026",
@@ -26,10 +26,8 @@ export const STARLING_RACE = {
   echolsPct: 11,
   undecidedVoters: 200035,  // 78% of 256,455 projected turnout
   starlingBaseVotes: 28210,  // 11% of 256,455
-  // What Starling needs to make runoff (22–25% threshold)
-  votesNeededForRunoff: 56420,  // 22% of 256,455
-  votesNeededToWin: 128228,  // 50%+1 of 256,455
-  drummond: 38,
+  // Two-man race: Starling needs 50%+1 to win outright (no runoff needed)
+  votesNeededToWin: 128228,  // 50%+1 of 256,455 projected turnout
 };
 
 // Real voter demographics from statewide undecided universe
@@ -396,7 +394,7 @@ export const STARLING_TIERS = [
       { label: "CTV — Oklahoma City Market", amount: 11000 },
       { label: "CTV — Tulsa Market", amount: 11000 },
       { label: "Digital Display / Pre-roll", amount: 4000 },
-      { label: "Agency Management Fee", amount: 4000 },
+      { label: "Exact Audience Campaign Management", amount: 4000 },
     ],
     // Reach = 44% of 200,035 undecided universe (statewide 256,455 turnout × 78% undecided)
     // Starling base: 28,210 votes (11% of 256,455 projected turnout)
@@ -427,7 +425,7 @@ export const STARLING_TIERS = [
       { label: "CTV — Oklahoma City Market", amount: 25000 },
       { label: "CTV — Tulsa Market", amount: 25000 },
       { label: "Digital Display / Pre-roll", amount: 10000 },
-      { label: "Agency Management Fee", amount: 5000 },
+      { label: "Exact Audience Campaign Management", amount: 5000 },
     ],
     // Reach = 73% of 200,035 undecided universe
     metrics: {
@@ -457,7 +455,7 @@ export const STARLING_TIERS = [
       { label: "CTV — Oklahoma City Market", amount: 35000 },
       { label: "CTV — Tulsa Market", amount: 35000 },
       { label: "Digital Display / Pre-roll", amount: 15000 },
-      { label: "Agency Management Fee", amount: 8000 },
+      { label: "Exact Audience Campaign Management", amount: 8000 },
     ],
     // Reach = 95% of 200,035 undecided universe — near-saturation of the full undecided pool
     metrics: {
