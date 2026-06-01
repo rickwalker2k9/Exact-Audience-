@@ -117,6 +117,7 @@ export interface DashWebTraffic {
   trafficSources: { Search: number; Social: number; Mail: number; DisplayAds: number; Direct: number; Referrals: number };
   topKeywords?: { keyword: string; volume: string; position: number; trend: "up" | "down" | "flat" }[];
   topPages?: { url: string; label: string; views: string; bounce: number }[];
+  trafficSplitNote?: string;
 }
 
 export interface DashQR {
@@ -737,7 +738,7 @@ function TabSitePages({ mobile, C, sitePages, label, dailyImpressions, accentCol
 function TabWebTraffic({ mobile, C, webTraffic, accentColor }: {
   mobile: boolean; C: C; webTraffic: DashWebTraffic; accentColor: string;
 }) {
-  const { globalRank, monthlyVisits, bounceRate, visitsTrend, visitsDates, trafficSources, topKeywords, topPages } = webTraffic;
+  const { globalRank, monthlyVisits, bounceRate, visitsTrend, visitsDates, trafficSources, topKeywords, topPages, trafficSplitNote } = webTraffic;
   const trendData = visitsTrend.map((v, i) => ({ month: visitsDates[i]?.slice(5) ?? i, visits: Math.round(v / 1000) }));
   const totalSrc = (trafficSources.Search || 0) + (trafficSources.Social || 0) + (trafficSources.Mail || 0) + (trafficSources.DisplayAds || 0) + (trafficSources.Direct || 0) + (trafficSources.Referrals || 0);
   const srcData = [
@@ -764,6 +765,11 @@ function TabWebTraffic({ mobile, C, webTraffic, accentColor }: {
       <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.2)", fontSize: 11, color: C.muted }}>
         <span style={{ color: C.blue, fontWeight: 700 }}>📊 SimilarWeb Data</span> — Website traffic analytics sourced from SimilarWeb (Apr 2026). Powered by Exact Audience behavioral intelligence layer.
       </div>
+      {trafficSplitNote && (
+        <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.25)", fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+          <span style={{ color: C.gold, fontWeight: 700 }}>⚠️ Traffic Attribution Note</span> — {trafficSplitNote}
+        </div>
+      )}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
         <KpiCard label="Global Rank" value={`#${globalRank.toLocaleString()}`} color={accentColor} C={C} />
         <KpiCard label="Monthly Visits" value={monthlyVisits >= 1000000 ? `${(monthlyVisits / 1000000).toFixed(1)}M` : monthlyVisits >= 1000 ? `${Math.round(monthlyVisits / 1000)}K` : monthlyVisits.toLocaleString()} color={C.green} C={C} />

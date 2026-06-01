@@ -120,4 +120,5 @@ export const BREEZE_WEB_TRAFFIC: DashWebTraffic = {
     { keyword: "disability insurance freelancer", volume: "12K", position: 5, trend: "up" },
     { keyword: "own occupation disability insurance", volume: "22K", position: 6, trend: "flat" },
   ],
+  trafficSplitNote: "Breeze is currently splitting paid traffic between meetbreeze.com and the affiliate domain incomeprotectioncalculator.com. Because Exact Audience only has pixel access to the meetbreeze.com destination, all metrics shown here — impressions, reach, completions, site visitors, and conversions — are calculated exclusively from our tracked link. The affiliate side’s traffic and conversion data is not visible to us. Total campaign performance may be higher once affiliate-side data is available.",
 };
