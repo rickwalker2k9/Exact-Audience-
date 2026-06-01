@@ -134,7 +134,7 @@ export const BREEZE_WEB_TRAFFIC: DashWebTraffic = {
       identified: 4650,
       identifiedPct: 53,
       color: "#0ea5e9",
-      note: "6-step income protection calculator. SiteID.ai identifies every visitor by name & address. Full funnel tracking active — opt-ins, step completions, and retargeting all tracked.",
+      note: "6-step income protection calculator. SiteID.ai identifies every visitor by name & address. All 39 confirmed leads in the People tab originated from this funnel — they completed the calculator and opted in here. Full funnel tracking active: opt-ins, step completions, and retargeting all tracked.",
     },
     {
       url: "meetbreeze.com/disability-insurance/quotes/?tunetrackingid=102ccdb8593aef1d29660f6b36f8dc",

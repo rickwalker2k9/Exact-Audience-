@@ -1024,7 +1024,7 @@ function TabPeople({ mobile, C, dashboardId, accentColor, audienceSegment, audie
       {/* Featured Profiles */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ fontSize: 16, fontWeight: 800, color: C.white, marginBottom: 4 }}>Featured Buyer Profiles</div>
-        <div style={{ fontSize: 12, color: C.muted }}>3 identified individuals — click any profile to view their full buyer journey, intent signals, and personalized media recommendations.</div>
+        <div style={{ fontSize: 12, color: C.white }}>3 highlighted profiles from the 39 confirmed leads below — all originated from <span style={{ color: accentColor, fontWeight: 700 }}>incomeprotectioncalculator.com</span>. Click any profile to view their full buyer journey, intent signals, and personalized media recommendations.</div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>
         {profiles.map(profile => (
@@ -1069,8 +1069,8 @@ function TabPeople({ mobile, C, dashboardId, accentColor, audienceSegment, audie
       {people.length > 0 && audienceSegmentStats && (
         <div>
           <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 24, marginBottom: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: C.white, marginBottom: 4 }}>Target Audience List</div>
-            <div style={{ fontSize: 12, color: C.muted }}>Full identified audience — search, filter, and explore every person in the target universe.</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: C.white, marginBottom: 4 }}>Target Audience List — 39 Confirmed Leads</div>
+            <div style={{ fontSize: 12, color: C.white }}>All 39 leads originated from <strong style={{ color: accentColor }}>incomeprotectioncalculator.com</strong>. Each person completed the 6-step calculator and opted in. Search, filter, and explore every confirmed lead below.</div>
           </div>
           {/* Stats */}
           <div style={{ display: "grid", gridTemplateColumns: mobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 12, marginBottom: 16 }}>
