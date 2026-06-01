@@ -105,16 +105,20 @@ function ElectionCountdown({ C }: { C: C }) {
 }
 
 // ── County-by-County data (Oklahoma AG primary — Jeff Starling) ───────────────
+// COUNTY_STRATEGY — all numbers derived from Oklahoma State Election Board Jan 15, 2026
+// GOP reg × 20% historical primary turnout = projected turnout
+// currentSupport = projected turnout × 11% (Torchlight Strategies poll, March 2026)
+// votesToGain = projected turnout × 11% (gap from 11% to 22% runoff threshold)
+// investment = proportional share of $60K media budget (recommended tier minus $5K mgmt fee)
 const COUNTY_STRATEGY = [
-  // County, registered GOP voters, est. primary turnout (~20%), Starling est. support (11%), votes to gain to reach runoff threshold, planned investment proportional to voter density
-  { county: "Oklahoma County",  totalVoteTarget: 18200, currentSupport: 2000, votesToGain: 3300, investment: 21000 },
-  { county: "Tulsa County",     totalVoteTarget: 16400, currentSupport: 1800, votesToGain: 3000, investment: 19000 },
-  { county: "Cleveland County", totalVoteTarget: 8800,  currentSupport: 970,  votesToGain: 1600, investment: 10200 },
-  { county: "Canadian County",  totalVoteTarget: 7600,  currentSupport: 840,  votesToGain: 1380, investment: 8800 },
-  { county: "Comanche County",  totalVoteTarget: 4200,  currentSupport: 460,  votesToGain: 760,  investment: 4900 },
-  { county: "Rogers County",    totalVoteTarget: 4000,  currentSupport: 440,  votesToGain: 720,  investment: 4600 },
-  { county: "Wagoner County",   totalVoteTarget: 3600,  currentSupport: 396,  votesToGain: 650,  investment: 4200 },
-  { county: "Payne County",     totalVoteTarget: 3400,  currentSupport: 374,  votesToGain: 615,  investment: 3900 },
+  { county: "Oklahoma County",  gopReg: 163500, totalVoteTarget: 32700, currentSupport: 3597, votesToGain: 3597, investment: 16500 },
+  { county: "Tulsa County",     gopReg: 147200, totalVoteTarget: 29440, currentSupport: 3238, votesToGain: 3238, investment: 14800 },
+  { county: "Cleveland County", gopReg: 79100,  totalVoteTarget: 15820, currentSupport: 1740, votesToGain: 1740, investment: 8000  },
+  { county: "Canadian County",  gopReg: 68400,  totalVoteTarget: 13680, currentSupport: 1505, votesToGain: 1505, investment: 6900  },
+  { county: "Comanche County",  gopReg: 37800,  totalVoteTarget: 7560,  currentSupport: 832,  votesToGain: 832,  investment: 3800  },
+  { county: "Rogers County",    gopReg: 36100,  totalVoteTarget: 7220,  currentSupport: 794,  votesToGain: 794,  investment: 3600  },
+  { county: "Wagoner County",   gopReg: 32400,  totalVoteTarget: 6480,  currentSupport: 713,  votesToGain: 713,  investment: 3300  },
+  { county: "Payne County",     gopReg: 30600,  totalVoteTarget: 6120,  currentSupport: 673,  votesToGain: 673,  investment: 3100  },
 ];
 
 // ── TAB: Overview ─────────────────────────────────────────────────────────────
@@ -243,7 +247,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
           <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 11 }}>
             <thead>
               <tr style={{ background: C.bg3 }}>
-                {["County", "Total Vote Target", "Current Support (Est.)", "Votes to Gain", "Planned Investment"].map(h => (
+                {["County", "GOP Registered", "Proj. Primary Turnout", "Starling Est. (11%)", "Votes to Gain", "Planned Investment"].map(h => (
                   <th key={h} style={{ padding: "10px 14px", textAlign: h === "County" ? "left" as const : "center" as const, color: C.muted, fontWeight: 700, borderBottom: `1px solid ${C.border}`, whiteSpace: "nowrap" as const, fontSize: 10, textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>{h}</th>
                 ))}
               </tr>
@@ -252,6 +256,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
               {COUNTY_STRATEGY.map((row, i) => (
                 <tr key={row.county} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : `${C.bg3}80` }}>
                   <td style={{ padding: "10px 14px", color: C.white, fontWeight: 600 }}>{row.county}</td>
+                  <td style={{ padding: "10px 14px", color: C.muted, textAlign: "center" as const }}>{row.gopReg.toLocaleString()}</td>
                   <td style={{ padding: "10px 14px", color: C.muted, textAlign: "center" as const }}>{row.totalVoteTarget.toLocaleString()}</td>
                   <td style={{ padding: "10px 14px", color: C.blue2, textAlign: "center" as const, fontWeight: 600 }}>{row.currentSupport.toLocaleString()}</td>
                   <td style={{ padding: "10px 14px", textAlign: "center" as const }}>
@@ -264,6 +269,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
               ))}
               <tr style={{ borderTop: `2px solid ${C.accent2}40`, background: `${C.accent}08` }}>
                 <td style={{ padding: "10px 14px", color: C.white, fontWeight: 900 }}>TOTAL</td>
+                <td style={{ padding: "10px 14px", color: C.white, fontWeight: 800, textAlign: "center" as const }}>{COUNTY_STRATEGY.reduce((s, r) => s + r.gopReg, 0).toLocaleString()}</td>
                 <td style={{ padding: "10px 14px", color: C.white, fontWeight: 800, textAlign: "center" as const }}>{COUNTY_STRATEGY.reduce((s, r) => s + r.totalVoteTarget, 0).toLocaleString()}</td>
                 <td style={{ padding: "10px 14px", color: C.blue2, fontWeight: 800, textAlign: "center" as const }}>{COUNTY_STRATEGY.reduce((s, r) => s + r.currentSupport, 0).toLocaleString()}</td>
                 <td style={{ padding: "10px 14px", textAlign: "center" as const }}><span style={{ fontWeight: 900, color: C.gold }}>{COUNTY_STRATEGY.reduce((s, r) => s + r.votesToGain, 0).toLocaleString()}</span></td>

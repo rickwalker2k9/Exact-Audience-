@@ -16,17 +16,19 @@ export const STARLING_RACE = {
   republicanRegistered: 1282277,
   democratRegistered: 609265,
   independentRegistered: 491294,
-  // Primary turnout projection (historical midterm primary avg ~20%)
-  projectedTurnout: 256000,
+  // Primary turnout projection (historical midterm primary avg ~20% of 1,282,277 GOP registered)
+  projectedTurnout: 256455,  // 1,282,277 × 20% = 256,455
   projectedTurnoutLow: 230000,
   projectedTurnoutHigh: 282000,
   // Torchlight Strategies poll, March 25-31 2026
   undecidedPct: 78,
   starlingPct: 11,
   echolsPct: 11,
-  undecidedVoters: 199680, // 78% of 256K projected turnout
-  // What Starling needs to win
-  votesNeededToWin: 128001,
+  undecidedVoters: 200035,  // 78% of 256,455 projected turnout
+  starlingBaseVotes: 28210,  // 11% of 256,455
+  // What Starling needs to make runoff (22–25% threshold)
+  votesNeededForRunoff: 56420,  // 22% of 256,455
+  votesNeededToWin: 128228,  // 50%+1 of 256,455
   drummond: 38,
 };
 
@@ -396,6 +398,8 @@ export const STARLING_TIERS = [
       { label: "Digital Display / Pre-roll", amount: 4000 },
       { label: "Agency Management Fee", amount: 4000 },
     ],
+    // Reach = 44% of 200,035 undecided universe (statewide 256,455 turnout × 78% undecided)
+    // Starling base: 28,210 votes (11% of 256,455 projected turnout)
     metrics: {
       uniqueVoters: "88,000",
       frequency: "20x",
@@ -405,9 +409,9 @@ export const STARLING_TIERS = [
       costPerVote: "$3.06–$8.57",
     },
     projections: [
-      { scenario: "Conservative", votersReached: 88000, conversion: 4.0, newVotes: 3500, starlingTotal: "~131,500", highlight: false },
-      { scenario: "Realistic", votersReached: 88000, conversion: 7.0, newVotes: 6200, starlingTotal: "~134,200", highlight: true },
-      { scenario: "Optimistic", votersReached: 88000, conversion: 11.1, newVotes: 9800, starlingTotal: "~137,800", highlight: false },
+      { scenario: "Conservative", votersReached: 88000, conversion: 4.0, newVotes: 3521, starlingTotal: "~31,700", highlight: false },
+      { scenario: "Realistic", votersReached: 88000, conversion: 7.0, newVotes: 6161, starlingTotal: "~34,400", highlight: true },
+      { scenario: "Optimistic", votersReached: 88000, conversion: 11.1, newVotes: 9770, starlingTotal: "~38,000", highlight: false },
     ],
   },
   {
@@ -425,18 +429,19 @@ export const STARLING_TIERS = [
       { label: "Digital Display / Pre-roll", amount: 10000 },
       { label: "Agency Management Fee", amount: 5000 },
     ],
+    // Reach = 73% of 200,035 undecided universe
     metrics: {
-      uniqueVoters: "188,600",
+      uniqueVoters: "146,000",
       frequency: "22.6x",
-      digitalImpressions: "4.26M",
-      siteIdContacts: "~9,400",
-      newVotes: "8,500–24,000",
-      costPerVote: "$2.71–$7.65",
+      digitalImpressions: "3.30M",
+      siteIdContacts: "~7,300",
+      newVotes: "6,600–18,500",
+      costPerVote: "$3.51–$9.85",
     },
     projections: [
-      { scenario: "Conservative", votersReached: 188600, conversion: 4.5, newVotes: 8500, starlingTotal: "~136,500", highlight: false },
-      { scenario: "Realistic", votersReached: 188600, conversion: 8.1, newVotes: 15200, starlingTotal: "~143,200", highlight: true },
-      { scenario: "Optimistic", votersReached: 188600, conversion: 12.7, newVotes: 24000, starlingTotal: "~152,000", highlight: false },
+      { scenario: "Conservative", votersReached: 146000, conversion: 4.5, newVotes: 6570, starlingTotal: "~34,800", highlight: false },
+      { scenario: "Realistic", votersReached: 146000, conversion: 8.1, newVotes: 11826, starlingTotal: "~40,000", highlight: true },
+      { scenario: "Optimistic", votersReached: 146000, conversion: 12.7, newVotes: 18542, starlingTotal: "~46,800", highlight: false },
     ],
   },
   {
@@ -454,18 +459,19 @@ export const STARLING_TIERS = [
       { label: "Digital Display / Pre-roll", amount: 15000 },
       { label: "Agency Management Fee", amount: 8000 },
     ],
+    // Reach = 95% of 200,035 undecided universe — near-saturation of the full undecided pool
     metrics: {
-      uniqueVoters: "268,000",
+      uniqueVoters: "190,000",
       frequency: "25x",
-      digitalImpressions: "6.7M",
-      siteIdContacts: "~13,400",
-      newVotes: "12,000–34,000",
-      costPerVote: "$2.74–$7.75",
+      digitalImpressions: "4.75M",
+      siteIdContacts: "~9,500",
+      newVotes: "9,500–25,700",
+      costPerVote: "$3.62–$9.79",
     },
     projections: [
-      { scenario: "Conservative", votersReached: 268000, conversion: 4.5, newVotes: 12000, starlingTotal: "~140,000", highlight: false },
-      { scenario: "Realistic", votersReached: 268000, conversion: 8.0, newVotes: 21500, starlingTotal: "~149,500", highlight: true },
-      { scenario: "Optimistic", votersReached: 268000, conversion: 12.7, newVotes: 34000, starlingTotal: "~162,000", highlight: false },
+      { scenario: "Conservative", votersReached: 190000, conversion: 5.0, newVotes: 9500, starlingTotal: "~37,700", highlight: false },
+      { scenario: "Realistic", votersReached: 190000, conversion: 9.0, newVotes: 17100, starlingTotal: "~45,300", highlight: true },
+      { scenario: "Optimistic", votersReached: 190000, conversion: 13.5, newVotes: 25650, starlingTotal: "~53,900", highlight: false },
     ],
   },
 ];
