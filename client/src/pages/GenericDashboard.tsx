@@ -114,7 +114,7 @@ export interface DashSitePage {
 }
 
 export interface DashWebTraffic {
-  globalRank: number;
+  globalRank?: number;
   monthlyVisits: number;
   bounceRate: number;
   visitsTrend: number[];
@@ -815,7 +815,7 @@ function TabWebTraffic({ mobile, C, webTraffic, accentColor }: {
         </div>
       )}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
-        <KpiCard label="Global Rank" value={`#${globalRank.toLocaleString()}`} color={accentColor} C={C} />
+        {globalRank != null ? <KpiCard label="Global Rank" value={`#${globalRank.toLocaleString()}`} color={accentColor} C={C} /> : <KpiCard label="Tracked Domain" value="incomeprotectioncalculator.com" color={accentColor} C={C} />}
         <KpiCard label="Monthly Visits" value={monthlyVisits >= 1000000 ? `${(monthlyVisits / 1000000).toFixed(1)}M` : monthlyVisits >= 1000 ? `${Math.round(monthlyVisits / 1000)}K` : monthlyVisits.toLocaleString()} color={C.green} C={C} />
         <KpiCard label="Bounce Rate" value={`${bounceRate}%`} color={bounceRate < 45 ? C.green : bounceRate < 55 ? C.gold : C.red} C={C} />
         <KpiCard label="Traffic Sources" value={`${srcData.length} channels`} color={C.gold} C={C} />

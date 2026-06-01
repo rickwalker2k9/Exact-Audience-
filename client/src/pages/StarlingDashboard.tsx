@@ -336,19 +336,6 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         </div>
       </Card>
 
-      {/* 18-Day Timeline */}
-      <Card C={C}>
-        <SectionTitle C={C}>Proposed 18-Day Campaign Timeline</SectionTitle>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {STARLING_TIMELINE.map((t: any, i: number) => (
-            <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-              <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 700, color: t.election ? C.green : C.accent2, paddingTop: 2 }}>{t.days}</div>
-              <div style={{ width: 3, flexShrink: 0, background: t.election ? C.green : C.blue2, borderRadius: 2, alignSelf: "stretch", minHeight: 20 }} />
-              <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.5 }}>{t.activity}</div>
-            </div>
-          ))}
-        </div>
-      </Card>
     </div>
   );
 }
