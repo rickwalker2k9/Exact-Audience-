@@ -64,11 +64,66 @@ function ProposalBadge({ C }: { C: C }) {
   );
 }
 
+// ── Countdown Timer ─────────────────────────────────────────────────────────
+function ElectionCountdown({ C }: { C: C }) {
+  // June 16, 2026 — Oklahoma polls close at 7:00 PM CDT (00:00 UTC June 17)
+  const ELECTION_CLOSE = new Date("2026-06-17T00:00:00Z").getTime();
+  const [timeLeft, setTimeLeft] = useState(() => Math.max(0, ELECTION_CLOSE - Date.now()));
+  useEffect(() => {
+    const id = setInterval(() => setTimeLeft(Math.max(0, ELECTION_CLOSE - Date.now())), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const days = Math.floor(timeLeft / 86400000);
+  const hrs  = Math.floor((timeLeft % 86400000) / 3600000);
+  const mins = Math.floor((timeLeft % 3600000) / 60000);
+  const secs = Math.floor((timeLeft % 60000) / 1000);
+  const unit = (val: number, label: string) => (
+    <div style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: 4 }}>
+      <div style={{ background: C.accent, borderRadius: 8, padding: "10px 16px", minWidth: 56, textAlign: "center" as const }}>
+        <span style={{ fontSize: 28, fontWeight: 900, color: "#fff", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>{String(val).padStart(2, "0")}</span>
+      </div>
+      <span style={{ fontSize: 9, fontWeight: 700, color: C.muted, textTransform: "uppercase" as const, letterSpacing: "0.12em" }}>{label}</span>
+    </div>
+  );
+  return (
+    <div style={{ background: `${C.accent}12`, border: `1px solid ${C.accent}30`, borderRadius: 12, padding: "16px 20px", display: "flex", flexWrap: "wrap" as const, alignItems: "center", gap: 16, justifyContent: "space-between" }}>
+      <div>
+        <div style={{ fontSize: 10, fontWeight: 700, color: C.muted, textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 4 }}>Election Day Countdown</div>
+        <div style={{ fontSize: 13, fontWeight: 800, color: C.white }}>Tuesday, June 16, 2026 — Polls close 7:00 PM CT</div>
+      </div>
+      <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+        {unit(days, "Days")}
+        <span style={{ fontSize: 24, fontWeight: 900, color: C.accent2, paddingTop: 8 }}>:</span>
+        {unit(hrs, "Hrs")}
+        <span style={{ fontSize: 24, fontWeight: 900, color: C.accent2, paddingTop: 8 }}>:</span>
+        {unit(mins, "Min")}
+        <span style={{ fontSize: 24, fontWeight: 900, color: C.accent2, paddingTop: 8 }}>:</span>
+        {unit(secs, "Sec")}
+      </div>
+    </div>
+  );
+}
+
+// ── County-by-County data (Oklahoma AG primary — Jeff Starling) ───────────────
+const COUNTY_STRATEGY = [
+  // County, registered GOP voters, est. primary turnout (~20%), Starling est. support (11%), votes to gain to reach runoff threshold, planned investment proportional to voter density
+  { county: "Oklahoma County",  totalVoteTarget: 18200, currentSupport: 2000, votesToGain: 3300, investment: 21000 },
+  { county: "Tulsa County",     totalVoteTarget: 16400, currentSupport: 1800, votesToGain: 3000, investment: 19000 },
+  { county: "Cleveland County", totalVoteTarget: 8800,  currentSupport: 970,  votesToGain: 1600, investment: 10200 },
+  { county: "Canadian County",  totalVoteTarget: 7600,  currentSupport: 840,  votesToGain: 1380, investment: 8800 },
+  { county: "Comanche County",  totalVoteTarget: 4200,  currentSupport: 460,  votesToGain: 760,  investment: 4900 },
+  { county: "Rogers County",    totalVoteTarget: 4000,  currentSupport: 440,  votesToGain: 720,  investment: 4600 },
+  { county: "Wagoner County",   totalVoteTarget: 3600,  currentSupport: 396,  votesToGain: 650,  investment: 4200 },
+  { county: "Payne County",     totalVoteTarget: 3400,  currentSupport: 374,  votesToGain: 615,  investment: 3900 },
+];
+
 // ── TAB: Overview ─────────────────────────────────────────────────────────────
 function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
   const R = STARLING_RACE;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Election Countdown */}
+      <ElectionCountdown C={C} />
       {/* Proposal Banner */}
       <div style={{ background: `${C.gold}10`, border: `1px solid ${C.gold}30`, borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "flex-start", gap: 14 }}>
         <div style={{ fontSize: 28 }}>🗳️</div>
@@ -150,6 +205,75 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
               <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{a.desc}</div>
             </div>
           ))}
+        </div>
+      </Card>
+
+      {/* Message Exposure Model */}
+      <Card C={C}>
+        <SectionTitle C={C}>Message Exposure Model</SectionTitle>
+        <div style={{ background: C.bg3, borderRadius: 12, padding: "20px 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap" as const, justifyContent: "center" }}>
+            {[
+              { range: "1–2 exposures", stage: "Awareness",    color: C.teal,   desc: "Voter sees the name for the first time" },
+              { range: "3–5 exposures", stage: "Recognition",  color: C.accent2, desc: "Name becomes familiar and trusted" },
+              { range: "6–10 exposures", stage: "Decision",    color: C.gold,   desc: "Voter is ready to commit at the ballot" },
+            ].map((s, i) => (
+              <React.Fragment key={s.stage}>
+                <div style={{ flex: "1 1 160px", minWidth: 140, background: C.card, border: `2px solid ${s.color}`, borderRadius: 10, padding: "18px 16px", textAlign: "center" as const }}>
+                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 6, letterSpacing: "0.08em" }}>{s.range}</div>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: C.white, marginBottom: 6 }}>{s.stage}</div>
+                  <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5 }}>{s.desc}</div>
+                </div>
+                {i < 2 && (
+                  <div style={{ fontSize: 22, color: C.accent2, padding: "0 10px", flexShrink: 0, alignSelf: "center" }}>→</div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+          <div style={{ marginTop: 16, fontSize: 11, color: C.muted, textAlign: "center" as const, lineHeight: 1.6 }}>
+            Digital delivery ensures repeated exposure after initial reach is created by television. Our $65K recommended tier delivers <strong style={{ color: C.white }}>22.6× average frequency</strong> — well into the Decision zone for every voter we touch.
+          </div>
+        </div>
+      </Card>
+
+      {/* County-by-County Strategy */}
+      <Card C={C}>
+        <SectionTitle C={C}>County-by-County Strategy — Focusing Resources Where They Deliver Maximum Impact</SectionTitle>
+        <div style={{ overflowX: "auto" as const }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 11 }}>
+            <thead>
+              <tr style={{ background: C.bg3 }}>
+                {["County", "Total Vote Target", "Current Support (Est.)", "Votes to Gain", "Planned Investment"].map(h => (
+                  <th key={h} style={{ padding: "10px 14px", textAlign: h === "County" ? "left" as const : "center" as const, color: C.muted, fontWeight: 700, borderBottom: `1px solid ${C.border}`, whiteSpace: "nowrap" as const, fontSize: 10, textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {COUNTY_STRATEGY.map((row, i) => (
+                <tr key={row.county} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : `${C.bg3}80` }}>
+                  <td style={{ padding: "10px 14px", color: C.white, fontWeight: 600 }}>{row.county}</td>
+                  <td style={{ padding: "10px 14px", color: C.muted, textAlign: "center" as const }}>{row.totalVoteTarget.toLocaleString()}</td>
+                  <td style={{ padding: "10px 14px", color: C.blue2, textAlign: "center" as const, fontWeight: 600 }}>{row.currentSupport.toLocaleString()}</td>
+                  <td style={{ padding: "10px 14px", textAlign: "center" as const }}>
+                    <span style={{ fontWeight: 800, color: C.gold }}>{row.votesToGain.toLocaleString()}</span>
+                  </td>
+                  <td style={{ padding: "10px 14px", textAlign: "center" as const }}>
+                    <span style={{ fontWeight: 800, color: C.green }}>${row.investment.toLocaleString()}</span>
+                  </td>
+                </tr>
+              ))}
+              <tr style={{ borderTop: `2px solid ${C.accent2}40`, background: `${C.accent}08` }}>
+                <td style={{ padding: "10px 14px", color: C.white, fontWeight: 900 }}>TOTAL</td>
+                <td style={{ padding: "10px 14px", color: C.white, fontWeight: 800, textAlign: "center" as const }}>{COUNTY_STRATEGY.reduce((s, r) => s + r.totalVoteTarget, 0).toLocaleString()}</td>
+                <td style={{ padding: "10px 14px", color: C.blue2, fontWeight: 800, textAlign: "center" as const }}>{COUNTY_STRATEGY.reduce((s, r) => s + r.currentSupport, 0).toLocaleString()}</td>
+                <td style={{ padding: "10px 14px", textAlign: "center" as const }}><span style={{ fontWeight: 900, color: C.gold }}>{COUNTY_STRATEGY.reduce((s, r) => s + r.votesToGain, 0).toLocaleString()}</span></td>
+                <td style={{ padding: "10px 14px", textAlign: "center" as const }}><span style={{ fontWeight: 900, color: C.green }}>${COUNTY_STRATEGY.reduce((s, r) => s + r.investment, 0).toLocaleString()}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style={{ marginTop: 14, background: C.bg3, borderRadius: 8, padding: "12px 16px", fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+          This model is built on registered Republican voter counts by county (Oklahoma State Election Board, Jan 2026) and a 20% primary turnout projection. Current support is estimated at Starling's March 2026 polling baseline of 11%. Votes to Gain represents the additional votes needed to reach the 22–25% runoff threshold.
         </div>
       </Card>
 
@@ -418,7 +542,7 @@ function TabWhatWeCanDo({ mobile, C }: { mobile: boolean; C: C }) {
           {tier.components.map((comp: any) => (
             <div key={comp.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: C.bg3, borderRadius: 8, padding: "10px 14px" }}>
               <span style={{ fontSize: 11, color: C.muted }}>{comp.label}</span>
-              <span style={{ fontSize: 13, fontWeight: 800, color: tierColors[selected] }}>${comp.budget.toLocaleString()}</span>
+              <span style={{ fontSize: 13, fontWeight: 800, color: tierColors[selected] }}>${(comp.amount ?? comp.budget ?? 0).toLocaleString()}</span>
             </div>
           ))}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: `${tierColors[selected]}12`, border: `1px solid ${tierColors[selected]}30`, borderRadius: 8, padding: "10px 14px" }}>
