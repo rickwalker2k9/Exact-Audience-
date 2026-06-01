@@ -314,6 +314,58 @@ function TabVoterUniverse({ mobile, C }: { mobile: boolean; C: C }) {
           ))}
         </div>
       </Card>
+
+      {/* SiteID.ai Recommendation */}
+      <Card C={C} style={{ border: `1px solid ${C.teal}40`, background: `linear-gradient(135deg, ${C.card} 0%, ${C.teal}08 100%)` }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 16 }}>
+          <div style={{ width: 44, height: 44, borderRadius: 10, background: `${C.teal}20`, border: `1px solid ${C.teal}40`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>🔎</div>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: C.white }}>Recommended Add-On: SiteID.ai</span>
+              <span style={{ fontSize: 9, fontWeight: 700, color: C.teal, background: `${C.teal}20`, border: `1px solid ${C.teal}40`, borderRadius: 10, padding: "2px 8px", textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>High ROI</span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              Right now, voters are visiting <strong style={{ color: C.white }}>jeffstarling.com</strong> and leaving anonymously. SiteID.ai identifies those visitors by name, address, and voter file — turning anonymous website traffic into a named, targetable audience for CTV and digital retargeting.
+            </div>
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 10, marginBottom: 16 }}>
+          {[
+            { icon: "👤", stat: "Up to 40%", label: "of anonymous site visitors identified by name", color: C.teal },
+            { icon: "⏱️", stat: "2m 47s", label: "average time on site — these are high-intent voters", color: C.blue2 },
+            { icon: "🎯", stat: "Highest ROI", label: "retargeting known visitors converts faster than cold reach", color: C.green },
+          ].map(item => (
+            <div key={item.label} style={{ background: C.bg3, borderRadius: 10, padding: 14, borderTop: `2px solid ${item.color}` }}>
+              <div style={{ fontSize: 20, marginBottom: 6 }}>{item.icon}</div>
+              <div style={{ fontSize: 16, fontWeight: 900, color: item.color, marginBottom: 4 }}>{item.stat}</div>
+              <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.4 }}>{item.label}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: C.bg3, borderRadius: 10, padding: 14, marginBottom: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.white, marginBottom: 10 }}>How It Works With This Campaign</div>
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
+            {[
+              { step: "1", text: "SiteID.ai pixel is installed on jeffstarling.com — takes 15 minutes.", color: C.teal },
+              { step: "2", text: "Every visitor to the site is matched against the national voter file and consumer database.", color: C.blue2 },
+              { step: "3", text: "Identified visitors are exported as a named audience — first name, last name, address, voter ID.", color: C.green },
+              { step: "4", text: "That audience is uploaded directly into the CTV and digital campaign as a high-priority retargeting segment.", color: C.gold },
+              { step: "5", text: "Voters who already showed interest see your closing-argument ad 5+ times before Election Day.", color: C.teal },
+            ].map(s => (
+              <div key={s.step} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <div style={{ width: 20, height: 20, borderRadius: "50%", background: `${s.color}25`, border: `1px solid ${s.color}50`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: s.color, flexShrink: 0, marginTop: 1 }}>{s.step}</div>
+                <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{s.text}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ background: `${C.teal}10`, border: `1px solid ${C.teal}30`, borderRadius: 10, padding: "12px 16px", display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
+          <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+            <strong style={{ color: C.teal }}>Why this matters for June 16th:</strong> The voters already visiting jeffstarling.com are the most persuadable people in the entire universe — they are self-selecting as interested. Without SiteID.ai, that signal is invisible. With it, every site visitor becomes a named, targetable voter you can hit with CTV, pre-roll, and display until Election Day.
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
