@@ -12,39 +12,41 @@ export const BREEZE_CLIENT = {
   accentColor: "#0ea5e9",
   dashboardId: "breeze-insurance" as const,
   location: "National",
-  budget: "$89,000",
+  budget: "$21,500",
   website: "meetbreeze.com",
 };
 
+// Scaled to $21,500 total spend at $11.80 avg CPM = ~1,822K impressions
 export const BREEZE_LIVE_BASE = {
-  impressions: 2847420,
-  reach: 184210,
-  completions: 2397200,
-  siteVisitors: 48420,
-  conversions: 1847,
+  impressions: 676000,
+  reach: 43800,
+  completions: 569000,
+  siteVisitors: 11500,
+  conversions: 438,
   frequency: 2.4,
   completionRate: 84.2,
   avgCpm: 11.80,
 };
 
+// Daily impressions scaled to $21,500 total (×0.242 of original $89K)
 export const BREEZE_DAILY_IMPRESSIONS = [
-  { day: "May 1",  ctv: 8400,  youtube: 12600, display: 14200, meta: 29500, google: 25300, email: 4200 },
-  { day: "May 5",  ctv: 9100,  youtube: 13700, display: 15400, meta: 32000, google: 27400, email: 4600 },
-  { day: "May 10", ctv: 9900,  youtube: 14800, display: 16600, meta: 34500, google: 29600, email: 5000 },
-  { day: "May 15", ctv: 11200, youtube: 16800, display: 18900, meta: 39300, google: 33700, email: 5700 },
-  { day: "May 20", ctv: 12500, youtube: 18700, display: 21000, meta: 43700, google: 37400, email: 6300 },
-  { day: "May 25", ctv: 13800, youtube: 20700, display: 23200, meta: 48400, google: 41500, email: 7000 },
-  { day: "May 31", ctv: 14900, youtube: 22300, display: 25000, meta: 52100, google: 44700, email: 7500 },
+  { day: "May 1",  ctv: 2000, youtube: 3000, display: 3400, meta: 7100, google: 6100, email: 1000 },
+  { day: "May 5",  ctv: 2200, youtube: 3300, display: 3700, meta: 7700, google: 6600, email: 1100 },
+  { day: "May 10", ctv: 2400, youtube: 3600, display: 4000, meta: 8300, google: 7200, email: 1200 },
+  { day: "May 15", ctv: 2700, youtube: 4100, display: 4600, meta: 9500, google: 8100, email: 1400 },
+  { day: "May 20", ctv: 3000, youtube: 4500, display: 5100, meta: 10600, google: 9000, email: 1500 },
+  { day: "May 25", ctv: 3300, youtube: 5000, display: 5600, meta: 11700, google: 10000, email: 1700 },
+  { day: "May 31", ctv: 3600, youtube: 5400, display: 6000, meta: 12600, google: 10800, email: 1800 },
 ];
 
-// Channel mix: Meta, Google, LinkedIn, Email — minimal CTV
+// Channel mix: Meta (35%), Google (30%), LinkedIn (25%), Email (7%), CTV (3%) — Total: $21,500
 export const BREEZE_MEDIA_MIX = [
-  { channel: "Meta (Facebook/Instagram)", pct: 35, color: "#1877F2", spend: 31150, impressions: 997000 },
-  { channel: "Google (Search + Display)", pct: 30, color: "#4285F4", spend: 26700, impressions: 854200 },
-  { channel: "LinkedIn",                  pct: 25, color: "#0A66C2", spend: 22250, impressions: 711800 },
-  { channel: "Email Marketing",           pct: 7,  color: "#10b981", spend: 6230,  impressions: 185400 },
-  { channel: "CTV/OTT (minimal)",         pct: 3,  color: "#0ea5e9", spend: 2670,  impressions: 98300  },
-];
+  { channel: "Meta (Facebook/Instagram)", pct: 35, color: "#1877F2", spend: 7525,  impressions: 237000 },
+  { channel: "Google (Search + Display)", pct: 30, color: "#4285F4", spend: 6450,  impressions: 203000 },
+  { channel: "LinkedIn",                  pct: 25, color: "#0A66C2", spend: 5375,  impressions: 169000 },
+  { channel: "Email Marketing",           pct: 7,  color: "#10b981", spend: 1505,  impressions:  47000 },
+  { channel: "CTV/OTT (minimal)",         pct: 3,  color: "#0ea5e9", spend:   645, impressions:  20000 },
+]; // Total: $21,500
 
 // CTV is minimal — just 3 channels
 export const BREEZE_CTV_CHANNELS = [

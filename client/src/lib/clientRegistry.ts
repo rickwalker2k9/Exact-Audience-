@@ -148,7 +148,7 @@ export const CLIENTS: CampaignClient[] = [
     domain: "meetbreeze.com",
     logoDomain: "meetbreeze.com",
     campaign: "Disability Insurance — Working Professionals 2026",
-    budget: "$89,000",
+    budget: "$21,500",
     startDate: "May 1, 2026",
     status: "active",
     hasDashboard: true,
