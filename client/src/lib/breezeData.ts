@@ -16,27 +16,28 @@ export const BREEZE_CLIENT = {
   website: "meetbreeze.com",
 };
 
-// Scaled to $21,500 total spend at $11.80 avg CPM = ~1,822K impressions
+// $21,500 digital-only (no TV yet). Reach 80K unique professionals across Meta/Google/LinkedIn/Email.
+// At $11.80 avg CPM across digital channels: ~1.82M impressions served to 80K unique people = 22.8x avg frequency
 export const BREEZE_LIVE_BASE = {
-  impressions: 676000,
-  reach: 43800,
-  completions: 569000,
-  siteVisitors: 11500,
-  conversions: 438,
-  frequency: 2.4,
+  impressions: 1820000,  // $21,500 / $11.80 CPM × 1000
+  reach: 80000,          // 80K unique professionals reached
+  completions: 1532000,  // 84.2% completion rate
+  siteVisitors: 8400,    // ~10.5% click-through to site
+  conversions: 312,      // ~3.7% conversion rate from site visitors
+  frequency: 22.8,       // 1.82M impressions / 80K reach
   completionRate: 84.2,
   avgCpm: 11.80,
 };
 
-// Daily impressions scaled to $21,500 total (×0.242 of original $89K)
+// Digital-only impressions (no CTV yet). Total ~1.82M across 31 days.
 export const BREEZE_DAILY_IMPRESSIONS = [
-  { day: "May 1",  ctv: 2000, youtube: 3000, display: 3400, meta: 7100, google: 6100, email: 1000 },
-  { day: "May 5",  ctv: 2200, youtube: 3300, display: 3700, meta: 7700, google: 6600, email: 1100 },
-  { day: "May 10", ctv: 2400, youtube: 3600, display: 4000, meta: 8300, google: 7200, email: 1200 },
-  { day: "May 15", ctv: 2700, youtube: 4100, display: 4600, meta: 9500, google: 8100, email: 1400 },
-  { day: "May 20", ctv: 3000, youtube: 4500, display: 5100, meta: 10600, google: 9000, email: 1500 },
-  { day: "May 25", ctv: 3300, youtube: 5000, display: 5600, meta: 11700, google: 10000, email: 1700 },
-  { day: "May 31", ctv: 3600, youtube: 5400, display: 6000, meta: 12600, google: 10800, email: 1800 },
+  { day: "May 1",  ctv: 0, youtube: 0, display: 14800, meta: 36200, google: 31000, email: 5200 },
+  { day: "May 5",  ctv: 0, youtube: 0, display: 16100, meta: 39300, google: 33700, email: 5700 },
+  { day: "May 10", ctv: 0, youtube: 0, display: 17400, meta: 42600, google: 36500, email: 6100 },
+  { day: "May 15", ctv: 0, youtube: 0, display: 19700, meta: 48200, google: 41300, email: 6900 },
+  { day: "May 20", ctv: 0, youtube: 0, display: 22000, meta: 53800, google: 46100, email: 7700 },
+  { day: "May 25", ctv: 0, youtube: 0, display: 24300, meta: 59400, google: 50900, email: 8500 },
+  { day: "May 31", ctv: 0, youtube: 0, display: 26200, meta: 64000, google: 54800, email: 9200 },
 ];
 
 // Channel mix: Meta (35%), Google (30%), LinkedIn (25%), Email (7%), CTV (3%) — Total: $21,500
@@ -48,11 +49,21 @@ export const BREEZE_MEDIA_MIX = [
   { channel: "CTV/OTT (minimal)",         pct: 3,  color: "#0ea5e9", spend:   645, impressions:  20000 },
 ]; // Total: $21,500
 
-// CTV is minimal — just 3 channels
+// CTV NOT YET ACTIVATED — these are the recommended platforms for Breeze's professional/income-protection audience
+// Ranked by audience quality index for working professionals aged 28–54, HHI $75K+
 export const BREEZE_CTV_CHANNELS = [
-  { name: "Hulu",         impressions: 48200,  completions: 40900,  cpm: 22.40, frequency: 1.4, completionRate: 84.9, color: "#1ce783" },
-  { name: "Peacock",      impressions: 31400,  completions: 26700,  cpm: 18.80, frequency: 1.2, completionRate: 85.0, color: "#000000" },
-  { name: "Tubi",         impressions: 18700,  completions: 15400,  cpm: 12.40, frequency: 1.1, completionRate: 82.4, color: "#FA4616" },
+  { name: "Hulu",              tier: "premium",  cpm: 22.40, estReach: 28000, completionRate: 87.2, audienceScore: 94, color: "#1ce783",  note: "#1 reach among 30–49 professionals; strong news & drama inventory" },
+  { name: "Peacock",           tier: "premium",  cpm: 18.80, estReach: 22000, completionRate: 85.0, audienceScore: 91, color: "#6b7280",  note: "NBC Universal content; high-income household skew" },
+  { name: "YouTube TV",        tier: "premium",  cpm: 20.10, estReach: 19500, completionRate: 88.4, audienceScore: 90, color: "#FF0000",  note: "Live TV subscribers; highest completion rate in category" },
+  { name: "Sling TV",          tier: "news",     cpm: 16.40, estReach: 17000, completionRate: 83.1, audienceScore: 86, color: "#0097d4",  note: "Cable-cutter households; strong news & business channel mix" },
+  { name: "Disney+",           tier: "premium",  cpm: 21.50, estReach: 15500, completionRate: 86.7, audienceScore: 82, color: "#113CCF",  note: "Family breadwinner households; premium brand-safe environment" },
+  { name: "Paramount+",        tier: "news",     cpm: 17.20, estReach: 14200, completionRate: 84.3, audienceScore: 81, color: "#0064FF",  note: "CBS News access; strong 35–54 professional demo" },
+  { name: "ESPN+ / ESPN",       tier: "sports",   cpm: 24.80, estReach: 13800, completionRate: 82.6, audienceScore: 79, color: "#CC0000",  note: "Self-employed & small business owners; high-income sports viewers" },
+  { name: "Max (HBO Max)",      tier: "premium",  cpm: 23.60, estReach: 12400, completionRate: 89.1, audienceScore: 88, color: "#002BE7",  note: "Highest-income subscriber base; premium drama & documentary" },
+  { name: "Tubi",              tier: "broad",    cpm: 12.40, estReach: 18000, completionRate: 81.4, audienceScore: 68, color: "#f97316",  note: "Free ad-supported; broadest reach at lowest CPM for retargeting" },
+  { name: "Pluto TV",          tier: "broad",    cpm: 10.80, estReach: 16500, completionRate: 79.8, audienceScore: 65, color: "#7c3aed",  note: "FAST platform; strong for frequency extension at low cost" },
+  { name: "CNBC / NBCUniversal",tier: "news",    cpm: 26.50, estReach: 9800,  completionRate: 90.2, audienceScore: 96, color: "#0078D4",  note: "Highest audience quality score — business/finance news viewers = income protection buyers" },
+  { name: "Bloomberg TV",      tier: "news",     cpm: 28.10, estReach: 7200,  completionRate: 91.4, audienceScore: 97, color: "#f59e0b",  note: "Smallest reach but highest-value audience: HHI $150K+, self-employed executives" },
 ];
 
 export const BREEZE_CREATIVES = [

@@ -60,12 +60,17 @@ export interface DashMediaMixRow {
 
 export interface DashCtvChannel {
   name: string;
-  impressions: number;
-  completions: number;
+  impressions?: number;   // undefined when ctvRecommendationsMode=true
+  completions?: number;
   cpm: number;
-  frequency: number;
+  frequency?: number;
   completionRate: number;
   color: string;
+  // Optional recommendation-mode fields
+  tier?: string;
+  estReach?: number;
+  audienceScore?: number;
+  note?: string;
 }
 
 export interface DashCreative {
@@ -405,8 +410,12 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
 function TabChannels({ mobile, C, ctvChannels, mediaMix, qr, ctvRecommendationsMode }: {
   mobile: boolean; C: C; ctvChannels: DashCtvChannel[]; mediaMix: DashMediaMixRow[]; qr?: DashQR; ctvRecommendationsMode?: boolean;
 }) {
-  const [sort, setSort] = useState<"impressions" | "cpm" | "completionRate">("impressions");
-  const sorted = [...ctvChannels].sort((a, b) => b[sort] - a[sort]);
+  const [sort, setSort] = useState<"impressions" | "cpm" | "completionRate" | "audienceScore">("impressions");
+  const sorted = [...ctvChannels].sort((a, b) => {
+    const av = (a as any)[sort] ?? 0;
+    const bv = (b as any)[sort] ?? 0;
+    return bv - av;
+  });
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -419,74 +428,109 @@ function TabChannels({ mobile, C, ctvChannels, mediaMix, qr, ctvRecommendationsM
             </div>
           )}
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {(["impressions", "cpm", "completionRate"] as const).map(k => (
-              <button key={k} onClick={() => setSort(k)} style={{
+            {(ctvRecommendationsMode
+              ? (["audienceScore", "cpm", "completionRate"] as const)
+              : (["impressions", "cpm", "completionRate"] as const)
+            ).map((k) => (
+              <button key={k} onClick={() => setSort(k as any)} style={{
                 padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
                 background: sort === k ? C.purple : C.bg3,
                 color: sort === k ? "#ffffff" : C.muted,
                 border: `1px solid ${sort === k ? C.purple : C.border}`,
               }}>
-                {k === "impressions" ? "Impressions" : k === "cpm" ? "CPM" : "Completion"}
+                {k === "audienceScore" ? "Audience Score" : k === "cpm" ? "CPM" : k === "impressions" ? "Impressions" : "Completion"}
               </button>
             ))}
           </div>
         </div>
         <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: mobile ? 11 : 12, minWidth: 520 }}>
-            <thead>
-              <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                {["Channel", "Impressions", "Completions", "CPM", "Freq", "VCR"].map(h => (
-                  <th key={h} style={{ padding: "8px 10px", textAlign: h === "Channel" ? "left" : "right", color: C.muted, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map((ch, i) => (
-                <tr key={ch.name} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : C.bg3 }}>
-                  <td style={{ padding: "9px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                      {(() => {
-                        const logoUrl = getNetworkLogo(ch.name);
-                        const initials = getNetworkInitials(ch.name);
-                        const InitialsBadge = () => (
-                          <span style={{ width: 24, height: 24, borderRadius: 5, background: ch.color, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", letterSpacing: 0 }}>{initials}</span>
-                        );
-                        return logoUrl ? (
-                          <img
-                            src={logoUrl}
-                            alt={ch.name}
-                            width={24}
-                            height={24}
-                            style={{ borderRadius: 5, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
-                            onError={(e) => {
-                              const img = e.target as HTMLImageElement;
-                              const badge = document.createElement("span");
-                              badge.style.cssText = `width:24px;height:24px;border-radius:5px;background:${ch.color};flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff`;
-                              badge.textContent = initials;
-                              img.parentNode?.insertBefore(badge, img);
-                              img.style.display = "none";
-                            }}
-                          />
-                        ) : (
-                          <InitialsBadge />
-                        );
-                      })()}
-                      {ch.name}
-                    </span>
-                  </td>
-                  <td style={{ padding: "9px 10px", textAlign: "right", color: C.white }}>{fmt(ch.impressions)}</td>
-                  <td style={{ padding: "9px 10px", textAlign: "right", color: C.muted }}>{fmt(ch.completions)}</td>
-                  <td style={{ padding: "9px 10px", textAlign: "right", color: C.gold }}>${ch.cpm.toFixed(2)}</td>
-                  <td style={{ padding: "9px 10px", textAlign: "right", color: C.muted }}>{ch.frequency.toFixed(2)}x</td>
-                  <td style={{ padding: "9px 10px", textAlign: "right" }}>
-                    <span style={{ color: ch.completionRate >= 90 ? C.green : ch.completionRate >= 80 ? C.gold : C.red, fontWeight: 700 }}>
-                      {ch.completionRate.toFixed(1)}%
-                    </span>
-                  </td>
+          {ctvRecommendationsMode ? (
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: mobile ? 11 : 12, minWidth: 640 }}>
+              <thead>
+                <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                  {["Channel", "Audience Score", "Est. Reach", "CPM", "VCR", "Why This Platform"].map(h => (
+                    <th key={h} style={{ padding: "8px 10px", textAlign: h === "Channel" || h === "Why This Platform" ? "left" : "right", color: C.muted, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {sorted.map((ch, i) => {
+                  const score = ch.audienceScore ?? 0;
+                  const scoreColor = score >= 90 ? C.green : score >= 80 ? C.gold : C.blue;
+                  return (
+                    <tr key={ch.name} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : C.bg3 }}>
+                      <td style={{ padding: "9px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                          {(() => {
+                            const logoUrl = getNetworkLogo(ch.name);
+                            const initials = getNetworkInitials(ch.name);
+                            return logoUrl ? (
+                              <img src={logoUrl} alt={ch.name} width={24} height={24}
+                                style={{ borderRadius: 5, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                              />
+                            ) : (
+                              <span style={{ width: 24, height: 24, borderRadius: 5, background: ch.color, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff" }}>{initials}</span>
+                            );
+                          })()}
+                          {ch.name}
+                        </span>
+                      </td>
+                      <td style={{ padding: "9px 10px", textAlign: "right" }}>
+                        <span style={{ background: `${scoreColor}22`, color: scoreColor, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>{score}/100</span>
+                      </td>
+                      <td style={{ padding: "9px 10px", textAlign: "right", color: C.white }}>{ch.estReach ? fmt(ch.estReach) : "—"}</td>
+                      <td style={{ padding: "9px 10px", textAlign: "right", color: C.gold }}>${ch.cpm.toFixed(2)}</td>
+                      <td style={{ padding: "9px 10px", textAlign: "right" }}>
+                        <span style={{ color: ch.completionRate >= 90 ? C.green : ch.completionRate >= 80 ? C.gold : C.blue, fontWeight: 700 }}>{ch.completionRate.toFixed(1)}%</span>
+                      </td>
+                      <td style={{ padding: "9px 10px", color: C.muted, fontSize: 11 }}>{ch.note ?? "—"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          ) : (
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: mobile ? 11 : 12, minWidth: 520 }}>
+              <thead>
+                <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                  {["Channel", "Impressions", "Completions", "CPM", "Freq", "VCR"].map(h => (
+                    <th key={h} style={{ padding: "8px 10px", textAlign: h === "Channel" ? "left" : "right", color: C.muted, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((ch, i) => (
+                  <tr key={ch.name} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : C.bg3 }}>
+                    <td style={{ padding: "9px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                        {(() => {
+                          const logoUrl = getNetworkLogo(ch.name);
+                          const initials = getNetworkInitials(ch.name);
+                          return logoUrl ? (
+                            <img src={logoUrl} alt={ch.name} width={24} height={24}
+                              style={{ borderRadius: 5, objectFit: "contain", background: "#fff", padding: 2, flexShrink: 0 }}
+                              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                            />
+                          ) : (
+                            <span style={{ width: 24, height: 24, borderRadius: 5, background: ch.color, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff" }}>{initials}</span>
+                          );
+                        })()}
+                        {ch.name}
+                      </span>
+                    </td>
+                    <td style={{ padding: "9px 10px", textAlign: "right", color: C.white }}>{fmt(ch.impressions ?? 0)}</td>
+                    <td style={{ padding: "9px 10px", textAlign: "right", color: C.muted }}>{fmt(ch.completions ?? 0)}</td>
+                    <td style={{ padding: "9px 10px", textAlign: "right", color: C.gold }}>${ch.cpm.toFixed(2)}</td>
+                    <td style={{ padding: "9px 10px", textAlign: "right", color: C.muted }}>{(ch.frequency ?? 0).toFixed(2)}x</td>
+                    <td style={{ padding: "9px 10px", textAlign: "right" }}>
+                      <span style={{ color: ch.completionRate >= 90 ? C.green : ch.completionRate >= 80 ? C.gold : C.blue, fontWeight: 700 }}>{ch.completionRate.toFixed(1)}%</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </Card>
 

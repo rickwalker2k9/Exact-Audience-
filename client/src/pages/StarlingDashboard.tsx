@@ -787,6 +787,90 @@ function TabCTVUniverse({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
+// ── TAB: 15-Day Action Plan ──────────────────────────────────────────────────
+const ACTION_PLAN = [
+  { day: "Jun 2",  phase: "Launch",     channel: "Digital", action: "Activate Meta + Google retargeting on jeffstarling.com visitors. Serve contrast creative: 'Career Politician vs. Real Attorney.'" },
+  { day: "Jun 2",  phase: "Launch",     channel: "Email",   action: "Deploy first email blast to matched voter list: subject line 'The AG Race Is Closer Than You Think.' Include Echols tax vote record." },
+  { day: "Jun 3",  phase: "Launch",     channel: "CTV",     action: "Begin CTV pre-roll on Hulu, Peacock, Paramount+. 30-sec bio spot. Target Oklahoma DMA households with GOP registration match." },
+  { day: "Jun 4",  phase: "Build",      channel: "SiteID",  action: "Install SiteID.ai pixel on jeffstarling.com. Begin identifying anonymous site visitors by name and address for retargeting list." },
+  { day: "Jun 5",  phase: "Build",      channel: "Digital", action: "Launch paid search on 'oklahoma attorney general 2026', 'echols tax vote', 'jeff starling attorney'. Bid on Echols branded terms." },
+  { day: "Jun 6",  phase: "Build",      channel: "Social",  action: "Release contrast video on Facebook/Instagram: Echols' 14-year career vs. Starling's courtroom record. Boost to undecided voter lookalike audience." },
+  { day: "Jun 7",  phase: "Build",      channel: "Email",   action: "Second email: 'Who Is Jon Echols Really Working For?' — trial lawyer donation data, RINO framing, Starling's prosecutorial record." },
+  { day: "Jun 8",  phase: "Accelerate", channel: "CTV",     action: "Rotate to contrast CTV spot: 'Echols voted to raise your taxes. Starling never will.' Increase frequency to 4x/week in OKC and Tulsa DMAs." },
+  { day: "Jun 9",  phase: "Accelerate", channel: "Digital", action: "Retarget SiteID-identified visitors with personalized display ads. Segment by county — serve county-specific messaging." },
+  { day: "Jun 10", phase: "Accelerate", channel: "Social",  action: "Deploy testimonial carousel ads: Oklahoma sheriffs, prosecutors, and business owners endorsing Starling. Target 45–65 male homeowners in top 8 counties." },
+  { day: "Jun 11", phase: "Close",      channel: "Email",   action: "Third email: 'Five Days Left — Here's Why I'm Voting for Jeff Starling.' Personal tone. Include early voting reminder and polling location link." },
+  { day: "Jun 12", phase: "Close",      channel: "CTV",     action: "Final CTV push: closing-argument spot. 'On June 16, Oklahoma chooses its next AG. Choose the attorney who's never stopped fighting for you.' Max frequency." },
+  { day: "Jun 13", phase: "Close",      channel: "Digital", action: "Surge digital spend 40%. Retarget every voter who visited jeffstarling.com more than once. Serve 'Polls Close at 7PM' urgency creative." },
+  { day: "Jun 14", phase: "Close",      channel: "Social",  action: "Final Facebook/Instagram push. 'Two days left.' GOTV creative. Remind early voters. Boost to all matched voter segments simultaneously." },
+  { day: "Jun 15", phase: "GOTV",       channel: "All",     action: "Full GOTV day. Email: 'Tomorrow is Election Day.' CTV: 'Vote Tomorrow.' Digital: polling location finder ads. Social: shareable 'I'm voting for Jeff Starling' graphic." },
+  { day: "Jun 16", phase: "GOTV",       channel: "All",     action: "Election Day. Morning digital surge 6AM–9AM. Midday reminder 11AM–1PM. Final push 4PM–6:30PM. All channels on maximum frequency. Polls close 7PM CT." },
+];
+const PHASE_COLORS: Record<string, string> = { Launch: "#6366f1", Build: "#14b8a6", Accelerate: "#d4a017", Close: "#a855f7", GOTV: "#10b981" };
+const CHANNEL_COLORS: Record<string, string> = { Digital: "#38bdf8", Email: "#10b981", CTV: "#a855f7", SiteID: "#d4a017", Social: "#818cf8", All: "#f59e0b" };
+
+function TabActionPlan({ mobile, C }: { mobile: boolean; C: C }) {
+  const [filter, setFilter] = useState("All");
+  const phases = ["All", "Launch", "Build", "Accelerate", "Close", "GOTV"];
+  const filtered = filter === "All" ? ACTION_PLAN : ACTION_PLAN.filter(a => a.phase === filter);
+  const today = new Date();
+  const electionDay = new Date("2026-06-17T00:00:00Z");
+  const daysLeft = Math.max(0, Math.ceil((electionDay.getTime() - today.getTime()) / 86400000));
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ background: `${C.accent}12`, border: `1px solid ${C.accent2}30`, borderRadius: 12, padding: "16px 20px", display: "flex", flexDirection: mobile ? "column" : "row", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", gap: 12 }}>
+        <div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: C.white, marginBottom: 4 }}>15-Day Closing Sprint — June 2 to June 16</div>
+          <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.5 }}>Every action, every channel, every day. This is the playbook that gets Jeff Starling to the runoff.</div>
+        </div>
+        <div style={{ textAlign: "center", background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 20px", flexShrink: 0 }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: C.gold, lineHeight: 1 }}>{daysLeft}</div>
+          <div style={{ fontSize: 10, color: C.muted, fontWeight: 600, textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>Days to Polls Closing</div>
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" as const }}>
+        {phases.map(p => (
+          <button key={p} onClick={() => setFilter(p)} style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer", border: "1px solid", background: filter === p ? (PHASE_COLORS[p] ?? C.accent) : "transparent", color: filter === p ? "#fff" : C.muted, borderColor: filter === p ? (PHASE_COLORS[p] ?? C.accent) : C.border }}>{p}</button>
+        ))}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+        {filtered.map((item, i) => {
+          const phaseColor = PHASE_COLORS[item.phase] ?? C.accent;
+          const channelColor = CHANNEL_COLORS[item.channel] ?? C.muted;
+          const isED = item.day === "Jun 16";
+          return (
+            <div key={i} style={{ display: "flex", gap: 0, borderLeft: `3px solid ${i === filtered.length - 1 ? "transparent" : phaseColor}30`, marginLeft: 12, paddingBottom: 4 }}>
+              <div style={{ position: "relative", marginLeft: -8, marginRight: 16, flexShrink: 0 }}>
+                <div style={{ width: 14, height: 14, borderRadius: "50%", background: isED ? C.gold : phaseColor, border: `2px solid ${C.bg}`, boxShadow: isED ? `0 0 8px ${C.gold}` : undefined, marginTop: 14 }} />
+              </div>
+              <div style={{ flex: 1, background: isED ? `${C.gold}10` : C.card, border: `1px solid ${isED ? C.gold + "40" : C.border}`, borderRadius: 10, padding: "12px 16px", marginBottom: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" as const }}>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: isED ? C.gold : C.white }}>{item.day}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: phaseColor, background: `${phaseColor}18`, padding: "2px 8px", borderRadius: 10 }}>{item.phase}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: channelColor, background: `${channelColor}18`, padding: "2px 8px", borderRadius: 10 }}>{item.channel}</span>
+                  {isED && <span style={{ fontSize: 10, fontWeight: 700, color: C.gold, background: `${C.gold}20`, padding: "2px 8px", borderRadius: 10 }}>🗳 ELECTION DAY</span>}
+                </div>
+                <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>{item.action}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 16px" }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, marginBottom: 8, textTransform: "uppercase" as const, letterSpacing: "0.06em" }}>Phase Legend</div>
+        <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 12 }}>
+          {Object.entries(PHASE_COLORS).map(([phase, color]) => (
+            <div key={phase} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: color }} />
+              <span style={{ fontSize: 11, color: C.muted }}>{phase}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── TAB: Undecided Voters ─────────────────────────────────────────────────────
 function TabUndecidedVoters({ mobile, C }: { mobile: boolean; C: C }) {
   const [voters, setVoters] = useState<any[]>([]);
@@ -826,6 +910,80 @@ function TabUndecidedVoters({ mobile, C }: { mobile: boolean; C: C }) {
         </div>
       </div>
 
+      {/* Spotlight: 3 High-Priority Voters */}
+      <div style={{ fontSize: 12, fontWeight: 700, color: C.white, marginBottom: -4 }}>High-Priority Targets — 30-Day Signal Journey</div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3,1fr)", gap: 12 }}>
+        {[
+          {
+            name: "Sandra M.", city: "Edmond", age: 52, gender: "F", income: "$110K–$130K",
+            tag: "High-Intent Undecided", tagColor: C.gold,
+            summary: "Has visited jeffstarling.com twice and jonechols.com once. Spent 4m 12s on Starling's bio page. Read an Oklahoman opinion piece and searched 'echols tax record.' One more exposure likely converts her.",
+            signals: [
+              { date: "May 3",  icon: "📺", text: "Watched News 9 segment: 'Oklahoma AG Race Heats Up'" },
+              { date: "May 9",  icon: "🔍", text: "Searched 'echols tax vote oklahoma 2021'" },
+              { date: "May 14", icon: "🌐", text: "Visited jeffstarling.com — spent 4m 12s on bio page" },
+              { date: "May 19", icon: "📰", text: "Read Oklahoman opinion: 'Who Should Be Oklahoma's Next AG?'" },
+              { date: "May 22", icon: "🌐", text: "Visited jonechols.com — spent 1m 08s, bounced" },
+              { date: "May 27", icon: "📱", text: "Engaged with Starling Facebook post (liked, did not share)" },
+              { date: "May 30", icon: "🌐", text: "Returned to jeffstarling.com — read policy page" },
+            ],
+          },
+          {
+            name: "Robert T.", city: "Broken Arrow", age: 61, gender: "M", income: "$85K–$100K",
+            tag: "RINO-Skeptic", tagColor: C.teal,
+            summary: "Searched 'jon echols RINO' and 'echols trial lawyer money' in the same session. Visited a Reddit thread on r/oklahoma and watched a Newsmax segment. Has not yet visited Starling's site — a single retargeted CTV ad would introduce him directly.",
+            signals: [
+              { date: "May 5",  icon: "📺", text: "Watched Newsmax segment on Oklahoma primary races" },
+              { date: "May 11", icon: "🔍", text: "Searched 'jon echols RINO oklahoma'" },
+              { date: "May 11", icon: "🔍", text: "Searched 'echols trial lawyer donations'" },
+              { date: "May 16", icon: "💬", text: "Read Reddit r/oklahoma thread: 'Who are you voting for AG?'" },
+              { date: "May 21", icon: "📰", text: "Read Tulsa World article on AG candidate backgrounds" },
+              { date: "May 25", icon: "📺", text: "Watched News On 6 story: 'AG Candidates Debate Record'" },
+              { date: "May 29", icon: "🔍", text: "Searched 'jeff starling attorney oklahoma'" },
+            ],
+          },
+          {
+            name: "Patricia W.", city: "Norman", age: 47, gender: "F", income: "$70K–$85K",
+            tag: "Persuadable Swing", tagColor: C.purple,
+            summary: "Visited both candidate websites on the same day. Spent more time on Starling's site (3m 44s vs 1m 22s). Searched 'oklahoma ag race 2026' three separate times across two weeks — she is actively building a case. Frequency will close her.",
+            signals: [
+              { date: "May 7",  icon: "🔍", text: "Searched 'oklahoma attorney general race 2026'" },
+              { date: "May 12", icon: "📺", text: "Watched News On 6: 'Meet the Candidates for Oklahoma AG'" },
+              { date: "May 17", icon: "🌐", text: "Visited jeffstarling.com (3m 44s) and jonechols.com (1m 22s) same session" },
+              { date: "May 20", icon: "💬", text: "Read Reddit thread: 'Thoughts on Jeff Starling for AG?'" },
+              { date: "May 23", icon: "🔍", text: "Searched 'oklahoma ag race 2026' again" },
+              { date: "May 26", icon: "📱", text: "Watched Starling campaign video on Facebook (85% completion)" },
+              { date: "May 31", icon: "🔍", text: "Searched 'jeff starling vs echols' — third AG search in two weeks" },
+            ],
+          },
+        ].map((voter, vi) => (
+          <div key={vi} style={{ background: C.card, border: `1px solid ${voter.tagColor}40`, borderRadius: 12, padding: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: C.white }}>{voter.name}</div>
+                <div style={{ fontSize: 11, color: C.muted }}>{voter.city} · Age {voter.age} · {voter.gender === "F" ? "Female" : "Male"} · {voter.income}</div>
+              </div>
+              <span style={{ fontSize: 9, fontWeight: 700, color: voter.tagColor, background: `${voter.tagColor}20`, border: `1px solid ${voter.tagColor}40`, borderRadius: 10, padding: "3px 8px", whiteSpace: "nowrap" as const }}>{voter.tag}</span>
+            </div>
+            <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.6 }}>{voter.summary}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: C.muted, textTransform: "uppercase" as const, letterSpacing: "0.06em" }}>30-Day Signal Journey</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {voter.signals.map((s, si) => (
+                <div key={si} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                  <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{s.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: 9, color: voter.tagColor, fontWeight: 700, marginRight: 6 }}>{s.date}</span>
+                    <span style={{ fontSize: 11, color: "#cbd5e1" }}>{s.text}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase" as const, letterSpacing: "0.08em", padding: "4px 0" }}>Full Undecided Voter Universe</div>
+
       {/* Filters */}
       <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 8 }}>
         <input value={search} onChange={e => { setSearch(e.target.value); setPage(0); }} placeholder="Search name, city, email..." style={{ flex: 1, minWidth: 180, background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: "8px 12px", fontSize: 11, color: C.white, outline: "none" }} />
@@ -844,7 +1002,7 @@ function TabUndecidedVoters({ mobile, C }: { mobile: boolean; C: C }) {
         </select>
       </div>
 
-      <div style={{ fontSize: 11, color: C.muted }}>Showing {filtered.length.toLocaleString()} voters {search || cityFilter !== "all" || genderFilter !== "all" || homeFilter !== "all" ? "(filtered)" : ""}</div>
+      <div style={{ fontSize: 11, color: C.muted }}>{search || cityFilter !== "all" || genderFilter !== "all" || homeFilter !== "all" ? `${filtered.length.toLocaleString()} voters match your filters` : "Showing all matched undecided voters"}</div>
 
       {loading ? (
         <div style={{ textAlign: "center" as const, padding: 40, color: C.muted }}>Loading voter universe...</div>
@@ -897,7 +1055,7 @@ function TabUndecidedVoters({ mobile, C }: { mobile: boolean; C: C }) {
 }
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
-const TABS = ["Overview", "Voter Universe", "What We Can Do", "CTV Universe", "Undecided Voters"];
+const TABS = ["Overview", "Voter Universe", "What We Can Do", "CTV Universe", "15-Day Plan", "Undecided Voters"];
 
 export default function StarlingDashboard() {
   const mobile = useMobile();
@@ -945,7 +1103,8 @@ export default function StarlingDashboard() {
         {tab === 1 && <TabVoterUniverse mobile={mobile} C={C} />}
         {tab === 2 && <TabWhatWeCanDo mobile={mobile} C={C} />}
         {tab === 3 && <TabCTVUniverse mobile={mobile} C={C} />}
-        {tab === 4 && <TabUndecidedVoters mobile={mobile} C={C} />}
+        {tab === 4 && <TabActionPlan mobile={mobile} C={C} />}
+        {tab === 5 && <TabUndecidedVoters mobile={mobile} C={C} />}
       </div>
     </div>
   );
