@@ -1225,7 +1225,7 @@ export default function Home() {
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ width: 8, height: 8, background: "#a855f7", borderRadius: "50%", boxShadow: `0 0 10px #a855f7`, animation: "pdot 2s ease-in-out infinite", flexShrink: 0 }} />
-            <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: mobile ? 16 : 20, objectFit: "contain", filter: "brightness(1.1)" }} />
+            <img src="/ea-logo.png" alt="Exact Audience" style={{ height: mobile ? 16 : 20, objectFit: "contain", filter: "brightness(1.1)" }} />
           </div>
           {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
           <div style={{ minWidth: 0 }}>

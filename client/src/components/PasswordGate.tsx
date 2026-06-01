@@ -84,9 +84,9 @@ export default function PasswordGate({ children }: PasswordGateProps) {
         {/* EA Logo */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 32 }}>
           <img
-            src="/manus-storage/ea-logo_6e5af419.png"
+            src="/ea-logo.png"
             alt="Exact Audience"
-            style={{ height: 40, objectFit: "contain", filter: "brightness(1.1)" }}
+            style={{ height: 36, maxWidth: 220, objectFit: "contain", objectPosition: "center", filter: "brightness(1.1)" }}
           />
         </div>
 

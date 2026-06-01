@@ -114,7 +114,7 @@ export default function BuyerProfilePage() {
           ← Dashboard
         </button>
         <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)" }} />
-        <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: 22, objectFit: "contain", filter: "brightness(1.1)" }} />
+        <img src="/ea-logo.png" alt="Exact Audience" style={{ height: 22, objectFit: "contain", filter: "brightness(1.1)" }} />
         <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>/ Buyer Profile</span>
       </div>
 

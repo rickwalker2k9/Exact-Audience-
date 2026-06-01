@@ -303,11 +303,11 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 16 }}>
           {/* Closing message from debate */}
           <div style={{ background: `${C.red2}0d`, border: `1px solid ${C.red2}30`, borderRadius: 12, padding: 16 }}>
-            <div style={{ fontSize: 10, color: C.red2, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 8 }}>Closing Statement — May 28 Debate</div>
+            <div style={{ fontSize: 10, color: C.red2, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 8 }}>Campaign Message — Colleen McCarty for DA</div>
             <div style={{ fontSize: 13, color: C.white, lineHeight: 1.6, fontStyle: "italic", marginBottom: 8 }}>
               &ldquo;I will build a tough and ethical justice system that protects victims, holds criminals accountable, and restores trust in the DA&rsquo;s office.&rdquo;
             </div>
-            <div style={{ fontSize: 10, color: C.muted }}>News on 6 / KOTV · May 28, 2026</div>
+            <div style={{ fontSize: 10, color: C.muted }}>colleenmccarty.com · Campaign 2026</div>
           </div>
           {/* Race stakes */}
           <div style={{ background: `${C.green}0d`, border: `1px solid ${C.green}30`, borderRadius: 12, padding: 16 }}>
@@ -474,9 +474,9 @@ function VoteMovementTracker({ C, mobile }: { C: C; mobile: boolean }) {
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 8 }}>
           {[
             { channel: "CTV Streaming (74%)",   dailySpend: Math.ceil(3800 * 0.74 / daysLeft), note: "Primary voter ID channel — maintain dominance" },
-            { channel: "Meta Ads (10%)",         dailySpend: Math.ceil(3800 * 0.10 / daysLeft), note: "Retarget debate viewers + lookalike undecided" },
+            { channel: "Meta Ads (10%)",         dailySpend: Math.ceil(3800 * 0.10 / daysLeft), note: "Retarget site visitors + lookalike undecided" },
             { channel: "Google Ads (6%)",        dailySpend: Math.ceil(3800 * 0.06 / daysLeft), note: "Search intent — 'Tulsa DA race' keyword capture" },
-            { channel: "YouTube (5%)",           dailySpend: Math.ceil(3800 * 0.05 / daysLeft), note: "Debate replay retarget — high-intent segment" },
+            { channel: "YouTube (5%)",           dailySpend: Math.ceil(3800 * 0.05 / daysLeft), note: "CTV retarget audience — high-intent segment" },
           ].map(c => (
             <div key={c.channel} style={{ background: C.bg3, borderRadius: 8, padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
@@ -822,18 +822,18 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
 
   // Spend pacing — surge last 4 days at 2–3x baseline
   const SPEND_PHASES = [
-    { phase: "Days 1–3 (Complete)",    spend: "$5,500",  pct: Math.round(5500  / BUDGET_TOTAL * 100), note: "Campaign launch + debate night + A/B test window · ~$1,833/day", done: DAYS_ELAPSED >= 3 },
+    { phase: "Days 1–3 (Complete)",    spend: "$5,500",  pct: Math.round(5500  / BUDGET_TOTAL * 100), note: "Campaign launch + CTV launch (Day 2) + A/B test window · ~$1,833/day", done: DAYS_ELAPSED >= 3 },
     { phase: `Days 4–9${DAYS_ELAPSED >= 4 && DAYS_ELAPSED <= 9 ? " — Active" : DAYS_ELAPSED > 9 ? " (Complete)" : ""}`, spend: "$8,400",  pct: Math.round(8400  / BUDGET_TOTAL * 100), note: "Peak frequency — saturation to top voter ZIPs · ~$1,400/day", done: DAYS_ELAPSED > 9 },
     { phase: `Days 10–14${DAYS_ELAPSED >= 10 && DAYS_ELAPSED <= 14 ? " — Active" : DAYS_ELAPSED > 14 ? " (Complete)" : ""}`, spend: "$7,000",  pct: Math.round(7000  / BUDGET_TOTAL * 100), note: "Final optimization + retargeting of near-threshold voters · ~$1,400/day", done: DAYS_ELAPSED > 14 },
     { phase: `Days 15–18 — SURGE 🚀${DAYS_ELAPSED >= 15 ? " — Active" : ""}`, spend: "$12,100", pct: Math.round(12100 / BUDGET_TOTAL * 100), note: "Election-eve surge — 2–3x daily spend · ~$3,025/day · Max frequency to all identified persuadables", done: false },
   ];
 
   const TIMELINE = [
-    { day: "Day 1 — May 28",  done: true,  activity: "Campaign live + Debate night (News on 6 / KOTV, 6:30pm). CTV + Meta + Google targeting launched. Retargeting activated for all debate viewers." },
-    { day: "Day 2 — May 29",  done: true,  activity: "YouTube debate replay audience captured. Post-debate search traffic captured via Google. Behavioral signals spiking." },
+    { day: "Day 1 — May 28",  done: true,  activity: "Campaign website live. Social media boosts activated. Organic search traffic begins. Behavioral audience building starts." },
+    { day: "Day 2 — May 29",  done: true,  activity: "CTV commercials launched across 74 streaming channels. Meta + Google ads live. Behavioral signals spiking. First voter movements confirmed." },
     { day: "Day 3 — May 30",  done: true,  activity: "First optimization cycle. Budget shifted to highest-converting ZIPs. 840 voters confirmed moved to McCarty." },
-    { day: "Day 4 — May 31",  done: true,  activity: "Peak frequency window opens. Saturation delivery to highest-propensity voters. Debate retargeting at full volume. Budget pace: $1,400/day." },
-    { day: "Days 5–9",        done: false, activity: "Continued peak frequency. Lookalike expansion from debate retargeting audience. Behavioral scoring updated daily." },
+    { day: "Day 4 — May 31",  done: true,  activity: "Peak frequency window opens. Saturation delivery to highest-propensity voters. CTV retargeting at full volume. Budget pace: $1,400/day." },
+    { day: "Days 5–9",        done: false, activity: "Continued peak frequency. Lookalike expansion from CTV retargeting audience. Behavioral scoring updated daily." },
     { day: "Days 10–12",      done: false, activity: "Mid-campaign data review. Creative rotation based on completion rates. Lookalike expansion if pace allows." },
     { day: "Days 13–14",      done: false, activity: "Final optimization pass. Pre-election behavioral data informs last message mix. Retargeting maximized on highest-intent voters." },
     { day: "Days 15–18 🚀",   done: false, activity: "SURGE PHASE: Spend increases to 2–3x baseline (~$3,025/day). Maximum frequency to all identified persuadables. Election-eve push to highest-score voters. $12,100 deployed in final 4 days." },
@@ -1352,7 +1352,7 @@ export default function McCartryDashboard() {
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ width: 8, height: 8, background: C.red2, borderRadius: "50%", boxShadow: `0 0 8px ${C.red2}88`, animation: "pdot 2s ease-in-out infinite" }} />
-            <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: mobile ? 18 : 22, objectFit: "contain", filter: "brightness(1.15)" }} />
+            {!mobile && <img src="/ea-logo.png" alt="Exact Audience" style={{ height: 22, maxWidth: 160, objectFit: "contain", objectPosition: "left center", filter: "brightness(1.15)" }} />}
           </div>
           {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
           <div style={{ minWidth: 0 }}>
@@ -1372,6 +1372,9 @@ export default function McCartryDashboard() {
           )}
           <button onClick={toggleTheme} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 20, padding: "5px 12px", color: "#f1f5f9", fontSize: 11, cursor: "pointer" }}>
             {isDark ? "☀️ Light" : "🌙 Dark"}
+          </button>
+          <button onClick={() => { localStorage.removeItem("ea_dashboard_auth"); window.location.href = "/"; }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 20, padding: "5px 10px", color: "#94a3b8", fontSize: 11, fontWeight: 600, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
+            🔒 {mobile ? "" : "Log Out"}
           </button>
           <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", fontVariantNumeric: "tabular-nums" }}>
             {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}

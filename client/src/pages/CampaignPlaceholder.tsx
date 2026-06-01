@@ -47,7 +47,7 @@ export default function CampaignPlaceholder() {
             ← Campaigns
           </button>
           <span style={{ width: 8, height: 8, background: "#a855f7", borderRadius: "50%", boxShadow: "0 0 10px #a855f7", animation: "pulse-dot 2s ease-in-out infinite" }} />
-          <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: 22, objectFit: "contain", filter: "brightness(1.1)" }} />
+          <img src="/ea-logo.png" alt="Exact Audience" style={{ height: 22, objectFit: "contain", filter: "brightness(1.1)" }} />
         </div>
       </div>
 

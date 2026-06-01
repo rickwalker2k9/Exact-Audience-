@@ -1210,7 +1210,7 @@ export default function GenericDashboard(props: GenericDashboardProps) {
           <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ width: 8, height: 8, background: client.accentColor, borderRadius: "50%", boxShadow: `0 0 10px ${client.accentColor}`, animation: "pdot 2s ease-in-out infinite" }} />
-            <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: mobile ? 18 : 22, objectFit: "contain", filter: "brightness(1.15)" }} />
+            {!mobile && <img src="/ea-logo.png" alt="Exact Audience" style={{ height: 22, maxWidth: 160, objectFit: "contain", objectPosition: "left center", filter: "brightness(1.15)" }} />}
           </div>
           {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
           <div style={{ minWidth: 0 }}>
@@ -1231,6 +1231,9 @@ export default function GenericDashboard(props: GenericDashboardProps) {
             </button>
           )}
           <ThemeToggle isDark={isDark} onToggle={toggleTheme ?? (() => {})} />
+          <button onClick={() => { localStorage.removeItem("ea_dashboard_auth"); window.location.href = "/"; }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 20, padding: "5px 10px", color: "#94a3b8", fontSize: 11, fontWeight: 600, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
+            🔒 {mobile ? "" : "Log Out"}
+          </button>
         </div>
       </div>
 

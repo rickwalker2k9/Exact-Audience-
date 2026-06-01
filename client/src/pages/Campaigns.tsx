@@ -207,13 +207,18 @@ export default function Campaigns() {
         <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ width: 10, height: 10, background: "#a855f7", borderRadius: "50%", boxShadow: "0 0 14px #a855f7", animation: "pulse-dot 2s ease-in-out infinite" }} />
-            <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: 26, objectFit: "contain", filter: "brightness(1.1)" }} />
+            <img src="/ea-logo.png" alt="Exact Audience" style={{ height: 22, maxWidth: 140, objectFit: "contain", objectPosition: "left center", filter: "brightness(1.1)" }} />
             <span style={{ color: "#4a5568", margin: "0 4px" }}>|</span>
             <span style={{ fontSize: 13, color: "#8892b0", fontWeight: 500 }}>Campaign Intelligence</span>
           </div>
-          <button onClick={toggleTheme ?? (() => {})} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 14px", color: "#f1f5f9", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
-            {dark ? "☀️ Light" : "🌙 Dark"}
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button onClick={toggleTheme ?? (() => {})} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 14px", color: "#f1f5f9", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+              {dark ? "☀️ Light" : "🌙 Dark"}
+            </button>
+            <button onClick={() => { localStorage.removeItem("ea_dashboard_auth"); window.location.href = "/"; }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 14px", color: "#94a3b8", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}>
+              🔒 Log Out
+            </button>
+          </div>
         </div>
       </div>
 

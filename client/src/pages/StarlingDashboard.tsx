@@ -1,963 +1,1111 @@
 /**
  * StarlingDashboard.tsx
  * Jeff Starling for Oklahoma Attorney General — June 16, 2026 Republican Primary
- * PITCH DOCUMENT — 3 Budget Tiers ($30K / $65K / $93K)
- * Exact Audience | exactaudience.ai | siteid.ai
- * Design: Deep navy + crimson red + gold — Oklahoma political authority
+ * Exact Audience Campaign Intelligence Dashboard
+ * Tabs: Overview · Voter Intelligence · Media Universe · Budget Tiers · Site Traffic · Pitch Narrative · Undecided Voters
  */
-
-import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { useState, useEffect, useRef } from "react";
+import { useLocation } from "wouter";
+import { useTheme } from "../contexts/ThemeContext";
+import { getNetworkLogo, getNetworkInitials } from "../lib/networkLogos";
 import {
-  STARLING_TIERS,
-  STARLING_RACE,
-  STARLING_TIMELINE,
-  STARLING_CREATIVES,
-  STARLING_MOODS,
-  STARLING_CTV_CHANNELS,
-  STARLING_DIGITAL_CHANNELS,
-  STARLING_INTELLIGENCE,
-  STARLING_EA_ADVANTAGE,
-  STARLING_VISITORS,
+  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  ReferenceLine
+} from "recharts";
+import {
+  STARLING_RACE, STARLING_TIERS, STARLING_VOTER_DEMO, STARLING_MOODS,
+  STARLING_VISITORS, STARLING_CTV_CHANNELS, STARLING_DIGITAL_CHANNELS,
+  STARLING_SITE_TRAFFIC, STARLING_TIMELINE, STARLING_CREATIVES,
+  STARLING_INTELLIGENCE, STARLING_EA_ADVANTAGE, STARLING_QR,
+  STARLING_CAMPAIGN_START, STARLING_ELECTION_DATE, STARLING_TOTAL_DAYS
 } from "@/lib/starlingData";
 
-// ── Color palette ─────────────────────────────────────────────────────────────
-const C = {
-  navy: "#0a1628",
-  navyMid: "#0f1f3d",
-  navyLight: "#1a2f52",
-  navyBorder: "#1e3a5f",
-  red: "#d4a017",
-  redLight: "#e8b84b",
-  gold: "#d4a017",
-  goldLight: "#e8b84b",
-  white: "#f8fafc",
-  muted: "#94a3b8",
-  mutedDark: "#64748b",
-  blue: "#3b82f6",
-  blueLight: "#60a5fa",
-  purple: "#7c3aed",
-  green: "#10b981",
-  text: "#e2e8f0",
-  textDim: "#94a3b8",
-};
+// ── Theme ─────────────────────────────────────────────────────────────────────
+// Starling palette: deep navy + gold accent + blue — NO RED
+function useColors(isDark: boolean) {
+  return isDark ? {
+    bg: "#080c18", bg2: "#0a0e1c", bg3: "#0f1525",
+    card: "#0d1120", card2: "#111828", border: "#1e2d45",
+    accent: "#d4a017", accent2: "#e8b820", accent3: "#f5cc44",
+    blue: "#4da6e8", blue2: "#60b8f5", blue3: "#93d0fa",
+    green: "#2dd4bf", gold: "#d4a017", purple: "#a855f7",
+    white: "#e8eef6", muted: "#8fa4c0",
+    headerBg: "linear-gradient(135deg,#07090f,#0d1a2e)",
+    tooltipBg: "#111828", scrollTrack: "#0c0f1a", scrollThumb: "#1a2540",
+  } : {
+    bg: "#f0f4f8", bg2: "#e4ecf4", bg3: "#d8e4f0",
+    card: "#ffffff", card2: "#f4f8fc", border: "#b8cce0",
+    accent: "#b8860b", accent2: "#c9970d", accent3: "#d4a017",
+    blue: "#1a4f7a", blue2: "#2a6496", blue3: "#3a85c0",
+    green: "#0d9488", gold: "#b8860b", purple: "#7c3aed",
+    white: "#0f1e35", muted: "#5a7090",
+    headerBg: "linear-gradient(135deg,#07090f,#0d1a2e)",
+    tooltipBg: "#ffffff", scrollTrack: "#e4ecf4", scrollThumb: "#b8cce0",
+  };
+}
+type C = ReturnType<typeof useColors>;
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "tiers", label: "Budget Tiers" },
-  { id: "channels", label: "Channel Universe" },
-  { id: "intelligence", label: "Voter Intelligence" },
-  { id: "timeline", label: "18-Day Plan" },
-  { id: "ads", label: "Ad Concepts" },
-  { id: "voters", label: "Undecided Voters" },
-];
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
+function useIsMobile() {
+  const [m, setM] = useState(window.innerWidth < 768);
+  useEffect(() => { const fn = () => setM(window.innerWidth < 768); window.addEventListener("resize", fn); return () => window.removeEventListener("resize", fn); }, []);
+  return m;
+}
+function useTick(base: number, step: number, interval = 9000) {
+  const [v, setV] = useState(base);
+  useEffect(() => { const id = setInterval(() => setV(x => x + step), interval); return () => clearInterval(id); }, [step, interval]);
+  return v;
+}
 function fmt(n: number) {
-  return n >= 1000000
-    ? `${(n / 1000000).toFixed(1)}M`
-    : n >= 1000
-    ? `${(n / 1000).toFixed(0)}K`
-    : String(n);
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + "M";
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
+  return n.toLocaleString();
+}
+function getCampaignDay() {
+  const now = new Date();
+  const start = STARLING_CAMPAIGN_START;
+  const election = STARLING_ELECTION_DATE;
+  const msPerDay = 86400000;
+  const rawDay = Math.floor((now.getTime() - start.getTime()) / msPerDay) + 1;
+  const dayNum = Math.max(1, Math.min(rawDay, STARLING_TOTAL_DAYS));
+  const daysLeft = Math.max(0, Math.ceil((election.getTime() - now.getTime()) / msPerDay));
+  const dailyBudget = 65000 / 18;
+  const spentToDate = Math.round(dailyBudget * dayNum);
+  const remainingBudget = Math.max(0, 65000 - spentToDate);
+  const dailyImpressions = 172222;
+  const cumulativeImpressions = dailyImpressions * dayNum;
+  const votersReached = Math.round(cumulativeImpressions / 4.8);
+  return { dayNum, daysLeft, spentToDate, remainingBudget, cumulativeImpressions, votersReached };
 }
 
-function fmtDollar(n: number) {
-  return `$${n.toLocaleString()}`;
-}
-
-// ── Sub-components ────────────────────────────────────────────────────────────
-
-function RaceContextBanner() {
+// ── Shared Components ─────────────────────────────────────────────────────────
+function KpiCard({ label, value, sub, color, C }: { label: string; value: string; sub?: string; color: string; C: C }) {
   return (
-    <div
-      style={{
-        background: `linear-gradient(135deg, ${C.navyMid} 0%, #1a0a0a 100%)`,
-        borderBottom: `2px solid ${C.gold}`,
-        padding: "10px 20px",
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "6px 24px",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {[
-        { label: "Election", value: "June 16, 2026" },
-        { label: "Race", value: "Oklahoma AG Republican Primary" },
-        { label: "Registered Republicans", value: fmt(STARLING_RACE.registeredRepublicans) },
-        { label: "Expected Turnout", value: `${fmt(STARLING_RACE.expectedTurnoutLow)}–${fmt(STARLING_RACE.expectedTurnoutHigh)}` },
-        { label: "Win Threshold", value: `~${fmt(STARLING_RACE.winThresholdLow)}–${fmt(STARLING_RACE.winThresholdHigh)} votes` },
-        { label: "Undecided", value: `${STARLING_RACE.undecided}%` },
-      ].map((item) => (
-        <div key={item.label} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <span style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>{item.label}</span>
-          <span style={{ color: C.gold, fontWeight: 700, fontSize: 13 }}>{item.value}</span>
-        </div>
-      ))}
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${color}` }}>
+      <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 26, fontWeight: 800, color: C.white, lineHeight: 1 }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>{sub}</div>}
+    </div>
+  );
+}
+function SectionTitle({ children, C }: { children: React.ReactNode; C: C }) {
+  return (
+    <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
+      <span style={{ width: 3, height: 14, background: C.accent2, borderRadius: 2, display: "inline-block", flexShrink: 0, opacity: 0.7 }} />
+      {children}
+    </div>
+  );
+}
+function Card({ children, style, C }: { children: React.ReactNode; style?: React.CSSProperties; C: C }) {
+  return (
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20, ...style }}>
+      {children}
+    </div>
+  );
+}
+function ProgressBar({ value, max, color, C }: { value: number; max: number; color?: string; C: C }) {
+  return (
+    <div style={{ background: C.bg3, borderRadius: 4, height: 6, overflow: "hidden" }}>
+      <div style={{ width: `${Math.min(100, (value / max) * 100)}%`, background: color ?? C.blue2, height: "100%", borderRadius: 4, transition: "width 0.6s ease" }} />
     </div>
   );
 }
 
-function TabOverview() {
+// ── Live Voter Feed ───────────────────────────────────────────────────────────
+function VoterFeed({ C }: { C: C }) {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => { const id = setInterval(() => setIdx(i => (i + 1) % STARLING_VISITORS.length), 4200); return () => clearInterval(id); }, []);
+  const v = STARLING_VISITORS[idx];
+  const intentColor = v.intent === "Undecided" ? C.muted : v.intent.includes("Moved") ? C.green : C.accent2;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Pitch headline */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "28px 32px" }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
-          <div style={{ flex: 1, minWidth: 280 }}>
-            <div style={{ color: C.gold, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
-              Behavioral Intelligence &amp; Precision Media Strategy
+    <Card C={C}>
+      <SectionTitle C={C}>Live Voter Signal Feed</SectionTitle>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {STARLING_VISITORS.slice(0, 8).map((voter, i) => (
+          <div key={voter.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", borderRadius: 10, background: i === idx ? `${C.accent}12` : C.bg3, border: `1px solid ${i === idx ? C.accent2 + "44" : "transparent"}`, transition: "all 0.3s" }}>
+            <div style={{ width: 34, height: 34, borderRadius: "50%", background: `${C.blue2}22`, border: `2px solid ${C.blue2}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: C.blue2, flexShrink: 0 }}>
+              {voter.name.split(" ").map(n => n[0]).join("")}
             </div>
-            <h2 style={{ color: C.white, fontSize: 26, fontWeight: 800, lineHeight: 1.2, margin: "0 0 12px" }}>
-              Winning the Final 18 Days
-            </h2>
-            <p style={{ color: C.text, fontSize: 15, lineHeight: 1.7, margin: 0 }}>
-              The June 16 Republican primary for Oklahoma Attorney General is wide open. 78–80% of Republican primary voters remain undecided or have no opinion of either candidate. Jon Echols has spent 14 years in the Capitol and three years running for this office, and he still cannot break 35% in any public poll.
-            </p>
-            <p style={{ color: C.text, fontSize: 15, lineHeight: 1.7, margin: "12px 0 0" }}>
-              The message leverage is extraordinary — <strong style={{ color: C.gold }}>Starling's biography moves 80% of voters toward him</strong> when they hear it, and <strong style={{ color: C.gold }}>Echols' record moves 79% against him</strong>. The only question is whether the campaign deploys the resources to deliver it at scale before June 16.
-            </p>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 200 }}>
-            <div style={{ background: C.navyLight, borderRadius: 10, padding: "14px 18px", border: `1px solid ${C.navyBorder}` }}>
-              <div style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>Starling Polling</div>
-              <div style={{ color: C.gold, fontSize: 28, fontWeight: 800 }}>20%</div>
-              <div style={{ color: C.textDim, fontSize: 12 }}>~46K–56K projected votes</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{voter.name} <span style={{ fontSize: 10, color: C.muted, fontWeight: 400 }}>· {voter.city}</span></div>
+              <div style={{ fontSize: 10, color: C.muted, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{voter.signal}</div>
             </div>
-            <div style={{ background: C.navyLight, borderRadius: 10, padding: "14px 18px", border: `1px solid ${C.navyBorder}` }}>
-              <div style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>Undecided Universe</div>
-              <div style={{ color: C.blueLight, fontSize: 28, fontWeight: 800 }}>45%</div>
-              <div style={{ color: C.textDim, fontSize: 12 }}>~104K–127K votes available</div>
-            </div>
-            <div style={{ background: C.navyLight, borderRadius: 10, padding: "14px 18px", border: `1px solid ${C.navyBorder}` }}>
-              <div style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>Votes Needed to Win</div>
-              <div style={{ color: C.blueLight, fontSize: 28, fontWeight: 800 }}>116K–142K</div>
-              <div style={{ color: C.textDim, fontSize: 12 }}>50%+1 of expected turnout</div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: intentColor, background: `${intentColor}18`, border: `1px solid ${intentColor}40`, borderRadius: 10, padding: "2px 8px", whiteSpace: "nowrap" }}>{voter.intent}</div>
+              <div style={{ fontSize: 10, color: C.muted }}>Score: <strong style={{ color: voter.score >= 85 ? C.green : voter.score >= 75 ? C.accent2 : C.muted }}>{voter.score}</strong></div>
             </div>
           </div>
-        </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+// ── TAB: Overview ─────────────────────────────────────────────────────────────
+function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
+  const { cumulativeImpressions, votersReached, dayNum, daysLeft } = getCampaignDay();
+  const impressions = useTick(cumulativeImpressions, 1200);
+  const reach = useTick(votersReached, 22);
+
+  const dailyData = STARLING_SITE_TRAFFIC.map(d => ({
+    day: d.day.replace("Day ", "D"),
+    Visitors: d.visitors,
+    New: d.newVisitors,
+  }));
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* KPIs */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 12 }}>
+        <KpiCard label="Projected Impressions" value={fmt(impressions)} sub={`Day ${dayNum} of 18 · ${daysLeft} days left`} color={C.accent2} C={C} />
+        <KpiCard label="Voters Reached" value={fmt(reach)} sub="4.8x avg frequency" color={C.blue2} C={C} />
+        <KpiCard label="Undecided Universe" value="Statewide" sub="Named, matched individuals" color={C.green} C={C} />
+        <KpiCard label="Reachable via Mobile/Email" value="93.8%" sub="93.8% with verified mobile" color={C.purple} C={C} />
       </div>
 
-      {/* Market breakdown */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 16px" }}>Market Breakdown</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
-          {STARLING_RACE.markets.map((m) => (
-            <div key={m.name} style={{ background: C.navyLight, borderRadius: 10, padding: "16px 20px", border: `1px solid ${C.navyBorder}` }}>
-              <div style={{ color: C.gold, fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{m.name}</div>
-              <div style={{ color: C.textDim, fontSize: 12, marginBottom: 10 }}>{m.note}</div>
-              <div style={{ display: "flex", gap: 16 }}>
-                <div>
-                  <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Echols</div>
-                  <div style={{ color: C.mutedDark, fontWeight: 700, fontSize: 18 }}>{m.echols}%</div>
+      {/* Race Context */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+        <Card C={C}>
+          <SectionTitle C={C}>Race Snapshot — Starling vs. Echols</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              { label: "Jeff Starling", pct: STARLING_RACE.currentPollingStarling, color: C.accent2 },
+              { label: "Jon Echols", pct: STARLING_RACE.currentPollingEchols, color: C.blue2 },
+              { label: "Undecided", pct: STARLING_RACE.undecided, color: C.muted },
+            ].map(r => (
+              <div key={r.label}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                  <span style={{ fontSize: 12, color: C.white, fontWeight: 600 }}>{r.label}</span>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: r.color }}>{r.pct}%</span>
                 </div>
-                <div>
-                  <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Starling</div>
-                  <div style={{ color: C.blueLight, fontWeight: 700, fontSize: 18 }}>{m.starling}%</div>
-                </div>
-                <div>
-                  <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Reg. R</div>
-                  <div style={{ color: C.text, fontWeight: 600, fontSize: 14 }}>{fmt(m.registeredR)}</div>
-                </div>
+                <ProgressBar value={r.pct} max={100} color={r.color} C={C} />
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 14, padding: "10px 14px", background: `${C.accent}12`, border: `1px solid ${C.accent2}33`, borderRadius: 10 }}>
+            <div style={{ fontSize: 11, color: C.accent2, fontWeight: 700, marginBottom: 4 }}>The Opportunity</div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              45% undecided in a 2-person race. Win threshold: ~116,000–142,000 votes. Starling needs to move roughly 70,000 voters in 18 days. Our statewide undecided universe is the starting point.
+            </div>
+          </div>
+        </Card>
+        <Card C={C}>
+          <SectionTitle C={C}>Market Breakdown</SectionTitle>
+          {STARLING_RACE.markets.map(m => (
+            <div key={m.name} style={{ marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                <span style={{ fontSize: 12, color: C.white, fontWeight: 600 }}>{m.name}</span>
+                <span style={{ fontSize: 10, color: C.muted }}>{m.pct}% of turnout</span>
+              </div>
+              <div style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+                <div style={{ flex: m.starling, background: C.accent2, borderRadius: 3, height: 8, minWidth: 4 }} />
+                <div style={{ flex: m.echols, background: C.blue2, borderRadius: 3, height: 8, minWidth: 4 }} />
+                <div style={{ flex: 100 - m.starling - m.echols, background: C.muted + "44", borderRadius: 3, height: 8, minWidth: 4 }} />
+              </div>
+              <div style={{ fontSize: 10, color: C.muted }}>{m.note}</div>
+            </div>
+          ))}
+          <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 10, height: 10, borderRadius: 2, background: C.accent2 }} /><span style={{ fontSize: 10, color: C.muted }}>Starling</span></div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 10, height: 10, borderRadius: 2, background: C.blue2 }} /><span style={{ fontSize: 10, color: C.muted }}>Echols</span></div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 10, height: 10, borderRadius: 2, background: C.muted + "44" }} /><span style={{ fontSize: 10, color: C.muted }}>Undecided</span></div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Site Traffic Chart */}
+      <Card C={C}>
+        <SectionTitle C={C}>Campaign Site Traffic — Daily Visitors</SectionTitle>
+        <ResponsiveContainer width="100%" height={mobile ? 180 : 220}>
+          <AreaChart data={dailyData}>
+            <defs>
+              <linearGradient id="gVisitors" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={C.accent2} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={C.accent2} stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="gNew" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={C.blue2} stopOpacity={0.3} />
+                <stop offset="95%" stopColor={C.blue2} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+            <XAxis dataKey="day" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={35} />
+            <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }} />
+            <Area type="monotone" dataKey="Visitors" stroke={C.accent2} fill="url(#gVisitors)" strokeWidth={2} />
+            <Area type="monotone" dataKey="New" stroke={C.blue2} fill="url(#gNew)" strokeWidth={1.5} />
+          </AreaChart>
+        </ResponsiveContainer>
+        <div style={{ display: "flex", gap: 16, marginTop: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 10, height: 3, background: C.accent2, borderRadius: 2 }} /><span style={{ fontSize: 10, color: C.muted }}>Total Visitors</span></div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 10, height: 3, background: C.blue2, borderRadius: 2 }} /><span style={{ fontSize: 10, color: C.muted }}>New Visitors</span></div>
+        </div>
+      </Card>
+
+      {/* Voter Mood Segments */}
+      <Card C={C}>
+        <SectionTitle C={C}>Voter Mood Segments — Media Channel Mapping</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+          {STARLING_MOODS.map(m => (
+            <div key={m.label} style={{ background: C.bg3, borderRadius: 10, padding: 14, borderLeft: `3px solid ${m.color}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{m.label}</span>
+                <span style={{ fontSize: 14, fontWeight: 900, color: m.color }}>{m.pct}%</span>
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5, marginBottom: 8 }}>{m.desc}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                {m.channels.map(ch => (
+                  <span key={ch} style={{ fontSize: 9, color: m.color, background: `${m.color}15`, border: `1px solid ${m.color}30`, borderRadius: 8, padding: "2px 7px" }}>{ch}</span>
+                ))}
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
-      {/* EA vs Traditional */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 4px" }}>Exact Audience vs. Traditional Media</h3>
-        <p style={{ color: C.textDim, fontSize: 13, margin: "0 0 16px" }}>
-          We don't target demographics. We target named individuals across every screen they touch.
-        </p>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-            <thead>
-              <tr style={{ borderBottom: `1px solid ${C.navyBorder}` }}>
-                <th style={{ color: C.muted, textAlign: "left", padding: "8px 12px", fontWeight: 600, textTransform: "uppercase", fontSize: 11 }}>Capability</th>
-                <th style={{ color: C.muted, textAlign: "left", padding: "8px 12px", fontWeight: 600, textTransform: "uppercase", fontSize: 11 }}>Traditional Media Firm</th>
-                <th style={{ color: C.gold, textAlign: "left", padding: "8px 12px", fontWeight: 600, textTransform: "uppercase", fontSize: 11 }}>Exact Audience</th>
-              </tr>
-            </thead>
-            <tbody>
-              {STARLING_EA_ADVANTAGE.map((row, i) => (
-                <tr key={i} style={{ borderBottom: `1px solid ${C.navyBorder}22` }}>
-                  <td style={{ color: C.text, padding: "10px 12px", fontWeight: 600 }}>{row.capability}</td>
-                  <td style={{ color: C.textDim, padding: "10px 12px" }}>{row.traditional}</td>
-                  <td style={{ color: C.blueLight, padding: "10px 12px" }}>{row.ea}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Live voter feed */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-          <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.green, boxShadow: `0 0 8px ${C.green}` }} />
-          <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: 0 }}>Live Voter Intelligence Feed</h3>
-          <span style={{ color: C.textDim, fontSize: 12 }}>— sample of what the platform tracks in real time</span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {STARLING_VISITORS.slice(0, 10).map((v, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 12px", background: C.navyLight, borderRadius: 8, flexWrap: "wrap" }}>
-              {v.hot && <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.gold, flexShrink: 0 }} />}
-              {!v.hot && <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.mutedDark, flexShrink: 0 }} />}
-              <span style={{ color: C.white, fontWeight: 600, fontSize: 13, minWidth: 80 }}>{v.name}</span>
-              <span style={{ color: C.textDim, fontSize: 12, minWidth: 100 }}>{v.city}, {v.state} {v.zip}</span>
-              <span style={{ color: C.text, fontSize: 12, flex: 1 }}>{v.signal}</span>
-              <span style={{ color: C.blueLight, fontSize: 11, background: `${C.blue}22`, padding: "2px 8px", borderRadius: 4 }}>{v.mood}</span>
-              <span style={{ color: C.mutedDark, fontSize: 11 }}>{v.device}</span>
-              <span style={{ color: C.mutedDark, fontSize: 11 }}>{v.time}</span>
+      {/* 18-Day Timeline */}
+      <Card C={C}>
+        <SectionTitle C={C}>18-Day Campaign Timeline</SectionTitle>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {STARLING_TIMELINE.map((t, i) => (
+            <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+              <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 700, color: t.election ? C.green : C.accent2, paddingTop: 2 }}>{t.days}</div>
+              <div style={{ width: 3, flexShrink: 0, background: t.election ? C.green : C.blue2, borderRadius: 2, alignSelf: "stretch", minHeight: 20 }} />
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{t.activity}</div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
+
+      <VoterFeed C={C} />
     </div>
   );
 }
 
-function TabTiers() {
-  const [selectedTier, setSelectedTier] = useState<string>("recommended");
-
+// ── TAB: Voter Intelligence ───────────────────────────────────────────────────
+function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
+  const D = STARLING_VOTER_DEMO;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Tier selector cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
-        {STARLING_TIERS.map((tier) => (
-          <button
-            key={tier.id}
-            onClick={() => setSelectedTier(tier.id)}
-            style={{
-              background: selectedTier === tier.id ? C.navyLight : C.navyMid,
-              border: `2px solid ${selectedTier === tier.id ? tier.borderColor : C.navyBorder}`,
-              borderRadius: 12,
-              padding: "20px 24px",
-              cursor: "pointer",
-              textAlign: "left",
-              transition: "all 0.2s",
-              position: "relative",
-            }}
-          >
-            {tier.recommended && (
-              <div style={{
-                position: "absolute", top: -10, right: 16,
-                background: C.gold, color: C.navy, fontSize: 10, fontWeight: 800,
-                padding: "3px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.08em",
-              }}>
-                Recommended
-              </div>
-            )}
-            <div style={{ color: tier.color, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
-              {tier.label}
-            </div>
-            <div style={{ color: C.white, fontSize: 32, fontWeight: 800, marginBottom: 4 }}>
-              {fmtDollar(tier.total)}
-            </div>
-            <div style={{ color: C.textDim, fontSize: 12, lineHeight: 1.5 }}>{tier.tagline}</div>
-            <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: C.muted, fontSize: 12 }}>Unique voters reached</span>
-                <span style={{ color: C.text, fontSize: 12, fontWeight: 600 }}>{tier.metrics.uniqueVoters}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: C.muted, fontSize: 12 }}>Avg frequency</span>
-                <span style={{ color: C.text, fontSize: 12, fontWeight: 600 }}>{tier.metrics.frequency}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: C.muted, fontSize: 12 }}>Persuasion threshold</span>
-                <span style={{ color: tier.id === "entry" ? C.gold : C.green, fontSize: 12, fontWeight: 600 }}>{tier.metrics.persuasionThreshold}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: C.muted, fontSize: 12 }}>New votes (realistic)</span>
-                <span style={{ color: C.blueLight, fontSize: 12, fontWeight: 700 }}>{tier.metrics.newVotes}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: C.muted, fontSize: 12 }}>Projected Starling total</span>
-                <span style={{ color: C.gold, fontSize: 12, fontWeight: 700 }}>{tier.metrics.projectedTotal}</span>
-              </div>
-            </div>
-          </button>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Intelligence KPIs */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        {STARLING_INTELLIGENCE.map(item => (
+          <div key={item.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "16px 18px", borderTop: `3px solid ${item.color}` }}>
+            <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{item.label}</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: item.color }}>{item.value}</div>
+          </div>
         ))}
       </div>
 
-      {/* Selected tier detail */}
-      {STARLING_TIERS.filter((t) => t.id === selectedTier).map((tier) => (
-        <div key={tier.id} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Budget breakdown */}
-          <div style={{ background: C.navyMid, border: `1px solid ${tier.borderColor}`, borderRadius: 12, padding: "24px 28px" }}>
-            <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 16px" }}>
-              {fmtDollar(tier.total)} — Budget Breakdown
-            </h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {tier.components.map((c, i) => (
-                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: C.navyLight, borderRadius: 8 }}>
-                  <span style={{ color: C.text, fontSize: 14 }}>{c.label}</span>
-                  <span style={{ color: C.gold, fontWeight: 700, fontSize: 15 }}>{fmtDollar(c.budget)}</span>
+      {/* Gender + Age */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <Card C={C}>
+          <SectionTitle C={C}>Gender Distribution</SectionTitle>
+          <ResponsiveContainer width="100%" height={180}>
+            <PieChart>
+              <Pie data={D.gender} dataKey="value" cx="50%" cy="50%" outerRadius={70} innerRadius={40}>
+                {D.gender.map((g, i) => <Cell key={i} fill={g.color} />)}
+              </Pie>
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }} formatter={(v: number) => [v.toLocaleString(), ""]} />
+              <Legend formatter={(v) => <span style={{ fontSize: 11, color: C.muted }}>{v}</span>} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 4 }}>
+            {D.gender.map(g => (
+              <div key={g.label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: g.color }} />
+                <span style={{ fontSize: 11, color: C.muted }}>{g.label}: <strong style={{ color: C.white }}>{g.pct}%</strong></span>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <Card C={C}>
+          <SectionTitle C={C}>Age Distribution</SectionTitle>
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={D.ageRanges} barSize={48}>
+              <CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false} />
+              <XAxis dataKey="label" tick={{ fill: C.muted, fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={35} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }} formatter={(v: number) => [v.toLocaleString() + " voters", ""]} />
+              <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                {D.ageRanges.map((a, i) => <Cell key={i} fill={a.color} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 8, textAlign: "center" }}>100% of undecided voters are age 45+ — prime CTV audience</div>
+        </Card>
+      </div>
+
+      {/* Income */}
+      <Card C={C}>
+        <SectionTitle C={C}>Income Distribution</SectionTitle>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {D.income.map(inc => (
+            <div key={inc.label}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                <span style={{ fontSize: 12, color: C.white }}>{inc.label}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: inc.color }}>{inc.value.toLocaleString()} <span style={{ fontSize: 10, color: C.muted }}>({inc.pct}%)</span></span>
+              </div>
+              <ProgressBar value={inc.pct} max={25} color={inc.color} C={C} />
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Top Cities + Homeowner/Married */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "2fr 1fr", gap: 16 }}>
+        <Card C={C}>
+          <SectionTitle C={C}>Top Cities — Undecided Voter Concentration</SectionTitle>
+          {D.topCities.map((city, i) => (
+            <div key={city.city} style={{ marginBottom: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                <span style={{ fontSize: 12, color: C.white }}>{i + 1}. {city.city}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: C.accent2 }}>{city.count.toLocaleString()} <span style={{ fontSize: 10, color: C.muted }}>({city.pct}%)</span></span>
+              </div>
+              <ProgressBar value={city.pct} max={20} color={i < 2 ? C.accent2 : i < 5 ? C.blue2 : C.muted} C={C} />
+            </div>
+          ))}
+        </Card>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <Card C={C} style={{ flex: 1 }}>
+            <SectionTitle C={C}>Homeowners</SectionTitle>
+            <div style={{ fontSize: 36, fontWeight: 900, color: C.green }}>{D.homeowner.yesPct}%</div>
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>{D.homeowner.yes.toLocaleString()} of {D.total.toLocaleString()} voters own their home</div>
+            <div style={{ marginTop: 10 }}>
+              <ProgressBar value={D.homeowner.yesPct} max={100} color={C.green} C={C} />
+            </div>
+          </Card>
+          <Card C={C} style={{ flex: 1 }}>
+            <SectionTitle C={C}>Married</SectionTitle>
+            <div style={{ fontSize: 36, fontWeight: 900, color: C.blue2 }}>{D.married.yesPct}%</div>
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>{D.married.yes.toLocaleString()} of {D.total.toLocaleString()} voters are married</div>
+            <div style={{ marginTop: 10 }}>
+              <ProgressBar value={D.married.yesPct} max={100} color={C.blue2} C={C} />
+            </div>
+          </Card>
+          <Card C={C} style={{ flex: 1 }}>
+            <SectionTitle C={C}>Credit Rating</SectionTitle>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {D.creditRating.map(cr => (
+                <div key={cr.grade} style={{ textAlign: "center", background: C.bg3, borderRadius: 8, padding: "6px 10px", border: `1px solid ${cr.color}40` }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: cr.color }}>{cr.grade}</div>
+                  <div style={{ fontSize: 9, color: C.muted }}>{cr.count.toLocaleString()}</div>
                 </div>
               ))}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: `${tier.color}22`, borderRadius: 8, border: `1px solid ${tier.borderColor}` }}>
-                <span style={{ color: C.white, fontWeight: 700, fontSize: 15 }}>Total Investment</span>
-                <span style={{ color: tier.color === "#1d4ed8" ? C.blueLight : tier.color === "#7c3aed" ? "#a78bfa" : C.muted, fontWeight: 800, fontSize: 18 }}>{fmtDollar(tier.total)}</span>
-              </div>
             </div>
-            {tier.warning && (
-              <div style={{ marginTop: 12, padding: "10px 14px", background: `${C.gold}15`, border: `1px solid ${C.gold}44`, borderRadius: 8, color: C.gold, fontSize: 13 }}>
-                ⚠️ {tier.warning}
-              </div>
-            )}
-          </div>
-
-          {/* Vote conversion projections */}
-          <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-            <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 16px" }}>Vote Conversion Projections</h3>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                <thead>
-                  <tr style={{ borderBottom: `1px solid ${C.navyBorder}` }}>
-                    {["Scenario", "Voters Reached", "Conversion Rate", "New Votes", "Starling Total"].map((h) => (
-                      <th key={h} style={{ color: C.muted, textAlign: "left", padding: "8px 12px", fontWeight: 600, textTransform: "uppercase", fontSize: 11 }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {tier.projections.map((p, i) => (
-                    <tr key={i} style={{
-                      borderBottom: `1px solid ${C.navyBorder}22`,
-                      background: p.highlight ? `${C.blue}11` : "transparent",
-                    }}>
-                      <td style={{ color: p.highlight ? C.gold : C.text, padding: "10px 12px", fontWeight: p.highlight ? 700 : 400 }}>
-                        {p.highlight ? "★ " : ""}{p.scenario}
-                      </td>
-                      <td style={{ color: C.text, padding: "10px 12px" }}>{fmt(p.votersReached)}</td>
-                      <td style={{ color: p.highlight ? C.blueLight : C.text, padding: "10px 12px", fontWeight: p.highlight ? 700 : 400 }}>{p.conversion}%</td>
-                      <td style={{ color: p.highlight ? C.blueLight : C.text, padding: "10px 12px", fontWeight: p.highlight ? 700 : 400 }}>{fmt(p.newVotes)}</td>
-                      <td style={{ color: p.highlight ? C.gold : C.text, padding: "10px 12px", fontWeight: p.highlight ? 700 : 400 }}>{p.starlingTotal}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Full metrics */}
-          <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-            <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 16px" }}>Full Performance Metrics</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
-              {[
-                { label: "Unique Voters Reached", value: tier.metrics.uniqueVoters, color: C.blueLight },
-                { label: "Average Frequency", value: tier.metrics.frequency, color: C.text },
-                { label: "Digital Impressions", value: tier.metrics.digitalImpressions, color: C.text },
-                { label: "SiteID Contacts", value: tier.metrics.siteIdContacts, color: C.green },
-                { label: "New Votes (Realistic)", value: tier.metrics.newVotes, color: C.blueLight },
-                { label: "Projected Total", value: tier.metrics.projectedTotal, color: C.gold },
-                { label: "Cost Per Vote Moved", value: tier.metrics.costPerVote, color: C.text },
-                { label: "Persuasion Threshold", value: tier.metrics.persuasionThreshold, color: tier.id === "entry" ? C.gold : C.green },
-              ].map((m) => (
-                <div key={m.label} style={{ background: C.navyLight, borderRadius: 8, padding: "14px 16px" }}>
-                  <div style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{m.label}</div>
-                  <div style={{ color: m.color, fontWeight: 700, fontSize: 16 }}>{m.value}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          </Card>
         </div>
-      ))}
-
-      {/* Comparison table */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 16px" }}>All Three Levels — Side-by-Side</h3>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-            <thead>
-              <tr style={{ borderBottom: `1px solid ${C.navyBorder}` }}>
-                <th style={{ color: C.muted, textAlign: "left", padding: "8px 12px", fontWeight: 600, textTransform: "uppercase", fontSize: 11 }}>Metric</th>
-                {STARLING_TIERS.map((t) => (
-                  <th key={t.id} style={{ color: t.recommended ? C.gold : C.muted, textAlign: "center", padding: "8px 12px", fontWeight: 700, fontSize: 13 }}>
-                    {fmtDollar(t.total)}
-                    {t.recommended && <div style={{ fontSize: 10, color: C.gold }}>★ Recommended</div>}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { label: "Unique voters reached", key: "uniqueVoters" as const },
-                { label: "Average frequency", key: "frequency" as const },
-                { label: "Persuasion threshold", key: "persuasionThreshold" as const },
-                { label: "Digital impressions", key: "digitalImpressions" as const },
-                { label: "SiteID contacts", key: "siteIdContacts" as const },
-                { label: "New votes generated", key: "newVotes" as const },
-                { label: "Projected Starling total", key: "projectedTotal" as const },
-                { label: "Cost per vote moved", key: "costPerVote" as const },
-              ].map((row, i) => (
-                <tr key={i} style={{ borderBottom: `1px solid ${C.navyBorder}22` }}>
-                  <td style={{ color: C.text, padding: "10px 12px", fontWeight: 500 }}>{row.label}</td>
-                  {STARLING_TIERS.map((t) => (
-                    <td key={t.id} style={{ color: t.recommended ? C.blueLight : C.textDim, padding: "10px 12px", textAlign: "center", fontWeight: t.recommended ? 600 : 400 }}>
-                      {t.metrics[row.key]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p style={{ color: C.textDim, fontSize: 12, marginTop: 12, lineHeight: 1.6 }}>
-          Cost per vote moved decreases as budget increases. At $93,000, the optimization engine compounds gains hour by hour — the inverse of broadcast TV, where additional spend produces diminishing returns.
-        </p>
       </div>
     </div>
   );
 }
 
-function TabChannels() {
-  const [showAllCTV, setShowAllCTV] = useState(false);
-  const topCTV = STARLING_CTV_CHANNELS.filter((c) => c.tier === "top");
-  const midCTV = STARLING_CTV_CHANNELS.filter((c) => c.tier === "mid");
-  const lowCTV = STARLING_CTV_CHANNELS.filter((c) => c.tier === "low");
-  const localCTV = STARLING_CTV_CHANNELS.filter((c) => (c as any).local);
-
-  const visibleMid = showAllCTV ? midCTV : midCTV.slice(0, 8);
-  const visibleLow = showAllCTV ? lowCTV : lowCTV.slice(0, 6);
+// ── TAB: Media Universe ───────────────────────────────────────────────────────
+function TabMediaUniverse({ mobile, C }: { mobile: boolean; C: C }) {
+  const [tierFilter, setTierFilter] = useState<"all" | "top" | "mid" | "low">("all");
+  const channels = tierFilter === "all" ? STARLING_CTV_CHANNELS : STARLING_CTV_CHANNELS.filter(ch => ch.tier === tierFilter);
+  const totalImpressions = STARLING_CTV_CHANNELS.reduce((s, c) => s + c.impressions, 0);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Oklahoma Local TV */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-          <span style={{ background: C.blue, color: C.white, fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, textTransform: "uppercase" }}>LOCAL</span>
-          <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: 0 }}>Oklahoma TV Stations</h3>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
-          {localCTV.map((ch) => (
-            <div key={ch.name} style={{ background: C.navyLight, borderRadius: 8, padding: "12px 14px", border: `1px solid ${ch.color}44`, display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: ch.color, flexShrink: 0 }} />
-              <span style={{ color: C.text, fontSize: 13, fontWeight: 600 }}>{ch.name}</span>
-              <span style={{ marginLeft: "auto", background: C.blue, color: C.white, fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3 }}>LOCAL</span>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        <KpiCard label="CTV Channels" value={STARLING_CTV_CHANNELS.length.toString()} sub="Full streaming universe" color={C.accent2} C={C} />
+        <KpiCard label="Digital Channels" value={STARLING_DIGITAL_CHANNELS.length.toString()} sub="Display, video, social, audio" color={C.blue2} C={C} />
+        <KpiCard label="Total CTV Impressions" value={fmt(totalImpressions)} sub="Projected at $65K tier" color={C.green} C={C} />
+        <KpiCard label="Avg CPM" value="$18.44" sub="Across all CTV channels" color={C.purple} C={C} />
+      </div>
+
+      {/* Digital Channels */}
+      <Card C={C}>
+        <SectionTitle C={C}>Digital & Social Channels</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 10 }}>
+          {STARLING_DIGITAL_CHANNELS.map(ch => (
+            <div key={ch.name} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: C.bg3, borderRadius: 10, borderLeft: `3px solid ${ch.color}` }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{ch.name}</div>
+                <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>{fmt(ch.impressions)} impressions · ${ch.cpm.toFixed(2)} CPM · {ch.ctr}% CTR</div>
+              </div>
+              <div style={{ fontSize: 10, color: ch.color, background: `${ch.color}18`, border: `1px solid ${ch.color}30`, borderRadius: 8, padding: "2px 8px", textTransform: "capitalize" }}>{ch.type}</div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
-      {/* Oklahoma Digital */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 16px" }}>Oklahoma Digital Channel Universe</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {["Social", "Video", "Oklahoma Media", "Programmatic", "Behavioral", "Conservative Media"].map((cat) => {
-            const channels = STARLING_DIGITAL_CHANNELS.filter((c) => c.category === cat);
-            if (!channels.length) return null;
+      {/* CTV Channel Grid */}
+      <Card C={C}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
+          <SectionTitle C={C}>CTV Channel Universe — {STARLING_CTV_CHANNELS.length} Channels</SectionTitle>
+          <div style={{ display: "flex", gap: 4 }}>
+            {(["all", "top", "mid", "low"] as const).map(t => (
+              <button key={t} onClick={() => setTierFilter(t)} style={{ padding: "4px 10px", fontSize: 10, fontWeight: 700, borderRadius: 6, cursor: "pointer", border: `1px solid ${tierFilter === t ? C.accent2 : C.border}`, background: tierFilter === t ? `${C.accent2}18` : "transparent", color: tierFilter === t ? C.accent2 : C.muted, transition: "all 0.15s", textTransform: "capitalize" }}>{t}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 8 }}>
+          {channels.map(ch => {
+            const logo = getNetworkLogo(ch.name);
+            const initials = getNetworkInitials(ch.name);
             return (
-              <div key={cat}>
-                <div style={{ color: C.muted, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6, marginTop: 8 }}>{cat}</div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 8 }}>
-                  {channels.map((ch) => (
-                    <div key={ch.name} style={{ background: C.navyLight, borderRadius: 8, padding: "10px 14px", border: `1px solid ${ch.color}33`, display: "flex", gap: 10, alignItems: "flex-start" }}>
-                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: ch.color, flexShrink: 0, marginTop: 4 }} />
-                      <div style={{ flex: 1 }}>
-                        <div style={{ color: C.text, fontSize: 13, fontWeight: 600 }}>{ch.name}</div>
-                        <div style={{ color: C.textDim, fontSize: 11, marginTop: 2 }}>{ch.note}</div>
-                      </div>
-                      {ch.priority === "high" && (
-                        <span style={{ background: `${C.green}22`, color: C.green, fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3, flexShrink: 0 }}>HIGH</span>
-                      )}
-                    </div>
-                  ))}
+              <div key={ch.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: C.bg3, borderRadius: 10, border: `1px solid ${C.border}` }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: `${ch.color}22`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {logo ? <img src={logo} alt={ch.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} /> : <span style={{ fontSize: 9, fontWeight: 800, color: ch.color }}>{initials}</span>}
                 </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: C.white, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{ch.name}</div>
+                  <div style={{ fontSize: 9, color: C.muted }}>{fmt(ch.impressions)} impr · ${ch.cpm.toFixed(2)} CPM</div>
+                </div>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: ch.tier === "top" ? C.green : ch.tier === "mid" ? C.accent2 : C.muted, flexShrink: 0 }} />
               </div>
             );
           })}
         </div>
-      </div>
+        <div style={{ display: "flex", gap: 16, marginTop: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: C.green }} /><span style={{ fontSize: 10, color: C.muted }}>Top Tier</span></div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: C.accent2 }} /><span style={{ fontSize: 10, color: C.muted }}>Mid Tier</span></div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: C.muted }} /><span style={{ fontSize: 10, color: C.muted }}>Long Tail</span></div>
+        </div>
+      </Card>
 
-      {/* Voter mood → channel mapping */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 16px" }}>Voter Mood → Channel Mapping</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {STARLING_MOODS.map((mood) => (
-            <div key={mood.label} style={{ background: C.navyLight, borderRadius: 10, padding: "14px 18px", border: `1px solid ${mood.color}33` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 18 }}>{mood.icon}</span>
-                <span style={{ color: mood.color, fontWeight: 700, fontSize: 14 }}>{mood.label}</span>
-                <span style={{ color: C.gold, fontWeight: 700, fontSize: 14 }}>{mood.pct}%</span>
+      {/* Ad Creatives */}
+      <Card C={C}>
+        <SectionTitle C={C}>Ad Concepts — CTV :30 Scripts</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+          {STARLING_CREATIVES.map(cr => (
+            <div key={cr.name} style={{ background: C.bg3, borderRadius: 12, padding: 16, borderTop: `3px solid ${cr.color}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: C.white }}>{cr.name}</div>
+                <div style={{ fontSize: 10, color: cr.color, background: `${cr.color}18`, border: `1px solid ${cr.color}30`, borderRadius: 8, padding: "2px 8px" }}>{cr.focus} · {cr.length}</div>
               </div>
-              <p style={{ color: C.textDim, fontSize: 12, margin: "0 0 8px", lineHeight: 1.5 }}>{mood.desc}</p>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 6 }}>
-                {mood.channels.map((ch) => (
-                  <span key={ch} style={{ background: `${mood.color}22`, color: mood.color, fontSize: 11, padding: "3px 8px", borderRadius: 4, fontWeight: 600 }}>{ch}</span>
-                ))}
+              <div style={{ fontSize: 10, color: C.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>{cr.note}</div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.7, fontStyle: "italic", borderLeft: `2px solid ${cr.color}44`, paddingLeft: 10 }}>
+                &ldquo;{cr.script.substring(0, 200)}...&rdquo;
               </div>
-              <div style={{ color: C.textDim, fontSize: 12 }}>
-                <strong style={{ color: C.text }}>Message:</strong> {mood.message}
-              </div>
+              <div style={{ fontSize: 10, color: cr.color, marginTop: 8, fontWeight: 600 }}>{cr.tag}</div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
+    </div>
+  );
+}
 
-      {/* CTV channel universe */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
-          <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: 0 }}>
-            CTV Channel Universe — {STARLING_CTV_CHANNELS.filter((c) => !(c as any).local).length} Streaming Channels
-          </h3>
-          <button
-            onClick={() => setShowAllCTV(!showAllCTV)}
-            style={{ background: C.navyLight, border: `1px solid ${C.navyBorder}`, color: C.blueLight, padding: "6px 14px", borderRadius: 6, cursor: "pointer", fontSize: 12 }}
-          >
-            {showAllCTV ? "Show Less" : "Show All"}
+// ── TAB: Budget Tiers ─────────────────────────────────────────────────────────
+function TabBudgetTiers({ mobile, C }: { mobile: boolean; C: C }) {
+  const [activeTier, setActiveTier] = useState(1);
+  const tier = STARLING_TIERS[activeTier];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Tier Selector */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+        {STARLING_TIERS.map((t, i) => (
+          <button key={t.id} onClick={() => setActiveTier(i)} style={{ background: activeTier === i ? `${t.color}18` : C.card, border: `2px solid ${activeTier === i ? t.color : C.border}`, borderRadius: 12, padding: "16px 12px", cursor: "pointer", textAlign: "center", transition: "all 0.2s" }}>
+            <div style={{ fontSize: 10, color: t.color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>{t.recommended ? "★ Recommended" : t.label}</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: C.white }}>${(t.total / 1000).toFixed(0)}K</div>
+            <div style={{ fontSize: 10, color: C.muted, marginTop: 4 }}>{t.tagline.substring(0, 40)}...</div>
           </button>
-        </div>
+        ))}
+      </div>
 
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ color: C.muted, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Top Tier</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {topCTV.filter((c) => !(c as any).local).map((ch) => (
-              <span key={ch.name} style={{ background: `${ch.color}22`, border: `1px solid ${ch.color}55`, color: C.text, fontSize: 12, padding: "4px 10px", borderRadius: 6 }}>{ch.name}</span>
+      {/* Active Tier Detail */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <Card C={C}>
+          <SectionTitle C={C}>Budget Breakdown — {tier.label} (${tier.total.toLocaleString()})</SectionTitle>
+          {tier.components.map(comp => (
+            <div key={comp.label} style={{ marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                <span style={{ fontSize: 12, color: C.white }}>{comp.label}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: tier.color }}>${comp.budget.toLocaleString()}</span>
+              </div>
+              <ProgressBar value={comp.budget} max={tier.total} color={tier.color} C={C} />
+            </div>
+          ))}
+          {tier.warning && (
+            <div style={{ marginTop: 12, padding: "10px 14px", background: `${C.accent}12`, border: `1px solid ${C.accent2}33`, borderRadius: 10, fontSize: 11, color: C.accent2 }}>
+              ⚠️ {tier.warning}
+            </div>
+          )}
+        </Card>
+        <Card C={C}>
+          <SectionTitle C={C}>Performance Metrics</SectionTitle>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {Object.entries(tier.metrics).map(([key, val]) => (
+              <div key={key} style={{ background: C.bg3, borderRadius: 10, padding: "12px 14px" }}>
+                <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>{key.replace(/([A-Z])/g, " $1").trim()}</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: C.white }}>{val}</div>
+              </div>
             ))}
           </div>
-        </div>
+        </Card>
+      </div>
 
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ color: C.muted, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Mid Tier</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {visibleMid.map((ch) => (
-              <span key={ch.name} style={{ background: C.navyLight, border: `1px solid ${C.navyBorder}`, color: C.textDim, fontSize: 12, padding: "4px 10px", borderRadius: 6 }}>{ch.name}</span>
-            ))}
-            {!showAllCTV && midCTV.length > 8 && (
-              <span style={{ color: C.mutedDark, fontSize: 12, padding: "4px 10px" }}>+{midCTV.length - 8} more</span>
-            )}
-          </div>
+      {/* Vote Projections */}
+      <Card C={C}>
+        <SectionTitle C={C}>Vote Projection Scenarios — {tier.label}</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 1fr", gap: 12 }}>
+          {tier.projections.map(proj => (
+            <div key={proj.scenario} style={{ background: proj.highlight ? `${tier.color}12` : C.bg3, border: `1px solid ${proj.highlight ? tier.color + "44" : C.border}`, borderRadius: 12, padding: 16 }}>
+              <div style={{ fontSize: 10, color: proj.highlight ? tier.color : C.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>{proj.scenario}{proj.highlight ? " ★" : ""}</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <div><span style={{ fontSize: 10, color: C.muted }}>Voters Reached: </span><strong style={{ fontSize: 12, color: C.white }}>{proj.votersReached.toLocaleString()}</strong></div>
+                <div><span style={{ fontSize: 10, color: C.muted }}>Conversion Rate: </span><strong style={{ fontSize: 12, color: C.white }}>{proj.conversion}%</strong></div>
+                <div><span style={{ fontSize: 10, color: C.muted }}>New Votes: </span><strong style={{ fontSize: 14, color: proj.highlight ? tier.color : C.white }}>{proj.newVotes.toLocaleString()}</strong></div>
+                <div><span style={{ fontSize: 10, color: C.muted }}>Starling Total: </span><strong style={{ fontSize: 12, color: proj.highlight ? tier.color : C.white }}>{proj.starlingTotal}</strong></div>
+              </div>
+            </div>
+          ))}
         </div>
+      </Card>
 
-        {showAllCTV && (
-          <div>
-            <div style={{ color: C.muted, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Lower Tier</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {visibleLow.map((ch) => (
-                <span key={ch.name} style={{ background: C.navyLight, border: `1px solid ${C.navyBorder}`, color: C.mutedDark, fontSize: 11, padding: "3px 8px", borderRadius: 5 }}>{ch.name}</span>
+      {/* Side-by-Side Comparison */}
+      <Card C={C}>
+        <SectionTitle C={C}>Tier Comparison</SectionTitle>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                <th style={{ textAlign: "left", padding: "8px 12px", color: C.muted, fontWeight: 700, fontSize: 10, textTransform: "uppercase" }}>Metric</th>
+                {STARLING_TIERS.map(t => <th key={t.id} style={{ textAlign: "center", padding: "8px 12px", color: t.color, fontWeight: 700, fontSize: 11 }}>{t.label}<br />${(t.total / 1000).toFixed(0)}K</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["Unique Voters", "uniqueVoters"],
+                ["Frequency", "frequency"],
+                ["Persuasion Threshold", "persuasionThreshold"],
+                ["Digital Impressions", "digitalImpressions"],
+                ["SiteID Contacts", "siteIdContacts"],
+                ["New Votes (Realistic)", "newVotes"],
+                ["Projected Total", "projectedTotal"],
+                ["Cost Per Vote", "costPerVote"],
+              ].map(([label, key]) => (
+                <tr key={key} style={{ borderBottom: `1px solid ${C.border}` }}>
+                  <td style={{ padding: "8px 12px", color: C.muted, fontSize: 11 }}>{label}</td>
+                  {STARLING_TIERS.map(t => <td key={t.id} style={{ textAlign: "center", padding: "8px 12px", color: C.white, fontSize: 11 }}>{t.metrics[key as keyof typeof t.metrics]}</td>)}
+                </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ── TAB: Site Traffic ─────────────────────────────────────────────────────────
+function TabSiteTraffic({ mobile, C }: { mobile: boolean; C: C }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        <KpiCard label="Total Site Visitors" value={fmt(STARLING_SITE_TRAFFIC.reduce((s, d) => s + d.visitors, 0))} sub="Days 1–12" color={C.accent2} C={C} />
+        <KpiCard label="Avg Daily Visitors" value={Math.round(STARLING_SITE_TRAFFIC.reduce((s, d) => s + d.visitors, 0) / STARLING_SITE_TRAFFIC.length).toLocaleString()} sub="Growing daily" color={C.blue2} C={C} />
+        <KpiCard label="Avg Bounce Rate" value={Math.round(STARLING_SITE_TRAFFIC.reduce((s, d) => s + d.bounceRate, 0) / STARLING_SITE_TRAFFIC.length) + "%"} sub="Declining — good sign" color={C.green} C={C} />
+        <KpiCard label="Avg Time on Site" value={(STARLING_SITE_TRAFFIC.reduce((s, d) => s + d.avgTime, 0) / STARLING_SITE_TRAFFIC.length).toFixed(1) + "m"} sub="Increasing engagement" color={C.purple} C={C} />
+      </div>
+
+      <Card C={C}>
+        <SectionTitle C={C}>Daily Visitor Trend</SectionTitle>
+        <ResponsiveContainer width="100%" height={mobile ? 200 : 260}>
+          <AreaChart data={STARLING_SITE_TRAFFIC}>
+            <defs>
+              <linearGradient id="gVis" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={C.accent2} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={C.accent2} stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="gNewVis" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={C.blue2} stopOpacity={0.3} />
+                <stop offset="95%" stopColor={C.blue2} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+            <XAxis dataKey="day" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={40} />
+            <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }} />
+            <Area type="monotone" dataKey="visitors" name="Total Visitors" stroke={C.accent2} fill="url(#gVis)" strokeWidth={2} />
+            <Area type="monotone" dataKey="newVisitors" name="New Visitors" stroke={C.blue2} fill="url(#gNewVis)" strokeWidth={1.5} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </Card>
+
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <Card C={C}>
+          <SectionTitle C={C}>Bounce Rate Trend</SectionTitle>
+          <ResponsiveContainer width="100%" height={180}>
+            <AreaChart data={STARLING_SITE_TRAFFIC}>
+              <defs>
+                <linearGradient id="gBounce" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={C.green} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={C.green} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+              <XAxis dataKey="day" tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} width={30} domain={[20, 50]} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }} formatter={(v: number) => [v + "%", "Bounce Rate"]} />
+              <Area type="monotone" dataKey="bounceRate" name="Bounce Rate %" stroke={C.green} fill="url(#gBounce)" strokeWidth={2} />
+            </AreaChart>
+          </ResponsiveContainer>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 8 }}>Declining bounce rate indicates improving message resonance</div>
+        </Card>
+        <Card C={C}>
+          <SectionTitle C={C}>Avg Time on Site (minutes)</SectionTitle>
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={STARLING_SITE_TRAFFIC} barSize={20}>
+              <CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false} />
+              <XAxis dataKey="day" tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} width={30} domain={[0, 5]} />
+              <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }} formatter={(v: number) => [v + "m", "Avg Time"]} />
+              <Bar dataKey="avgTime" fill={C.blue2} radius={[4, 4, 0, 0]} />
+              <ReferenceLine y={3.0} stroke={C.accent2} strokeDasharray="4 3" strokeWidth={1.5} label={{ value: "3m threshold", position: "right", fill: C.accent2, fontSize: 9 }} />
+            </BarChart>
+          </ResponsiveContainer>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 8 }}>Visitors spending 3+ minutes are 4x more likely to convert</div>
+        </Card>
+      </div>
+
+      {/* Traffic Data Table */}
+      <Card C={C}>
+        <SectionTitle C={C}>Daily Traffic Detail</SectionTitle>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                {["Day", "Total Visitors", "New Visitors", "Bounce Rate", "Avg Time"].map(h => (
+                  <th key={h} style={{ textAlign: "left", padding: "8px 12px", color: C.muted, fontWeight: 700, fontSize: 10, textTransform: "uppercase" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {STARLING_SITE_TRAFFIC.map((d, i) => (
+                <tr key={d.day} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : `${C.bg3}` }}>
+                  <td style={{ padding: "8px 12px", color: C.accent2, fontWeight: 700 }}>{d.day}</td>
+                  <td style={{ padding: "8px 12px", color: C.white, fontWeight: 600 }}>{d.visitors.toLocaleString()}</td>
+                  <td style={{ padding: "8px 12px", color: C.muted }}>{d.newVisitors.toLocaleString()}</td>
+                  <td style={{ padding: "8px 12px", color: d.bounceRate < 30 ? C.green : C.muted }}>{d.bounceRate}%</td>
+                  <td style={{ padding: "8px 12px", color: d.avgTime >= 3 ? C.blue2 : C.muted }}>{d.avgTime}m</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ── TAB: Pitch Narrative ──────────────────────────────────────────────────────
+function TabPitchNarrative({ mobile, C }: { mobile: boolean; C: C }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* EA Advantage Cards */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 1fr", gap: 12 }}>
+        {STARLING_EA_ADVANTAGE.map(item => (
+          <div key={item.title} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20, borderTop: `3px solid ${item.color}` }}>
+            <div style={{ fontSize: 22, marginBottom: 10 }}>
+              {item.icon === "target" ? "🎯" : item.icon === "tv" ? "📺" : item.icon === "brain" ? "🧠" : item.icon === "phone" ? "📱" : item.icon === "dollar" ? "💰" : "📅"}
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: item.color, marginBottom: 8 }}>{item.title}</div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>{item.desc}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Why CTV */}
+      <Card C={C}>
+        <SectionTitle C={C}>Why CTV for This Race</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 1fr", gap: 12 }}>
+          {[
+            { title: "Precision Targeting", desc: "We serve ads only to the undecided Republicans we have identified by name — not the general population. Every dollar goes to a persuadable voter.", color: C.accent2, icon: "🎯" },
+            { title: "Unskippable Completion", desc: "CTV ads are non-skippable. Our 95%+ completion rate means every voter who sees the ad watches the full message. Traditional TV cannot guarantee this.", color: C.blue2, icon: "📺" },
+            { title: "Cross-Device Retargeting", desc: "After a voter sees the CTV ad, we follow them to their phone, tablet, and desktop with reinforcing digital ads. The message compounds across every screen.", color: C.green, icon: "🔄" },
+            { title: "Real-Time Optimization", desc: "Every 48 hours, we shift budget to the channels, ZIPs, and messages performing best. Traditional TV buys are locked in. Ours are not.", color: C.purple, icon: "⚡" },
+            { title: "Behavioral Intelligence", desc: "We know what these voters watch, read, and search. We match their behavioral profile to the right message at the right moment — not just demographics.", color: C.accent3, icon: "🧠" },
+            { title: "Measurable Results", desc: "We track site visits, behavioral signals, and voter movement in real time. You see exactly what is working and what is not — updated daily.", color: C.blue3, icon: "📊" },
+          ].map(item => (
+            <div key={item.title} style={{ background: C.bg3, borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 20, marginBottom: 8 }}>{item.icon}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: item.color, marginBottom: 6 }}>{item.title}</div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{item.desc}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* The Math */}
+      <Card C={C}>
+        <SectionTitle C={C}>The Math — Why $65K Can Win This Race</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+          <div>
+            <div style={{ fontSize: 12, color: C.muted, marginBottom: 12, lineHeight: 1.7 }}>
+              The win threshold is approximately <strong style={{ color: C.white }}>116,000–142,000 votes</strong>. Starling currently polls at roughly 46,000 votes. He needs to move approximately <strong style={{ color: C.accent2 }}>70,000 voters</strong> in 18 days.
+            </div>
+            <div style={{ fontSize: 12, color: C.muted, marginBottom: 12, lineHeight: 1.7 }}>
+              Our identified undecided universe spans hundreds of thousands of voters statewide. At a realistic 12% conversion rate with 4–6x frequency, the direct moves from our universe alone are substantial.
+            </div>
+            <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7 }}>
+              But the real multiplier is the <strong style={{ color: C.white }}>broader CTV reach</strong>: 170,000–220,000 unique voters at the recommended tier. At 12% conversion, that is <strong style={{ color: C.accent2 }}>20,400–26,400 new votes</strong> — enough to close the gap.
             </div>
           </div>
-        )}
-      </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              { label: "Current Starling Votes", value: "~46,000", color: C.accent2 },
+              { label: "Win Threshold", value: "116,000–142,000", color: C.blue2 },
+              { label: "Votes Needed", value: "~70,000", color: C.muted },
+              { label: "Realistic New Votes ($65K)", value: "23,400–28,000", color: C.green },
+              { label: "Cost Per New Vote", value: "$2.32–$2.78", color: C.purple },
+              { label: "Undecided Universe Identified", value: "Statewide", color: C.accent3 },
+            ].map(item => (
+              <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: C.bg3, borderRadius: 10 }}>
+                <span style={{ fontSize: 11, color: C.muted }}>{item.label}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: item.color }}>{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      {/* About Exact Audience */}
+      <Card C={C}>
+        <SectionTitle C={C}>About Exact Audience</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "2fr 1fr", gap: 16 }}>
+          <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.8 }}>
+            <p style={{ marginBottom: 10 }}>Exact Audience is a behavioral intelligence and programmatic advertising firm specializing in political campaigns, automotive, and high-intent consumer categories. We combine first-party data matching, CTV/OTT delivery, and real-time optimization to reach the exact voters, buyers, and prospects that matter to our clients.</p>
+            <p>Our SiteID technology identifies the individuals visiting your website and your competitors&apos; websites by name, address, and behavioral profile — then builds a custom media plan to reach them across 74+ CTV channels and every major digital platform.</p>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ background: C.bg3, borderRadius: 10, padding: 14, textAlign: "center" }}>
+              <img src="/ea-logo.png" alt="Exact Audience" style={{ height: 40, objectFit: "contain", marginBottom: 8 }} />
+              <div style={{ fontSize: 11, color: C.muted }}>exactaudience.ai</div>
+              <div style={{ fontSize: 11, color: C.muted }}>siteid.ai</div>
+            </div>
+            <div style={{ background: C.bg3, borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Presented by</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.white }}>Rick Walker</div>
+              <div style={{ fontSize: 11, color: C.muted }}>Exact Audience</div>
+            </div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
 
-function TabIntelligence() {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 8px" }}>What We Know Before a Dollar Is Spent</h3>
-        <p style={{ color: C.textDim, fontSize: 13, margin: "0 0 20px", lineHeight: 1.6 }}>
-          Before a single impression runs, Exact Audience builds a behavioral profile on every registered Republican primary voter in the OKC and Tulsa markets.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 14 }}>
-          {STARLING_INTELLIGENCE.map((item) => (
-            <div key={item.label} style={{ background: C.navyLight, borderRadius: 10, padding: "18px 20px", border: `1px solid ${C.navyBorder}` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                <span style={{ fontSize: 22 }}>{item.icon}</span>
-                <span style={{ color: C.gold, fontWeight: 700, fontSize: 14 }}>{item.label}</span>
-              </div>
-              <p style={{ color: C.text, fontSize: 13, lineHeight: 1.6, margin: 0 }}>{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Real-time optimization */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 8px" }}>Real-Time Budget Optimization</h3>
-        <p style={{ color: C.textDim, fontSize: 13, margin: "0 0 16px", lineHeight: 1.6 }}>
-          A standard media buy is set on Day 1 and runs unchanged through Election Day. The campaign gets a report after the votes are counted. Exact Audience runs a live optimization model. Every hour, the platform measures which ZIP codes are converting, which message variants are winning, which time windows are producing the highest completion rates, and which platforms are driving the most post-exposure site traffic. Budget moves immediately — away from what is not working, toward what is.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
-          {[
-            { label: "Optimization Cycle", value: "Every hour", icon: "⏱️" },
-            { label: "Message Testing", value: "Bio vs. Contrast", icon: "🔬" },
-            { label: "Peak Efficiency", value: "Day 12 of 18", icon: "📈" },
-            { label: "SiteID Match Rate", value: "60% of visitors", icon: "🎯" },
-          ].map((item) => (
-            <div key={item.label} style={{ background: C.navyLight, borderRadius: 8, padding: "14px 16px", textAlign: "center" }}>
-              <div style={{ fontSize: 24, marginBottom: 6 }}>{item.icon}</div>
-              <div style={{ color: C.gold, fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{item.value}</div>
-              <div style={{ color: C.muted, fontSize: 12 }}>{item.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* SiteID */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 8px" }}>SiteID: Identifying Voters Who Visit the Campaign Website</h3>
-        <p style={{ color: C.textDim, fontSize: 13, margin: "0 0 16px", lineHeight: 1.6 }}>
-          Every voter who visits jeffstarling.com is anonymous. They arrive, read, and leave — the campaign has no idea who they were. SiteID identifies those visitors at a 60% match rate — name, email, verified phone, home address, and behavioral intent signals. Each identified visitor is added to a direct outreach sequence: a follow-up ad, a campaign email, or a volunteer call. The conversion rate on this retargeted audience is 4–6x higher than cold impressions.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
-          {[
-            { label: "Match Rate", value: "60%", color: C.green },
-            { label: "Retargeted Conversion Lift", value: "4–6x", color: C.blueLight },
-            { label: "Site Visits (18 days)", value: "10,000–20,000", color: C.text },
-            { label: "Identified Contacts ($65K)", value: "6,000–9,000", color: C.gold },
-          ].map((item) => (
-            <div key={item.label} style={{ background: C.navyLight, borderRadius: 8, padding: "14px 16px" }}>
-              <div style={{ color: C.muted, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{item.label}</div>
-              <div style={{ color: item.color, fontWeight: 700, fontSize: 20 }}>{item.value}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TabTimeline() {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 20px" }}>18-Day Campaign Execution Plan</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-          {STARLING_TIMELINE.map((item, i) => (
-            <div key={i} style={{ display: "flex", gap: 16, position: "relative" }}>
-              {/* Connector line */}
-              {i < STARLING_TIMELINE.length - 1 && (
-                <div style={{ position: "absolute", left: 19, top: 40, bottom: 0, width: 2, background: (item as any).election ? C.gold : C.navyBorder }} />
-              )}
-              {/* Dot */}
-              <div style={{
-                width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
-                background: (item as any).election ? C.gold : C.navyLight,
-                border: `2px solid ${(item as any).election ? C.gold : C.navyBorder}`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                zIndex: 1,
-              }}>
-                <span style={{ fontSize: 16 }}>{(item as any).election ? "🗳️" : "📍"}</span>
-              </div>
-              {/* Content */}
-              <div style={{ paddingBottom: 24, flex: 1 }}>
-                <div style={{ color: (item as any).election ? C.gold : C.blueLight, fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{item.days}</div>
-                <div style={{ color: C.text, fontSize: 13, lineHeight: 1.6 }}>{item.activity}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Launch timeline */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 16px" }}>Launch Commitment</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
-          {[
-            { label: "Launch Timeline", value: "Within 24 hours of approval", icon: "🚀" },
-            { label: "Heavy Run Through", value: "June 13 (last early voting day)", icon: "📅" },
-            { label: "Maintain Through", value: "June 15 (day before election)", icon: "📅" },
-            { label: "Daily Reporting", value: "Reach, frequency, performance", icon: "📊" },
-            { label: "Mid-Campaign Optimization", value: "Budget shifted to winners", icon: "⚡" },
-            { label: "Final Summary", value: "Full performance report", icon: "📋" },
-          ].map((item) => (
-            <div key={item.label} style={{ background: C.navyLight, borderRadius: 8, padding: "14px 16px" }}>
-              <div style={{ fontSize: 20, marginBottom: 8 }}>{item.icon}</div>
-              <div style={{ color: C.gold, fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{item.value}</div>
-              <div style={{ color: C.muted, fontSize: 12 }}>{item.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TabAds() {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 8px" }}>Ad Concepts — Voiceover, No New Filming Required</h3>
-        <p style={{ color: C.textDim, fontSize: 13, margin: "0 0 20px", lineHeight: 1.6 }}>
-          Both concepts are :30 voiceover spots that can be produced immediately using existing footage. No new filming required. The candidate only speaks to state their name and approve the message.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
-          {STARLING_CREATIVES.map((ad) => (
-            <div key={ad.name} style={{ background: C.navyLight, borderRadius: 12, padding: "22px 24px", border: `1px solid ${ad.color}44` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
-                <div>
-                  <div style={{ color: ad.color, fontWeight: 800, fontSize: 16 }}>{ad.name}</div>
-                  <div style={{ color: C.muted, fontSize: 12, marginTop: 2 }}>{ad.focus} · {ad.length} · {ad.type}</div>
-                </div>
-                <span style={{ background: `${ad.color}22`, color: ad.color, fontSize: 11, padding: "3px 10px", borderRadius: 4, fontWeight: 600 }}>{ad.mood}</span>
-              </div>
-              <div style={{ background: C.navy, borderRadius: 8, padding: "16px 18px", marginBottom: 12 }}>
-                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Voiceover Script</div>
-                <p style={{ color: C.text, fontSize: 13, lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>"{ad.script}"</p>
-                <p style={{ color: C.gold, fontSize: 12, margin: "10px 0 0", fontStyle: "italic" }}>— {ad.tag}</p>
-              </div>
-              <div style={{ color: C.textDim, fontSize: 12 }}>{ad.note}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Message testing note */}
-      <div style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 12, padding: "24px 28px" }}>
-        <h3 style={{ color: C.white, fontSize: 16, fontWeight: 700, margin: "0 0 12px" }}>Real-Time Message Testing</h3>
-        <p style={{ color: C.text, fontSize: 14, lineHeight: 1.7, margin: 0 }}>
-          Within 48 hours of launch, the platform will know which message is winning in OKC versus Tulsa, by age group, by income band. The Contrast ad is expected to outperform in OKC where Echols leads 38–16. The Outsider bio is expected to outperform in Tulsa where the race is tight and Starling has home-field advantage. Budget shifts to the winner immediately — every dollar follows the data.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ── Undecided Voters Tab ─────────────────────────────────────────────────────
-type Voter = {
-  first: string; last: string; addr: string; city: string; state: string; zip: string;
-  email: string; ageRange: string; age: number; gender: string; married: string;
-  children: string; homeowner: string; mobile: string; mobileDnc: string;
-  directPhone: string; directDnc: string; education: string; incomeRange: string;
-  linkedin: string; netWorth: string; creditRtg: string; company: string;
-  jobTitle: string; domain: string; employees: string; coCity: string;
-  coState: string; busEmail: string; dbMatches: number;
+// ── TAB: Undecided Voters ─────────────────────────────────────────────────────
+type VoterRow = {
+  "FIRST NAME": string; "LAST NAME": string; CITY: string; ST: string; ZIP: string;
+  AGE: string; GENDER: string; MARRIED: string; CHILDREN: string; HOMEOWNER: string;
+  "INCOME RANGE": string; "NET WORTH": string; "CREDIT RTG": string; EDUCATION: string;
+  MOBILE: string; "PERS EMAIL": string; "CO NAME": string; "JOB TITLE": string; "DB MATCHES": string;
 };
 
-function TabUndecidedVoters() {
-  const [voters, setVoters] = useState<Voter[]>([]);
+function TabUndecidedVoters({ mobile, C }: { mobile: boolean; C: C }) {
+  const [voters, setVoters] = useState<VoterRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filterCity, setFilterCity] = useState("All");
-  const [filterGender, setFilterGender] = useState("All");
-  const [filterAge, setFilterAge] = useState("All");
-  const [filterHomeowner, setFilterHomeowner] = useState("All");
-  const [filterCredit, setFilterCredit] = useState("All");
-  const [showCount, setShowCount] = useState(50);
+  const [cityFilter, setCityFilter] = useState("All");
+  const [genderFilter, setGenderFilter] = useState("All");
+  const [homeFilter, setHomeFilter] = useState("All");
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 50;
 
   useEffect(() => {
-    fetch("/manus-storage/starling_voters_5bc24ff0.json")
+    fetch("/starling_voters.json")
       .then(r => r.json())
-      .then(d => { setVoters(d); setLoading(false); })
+      .then((data: VoterRow[]) => { setVoters(data); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
-  const cities = ["All", ...Array.from(new Set(voters.map(v => v.city).filter(Boolean))).sort()];
-  const ageRanges = ["All", ...Array.from(new Set(voters.map(v => v.ageRange).filter(Boolean))).sort()];
-  const creditRatings = ["All", ...Array.from(new Set(voters.map(v => v.creditRtg).filter(Boolean))).sort()];
+  const cities = ["All", ...Array.from(new Set(voters.map(v => v.CITY).filter(Boolean))).sort().slice(0, 20)];
 
   const filtered = voters.filter(v => {
     const q = search.toLowerCase();
-    const matchSearch = !q || `${v.first} ${v.last}`.toLowerCase().includes(q) ||
-      v.city.toLowerCase().includes(q) || v.zip.includes(q) ||
-      v.email.toLowerCase().includes(q) || v.company.toLowerCase().includes(q);
-    const matchCity = filterCity === "All" || v.city === filterCity;
-    const matchGender = filterGender === "All" || v.gender === filterGender;
-    const matchAge = filterAge === "All" || v.ageRange === filterAge;
-    const matchHomeowner = filterHomeowner === "All" || v.homeowner === filterHomeowner;
-    const matchCredit = filterCredit === "All" || v.creditRtg === filterCredit;
-    return matchSearch && matchCity && matchGender && matchAge && matchHomeowner && matchCredit;
+    const matchSearch = !q || `${v["FIRST NAME"]} ${v["LAST NAME"]} ${v.CITY} ${v["PERS EMAIL"]}`.toLowerCase().includes(q);
+    const matchCity = cityFilter === "All" || v.CITY === cityFilter;
+    const matchGender = genderFilter === "All" || v.GENDER === genderFilter;
+    const matchHome = homeFilter === "All" || v.HOMEOWNER === homeFilter;
+    return matchSearch && matchCity && matchGender && matchHome;
   });
 
-  const creditColor = (c: string) => c === "A" ? "#4ade80" : c === "B" ? "#38bdf8" : c === "C" ? "#f59e0b" : c === "D" ? "#fb923c" : "#8892b0";
+  const paginated = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
 
-  if (loading) return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 300, color: C.muted, fontSize: 14 }}>
-      Loading 12,575 undecided voters...
-    </div>
-  );
+  const creditColor = (g: string) => {
+    if (g === "A") return C.green;
+    if (g === "B") return C.blue2;
+    if (g === "C") return C.accent2;
+    if (g === "D" || g === "E") return C.muted;
+    return C.muted;
+  };
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 300, color: C.muted, fontSize: 14 }}>
+        Loading voter records...
+      </div>
+    );
+  }
 
   return (
-    <div>
-      {/* Header stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12, marginBottom: 20 }}>
-        {[
-          { label: "Total Undecided", value: voters.length.toLocaleString(), color: C.gold },
-          { label: "With Email", value: voters.filter(v => v.email).length.toLocaleString(), color: C.blueLight },
-          { label: "With Mobile", value: voters.filter(v => v.mobile).length.toLocaleString(), color: C.blueLight },
-          { label: "Homeowners", value: voters.filter(v => v.homeowner === "Y").length.toLocaleString(), color: "#4ade80" },
-          { label: "With LinkedIn", value: voters.filter(v => v.linkedin).length.toLocaleString(), color: "#a855f7" },
-          { label: "Avg DB Matches", value: (voters.reduce((s, v) => s + (v.dbMatches || 0), 0) / voters.length).toFixed(1), color: C.gold },
-        ].map(s => (
-          <div key={s.label} style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 10, padding: "14px 16px" }}>
-            <div style={{ fontSize: 22, fontWeight: 900, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{s.label}</div>
-          </div>
-        ))}
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Summary KPIs */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        <KpiCard label="Total Undecided Voters" value="Statewide" sub="Identified by name & address" color={C.accent2} C={C} />
+        <KpiCard label="Showing" value={filtered.length.toLocaleString()} sub="Matching current filters" color={C.blue2} C={C} />
+        <KpiCard label="With Mobile" value="93.8%" sub="Verified mobile number" color={C.green} C={C} />
+        <KpiCard label="With Email" value="98.8%" sub="Personal email on file" color={C.purple} C={C} />
       </div>
 
       {/* Filters */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14, alignItems: "center" }}>
-        <input
-          value={search}
-          onChange={e => { setSearch(e.target.value); setShowCount(50); }}
-          placeholder="Search name, city, zip, email, company..."
-          style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 8, padding: "7px 12px", color: C.white, fontSize: 12, outline: "none", minWidth: 220, flex: 1 }}
-        />
-        {[
-          { label: "City", value: filterCity, set: (v: string) => { setFilterCity(v); setShowCount(50); }, opts: cities.slice(0, 50) },
-          { label: "Age Range", value: filterAge, set: (v: string) => { setFilterAge(v); setShowCount(50); }, opts: ageRanges },
-          { label: "Gender", value: filterGender, set: (v: string) => { setFilterGender(v); setShowCount(50); }, opts: ["All", "M", "F"] },
-          { label: "Homeowner", value: filterHomeowner, set: (v: string) => { setFilterHomeowner(v); setShowCount(50); }, opts: ["All", "Y", "N"] },
-          { label: "Credit", value: filterCredit, set: (v: string) => { setFilterCredit(v); setShowCount(50); }, opts: creditRatings },
-        ].map(f => (
-          <select key={f.label} value={f.value} onChange={e => f.set(e.target.value)}
-            style={{ background: C.navyMid, border: `1px solid ${C.navyBorder}`, borderRadius: 8, padding: "7px 10px", color: C.white, fontSize: 11, outline: "none", cursor: "pointer" }}>
-            {f.opts.map(o => <option key={o} value={o}>{o === "All" ? `All ${f.label}s` : o}</option>)}
+      <Card C={C}>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(0); }}
+            placeholder="Search name, city, email..."
+            style={{ flex: 1, minWidth: 200, padding: "8px 12px", background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 12, outline: "none" }}
+          />
+          <select value={cityFilter} onChange={e => { setCityFilter(e.target.value); setPage(0); }} style={{ padding: "8px 12px", background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 12 }}>
+            {cities.map(c => <option key={c} value={c}>{c === "All" ? "All Cities" : c}</option>)}
           </select>
-        ))}
-        <div style={{ fontSize: 11, color: C.muted, whiteSpace: "nowrap" }}>{filtered.length.toLocaleString()} of {voters.length.toLocaleString()}</div>
-      </div>
-
-      {/* Table */}
-      <div style={{ overflowX: "auto", borderRadius: 12, border: `1px solid ${C.navyBorder}` }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
-          <thead>
-            <tr style={{ background: C.navyMid }}>
-              {["Name","City","State","ZIP","Age","Gender","Email","Mobile","Homeowner","Married","Children","Education","Income","Net Worth","Credit","Company","Job Title","Co City","Co State","LinkedIn","DB Matches"].map(h => (
-                <th key={h} style={{ padding: "10px 10px", textAlign: "left", color: C.muted, fontWeight: 700, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap", borderBottom: `1px solid ${C.navyBorder}` }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.slice(0, showCount).map((v, i) => (
-              <tr key={i} style={{ borderBottom: `1px solid ${C.navyBorder}22`, background: i % 2 === 0 ? "transparent" : `${C.navyMid}66` }}
-                onMouseEnter={e => (e.currentTarget as HTMLTableRowElement).style.background = `${C.navyLight}88`}
-                onMouseLeave={e => (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? "transparent" : `${C.navyMid}66`}>
-                <td style={{ padding: "8px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>{v.first} {v.last}</td>
-                <td style={{ padding: "8px 10px", color: C.text, whiteSpace: "nowrap" }}>{v.city}</td>
-                <td style={{ padding: "8px 10px", color: C.text }}>{v.state}</td>
-                <td style={{ padding: "8px 10px", color: C.text }}>{v.zip}</td>
-                <td style={{ padding: "8px 10px", color: C.text }}>{v.ageRange || v.age}</td>
-                <td style={{ padding: "8px 10px", color: C.text }}>{v.gender}</td>
-                <td style={{ padding: "8px 10px", color: C.blueLight, maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {v.email ? <a href={`mailto:${v.email}`} style={{ color: C.blueLight, textDecoration: "none" }}>{v.email}</a> : <span style={{ color: C.mutedDark }}>—</span>}
-                </td>
-                <td style={{ padding: "8px 10px", color: C.text }}>{v.mobile || <span style={{ color: C.mutedDark }}>—</span>}</td>
-                <td style={{ padding: "8px 10px", textAlign: "center" }}>
-                  <span style={{ background: v.homeowner === "Y" ? "#4ade8022" : "transparent", color: v.homeowner === "Y" ? "#4ade80" : C.mutedDark, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>{v.homeowner || "—"}</span>
-                </td>
-                <td style={{ padding: "8px 10px", color: C.text, textAlign: "center" }}>{v.married || "—"}</td>
-                <td style={{ padding: "8px 10px", color: C.text, textAlign: "center" }}>{v.children || "—"}</td>
-                <td style={{ padding: "8px 10px", color: C.text, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.education || "—"}</td>
-                <td style={{ padding: "8px 10px", color: C.gold, whiteSpace: "nowrap" }}>{v.incomeRange || "—"}</td>
-                <td style={{ padding: "8px 10px", color: C.gold, whiteSpace: "nowrap" }}>{v.netWorth || "—"}</td>
-                <td style={{ padding: "8px 10px", textAlign: "center" }}>
-                  {v.creditRtg ? <span style={{ background: `${creditColor(v.creditRtg)}22`, color: creditColor(v.creditRtg), padding: "2px 7px", borderRadius: 20, fontSize: 10, fontWeight: 800 }}>{v.creditRtg}</span> : <span style={{ color: C.mutedDark }}>—</span>}
-                </td>
-                <td style={{ padding: "8px 10px", color: C.text, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.company || "—"}</td>
-                <td style={{ padding: "8px 10px", color: C.text, maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.jobTitle || "—"}</td>
-                <td style={{ padding: "8px 10px", color: C.text, whiteSpace: "nowrap" }}>{v.coCity || "—"}</td>
-                <td style={{ padding: "8px 10px", color: C.text }}>{v.coState || "—"}</td>
-                <td style={{ padding: "8px 10px" }}>
-                  {v.linkedin ? <a href={v.linkedin} target="_blank" rel="noreferrer" style={{ color: "#60a5fa", fontSize: 10, fontWeight: 700 }}>View ↗</a> : <span style={{ color: C.mutedDark }}>—</span>}
-                </td>
-                <td style={{ padding: "8px 10px", textAlign: "center" }}>
-                  <span style={{ background: v.dbMatches >= 5 ? "#4ade8022" : v.dbMatches >= 3 ? "#f59e0b22" : "transparent", color: v.dbMatches >= 5 ? "#4ade80" : v.dbMatches >= 3 ? "#f59e0b" : C.muted, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>{v.dbMatches}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Load more */}
-      {showCount < filtered.length && (
-        <div style={{ textAlign: "center", marginTop: 16 }}>
-          <button
-            onClick={() => setShowCount(c => c + 100)}
-            style={{ background: C.gold, color: C.navy, border: "none", borderRadius: 8, padding: "10px 24px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
-            Show 100 more ({(filtered.length - showCount).toLocaleString()} remaining)
-          </button>
+          <select value={genderFilter} onChange={e => { setGenderFilter(e.target.value); setPage(0); }} style={{ padding: "8px 12px", background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 12 }}>
+            <option value="All">All Genders</option>
+            <option value="F">Female</option>
+            <option value="M">Male</option>
+          </select>
+          <select value={homeFilter} onChange={e => { setHomeFilter(e.target.value); setPage(0); }} style={{ padding: "8px 12px", background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 12 }}>
+            <option value="All">All</option>
+            <option value="Y">Homeowners</option>
+            <option value="N">Renters</option>
+          </select>
+          {(search || cityFilter !== "All" || genderFilter !== "All" || homeFilter !== "All") && (
+            <button onClick={() => { setSearch(""); setCityFilter("All"); setGenderFilter("All"); setHomeFilter("All"); setPage(0); }} style={{ padding: "8px 12px", background: `${C.accent2}18`, border: `1px solid ${C.accent2}44`, borderRadius: 8, color: C.accent2, fontSize: 12, cursor: "pointer" }}>
+              Clear Filters
+            </button>
+          )}
         </div>
-      )}
+      </Card>
+
+      {/* Voter Table */}
+      <Card C={C} style={{ padding: 0, overflow: "hidden" }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+            <thead>
+              <tr style={{ background: C.bg3, borderBottom: `1px solid ${C.border}` }}>
+                {["Name", "City", "Age", "G", "Married", "HO", "Income Range", "Net Worth", "Credit", "Mobile", "Email", "Company", "DB"].map(h => (
+                  <th key={h} style={{ textAlign: "left", padding: "10px 12px", color: C.muted, fontWeight: 700, fontSize: 10, textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {paginated.map((v, i) => (
+                <tr key={i} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? "transparent" : `${C.bg3}88` }}>
+                  <td style={{ padding: "8px 12px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>{v["FIRST NAME"]} {v["LAST NAME"]}</td>
+                  <td style={{ padding: "8px 12px", color: C.muted, whiteSpace: "nowrap" }}>{v.CITY}, {v.ST}</td>
+                  <td style={{ padding: "8px 12px", color: C.muted, textAlign: "center" }}>{v.AGE}</td>
+                  <td style={{ padding: "8px 12px", color: v.GENDER === "F" ? C.purple : C.blue2, fontWeight: 700, textAlign: "center" }}>{v.GENDER}</td>
+                  <td style={{ padding: "8px 12px", color: v.MARRIED === "Y" ? C.green : C.muted, textAlign: "center" }}>{v.MARRIED}</td>
+                  <td style={{ padding: "8px 12px", color: v.HOMEOWNER === "Y" ? C.accent2 : C.muted, textAlign: "center" }}>{v.HOMEOWNER}</td>
+                  <td style={{ padding: "8px 12px", color: C.muted, whiteSpace: "nowrap" }}>{v["INCOME RANGE"]}</td>
+                  <td style={{ padding: "8px 12px", color: C.muted, whiteSpace: "nowrap" }}>{v["NET WORTH"]}</td>
+                  <td style={{ padding: "8px 12px", textAlign: "center" }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: creditColor(v["CREDIT RTG"]), background: `${creditColor(v["CREDIT RTG"])}18`, border: `1px solid ${creditColor(v["CREDIT RTG"])}30`, borderRadius: 6, padding: "2px 6px" }}>{v["CREDIT RTG"]}</span>
+                  </td>
+                  <td style={{ padding: "8px 12px", color: v.MOBILE ? C.green : C.muted, fontSize: 10, whiteSpace: "nowrap" }}>{v.MOBILE ? v.MOBILE.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, "+$1 ($2) $3-$4") : "—"}</td>
+                  <td style={{ padding: "8px 12px", color: v["PERS EMAIL"] ? C.blue2 : C.muted, fontSize: 10, whiteSpace: "nowrap", maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis" }}>{v["PERS EMAIL"] || "—"}</td>
+                  <td style={{ padding: "8px 12px", color: C.muted, fontSize: 10, whiteSpace: "nowrap", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis" }}>{v["CO NAME"] || "—"}</td>
+                  <td style={{ padding: "8px 12px", color: C.accent2, fontWeight: 700, textAlign: "center" }}>{v["DB MATCHES"] || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderTop: `1px solid ${C.border}`, flexWrap: "wrap", gap: 8 }}>
+          <div style={{ fontSize: 11, color: C.muted }}>
+            Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length.toLocaleString()} voters
+          </div>
+          <div style={{ display: "flex", gap: 6 }}>
+            <button onClick={() => setPage(0)} disabled={page === 0} style={{ padding: "5px 10px", fontSize: 11, borderRadius: 6, cursor: page === 0 ? "not-allowed" : "pointer", background: page === 0 ? "transparent" : `${C.accent2}18`, border: `1px solid ${page === 0 ? C.border : C.accent2}`, color: page === 0 ? C.muted : C.accent2 }}>«</button>
+            <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} style={{ padding: "5px 10px", fontSize: 11, borderRadius: 6, cursor: page === 0 ? "not-allowed" : "pointer", background: page === 0 ? "transparent" : `${C.accent2}18`, border: `1px solid ${page === 0 ? C.border : C.accent2}`, color: page === 0 ? C.muted : C.accent2 }}>‹ Prev</button>
+            <span style={{ padding: "5px 12px", fontSize: 11, color: C.white, background: C.bg3, borderRadius: 6, border: `1px solid ${C.border}` }}>Page {page + 1} of {totalPages}</span>
+            <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} style={{ padding: "5px 10px", fontSize: 11, borderRadius: 6, cursor: page >= totalPages - 1 ? "not-allowed" : "pointer", background: page >= totalPages - 1 ? "transparent" : `${C.accent2}18`, border: `1px solid ${page >= totalPages - 1 ? C.border : C.accent2}`, color: page >= totalPages - 1 ? C.muted : C.accent2 }}>Next ›</button>
+            <button onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1} style={{ padding: "5px 10px", fontSize: 11, borderRadius: 6, cursor: page >= totalPages - 1 ? "not-allowed" : "pointer", background: page >= totalPages - 1 ? "transparent" : `${C.accent2}18`, border: `1px solid ${page >= totalPages - 1 ? C.border : C.accent2}`, color: page >= totalPages - 1 ? C.muted : C.accent2 }}>»</button>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
+// ── Main Dashboard ────────────────────────────────────────────────────────────
+const TABS = ["Overview", "Voter Intelligence", "Media Universe", "Budget Tiers", "Site Traffic", "Pitch Narrative", "Undecided Voters"];
+
 export default function StarlingDashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [tab, setTab] = useState(0);
+  const [time, setTime] = useState(new Date());
+  const [exporting, setExporting] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const mobile = useIsMobile();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
+  const C = useColors(isDark);
+  const [, navigate] = useLocation();
+  const campaign = getCampaignDay();
+
+  useEffect(() => { const id = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(id); }, []);
+
+  async function handleExport() {
+    if (exporting || !contentRef.current) return;
+    setExporting(true);
+    try {
+      const { default: jsPDF } = await import("jspdf");
+      const { default: html2canvas } = await import("html2canvas");
+      const canvas = await html2canvas(contentRef.current, { scale: 2, useCORS: true, backgroundColor: isDark ? "#080c18" : "#f0f4f8", logging: false });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pdfW = pdf.internal.pageSize.getWidth();
+      const pdfH = (canvas.height * pdfW) / canvas.width;
+      const pageH = pdf.internal.pageSize.getHeight();
+      let y = 0;
+      while (y < pdfH) {
+        if (y > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, -y, pdfW, pdfH);
+        y += pageH;
+      }
+      pdf.save(`ExactAudience_Starling_${TABS[tab]}_${new Date().toISOString().slice(0, 10)}.pdf`);
+    } catch (err) { console.error(err); }
+    finally { setExporting(false); }
+  }
+
+  const tabContent = [
+    <TabOverview mobile={mobile} C={C} />,
+    <TabVoterIntel mobile={mobile} C={C} />,
+    <TabMediaUniverse mobile={mobile} C={C} />,
+    <TabBudgetTiers mobile={mobile} C={C} />,
+    <TabSiteTraffic mobile={mobile} C={C} />,
+    <TabPitchNarrative mobile={mobile} C={C} />,
+    <TabUndecidedVoters mobile={mobile} C={C} />,
+  ];
 
   return (
-    <div style={{ minHeight: "100vh", background: C.navy, color: C.text, fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ background: C.bg, minHeight: "100vh", fontFamily: "'Segoe UI', system-ui, sans-serif", color: C.white, transition: "background 0.3s, color 0.3s" }}>
+      <style>{`
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+        @keyframes pdot  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: ${C.scrollTrack}; }
+        ::-webkit-scrollbar-thumb { background: ${C.scrollThumb}; border-radius: 3px; }
+        * { box-sizing: border-box; }
+      `}</style>
+
       {/* Header */}
-      <div style={{ background: C.navyMid, borderBottom: `2px solid ${C.gold}`, padding: "0 20px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0", flexWrap: "wrap", gap: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <Link href="/campaigns" style={{ color: C.muted, fontSize: 13, textDecoration: "none", display: "flex", alignItems: "center", gap: 6 }}>
-                ← Campaigns
-              </Link>
-              <div style={{ width: 1, height: 20, background: C.navyBorder }} />
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ color: C.white, fontWeight: 800, fontSize: 18 }}>Jeff Starling</span>
-                  <span style={{ color: C.muted, fontSize: 14 }}>for Oklahoma Attorney General</span>
-                  <span style={{ background: C.gold, color: C.navy, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, textTransform: "uppercase" }}>PITCH</span>
-                </div>
-                <div style={{ color: C.muted, fontSize: 12, marginTop: 2 }}>
-                  Exact Audience · exactaudience.ai · siteid.ai · Presented by Rick Walker
-                </div>
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-              <div style={{ background: C.navyLight, border: `1px solid ${C.navyBorder}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
-                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Election</div>
-                <div style={{ color: C.gold, fontWeight: 700, fontSize: 13 }}>June 16, 2026</div>
-              </div>
-              <div style={{ background: C.navyLight, border: `1px solid ${C.navyBorder}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
-                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Budget Range</div>
-                <div style={{ color: C.blueLight, fontWeight: 700, fontSize: 13 }}>$30K – $93K</div>
-              </div>
-            </div>
+      <div style={{ background: C.headerBg, borderBottom: "1px solid rgba(212,160,23,0.25)", padding: mobile ? "12px 16px" : "14px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 200 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: mobile ? 10 : 16, minWidth: 0 }}>
+          <button onClick={() => navigate("/campaigns")} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, padding: "5px 10px", color: "#f1f5f9", fontSize: 11, cursor: "pointer", flexShrink: 0 }}>
+            ← Campaigns
+          </button>
+          <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            <span style={{ width: 8, height: 8, background: "#d4a017", borderRadius: "50%", boxShadow: "0 0 8px #d4a01788", animation: "pdot 2s ease-in-out infinite" }} />
+            {!mobile && <img src="/ea-logo.png" alt="Exact Audience" style={{ height: 22, maxWidth: 160, objectFit: "contain", objectPosition: "left center", filter: "brightness(1.15)" }} />}
+          </div>
+          {!mobile && <div style={{ width: 1, height: 30, background: "rgba(255,255,255,0.2)" }} />}
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: mobile ? 12 : 14, fontWeight: 700, color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Jeff Starling for AG</div>
+            {!mobile && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)" }}>Oklahoma · Republican Primary · June 16, 2026</div>}
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: mobile ? 6 : 10, flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(74,222,128,.15)", border: "1px solid rgba(74,222,128,.35)", borderRadius: 20, padding: "4px 10px", fontSize: 10, fontWeight: 700, color: "#4ade80", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", animation: "blink 1.2s ease-in-out infinite" }} />
+            Live
+          </div>
+          {!mobile && (
+            <button onClick={handleExport} disabled={exporting} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, padding: "5px 12px", color: "#f1f5f9", fontSize: 11, cursor: "pointer" }}>
+              {exporting ? "Exporting..." : "📄 Export PDF"}
+            </button>
+          )}
+          <button onClick={toggleTheme} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 20, padding: "5px 12px", color: "#f1f5f9", fontSize: 11, cursor: "pointer" }}>
+            {isDark ? "☀️ Light" : "🌙 Dark"}
+          </button>
+          <button onClick={() => { localStorage.removeItem("ea_dashboard_auth"); window.location.href = "/"; }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 20, padding: "5px 10px", color: "#94a3b8", fontSize: 11, fontWeight: 600, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
+            🔒 {mobile ? "" : "Log Out"}
+          </button>
+          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", fontVariantNumeric: "tabular-nums" }}>
+            {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
           </div>
         </div>
       </div>
 
-      {/* Race context banner */}
-      <RaceContextBanner />
-
-      {/* Tabs */}
-      <div style={{ background: C.navyMid, borderBottom: `1px solid ${C.navyBorder}`, overflowX: "auto" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px", display: "flex", gap: 0 }}>
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                background: "transparent",
-                border: "none",
-                borderBottom: `3px solid ${activeTab === tab.id ? C.gold : "transparent"}`,
-                color: activeTab === tab.id ? C.white : C.muted,
-                padding: "14px 18px",
-                cursor: "pointer",
-                fontWeight: activeTab === tab.id ? 700 : 400,
-                fontSize: 13,
-                whiteSpace: "nowrap",
-                transition: "all 0.15s",
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
+      {/* Campaign Day Progress Bar */}
+      <div style={{ background: isDark ? "#080c18" : "#eef3f8", borderBottom: `1px solid ${C.border}`, padding: mobile ? "8px 16px" : "10px 28px", display: "flex", alignItems: "center", gap: mobile ? 10 : 20, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <span style={{ fontSize: 10, fontWeight: 800, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.1em" }}>Day {campaign.dayNum} of 18</span>
+          <span style={{ fontSize: 10, color: C.muted }}>·</span>
+          <span style={{ fontSize: 10, color: C.muted }}>{campaign.daysLeft} days to June 16</span>
+        </div>
+        <div style={{ flex: 1, minWidth: 120, height: 6, background: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)", borderRadius: 3, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${(campaign.dayNum / 18) * 100}%`, background: `linear-gradient(90deg, ${C.blue2}, ${C.accent2})`, borderRadius: 3, transition: "width 0.6s ease" }} />
+        </div>
+        <div style={{ display: "flex", gap: mobile ? 12 : 24, flexShrink: 0 }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: C.white }}>${campaign.spentToDate.toLocaleString()}</div>
+            <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Spent</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 12, fontWeight: 800, color: C.green }}>${campaign.remainingBudget.toLocaleString()}</div>
+            <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Remaining</div>
+          </div>
+          {!mobile && (
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: C.accent2 }}>{fmt(campaign.cumulativeImpressions)}</div>
+              <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Proj. Impressions</div>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Race Context Banner */}
+      <div style={{ background: isDark ? "#0a1020" : "#e8f0f8", borderBottom: `1px solid ${C.border}`, padding: mobile ? "8px 16px" : "9px 28px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, background: `${C.accent2}18`, border: `1px solid ${C.accent2}40`, borderRadius: 20, padding: "3px 10px", flexShrink: 0 }}>
+          <span style={{ fontSize: 9, fontWeight: 800, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.1em" }}>🗳️ Republican Primary</span>
+        </div>
+        <span style={{ fontSize: 10, color: C.muted }}>·</span>
+        <span style={{ fontSize: 10, color: C.white, fontWeight: 600 }}>June 16, 2026</span>
+        <span style={{ fontSize: 10, color: C.muted }}>·</span>
+        <span style={{ fontSize: 10, color: C.muted }}>2-person race: Starling vs. Echols</span>
+        <span style={{ fontSize: 10, color: C.muted }}>·</span>
+        <span style={{ fontSize: 10, color: C.green, fontWeight: 700 }}>Winner becomes next Oklahoma AG</span>
+        {!mobile && (
+          <>
+            <span style={{ fontSize: 10, color: C.muted }}>·</span>
+            <span style={{ fontSize: 10, color: C.muted }}>~1.28M registered Republicans · Win threshold: ~116,000–142,000 votes</span>
+          </>
+        )}
+      </div>
+
+      {/* Tabs */}
+      <div style={{ background: C.bg2, borderBottom: `1px solid ${C.border}`, padding: "0 28px", overflowX: "auto", display: "flex", gap: 0 }}>
+        {TABS.map((t, i) => (
+          <button key={t} onClick={() => setTab(i)} style={{
+            padding: mobile ? "10px 12px" : "12px 18px", fontSize: mobile ? 10 : 11, fontWeight: 700,
+            letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap",
+            background: "transparent", border: "none", borderBottom: `2px solid ${tab === i ? C.accent2 : "transparent"}`,
+            color: tab === i ? C.accent2 : C.muted, transition: "all 0.15s",
+          }}>{t}</button>
+        ))}
+      </div>
+
       {/* Content */}
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 20px" }}>
-        {activeTab === "overview" && <TabOverview />}
-        {activeTab === "tiers" && <TabTiers />}
-        {activeTab === "channels" && <TabChannels />}
-        {activeTab === "intelligence" && <TabIntelligence />}
-        {activeTab === "timeline" && <TabTimeline />}
-        {activeTab === "ads" && <TabAds />}
-        {activeTab === "voters" && <TabUndecidedVoters />}
+      <div ref={contentRef} style={{ padding: mobile ? "16px" : "24px 28px" }}>
+        {tabContent[tab]}
       </div>
 
       {/* Footer */}
-      <div style={{ borderTop: `1px solid ${C.navyBorder}`, padding: "16px 20px", textAlign: "center" }}>
-        <p style={{ color: C.mutedDark, fontSize: 12, margin: 0 }}>
-          Exact Audience · rick@exactaudience.ai · exactaudience.ai · siteid.ai · Confidential · June 2026
-        </p>
+      <div style={{ padding: "16px 28px", borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+        <div style={{ fontSize: 10, color: C.muted }}>Powered by Exact Audience · Behavioral Intelligence · exactaudience.ai</div>
+        <div style={{ fontSize: 10, color: C.muted }}>Jeff Starling for Oklahoma AG · June 16, 2026 Republican Primary</div>
       </div>
     </div>
   );
