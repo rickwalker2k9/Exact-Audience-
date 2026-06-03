@@ -45,7 +45,7 @@ export const BREEZE_BUYER_PROFILES: BuyerProfile[] = [
       { channel: "LinkedIn", allocation: 10, tactic: "Target Project Manager + California + age 55-65 with income protection professional messaging.", color: "#0a66c2" },
     ],
     tags: ["High Intent", "Completed Calculator", "Abandoned Bestow", "Age 62", "California"],
-    journeySummary: "Nick spent 3 weeks comparing disability income products across 5 carriers, abandoned a Bestow application, then converted through our EA calculator after seeing our Google ad, Facebook video, and email. He scheduled a coverage review — highest-priority close.",
+    journeySummary: "Nick spent 3 weeks comparing disability income products across 5 carriers, abandoned a Bestow application, then converted through our EA calculator after seeing our Google ad, Meta display ad, and email. He scheduled a coverage review — highest-priority close.",
   },
   {
     id: "bz-008",
@@ -89,7 +89,7 @@ export const BREEZE_BUYER_PROFILES: BuyerProfile[] = [
       { channel: "LinkedIn", allocation: 10, tactic: "Target Financial Advisor + Florida + age 50-60 with income protection professional messaging.", color: "#0a66c2" },
     ],
     tags: ["Ethos Approved", "Did Not Finalize", "High Intent", "Financial Advisor", "Sarasota FL"],
-    journeySummary: "Jonathan completed a full Ethos application, received a $42/mo quote, and walked away. After seeing our Google ad, Facebook video, and email, he returned to our calculator and completed all 6 steps. He is a competitive close — needs a better offer than Ethos.",
+    journeySummary: "Jonathan completed a full Ethos application, received a $42/mo quote, and walked away. After seeing our Google ad, Meta display ad, and email, he returned to our calculator and completed all 6 steps. He is a competitive close — needs a better offer than Ethos.",
   },
   {
     id: "bz-012",
@@ -131,6 +131,6 @@ export const BREEZE_BUYER_PROFILES: BuyerProfile[] = [
       { channel: "LinkedIn", allocation: 10, tactic: "Target Nurse Practitioner + Healthcare + Florida with income protection professional messaging.", color: "#0a66c2" },
     ],
     tags: ["Ethos Approved", "Healthcare Professional", "High Intent", "Completed Calculator", "Florida"],
-    journeySummary: "Evelyn researched 6 carriers over 3 weeks, started a Guardian quote, was previously approved via Ethos, then converted through our EA calculator after our Google ad, Facebook video, and email sequence. She is a high-priority close with a strong professional identity hook.",
+    journeySummary: "Evelyn researched 6 carriers over 3 weeks, started a Guardian quote, was previously approved via Ethos, then converted through our EA calculator after our Google ad, Meta display ad, and email sequence. She is a high-priority close with a strong professional identity hook.",
   },
 ];

@@ -152,6 +152,8 @@ const SLUG_ROUTES: Record<string, string> = {
   "colleen-mccarty":             "/mccarty",
   "breeze-insurance":            "/breeze-insurance",
   "starling":                    "/starling",
+  "echols":                      "/echols",
+  "barrett-financial":            "/barrett-financial",
 };
 
 // ── Main Page ─────────────────────────────────────────────────────────────────

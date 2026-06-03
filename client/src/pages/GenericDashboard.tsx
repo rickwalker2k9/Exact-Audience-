@@ -486,12 +486,74 @@ function TabChannels({ mobile, C, ctvChannels, mediaMix, qr, ctvRecommendationsM
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* ── ACTIVE CHANNELS (always top) ── */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <Card C={C}>
+          <SectionTitle C={C}>Active Digital Channels</SectionTitle>
+          {mediaMix.filter(m => m.channel !== "CTV Streaming").map(m => (
+            <div key={m.channel} style={{ marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                <span style={{ fontSize: 12, color: C.white, fontWeight: 600 }}>{m.channel}</span>
+                <span style={{ fontSize: 11, color: C.gold }}>${(m.spend / 1000).toFixed(1)}K spend</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                <span style={{ fontSize: 11, color: C.muted }}>{fmt(m.impressions)} impr · {m.pct}% share</span>
+              </div>
+              <ProgressBar value={m.pct} max={30} color={m.color} C={C} />
+            </div>
+          ))}
+        </Card>
+        {qr ? (
+          <Card C={C}>
+            <SectionTitle C={C}>QR Code Activation</SectionTitle>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+              {[
+                { label: "Total Scans", value: fmt(qr.totalScans), color: C.gold },
+                { label: "Unique Devices", value: fmt(qr.uniqueDevices), color: C.blue },
+                { label: "Conversion Rate", value: `${qr.conversionRate}%`, color: C.green },
+                { label: "Avg Time to Convert", value: qr.avgTimeToConvert, color: C.purple2 },
+              ].map(s => (
+                <div key={s.label} style={{ background: C.bg3, borderRadius: 10, padding: "12px 14px" }}>
+                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: s.color }}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+            {qr.placements.map(p => (
+              <div key={p.location} style={{ marginBottom: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                  <span style={{ fontSize: 11, color: C.white, fontWeight: 600 }}>{p.location}</span>
+                  <span style={{ fontSize: 11, color: C.green }}>{p.conversions} conv</span>
+                </div>
+                <ProgressBar value={p.scans} max={qr.totalScans} color={C.gold} C={C} />
+              </div>
+            ))}
+          </Card>
+        ) : (
+          <Card C={C}>
+            <SectionTitle C={C}>Channel Spend Distribution</SectionTitle>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={mediaMix} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke={C.border} horizontal={false} />
+                <XAxis type="number" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
+                <YAxis dataKey="channel" type="category" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={110} />
+                <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `$${Number(v).toLocaleString()}`} />
+                <Bar dataKey="spend" radius={[0, 4, 4, 0]}>
+                  {mediaMix.map((m, i) => <Cell key={i} fill={m.color} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        )}
+      </div>
+
+      {/* ── CTV SECTION (bottom) ── */}
       <Card C={C}>
         <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "center", gap: 12, marginBottom: 16 }}>
           <SectionTitle C={C}>{ctvRecommendationsMode ? "CTV Streaming — Recommended Channels" : "CTV Streaming — Channel Inventory"}</SectionTitle>
           {ctvRecommendationsMode && (
             <div style={{ marginBottom: 14, padding: "10px 14px", borderRadius: 8, background: "rgba(14,165,233,0.12)", border: "1px solid rgba(14,165,233,0.3)", fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
-              <span style={{ color: C.blue, fontWeight: 700 }}>📺 CTV Recommendation</span> — Breeze has not yet activated CTV/OTT advertising. The channels below represent the <strong style={{ color: C.white }}>recommended inventory</strong> for a future CTV buy based on your target audience (self-employed professionals, healthcare workers, income protection seekers). Estimated CPMs and completion rates are based on current market benchmarks.
+              <span style={{ color: C.blue, fontWeight: 700 }}>CTV Recommendation</span> — Breeze has not yet activated CTV/OTT advertising. The channels below represent the <strong style={{ color: C.white }}>recommended inventory</strong> for a future CTV buy based on your target audience (self-employed professionals, healthcare workers, income protection seekers). Estimated CPMs and completion rates are based on current market benchmarks.
             </div>
           )}
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -601,67 +663,6 @@ function TabChannels({ mobile, C, ctvChannels, mediaMix, qr, ctvRecommendationsM
         </div>
       </Card>
 
-      {/* Digital channels summary */}
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Card C={C}>
-          <SectionTitle C={C}>Digital Channel Mix</SectionTitle>
-          {mediaMix.filter(m => m.channel !== "CTV Streaming").map(m => (
-            <div key={m.channel} style={{ marginBottom: 14 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-                <span style={{ fontSize: 12, color: C.white, fontWeight: 600 }}>{m.channel}</span>
-                <span style={{ fontSize: 11, color: C.gold }}>${(m.spend / 1000).toFixed(1)}K spend</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, color: C.muted }}>{fmt(m.impressions)} impr · {m.pct}% share</span>
-              </div>
-              <ProgressBar value={m.pct} max={30} color={m.color} C={C} />
-            </div>
-          ))}
-        </Card>
-
-        {qr ? (
-          <Card C={C}>
-            <SectionTitle C={C}>QR Code Activation</SectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-              {[
-                { label: "Total Scans", value: fmt(qr.totalScans), color: C.gold },
-                { label: "Unique Devices", value: fmt(qr.uniqueDevices), color: C.blue },
-                { label: "Conversion Rate", value: `${qr.conversionRate}%`, color: C.green },
-                { label: "Avg Time to Convert", value: qr.avgTimeToConvert, color: C.purple2 },
-              ].map(s => (
-                <div key={s.label} style={{ background: C.bg3, borderRadius: 10, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>{s.label}</div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: s.color }}>{s.value}</div>
-                </div>
-              ))}
-            </div>
-            {qr.placements.map(p => (
-              <div key={p.location} style={{ marginBottom: 10 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, color: C.white, fontWeight: 600 }}>{p.location}</span>
-                  <span style={{ fontSize: 11, color: C.green }}>{p.conversions} conv</span>
-                </div>
-                <ProgressBar value={p.scans} max={qr.totalScans} color={C.gold} C={C} />
-              </div>
-            ))}
-          </Card>
-        ) : (
-          <Card C={C}>
-            <SectionTitle C={C}>Channel Spend Distribution</SectionTitle>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={mediaMix} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke={C.border} horizontal={false} />
-                <XAxis type="number" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
-                <YAxis dataKey="channel" type="category" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} width={110} />
-                <Tooltip contentStyle={{ background: C.tooltipBg, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white }} formatter={(v) => `$${Number(v).toLocaleString()}`} />
-                <Bar dataKey="spend" radius={[0, 4, 4, 0]}>
-                  {mediaMix.map((m, i) => <Cell key={i} fill={m.color} />)}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        )}
-      </div>
     </div>
   );
 }
@@ -1023,8 +1024,7 @@ function TabPeople({ mobile, C, dashboardId, accentColor, audienceSegment, audie
     <div style={{ padding: mobile ? "16px" : "24px 28px" }}>
       {/* Featured Profiles */}
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 16, fontWeight: 800, color: C.white, marginBottom: 4 }}>Featured Buyer Profiles</div>
-        <div style={{ fontSize: 12, color: C.white }}>3 highlighted profiles from the 39 confirmed leads below — all originated from <span style={{ color: accentColor, fontWeight: 700 }}>incomeprotectioncalculator.com</span>. Click any profile to view their full buyer journey, intent signals, and personalized media recommendations.</div>
+        <div style={{ fontSize: 16, fontWeight: 800, color: C.white, marginBottom: 4 }}>Lead Profiles</div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>
         {profiles.map(profile => (

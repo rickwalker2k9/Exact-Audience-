@@ -5,7 +5,7 @@
 export const STARLING_RACE = {
   candidate: "Jeff Starling",
   opponent: "Jon Echols",
-  raceType: "Two-candidate GOP Primary (open seat)",
+  raceType: "Republican Primary",
   office: "Oklahoma Attorney General",
   primaryDate: "June 16, 2026",
   electionDate: "June 16, 2026",
@@ -21,11 +21,11 @@ export const STARLING_RACE = {
   projectedTurnoutLow: 230000,
   projectedTurnoutHigh: 282000,
   // Torchlight Strategies poll, March 25-31 2026
-  undecidedPct: 78,
-  starlingPct: 11,
-  echolsPct: 11,
-  undecidedVoters: 200035,  // 78% of 256,455 projected turnout
-  starlingBaseVotes: 28210,  // 11% of 256,455
+  undecidedPct: 36.8,
+  starlingPct: 30.7,
+  echolsPct: 32.5,
+  undecidedVoters: 94375,   // 36.8% of 256,455 projected turnout
+  starlingBaseVotes: 78732,  // 30.7% of 256,455
   // Two-man race: Starling needs 50%+1 to win outright (no runoff needed)
   votesNeededToWin: 128228,  // 50%+1 of 256,455 projected turnout
 };
@@ -344,8 +344,8 @@ export const STARLING_TURNOUT = {
   projectedVoters: 256000,
   projectedLow: 230000,
   projectedHigh: 282000,
-  undecidedPct: 78,
-  undecidedVoters: 199680,
+  undecidedPct: 36.8,
+  undecidedVoters: 94375,
   votesToWin: 128001,
   // At each budget tier, how many undecided voters can we reach and move
   tiers: [

@@ -20,12 +20,12 @@ export const LAMBO_KPI_TARGETS = {
 };
 
 export const LAMBO_LIVE_BASE = {
-  impressions: 5214800,
-  reach: 201340,
-  completions: 4648200,
-  siteVisitors: 221,
-  conversions: 548,
-  frequency: 2.59,
+  impressions: 5571400,
+  reach: 209800,
+  completions: 4968200,
+  siteVisitors: 237,
+  conversions: 581,
+  frequency: 2.66,
   completionRate: 89.2,
   avgCpm: 21.48,
 };
@@ -60,6 +60,8 @@ export const LAMBO_DAILY_IMPRESSIONS = [
   { day: "May 27", ctv: 122400, youtube: 27800, display: 13700, meta: 16400, google: 10500, email: 8100, qr: 8200 },
   { day: "May 28", ctv: 131200, youtube: 29800, display: 14700, meta: 17600, google: 11300, email: 8700, qr: 8900 },
   { day: "May 29", ctv: 136800, youtube: 31100, display: 15300, meta: 18300, google: 11700, email: 9100, qr: 9300 },
+  { day: "Jun 1",  ctv: 141400, youtube: 32200, display: 15800, meta: 18900, google: 12100, email: 9400, qr: 9600 },
+  { day: "Jun 2",  ctv: 144800, youtube: 32900, display: 16200, meta: 19400, google: 12400, email: 9600, qr: 9800 },
 ];
 
 // Media Mix — CTV dominant (73%)
@@ -104,16 +106,16 @@ export const LAMBO_QR = {
   ],
 };
 
-// SiteID Visitors
+// SiteID Visitors — refreshed Jun 2, 2026
 export const LAMBO_VISITORS = [
-  { first: "Michael",  last: "Reinhardt",  city: "Paradise Valley", zip: "85253", income: "$500K+",      networth: "$5M+",        credit: "A", job: "CEO",                   company: "Henkel Corp",             score: 96, mood: "High Intent", vehicle: "Ferrari 488",       time: "3m ago" },
-  { first: "David",    last: "Kessler",     city: "Scottsdale",      zip: "85255", income: "$350K–$499K",  networth: "$2M–$5M",     credit: "A", job: "Managing Partner",     company: "Fenix Capital",           score: 91, mood: "High Intent", vehicle: "Porsche 911 Turbo", time: "6m ago" },
-  { first: "Jennifer", last: "Whitmore",    city: "Scottsdale",      zip: "85259", income: "$250K–$349K",  networth: "$1M–$2M",     credit: "B", job: "Plastic Surgeon",      company: "Scottsdale Aesthetics",   score: 88, mood: "High Intent", vehicle: "Range Rover SVR",   time: "9m ago" },
-  { first: "Robert",   last: "Stavros",     city: "Paradise Valley", zip: "85253", income: "$500K+",       networth: "$5M+",        credit: "A", job: "Real Estate Developer",  company: "SunState Properties",    score: 94, mood: "High Intent", vehicle: "Bentley Bentayga",  time: "12m ago" },
-  { first: "Ashley",   last: "Tran",        city: "Scottsdale",      zip: "85254", income: "$200K–$249K",  networth: "$750K–$999K", credit: "B", job: "VP Marketing",         company: "Henkel Corp",             score: 79, mood: "In-Market",   vehicle: "BMW X7",            time: "16m ago" },
-  { first: "James",    last: "Morales",     city: "Tempe",           zip: "85284", income: "$150K–$199K",  networth: "$500K–$749K", credit: "C", job: "Orthopedic Surgeon",   company: "Dignity Health",          score: 72, mood: "In-Market",   vehicle: "Lexus LX600",       time: "21m ago" },
-  { first: "Lauren",   last: "Beckett",     city: "Chandler",        zip: "85248", income: "$100K–$149K",  networth: "$250K–$499K", credit: "B", job: "Tech Executive",       company: "GoDaddy",                 score: 68, mood: "Awareness",   vehicle: "Tesla Model S",     time: "28m ago" },
-  { first: "Thomas",   last: "Harrington",  city: "Gilbert",         zip: "85297", income: "$75K–$99K",    networth: "$100K–$249K", credit: "C", job: "Financial Advisor",    company: "Edward Jones",            score: 54, mood: "Awareness",   vehicle: "Audi Q8",           time: "34m ago" },
+  { first: "Alexander", last: "Thornton",   city: "Paradise Valley", zip: "85253", income: "$500K+",      networth: "$5M+",        credit: "A", job: "Private Equity Partner",  company: "Saguaro Capital",         score: 97, mood: "High Intent", vehicle: "Ferrari SF90",       time: "1m ago"  },
+  { first: "Natalie",   last: "Ashworth",   city: "Scottsdale",      zip: "85255", income: "$350K–$499K",  networth: "$2M–$5M",     credit: "A", job: "Chief Revenue Officer",   company: "Verizon Business",        score: 93, mood: "High Intent", vehicle: "Bentley Bentayga",   time: "4m ago"  },
+  { first: "Harrison",  last: "Voss",       city: "Scottsdale",      zip: "85259", income: "$250K–$349K",  networth: "$1M–$2M",     credit: "A", job: "Neurosurgeon",            company: "HonorHealth",             score: 91, mood: "High Intent", vehicle: "Porsche Taycan",     time: "8m ago"  },
+  { first: "Camille",   last: "Fontaine",   city: "Paradise Valley", zip: "85253", income: "$500K+",       networth: "$5M+",        credit: "A", job: "Real Estate Developer",   company: "Pinnacle Realty Group",   score: 95, mood: "High Intent", vehicle: "McLaren 720S",       time: "11m ago" },
+  { first: "Brandon",   last: "Okafor",     city: "Scottsdale",      zip: "85254", income: "$200K–$249K",  networth: "$750K–$999K", credit: "B", job: "VP Engineering",          company: "Axon Enterprise",         score: 81, mood: "In-Market",   vehicle: "BMW M8",             time: "17m ago" },
+  { first: "Stephanie", last: "Lindqvist",  city: "Tempe",           zip: "85284", income: "$150K–$199K",  networth: "$500K–$749K", credit: "B", job: "Cardiologist",            company: "Mayo Clinic",             score: 74, mood: "In-Market",   vehicle: "Lexus LC500",        time: "23m ago" },
+  { first: "Marcus",    last: "Delacroix",  city: "Chandler",        zip: "85248", income: "$100K–$149K",  networth: "$250K–$499K", credit: "B", job: "Software Architect",      company: "PayPal",                  score: 67, mood: "Awareness",   vehicle: "Tesla Model X",      time: "29m ago" },
+  { first: "Victoria",  last: "Harmon",     city: "Gilbert",         zip: "85297", income: "$75K–$99K",    networth: "$100K–$249K", credit: "C", job: "Financial Planner",       company: "Merrill Lynch",           score: 55, mood: "Awareness",   vehicle: "Audi Q8",           time: "36m ago" },
 ];
 
 export const LAMBO_MOODS = [

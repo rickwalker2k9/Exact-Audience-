@@ -15,12 +15,12 @@ export const LANDROVER_CLIENT = {
 };
 
 export const LANDROVER_LIVE_BASE = {
-  impressions: 4871342,
-  reach: 188640,
-  completions: 4258200,
-  siteVisitors: 198,
-  conversions: 487,
-  frequency: 2.58,
+  impressions: 5219342,
+  reach: 196800,
+  completions: 4562400,
+  siteVisitors: 214,
+  conversions: 521,
+  frequency: 2.65,
   completionRate: 87.5,
   avgCpm: 20.02,
 };
@@ -57,6 +57,8 @@ export const LANDROVER_DAILY_IMPRESSIONS = [
   { day: "May 29", ctv: 128000, youtube: 29100, display: 14300, meta: 17100, google: 10900, email: 8500, qr: 8700 },
   { day: "May 30", ctv: 132400, youtube: 30100, display: 14800, meta: 17700, google: 11300, email: 8800, qr: 9000 },
   { day: "May 31", ctv: 137200, youtube: 31200, display: 15300, meta: 18400, google: 11700, email: 9100, qr: 9300 },
+  { day: "Jun 1",  ctv: 142400, youtube: 32400, display: 15900, meta: 19000, google: 12200, email: 9500, qr: 9700 },
+  { day: "Jun 2",  ctv: 146200, youtube: 33200, display: 16300, meta: 19500, google: 12500, email: 9700, qr: 9900 },
 ];
 
 export const LANDROVER_MEDIA_MIX = [
@@ -125,15 +127,16 @@ export const LANDROVER_MOODS = [
   { label: "Family Premium",     count: 30160, color: "#0ea5e9", desc: "Premium family buyers seeking 3-row luxury SUV with capability" },
 ];
 
+// Visitors refreshed Jun 2, 2026
 export const LANDROVER_VISITORS = [
-  { first: "Michael",  last: "T.",  city: "Scottsdale",      zip: "85254", income: "$380K+", networth: "$2.4M", credit: "A+", job: "CEO",         company: "Tech Startup",      score: 94, mood: "Adventure Seekers",  vehicle: "BMW X5",        time: "3m ago"  },
-  { first: "Jennifer", last: "K.",  city: "Paradise Valley",  zip: "85253", income: "$520K+", networth: "$4.1M", credit: "A+", job: "Attorney",    company: "K&L Gates",         score: 97, mood: "Luxury Upgraders",  vehicle: "Mercedes GLE",  time: "7m ago"  },
-  { first: "Robert",   last: "A.",  city: "Scottsdale",      zip: "85259", income: "$290K+", networth: "$1.8M", credit: "A",  job: "Surgeon",     company: "HonorHealth",       score: 91, mood: "Status & Prestige", vehicle: "Audi Q7",       time: "12m ago" },
-  { first: "Susan",    last: "M.",  city: "Fountain Hills",  zip: "85268", income: "$240K+", networth: "$1.4M", credit: "A",  job: "CFO",         company: "Vanguard",          score: 88, mood: "Adventure Seekers",  vehicle: "Toyota 4Runner", time: "18m ago" },
-  { first: "David",    last: "L.",  city: "Scottsdale",      zip: "85260", income: "$410K+", networth: "$3.2M", credit: "A+", job: "Entrepreneur", company: "Self-Employed",     score: 95, mood: "Luxury Upgraders",  vehicle: "BMW X5",        time: "24m ago" },
-  { first: "Patricia", last: "H.",  city: "Cave Creek",      zip: "85331", income: "$280K+", networth: "$1.6M", credit: "A",  job: "Physician",   company: "Mayo Clinic",       score: 86, mood: "Family Premium",    vehicle: "Volvo XC90",    time: "31m ago" },
-  { first: "James",    last: "W.",  city: "Scottsdale",      zip: "85255", income: "$460K+", networth: "$3.8M", credit: "A+", job: "VP Finance",  company: "American Express",  score: 96, mood: "Status & Prestige", vehicle: "Porsche Cayenne", time: "38m ago" },
-  { first: "Linda",    last: "B.",  city: "Carefree",        zip: "85377", income: "$320K+", networth: "$2.1M", credit: "A",  job: "Architect",   company: "HDR Inc",           score: 89, mood: "Adventure Seekers",  vehicle: "Jeep Grand Cherokee", time: "44m ago" },
+  { first: "Ethan",     last: "Calloway",   city: "Scottsdale",      zip: "85254", income: "$420K+",  networth: "$2.8M", credit: "A+", job: "Managing Director",     company: "BlackRock",         score: 96, mood: "Luxury Upgraders",  vehicle: "BMW X5",              time: "2m ago"  },
+  { first: "Sophia",   last: "Wentworth",  city: "Paradise Valley", zip: "85253", income: "$540K+",  networth: "$4.6M", credit: "A+", job: "Partner",               company: "DLA Piper",         score: 98, mood: "Status & Prestige", vehicle: "Mercedes GLE 63",     time: "6m ago"  },
+  { first: "Gregory",  last: "Nakamura",   city: "Scottsdale",      zip: "85259", income: "$310K+",  networth: "$1.9M", credit: "A",  job: "Orthopedic Surgeon",    company: "Scottsdale Orthopedics", score: 92, mood: "Adventure Seekers", vehicle: "Audi Q8",         time: "13m ago" },
+  { first: "Claire",   last: "Pemberton",  city: "Fountain Hills",  zip: "85268", income: "$260K+",  networth: "$1.5M", credit: "A",  job: "VP Operations",         company: "Freeport-McMoRan",  score: 87, mood: "Family Premium",    vehicle: "Volvo XC90",          time: "19m ago" },
+  { first: "Trevor",   last: "Blackwood",  city: "Scottsdale",      zip: "85260", income: "$480K+",  networth: "$3.6M", credit: "A+", job: "Founder & CEO",         company: "Blackwood Ventures", score: 95, mood: "Luxury Upgraders", vehicle: "Range Rover Sport",   time: "26m ago" },
+  { first: "Allison",  last: "Drummond",   city: "Cave Creek",      zip: "85331", income: "$295K+",  networth: "$1.7M", credit: "A",  job: "Radiologist",           company: "Banner Health",     score: 84, mood: "Adventure Seekers", vehicle: "Toyota Land Cruiser", time: "33m ago" },
+  { first: "Preston",  last: "Whitfield",  city: "Scottsdale",      zip: "85255", income: "$490K+",  networth: "$4.0M", credit: "A+", job: "Chief Investment Officer", company: "Western Alliance", score: 97, mood: "Status & Prestige", vehicle: "Porsche Cayenne GTS", time: "41m ago" },
+  { first: "Meredith", last: "Gallagher",  city: "Carefree",        zip: "85377", income: "$340K+",  networth: "$2.3M", credit: "A",  job: "Principal Architect",   company: "Gould Evans",       score: 90, mood: "Family Premium",    vehicle: "Jeep Grand Wagoneer", time: "48m ago" },
 ];
 
 export const LANDROVER_QR = {

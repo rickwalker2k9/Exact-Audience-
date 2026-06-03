@@ -29,7 +29,7 @@ export type MediaRecommendation = {
 
 export type BuyerProfile = {
   id: string;
-  dashboardId: "land-rover" | "lamborghini" | "warby-parker" | "policygenius" | "mccarty" | "breeze-insurance";
+  dashboardId: "land-rover" | "lamborghini" | "warby-parker" | "policygenius" | "mccarty" | "breeze-insurance" | "barrett-financial";
   name: string;
   age: number;
   location: string;
@@ -554,6 +554,7 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
 
 import { MCCARTY_VOTER_PROFILES } from "./mccartryProfiles";
 import { BREEZE_BUYER_PROFILES } from "./breezeProfiles";
+import { BARRETT_BUYER_PROFILE_CARDS } from "./barrettProfiles";
 
 export const ALL_PROFILES: BuyerProfile[] = [
   ...LAND_ROVER_PROFILES,
@@ -562,6 +563,7 @@ export const ALL_PROFILES: BuyerProfile[] = [
   ...POLICYGENIUS_PROFILES,
   ...MCCARTY_VOTER_PROFILES,
   ...BREEZE_BUYER_PROFILES,
+  ...BARRETT_BUYER_PROFILE_CARDS,
 ];
 
 export function getProfilesByDashboard(dashboardId: BuyerProfile["dashboardId"]): BuyerProfile[] {

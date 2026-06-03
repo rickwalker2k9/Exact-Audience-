@@ -11,14 +11,14 @@
  * CHANNELS (actuals): Meta, Google, LinkedIn, Email — NO CTV active yet.
  * CTV is RECOMMENDED ONLY and shown in the Channels tab as a recommendation.
  *
- * SITEID.AI IDENTIFICATION RATE: 53% of all site visitors are identified by name & address.
+ * SITEID.AI IDENTIFICATION RATE: 53% in April, 61% in May (improving match rate) are identified by name & address.
  *
  * TRAFFIC MATH:
  *   April: ~280 visitors/day × 30 days = 8,400 total visitors
  *          53% identified = 4,452 identified visitors (148/day)
  *   May:   ~295 visitors/day × 31 days = 9,145 total visitors
- *          53% identified = 4,847 identified visitors (156/day)
- *   Combined: 17,545 total visitors | 9,299 identified (53%)
+ *          61% identified = 5,578 identified visitors (180/day)
+ *   Combined: 17,545 total visitors | 10,030 identified
  *
  * IMPRESSIONS MATH (blended CPM ~$11.80 across digital channels):
  *   April:  $10,712.23 / $11.80 × 1,000 = 907,816 impressions
@@ -47,13 +47,13 @@ export const BREEZE_CLIENT = {
 // Reach: 94,000 unique professionals (some overlap between months)
 // Completions: 84.0% of 1,866,690 = 1,568,020
 // Site visitors: 17,545 total (8,400 April + 9,145 May)
-// SiteID identified: 53% of 17,545 = 9,299
+// SiteID identified: 53% Apr (4,452) + 61% May (5,578) = 10,030 combined
 // Conversions: 3.7% of 17,545 = 649 opt-ins
 export const BREEZE_LIVE_BASE = {
   impressions: 1866690,
   reach: 94000,
   completions: 1568020,
-  siteVisitors: 9299,          // SiteID-identified visitors (53% of 17,545 total)
+  siteVisitors: 10030,         // SiteID-identified visitors (53% Apr + 61% May of 17,545 total)
   conversions: 649,
   frequency: 19.9,             // 1,866,690 / 94,000
   completionRate: 84.0,
@@ -167,8 +167,8 @@ export const BREEZE_MONTHLY_SPEND = [
     spend: 11314.71,
     impressions: 958874,
     visitors: 9145,
-    identified: 4847,   // 53% of 9,145
-    identifiedPct: 53,
+    identified: 5578,   // 61% of 9,145
+    identifiedPct: 61,
     conversions: 338,
     channels: { meta: 4299.59, google: 3620.71, linkedin: 2489.24, email: 905.17 },
   },
@@ -204,7 +204,7 @@ export const BREEZE_CTV_CHANNELS = [
 ];
 
 export const BREEZE_CREATIVES = [
-  { name: "Income Protection Calculator — Meta :30",    impressions: 757100, completions: 636800, cpm: 11.05, completionRate: 84.1, format: "Meta Video :30"  },
+  { name: "Income Protection Calculator — Meta Ad",    impressions: 757100, completions: 636800, cpm: 11.05, completionRate: 84.1, format: "Meta Static / Carousel"  },
   { name: "LinkedIn Sponsored Post — Professionals",    impressions: 452400, completions: 383500, cpm: 10.71, completionRate: 84.8, format: "LinkedIn Static" },
   { name: "Google Search — Income Protection",          impressions: 398600, completions: 335900, cpm: 8.20,  completionRate: 84.3, format: "Search Ad"       },
   { name: "Email — VALID GOLD List",                    impressions: 194500, completions: 138200, cpm: 2.40,  completionRate: 71.1, format: "Email Campaign"  },
@@ -220,22 +220,20 @@ export const BREEZE_MOODS = [
   { label: "Undecided / Researching",     count: 10, color: "#64748b", desc: "Comparison shoppers evaluating coverage options" },
 ];
 
-// Opt-in visitors who completed the calculator on incomeprotectioncalculator.com via EA-tracked link.
-// SiteID.ai identifies 53% of all visitors — ~148/day in April, ~156/day in May.
-// The visitors below are from the identified pool (SiteID-matched).
+// Visitors refreshed Jun 2, 2026 — SiteID.ai identified pool
 export const BREEZE_VISITORS = [
-  { first: "Michael",    last: "Hartley",   city: "Arlington",   zip: "22201", income: "$100K–$150K", networth: "$180K–$350K", credit: "A", job: "Software Engineer",     company: "Booz Allen",     score: 91, mood: "Income Protection Seeker",    time: "2m ago"  },
-  { first: "Sarah",      last: "Kowalski",  city: "Denver",      zip: "80201", income: "$150K–$200K", networth: "$220K–$420K", credit: "A", job: "Freelance Consultant",   company: "Self-Employed",  score: 94, mood: "Self-Employed Professional",  time: "4m ago"  },
-  { first: "James",      last: "Nguyen",    city: "Seattle",     zip: "98101", income: "$100K–$150K", networth: "$150K–$300K", credit: "B", job: "Project Manager",       company: "Amazon",         score: 82, mood: "Family Breadwinner",          time: "7m ago"  },
-  { first: "Patricia",   last: "Delgado",   city: "Miami",       zip: "33101", income: "$100K–$150K", networth: "$170K–$340K", credit: "A", job: "Physical Therapist",     company: "Baptist Health", score: 88, mood: "Healthcare Worker",           time: "11m ago" },
-  { first: "Robert",     last: "Osei",      city: "Chicago",     zip: "60601", income: "$100K–$150K", networth: "$130K–$260K", credit: "B", job: "Marketing Manager",     company: "Publicis",       score: 76, mood: "Income Protection Seeker",    time: "14m ago" },
-  { first: "Angela",     last: "Fontaine",  city: "Nashville",   zip: "37201", income: "$100K–$150K", networth: "$120K–$240K", credit: "B", job: "Independent Realtor",   company: "Self-Employed",  score: 84, mood: "Self-Employed Professional",  time: "18m ago" },
-  { first: "Christopher",last: "Webb",      city: "Phoenix",     zip: "85001", income: "$100K–$150K", networth: "$130K–$260K", credit: "B", job: "Operations Manager",    company: "Honeywell",      score: 79, mood: "Family Breadwinner",          time: "22m ago" },
-  { first: "Sandra",     last: "Bergstrom", city: "Portland",    zip: "97201", income: "$100K–$150K", networth: "$180K–$360K", credit: "A", job: "Nurse Practitioner",    company: "OHSU",           score: 90, mood: "Healthcare Worker",           time: "26m ago" },
-  { first: "William",    last: "Chambers",  city: "Baltimore",   zip: "21201", income: "$100K–$150K", networth: "$110K–$220K", credit: "B", job: "Graphic Designer",      company: "Freelance",      score: 64, mood: "Undecided / Researching",     time: "31m ago" },
-  { first: "Dorothy",    last: "Morales",   city: "San Antonio", zip: "78201", income: "$100K–$150K", networth: "$120K–$240K", credit: "B", job: "HR Specialist",         company: "USAA",           score: 81, mood: "Self-Employed Professional",  time: "36m ago" },
-  { first: "Harold",     last: "Kimura",    city: "Honolulu",    zip: "96801", income: "$100K–$150K", networth: "$150K–$300K", credit: "A", job: "Dentist",               company: "Private Practice",score: 87, mood: "Healthcare Worker",          time: "42m ago" },
-  { first: "Catherine",  last: "Morse",     city: "Boston",      zip: "02101", income: "$150K–$200K", networth: "$200K–$400K", credit: "A", job: "Attorney",              company: "Self-Employed",  score: 93, mood: "Income Protection Seeker",    time: "48m ago" },
+  { first: "Daniel",     last: "Whitmore",   city: "Austin",      zip: "78701", income: "$150K–$200K", networth: "$220K–$420K", credit: "A", job: "Senior Software Engineer",  company: "Dell Technologies",  score: 92, mood: "Income Protection Seeker",    time: "1m ago"  },
+  { first: "Melissa",    last: "Carrington", city: "Denver",      zip: "80201", income: "$150K–$200K", networth: "$240K–$460K", credit: "A", job: "Independent Consultant",    company: "Self-Employed",      score: 95, mood: "Self-Employed Professional",  time: "5m ago"  },
+  { first: "Kevin",      last: "Oduya",      city: "Seattle",     zip: "98101", income: "$100K–$150K", networth: "$160K–$310K", credit: "B", job: "Product Manager",           company: "Microsoft",          score: 84, mood: "Family Breadwinner",          time: "9m ago"  },
+  { first: "Renee",      last: "Castillo",   city: "Tampa",       zip: "33601", income: "$100K–$150K", networth: "$175K–$350K", credit: "A", job: "Occupational Therapist",    company: "AdventHealth",       score: 89, mood: "Healthcare Worker",           time: "13m ago" },
+  { first: "Marcus",     last: "Lindberg",   city: "Chicago",     zip: "60601", income: "$100K–$150K", networth: "$140K–$270K", credit: "B", job: "Brand Strategist",          company: "Leo Burnett",        score: 77, mood: "Income Protection Seeker",    time: "17m ago" },
+  { first: "Tiffany",    last: "Rousseau",   city: "Nashville",   zip: "37201", income: "$100K–$150K", networth: "$125K–$250K", credit: "B", job: "Licensed Real Estate Agent",company: "Self-Employed",      score: 85, mood: "Self-Employed Professional",  time: "21m ago" },
+  { first: "Nathan",     last: "Prescott",   city: "Phoenix",     zip: "85001", income: "$100K–$150K", networth: "$135K–$265K", credit: "B", job: "Supply Chain Manager",      company: "Intel",              score: 80, mood: "Family Breadwinner",          time: "25m ago" },
+  { first: "Veronica",   last: "Stanton",    city: "Portland",    zip: "97201", income: "$100K–$150K", networth: "$185K–$370K", credit: "A", job: "Certified Nurse Midwife",   company: "OHSU",               score: 91, mood: "Healthcare Worker",           time: "30m ago" },
+  { first: "Garrett",    last: "Holloway",   city: "Baltimore",   zip: "21201", income: "$100K–$150K", networth: "$115K–$230K", credit: "B", job: "UX Designer",               company: "Freelance",          score: 66, mood: "Undecided / Researching",     time: "35m ago" },
+  { first: "Yvonne",     last: "Espinoza",   city: "San Antonio", zip: "78201", income: "$100K–$150K", networth: "$125K–$248K", credit: "B", job: "Benefits Administrator",    company: "USAA",               score: 82, mood: "Self-Employed Professional",  time: "40m ago" },
+  { first: "Stuart",     last: "Nakagawa",   city: "Honolulu",    zip: "96801", income: "$100K–$150K", networth: "$155K–$310K", credit: "A", job: "General Dentist",           company: "Private Practice",   score: 88, mood: "Healthcare Worker",           time: "46m ago" },
+  { first: "Bridget",    last: "Callahan",   city: "Boston",      zip: "02101", income: "$150K–$200K", networth: "$210K–$415K", credit: "A", job: "Solo Practice Attorney",    company: "Self-Employed",      score: 94, mood: "Income Protection Seeker",    time: "52m ago" },
 ];
 
 // incomeprotectioncalculator.com is a single-page funnel — there are no sub-pages.

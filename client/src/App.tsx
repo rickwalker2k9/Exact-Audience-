@@ -17,7 +17,9 @@ import BuyerProfilePage from "./pages/BuyerProfilePage";
 import McCartryDashboard from "./pages/McCartryDashboard";
 import BreezeDashboard from "./pages/BreezeDashboard";
 import StarlingDashboard from "./pages/StarlingDashboard";
+import EcholsDashboard from "./pages/EcholsDashboard";
 import LandRoverDashboard from "./pages/LandRoverDashboard";
+import BarrettDashboard from "./pages/BarrettDashboard";
 
 function Router() {
   return (
@@ -33,7 +35,9 @@ function Router() {
       <Route path="/mccarty" component={McCartryDashboard} />
       <Route path="/breeze-insurance" component={BreezeDashboard} />
       <Route path="/starling" component={StarlingDashboard} />
+      <Route path="/echols" component={EcholsDashboard} />
       <Route path="/land-rover" component={LandRoverDashboard} />
+      <Route path="/barrett-financial" component={BarrettDashboard} />
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />
