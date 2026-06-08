@@ -170,8 +170,8 @@ export const BARRETT_WEB_TRAFFIC = {
   globalRank: 284200,
   monthlyVisits: 18400,
   bounceRate: 52.3,
-  visitsTrend: [14200, 15100, 15800, 16400, 17100, 17600, 18100, 18400],
-  visitsDates: ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+  visitsTrend: [14200, 15100, 15800, 16400, 17100, 17600, 18400, 1840],
+  visitsDates: ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun MTD"],
   trafficSources: { Search: 52, Social: 14, Mail: 8, DisplayAds: 11, Direct: 11, Referrals: 4 },
   topKeywords: [
     { keyword: "mortgage broker scottsdale",  volume: "2,400/mo", position: 3,  trend: "up"   as const },

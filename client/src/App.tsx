@@ -20,6 +20,12 @@ import StarlingDashboard from "./pages/StarlingDashboard";
 import EcholsDashboard from "./pages/EcholsDashboard";
 import LandRoverDashboard from "./pages/LandRoverDashboard";
 import BarrettDashboard from "./pages/BarrettDashboard";
+import GovernorDashboard from "./pages/GovernorDashboard";
+import MazzeiPitchDashboard from "./pages/MazzeiPitchDashboard";
+import DrummondPitchDashboard from "./pages/DrummondPitchDashboard";
+import KeatingPitchDashboard from "./pages/KeatingPitchDashboard";
+import McCallPitchDashboard from "./pages/McCallPitchDashboard";
+import VoterJourneyPage from "./pages/VoterJourneyPage";
 
 function Router() {
   return (
@@ -38,12 +44,20 @@ function Router() {
       <Route path="/echols" component={EcholsDashboard} />
       <Route path="/land-rover" component={LandRoverDashboard} />
       <Route path="/barrett-financial" component={BarrettDashboard} />
+      <Route path="/governor" component={GovernorDashboard} />
+      <Route path="/pitch/mazzei" component={MazzeiPitchDashboard} />
+      <Route path="/pitch/drummond" component={DrummondPitchDashboard} />
+      <Route path="/pitch/keating" component={KeatingPitchDashboard} />
+      <Route path="/pitch/mccall" component={McCallPitchDashboard} />
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />
 
       {/* Buyer profile detail pages */}
       <Route path="/buyer/:id" component={BuyerProfilePage} />
+
+      {/* Voter journey detail pages */}
+      <Route path="/voter/:id" component={VoterJourneyPage} />
 
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

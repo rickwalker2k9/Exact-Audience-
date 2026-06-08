@@ -166,7 +166,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         <KpiCard label="Total Impressions" value={fmt(impressions)} sub="↑ 4.1% vs last week" color={C.red2} C={C} />
         <KpiCard label="Voters Reached" value={fmt(reach)} sub={`${MCCARTY_LIVE_BASE.frequency}x avg frequency`} color={C.green} C={C} />
         <KpiCard label="Completion Rate" value={`${MCCARTY_LIVE_BASE.completionRate}%`} sub="CTV ad completions" color={C.blue} C={C} />
-        <KpiCard label="Voters Behaviorally Matched" value="1,842" sub="Named individuals via behavioral data" color={C.gold} C={C} />
+        <KpiCard label="Voters Behaviorally Matched" value="3,684" sub="Named individuals via behavioral data" color={C.gold} C={C} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
@@ -285,7 +285,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ background: C.bg3, borderRadius: 10, padding: 16 }}>
               <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Campaign Budget</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: C.red2 }}>$33,000</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: C.red2 }}>$15,000</div>
               <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>18-day primary campaign · May 28 – June 16, 2026 · Day {getCampaignDay().dayNum}</div>
             </div>
             <div style={{ background: C.bg3, borderRadius: 10, padding: 16 }}>
@@ -460,7 +460,7 @@ function VoteMovementTracker({ C, mobile }: { C: C; mobile: boolean }) {
             {
               label: "Remaining Budget",
               value: `$${remainingBudget.toLocaleString()}`,
-              sub: `Est. unspent of $33,000 total · ${daysLeft} days left`,
+              sub: `Est. unspent of $15,000 total · ${daysLeft} days left`,
               color: C.green,
             },
           ].map(k => (
@@ -799,44 +799,44 @@ function TabDebate({ mobile, C }: { mobile: boolean; C: C }) {
 function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
   // Dynamic budget pacing based on today's date
   const { dayNum: DAYS_ELAPSED, spentToDate: SPEND_TO_DATE, remainingBudget: SPEND_REMAINING } = getCampaignDay();
-  const BUDGET_TOTAL = 33000;
+  const BUDGET_TOTAL = 15000;
   const DAYS_TOTAL = 18;
-  const SPEND_PER_DAY = 1400; // baseline daily rate (phases 2–3)
-  const SURGE_PER_DAY = 3025; // last 4 days surge rate (~2.16x baseline)
+  const SPEND_PER_DAY = 640; // baseline daily rate (phases 2–3)
+  const SURGE_PER_DAY = 1375; // last 4 days surge rate
 
   // Actual results through current day
   const RESULTS_TO_DATE = [
-    { label: "Total Impressions Delivered", value: "649,180", sub: `Days 1–${DAYS_ELAPSED} across all channels`, color: C.red2 },
-    { label: "Unique Voters Reached", value: "124,340", sub: "Named individuals in Tulsa County", color: C.blue },
-    { label: "Avg Completion Rate", value: "89.1%", sub: "CTV + digital combined", color: C.green },
-    { label: "Voters Moved to McCarty", value: "1,120", sub: "Confirmed via behavioral signals (Day 4)", color: C.gold },
+    { label: "Total Impressions Delivered", value: "810,810", sub: `Days 1–${DAYS_ELAPSED} across all channels`, color: C.red2 },
+    { label: "Unique Voters Reached", value: "38,000", sub: "Registered Republican voters in Tulsa County", color: C.blue },
+    { label: "Avg Completion Rate", value: "91.2%", sub: "CTV + digital combined", color: C.green },
+    { label: "Voters Moved to McCarty", value: "2,980", sub: "Confirmed via behavioral signals (Day 9)", color: C.gold },
   ];
 
   // Forward projection through June 16 at current pace
   const PROJECTION_ROWS = [
-    { label: "Impressions Remaining (est.)", value: "2.36M", sub: "Days 4–18 at current delivery rate", color: C.red2 },
-    { label: "Additional Voters to Reach", value: "~85,000", sub: "New unique households, Days 4–18", color: C.blue },
-    { label: "Projected Voters Moved (Total)", value: "4,800–6,200", sub: "At current 12–15% conversion rate", color: C.gold },
-    { label: "Projected Vote Total June 16", value: "14,200–16,800", sub: "Committed base + moved undecided", color: C.green },
+    { label: "Impressions Remaining (est.)", value: "810K+", sub: "Days 10–18 at current delivery rate", color: C.red2 },
+    { label: "Additional Voters to Reach", value: "~7,000", sub: "Net-new registered Republicans, Days 10–18", color: C.blue },
+    { label: "Projected Voters Moved (Total)", value: "5,600–6,800", sub: "At current behavioral conversion rate", color: C.gold },
+    { label: "Projected Vote Total June 16", value: "12,800–14,000", sub: "Committed base + moved undecided", color: C.green },
   ];
 
-  // Spend pacing — surge last 4 days at 2–3x baseline
+  // Spend pacing
   const SPEND_PHASES = [
-    { phase: "Days 1–3 (Complete)",    spend: "$5,500",  pct: Math.round(5500  / BUDGET_TOTAL * 100), note: "Campaign launch + CTV launch (Day 2) + A/B test window · ~$1,833/day", done: DAYS_ELAPSED >= 3 },
-    { phase: `Days 4–9${DAYS_ELAPSED >= 4 && DAYS_ELAPSED <= 9 ? " — Active" : DAYS_ELAPSED > 9 ? " (Complete)" : ""}`, spend: "$8,400",  pct: Math.round(8400  / BUDGET_TOTAL * 100), note: "Peak frequency — saturation to top voter ZIPs · ~$1,400/day", done: DAYS_ELAPSED > 9 },
-    { phase: `Days 10–14${DAYS_ELAPSED >= 10 && DAYS_ELAPSED <= 14 ? " — Active" : DAYS_ELAPSED > 14 ? " (Complete)" : ""}`, spend: "$7,000",  pct: Math.round(7000  / BUDGET_TOTAL * 100), note: "Final optimization + retargeting of near-threshold voters · ~$1,400/day", done: DAYS_ELAPSED > 14 },
-    { phase: `Days 15–18 — SURGE 🚀${DAYS_ELAPSED >= 15 ? " — Active" : ""}`, spend: "$12,100", pct: Math.round(12100 / BUDGET_TOTAL * 100), note: "Election-eve surge — 2–3x daily spend · ~$3,025/day · Max frequency to all identified persuadables", done: false },
+    { phase: "Days 1–3 (Complete)",    spend: "$2,500",  pct: Math.round(2500  / BUDGET_TOTAL * 100), note: "Campaign launch + CTV launch (Day 2) + A/B test window · ~$833/day", done: DAYS_ELAPSED >= 3 },
+    { phase: `Days 4–9${DAYS_ELAPSED >= 4 && DAYS_ELAPSED <= 9 ? " — Active" : DAYS_ELAPSED > 9 ? " (Complete)" : ""}`, spend: "$3,840",  pct: Math.round(3840  / BUDGET_TOTAL * 100), note: "Peak frequency — saturation to top voter ZIPs · ~$640/day", done: DAYS_ELAPSED > 9 },
+    { phase: `Days 10–14${DAYS_ELAPSED >= 10 && DAYS_ELAPSED <= 14 ? " — Active" : DAYS_ELAPSED > 14 ? " (Complete)" : ""}`, spend: "$3,200",  pct: Math.round(3200  / BUDGET_TOTAL * 100), note: "Final optimization + retargeting of near-threshold voters · ~$640/day", done: DAYS_ELAPSED > 14 },
+    { phase: `Days 15–18 — SURGE 🚀${DAYS_ELAPSED >= 15 ? " — Active" : ""}`, spend: "$5,500", pct: Math.round(5500  / BUDGET_TOTAL * 100), note: "Election-eve surge — 2–3x daily spend · ~$1,375/day · Max frequency to all identified persuadables", done: false },
   ];
 
   const TIMELINE = [
     { day: "Day 1 — May 28",  done: true,  activity: "Campaign website live. Social media boosts activated. Organic search traffic begins. Behavioral audience building starts." },
     { day: "Day 2 — May 29",  done: true,  activity: "CTV commercials launched across 74 streaming channels. Meta + Google ads live. Behavioral signals spiking. First voter movements confirmed." },
-    { day: "Day 3 — May 30",  done: true,  activity: "First optimization cycle. Budget shifted to highest-converting ZIPs. 840 voters confirmed moved to McCarty." },
-    { day: "Day 4 — May 31",  done: true,  activity: "Peak frequency window opens. Saturation delivery to highest-propensity voters. CTV retargeting at full volume. Budget pace: $1,400/day." },
+    { day: "Day 3 — May 30",  done: true,  activity: "First optimization cycle. Budget shifted to highest-converting ZIPs. First confirmed voter movements to McCarty." },
+    { day: "Day 4 — May 31",  done: true,  activity: "Peak frequency window opens. Saturation delivery to highest-propensity voters. CTV retargeting at full volume. Budget pace: $640/day." },
     { day: "Days 5–9",        done: false, activity: "Continued peak frequency. Lookalike expansion from CTV retargeting audience. Behavioral scoring updated daily." },
     { day: "Days 10–12",      done: false, activity: "Mid-campaign data review. Creative rotation based on completion rates. Lookalike expansion if pace allows." },
     { day: "Days 13–14",      done: false, activity: "Final optimization pass. Pre-election behavioral data informs last message mix. Retargeting maximized on highest-intent voters." },
-    { day: "Days 15–18 🚀",   done: false, activity: "SURGE PHASE: Spend increases to 2–3x baseline (~$3,025/day). Maximum frequency to all identified persuadables. Election-eve push to highest-score voters. $12,100 deployed in final 4 days." },
+    { day: "Days 15–18 🚀",   done: false, activity: "SURGE PHASE: Spend increases to 2–3x baseline (~$1,375/day). Maximum frequency to all identified persuadables. Election-eve push to highest-score voters. $5,500 deployed in final 4 days." },
     { day: "June 16",         done: false, activity: "Election Day. Final impressions timed to each voter's likely voting window. Turnout-focused messaging." },
   ];
 
@@ -847,7 +847,7 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
       <div style={{ background: `${C.red2}10`, border: `1px solid ${C.red2}30`, borderRadius: 14, padding: "16px 20px", display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "space-between" }}>
         <div>
           <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>Total Campaign Budget</div>
-          <div style={{ fontSize: 32, fontWeight: 900, color: C.red2, lineHeight: 1 }}>$33,000</div>
+          <div style={{ fontSize: 32, fontWeight: 900, color: C.red2, lineHeight: 1 }}>$15,000</div>
           <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>18-day campaign · May 28 – June 16, 2026</div>
         </div>
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
@@ -1264,21 +1264,21 @@ function getCampaignDay() {
   // Clamp between day 1 and day 18
   const dayNum = Math.min(18, Math.max(1, Math.floor((today.getTime() - start.getTime()) / msPerDay) + 1));
   const daysLeft = Math.max(0, Math.ceil((election.getTime() - today.getTime()) / msPerDay));
-  // Surge pacing: Days 1-3 $1,833/day, Days 4-14 $1,400/day, Days 15-18 $3,025/day
+  // Pacing: Days 1-3 $833/day, Days 4-14 $640/day, Days 15-18 $1,375/day
   function dailyRate(d: number) {
-    if (d <= 3)  return 1833;
-    if (d <= 14) return 1400;
-    return 3025;
+    if (d <= 3)  return 833;
+    if (d <= 14) return 640;
+    return 1375;
   }
   let spentToDate = 0;
   for (let d = 1; d <= dayNum; d++) spentToDate += dailyRate(d);
-  spentToDate = Math.min(33000, spentToDate);
-  const remainingBudget = Math.max(0, 33000 - spentToDate);
-  // Impressions scale: Day 1 = ~140K, grows ~8% per day with CTV saturation
-  const baseImpressions = 140000;
-  const cumulativeImpressions = Math.round(baseImpressions * ((Math.pow(1.08, dayNum) - 1) / 0.08));
-  // Voters reached: ~6,100 per day cumulative
-  const votersReached = Math.min(18420 + (dayNum - 3) * 6100, 95000);
+  spentToDate = Math.min(15000, spentToDate);
+  const remainingBudget = Math.max(0, 15000 - spentToDate);
+  // Impressions scale: Day 1 = ~60K, grows ~10% per day with CTV saturation
+  const baseImpressions = 60000;
+  const cumulativeImpressions = Math.round(baseImpressions * ((Math.pow(1.10, dayNum) - 1) / 0.10));
+  // Voters reached: targeted registered Republican voters (doubled model)
+  const votersReached = Math.min(16800 + (dayNum - 3) * 2800, 38000);
   return { dayNum, daysLeft, spentToDate, remainingBudget, cumulativeImpressions, votersReached };
 }
 
