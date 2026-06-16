@@ -1,7 +1,7 @@
 // Exact Audience — Campaign Client Registry
 // 35 active campaigns. IDs 1, 2, 3, 4 have full dashboards. Rest are active placeholders.
 
-export type ClientStatus = "active" | "paused" | "pending";
+export type ClientStatus = "active" | "paused" | "pending" | "complete";
 
 export interface CampaignClient {
   id: number;
@@ -123,16 +123,16 @@ export const CLIENTS: CampaignClient[] = [
     name: "Colleen McCarty for DA",
     vertical: "Political Campaign",
     location: "Tulsa County, OK",
-    description: "Tulsa County DA Republican Primary — June 16, 2026",
+    description: "Tulsa County, OK · Modern DA for Modern Tulsa — Primary 2026",
     domain: "colleenmccarty.com",
     campaign: "Modern DA for Modern Tulsa — Primary 2026",
-    budget: "$15,000",
+    budget: "$22,000",
     startDate: "May 28, 2026",
-    status: "active",
+    status: "complete" as ClientStatus,
     hasDashboard: true,
-    trend: risingTrend(52000),
-    impressionsToDate: 810810,
-    reachToDate: 38000,
+    trend: risingTrend(2184000),
+    impressionsToDate: 2184000,
+    reachToDate: 84600,
     completionRate: 91.2,
     primaryColor: "#2a6496",
   },

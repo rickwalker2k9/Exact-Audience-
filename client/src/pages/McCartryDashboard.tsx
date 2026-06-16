@@ -1266,11 +1266,11 @@ function getCampaignDay() {
   // Clamp between day 1 and day 18
   const dayNum = Math.min(19, Math.max(1, Math.floor((today.getTime() - start.getTime()) / msPerDay) + 1));
   const daysLeft = 0; // Campaign complete — Election Day
-  // Pacing: Days 1-3 $833/day, Days 4-14 $1,000/day, Days 15-19 $1,467/day (total $22,000)
+  // Pacing: Days 1-3 $900/day ($2,700), Days 4-14 $1,200/day ($13,200), Days 15-19 $1,220/day ($6,100) — total $22,000
   function dailyRate(d: number) {
-    if (d <= 3)  return 833; // $2,499
-    if (d <= 14) return 640;
-    return 1375;
+    if (d <= 3)  return 900;  // $2,700 total
+    if (d <= 14) return 1200; // $13,200 total
+    return 1220;              // $6,100 total — grand total $22,000
   }
   let spentToDate = 0;
   for (let d = 1; d <= dayNum; d++) spentToDate += dailyRate(d);
@@ -1425,7 +1425,7 @@ export default function McCartryDashboard() {
         {!mobile && (
           <>
             <span style={{ fontSize: 10, color: C.muted }}>·</span>
-            <span style={{ fontSize: 10, color: C.muted }}>~191,000 eligible Republican voters · Win threshold: ~16,001 votes</span>
+            <span style={{ fontSize: 10, color: C.muted }}>~85,000 GOP primary voters (governor's race on ballot) · Win threshold: ~42,501 votes</span>
           </>
         )}
       </div>
