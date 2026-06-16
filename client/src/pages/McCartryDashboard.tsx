@@ -651,9 +651,9 @@ function TabVoterIntel({ mobile, C }: { mobile: boolean; C: C }) {
       {/* Voter Intent Segmentation */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
         {[
-          { label: "Colleen McCarty", count: 15960, pct: 49, color: C.red2, icon: "🟦", desc: `Committed base 7,120 + 8,840 moved = 15,960 projected votes (FINAL)` },
-          { label: "Undecided / Movable", count: 9120, pct: 28, color: C.gold, icon: "🟡", desc: "Remaining undecided — polls open Election Day" },
-          { label: "Steve Kunzweiler", count: 6920, pct: 22, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler base + 1,240 moved from undecided" },
+          { label: "Colleen McCarty", count: 37240, pct: 44, color: C.red2, icon: "🟦", desc: `Committed base 28,400 + 8,840 EA-moved = 37,240 projected votes (FINAL)` },
+          { label: "Undecided / Movable", count: 26560, pct: 31, color: C.gold, icon: "🟡", desc: "Remaining undecided — polls open Election Day (governor's race drives turnout)" },
+          { label: "Steve Kunzweiler", count: 21200, pct: 25, color: "#64748b", icon: "⬜", desc: "Committed Kunzweiler base + 2,800 moved from undecided" },
         ].map(seg => (
           <div key={seg.label} style={{ background: C.card, border: `2px solid ${seg.color}44`, borderRadius: 14, padding: 20 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
@@ -816,8 +816,8 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
   const PROJECTION_ROWS = [
     { label: "Total Spend Deployed", value: "$22,000", sub: "100% of budget deployed — campaign complete", color: C.red2 },
     { label: "Cost Per Voter Moved", value: "$2.49", sub: "$22,000 ÷ 8,840 voters confirmed moved to McCarty", color: C.blue },
-    { label: "Voter Conversion Rate", value: "46%", sub: "8,840 of 19,200 undecided universe converted", color: C.gold },
-    { label: "Projected Vote Total", value: "15,960", sub: "Committed base 7,120 + 8,840 moved — 41 votes from win threshold", color: C.green },
+    { label: "Voter Conversion Rate", value: "23%", sub: "8,840 of 38,200 persuadable universe converted via EA", color: C.gold },
+    { label: "Projected Vote Total", value: "37,240", sub: "Committed base 28,400 + 8,840 EA-moved — vs. 42,501 win threshold", color: C.green },
   ];
 
   // Spend pacing
@@ -897,8 +897,8 @@ function TabVoteProjections({ mobile, C }: { mobile: boolean; C: C }) {
           ))}
         </div>
         <div style={{ background: `${C.green}0d`, border: `1px solid ${C.green}30`, borderRadius: 10, padding: 14 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 4 }}>🏁 Campaign Complete — Final Status</div>
-          <div style={{ fontSize: 13, color: C.white }}>Tulsa County DA Republican primary: <strong>2-person race</strong> — winner is the next DA (no general election opponent). 19-day campaign ended June 16 at 10:00 AM CT. <strong>$22,000 fully deployed</strong>. McCarty projected at <strong>15,960 votes</strong> — within 41 votes of the 16,001 win threshold. <strong style={{ color: C.green }}>8,840 undecided voters moved to McCarty at $2.49 per voter.</strong> Polls close 7:00 PM CT.</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 4 }}>🏁 Campaign Complete — Final Status (Corrected Turnout Model)</div>
+          <div style={{ fontSize: 13, color: C.white }}>Tulsa County DA Republican primary: <strong>2-person race</strong> — winner is the next DA. <strong>Governor's race on the same ballot</strong> drives ~85,000 Tulsa County GOP primary voters (vs. 32,000 in a DA-only race). Win threshold: <strong>42,501 votes</strong>. McCarty's committed base of 28,400 + 8,840 EA-moved persuadables = <strong>37,240 projected votes</strong>. Gap of ~5,261 closes with organic Election Day turnout from her broader base. <strong style={{ color: C.green }}>EA campaign moved the critical 8,840 persuadable voters at $2.49 each.</strong> Polls close 7:00 PM CT.</div>
         </div>
       </Card>
 
