@@ -261,3 +261,4 @@ export const MCCARTY_VOTER_SEGMENTS = [
   { label: "GOP 45+ Sand Springs",   views:  3940, avgTime: "3:12", bounce: 28, color: "#10b981" },
   { label: "Debate Viewers Retarget",views:  6840, avgTime: "4:18", bounce: 18, color: "#6366f1" },
 ];
+// cache bust Tue Jun 16 20:42:54 UTC 2026
