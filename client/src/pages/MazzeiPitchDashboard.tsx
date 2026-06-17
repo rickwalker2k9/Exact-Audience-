@@ -1,502 +1,365 @@
 /**
- * MazzeiPitchDashboard.tsx
- * Exact Audience pitch dashboard for Mike Mazzei — 2026 Oklahoma Governor's Race
- * Design: Dark political intelligence aesthetic — deep navy, amber/gold accent (Mazzei brand)
- * Runoff: August 25, 2026 | Primary: June 16, 2026
+ * MazzeiPitchDashboard.tsx — RUNOFF VERSION
+ * Exact Audience — Mike Mazzei Runoff Strategy Dashboard
+ * August 25, 2026 Oklahoma Governor Runoff
  */
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { GOV_RACE, GOV_POLLING, GOV_PATH_TO_WIN, GOV_TIMELINE } from "@/lib/govData";
-import VoterIntelligence from "@/components/VoterIntelligence";
-import VoterMigration from "@/components/VoterMigration";
 
-// ── Mazzei-specific data ──────────────────────────────────────────────────────
-const CANDIDATE = {
-  name: "Mike Mazzei",
-  title: "Former Oklahoma State Senator & Budget Secretary",
-  color: "#f59e0b",
-  colorLight: "#fff7ed",
-  colorDark: "#9a3412",
-  tagline: "Trump-Endorsed. Tax-Cutting. Outsider.",
-  polling: 22.1,
-  cashOnHand: "~$1.1M",
-  totalRaised: "$4.39M",
-  selfLoaned: "~$4.0M",
-  status: "Primary Frontrunner (Post-Trump Endorsement)",
-  trumpEndorsed: true,
-  runoffLikelihood: "High — projected to advance",
-  primaryProjection: "26–32%",
-  runoffProjection: "47–52%",
-  strengths: [
-    "Only Trump-endorsed candidate — massive base activation",
-    "Statewide name ID from Senate career and Budget Secretary role",
-    "Dominant tax elimination message — income tax abolition resonates",
-    "Tulsa base provides strong northeast Oklahoma ground game",
-    "Outsider credibility despite legislative experience",
-  ],
-  vulnerabilities: [
-    "Club for Growth PAC spending $4.3M in attack ads against him",
-    "Most self-funded candidate — $4M in personal loans creates narrative",
-    "Tribal community opposition to his policy positions",
-    "Must consolidate Keating voters in runoff to win",
-  ],
-  pathToRunoff: [
-    { step: "Hold Trump base", target: "22–24%", note: "Activated by endorsement — floor is secure" },
-    { step: "Absorb Merrick voters (7.2%)", target: "+3–4%", note: "Outsider lane consolidation" },
-    { step: "Activate late deciders", target: "+2–3%", note: "Trump endorsement news cycle drives final week" },
-    { step: "Projected primary finish", target: "26–32%", note: "Top qualifier for August 25 runoff" },
-  ],
-  pathToRunoffWin: [
-    { step: "Mazzei primary base", target: "104,000 votes", note: "26% of 400K turnout" },
-    { step: "Absorb Keating voters (60–65%)", target: "+52,000", note: "Outsider lane migrates to Trump-endorsed candidate" },
-    { step: "Absorb McCall voters (30–35%)", target: "+22,400", note: "Fiscal conservatives drawn to tax elimination" },
-    { step: "Minor candidate voters (40%)", target: "+14,000", note: "Merrick bloc largely already aligned" },
-    { step: "Projected runoff total", target: "192,400 votes (48.1%)", note: "Structural math favors Mazzei in runoff" },
-  ],
-  needToPersuade: {
-    primary: "several hundred thousand registered Republicans",
-    runoff: "~74,000 Keating + McCall voters to migrate",
-    keySegments: [
-      "Keating soft supporters who like outsiders — natural Mazzei voters",
-      "McCall fiscal conservatives drawn to income tax elimination",
-      "Late deciders activated by Trump endorsement news",
-      "Tulsa metro Republicans not yet engaged",
-    ],
-  },
-  eaStrategy: {
-    phase1: {
-      label: "Phase 1 — Primary Surge (Now → June 16)",
-      budget: "$45,000–$65,000",
-      objective: "Activate Trump-aligned voters and late deciders statewide",
-      tactics: [
-        { tactic: "CTV / OTT Targeting", detail: "Reach 280,000+ registered Republican households on streaming platforms — matched to voter file by name and address, not zip code" },
-        { tactic: "Undecided Voter Suppression", detail: "Identify the ~35% of Republicans still undecided — deliver Mazzei's tax elimination message 6–8x before June 16" },
-        { tactic: "Trump Endorsement Amplification", detail: "Behavioral targeting of voters who engaged with Trump content — reinforce the endorsement signal on CTV, digital, and social" },
-        { tactic: "Opponent Soft-Supporter Targeting", detail: "Identify Drummond and McCall soft supporters (4–6 prior exposures to their ads) — deliver contrast messaging before they solidify" },
-      ],
-      expectedResult: "Push Mazzei from 22.1% base to 26–32% primary finish",
-    },
-    phase2: {
-      label: "Phase 2 — Runoff Dominance (June 17 → August 25)",
-      budget: "$85,000–$120,000",
-      objective: "Absorb Keating and McCall voter blocs before Drummond can consolidate",
-      tactics: [
-        { tactic: "Keating Voter Identification", detail: "Use behavioral data to identify the ~87,000 Keating voters and model which 60–65% are persuadable to Mazzei — target them in the first 2 weeks of the runoff window" },
-        { tactic: "McCall Fiscal Conservative Targeting", detail: "Identify McCall's ~70,000 voters who responded to tax/fiscal messaging — deliver Mazzei's income tax elimination message directly to their devices" },
-        { tactic: "Voter File Suppression", detail: "Suppress already-committed Mazzei voters from ad spend — concentrate 100% of budget on persuadable and soft-opposition voters" },
-        { tactic: "Behavioral Movement Tracking", detail: "Real-time reporting on which Keating/McCall voters are shifting behavioral signals toward Mazzei — adjust targeting weekly" },
-      ],
-      expectedResult: "Secure 60–65% Keating voter migration + 30–35% McCall migration = runoff win at 47–52%",
-    },
-  },
-  competitiveAdvantage: "Mazzei is the only candidate who enters the runoff with structural math in his favor. The Trump endorsement activates the outsider lane. Exact Audience locks it in by identifying and reaching every Keating and McCall voter before Drummond can.",
-};
+const bg = "#0a0f1e";
+const surface = "#111827";
+const card = "#1a2235";
+const border = "#1e3a5f";
+const accent = "#6366f1";       // Mazzei indigo/purple
+const accentAlt = "#818cf8";
+const accentDim = "#312e81";
+const textPrimary = "#f1f5f9";
+const textSecondary = "#94a3b8";
+const textMuted = "#475569";
+const green = "#10b981";
+const blue = "#38bdf8";
+const orange = "#f97316";
 
-const RACE_CONTEXT = {
-  primaryDate: "June 16, 2026",
-  runoffDate: "August 25, 2026",
-  daysToRunoff: 79,
-  expectedRunoffTurnout: 280000,
-  runoffWinThreshold: 140001,
-  pacSpending: "$7.1M in PAC ads in the race",
-  clubForGrowthAttack: "$4.3M Club for Growth attack ads targeting Mazzei",
-};
+const COUNTY_DATA = [
+  { county: "Tulsa",      m: 35.3, d: 32.8, margin: +2.4, votes: 58126, keating: 11.2, merrick: 10.8, mccall:  7.3, runoffEdge: "STRONG M", note: "Mazzei anchor — Trump endorsement resonates here" },
+  { county: "Wagoner",    m: 32.3, d: 29.9, margin: +2.4, votes: 10782, keating: 12.1, merrick: 11.8, mccall:  8.2, runoffEdge: "LEAN M",   note: "Suburban Tulsa — Mazzei base" },
+  { county: "Pittsburg",  m: 31.3, d: 24.1, margin: +7.2, votes:  5301, keating: 14.2, merrick: 12.1, mccall: 11.8, runoffEdge: "STRONG M", note: "McCall country — McCall voters flow to Mazzei" },
+  { county: "Sequoyah",   m: 31.3, d: 21.6, margin: +9.7, votes:  3618, keating: 12.3, merrick: 11.4, mccall: 13.2, runoffEdge: "STRONG M", note: "SE Oklahoma — McCall base aligns with Mazzei" },
+  { county: "Logan",      m: 26.0, d: 22.1, margin: +3.9, votes:  7494, keating: 19.3, merrick: 22.4, mccall: 10.6, runoffEdge: "LEAN M",   note: "Guthrie — Mazzei leads but Keating 19% is risk" },
+  { county: "Rogers",     m: 30.0, d: 30.0, margin:  0.0, votes: 14245, keating: 13.1, merrick: 14.0, mccall: 10.1, runoffEdge: "TOSS-UP",  note: "3-vote tie — Claremore is Mazzei's best flip target" },
+  { county: "Washington", m: 25.1, d: 24.8, margin: +0.3, votes:  6782, keating: 17.0, merrick: 13.2, mccall:  8.9, runoffEdge: "TOSS-UP",  note: "Bartlesville — nearly tied, Merrick 13% is swing" },
+  { county: "Grady",      m: 18.3, d: 19.5, margin: -1.1, votes:  7935, keating: 18.3, merrick: 31.7, mccall:  9.8, runoffEdge: "TOSS-UP",  note: "Merrick WON this county — Mazzei can steal Merrick voters" },
+  { county: "Oklahoma",   m: 24.8, d: 27.4, margin: -2.6, votes: 58146, keating: 23.2, merrick: 12.6, mccall:  8.8, runoffEdge: "LEAN D",   note: "Drummond firewall — Keating 23% flows to Drummond" },
+  { county: "Canadian",   m: 22.0, d: 23.8, margin: -1.8, votes: 19080, keating: 20.0, merrick: 24.5, mccall:  8.5, runoffEdge: "LEAN D",   note: "Mustang: Merrick 24.5% — Mazzei's best flip opportunity" },
+];
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-const TABS = ["Overview", "Path to Win", "EA Strategy", "Race Context", "Voter Intelligence", "Voter Migration"] as const;
-type Tab = typeof TABS[number];
+const STRONGHOLD_PRECINCTS = [
+  { prec: "660021", county: "Rogers Co.",   area: "Claremore-North", m: 33.4, d: 29.3, k: 16.0, votes: 960,  note: "Biggest Rogers precinct — M +4.2 pts" },
+  { prec: "660030", county: "Rogers Co.",   area: "Claremore-South", m: 39.9, d: 26.4, k: 13.6, votes: 632,  note: "M +13.5 pts — Mazzei's strongest Rogers precinct" },
+  { prec: "660018", county: "Rogers Co.",   area: "Claremore-North", m: 29.9, d: 25.8, k: 16.6, votes: 608,  note: "M +4.1 pts — Keating 16.6% is the swing" },
+  { prec: "420207", county: "Logan Co.",    area: "Guthrie",         m: 27.2, d: 19.5, k: 17.0, votes: 747,  note: "Biggest Logan precinct — M +7.7 pts" },
+  { prec: "420104", county: "Logan Co.",    area: "Guthrie",         m: 29.9, d: 20.7, k: 15.5, votes: 569,  note: "Guthrie core — M +9.2 pts" },
+  { prec: "090200", county: "Canadian Co.", area: "Mustang",         m: 26.2, d: 23.5, k: 15.7, votes: 701,  note: "Largest Canadian precinct — M +2.7 pts" },
+];
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function fmt(n: number) { return n.toLocaleString(); }
+const SWING_PRECINCTS = [
+  { prec: "660004", county: "Rogers Co.",   area: "Claremore-South", m: 26.7, d: 27.3, k: 15.8, votes: 495, note: "D leads by 0.6 pts — flippable" },
+  { prec: "660015", county: "Rogers Co.",   area: "Claremore-South", m: 24.4, d: 30.5, k: 16.7, votes: 455, note: "D leads 6 pts — Keating 16.7% is key" },
+  { prec: "090216", county: "Canadian Co.", area: "Mustang",         m: 25.2, d: 25.1, k: 18.4, votes: 714, note: "Dead tie — largest Canadian precinct" },
+  { prec: "090504", county: "Canadian Co.", area: "Mustang",         m: 20.9, d: 19.9, k: 23.5, votes: 659, note: "M leads by 1 pt — Keating 23.5% is the swing" },
+  { prec: "550452", county: "Oklahoma Co.", area: "Edmond-South",    m: 28.4, d: 27.5, k: 23.5, votes: 582, note: "M leads by 0.9 pts — Keating 23.5% could flip it" },
+  { prec: "260041", county: "Grady Co.",    area: "Chickasha",       m: 21.8, d: 19.2, k: 18.4, votes: 652, note: "Merrick 32.5% — whoever wins Merrick voters wins Grady" },
+];
+
+const WIN_PATH = [
+  { label: "Mazzei Primary Base",          votes: 104629, pct: 49.7, color: accent },
+  { label: "Absorb McCall Voters (60%)",   votes:  28501, pct: 13.5, color: green },
+  { label: "Win Merrick Voters (50%)",     votes:  29157, pct: 13.9, color: blue },
+  { label: "Hold Keating Voters (35%)",    votes:  26025, pct: 12.4, color: orange },
+  { label: "Projected Runoff Total",       votes: 188312, pct: 46.5, color: accent },
+];
+
+const MESSAGING = [
+  { headline: "Trump Picked Mazzei. That Means Something.", subhead: "The President of the United States endorsed Mike Mazzei. In a Republican primary, that's the most powerful signal a voter can get. Lean into it in Tulsa, Wagoner, Pittsburg, and SE Oklahoma — where it moves the most votes.", audience: "Tulsa County, Wagoner, SE Oklahoma base", channel: "CTV / OTT", priority: "HIGH" },
+  { headline: "McCall Voters: You Already Know Mike.", subhead: "Charles McCall's voters are in SE Oklahoma — Pittsburg, Sequoyah, Atoka, Johnston. They're fiscal conservatives who want someone who knows how to get things done in the Capitol. That's Mazzei. Reach them in the first two weeks before Drummond does.", audience: "McCall precincts: Pittsburg, Sequoyah, Atoka, Johnston counties", channel: "Direct Mail + CTV", priority: "CRITICAL" },
+  { headline: "Rogers County Is a 3-Vote Tie. Claremore Is Yours.", subhead: "Rogers County is literally tied by 3 votes. Mazzei leads in Claremore (precincts 660021, 660030, 660018). Drummond leads in NW Rogers (Owasso border). The play: drive Claremore turnout and flip one Catoosa precinct. That wins Rogers County and puts Mazzei over the top.", audience: "Claremore & Catoosa voters", channel: "Doors + Digital", priority: "CRITICAL" },
+  { headline: "Grady County Is Up for Grabs. Merrick Voters Are Waiting.", subhead: "Merrick WON Grady County with 31.7%. Those are populist outsider voters — they're not going to Drummond (the incumbent). Mazzei needs to make the case in Chickasha and Tuttle that he's the change candidate, not the status quo.", audience: "Grady County Merrick voters (precincts 260037, 260040, 260041)", channel: "Radio + Digital", priority: "HIGH" },
+  { headline: "Canadian County Mustang Is a Dead Tie. Win It.", subhead: "Precinct 090216 (714 votes) is tied by 1 vote. Precinct 090504 (659 votes) — Mazzei leads by 1 point. Merrick ran 23–27% in these precincts. Those voters are persuadable. Mazzei needs to be on their TVs before Drummond defines the Keating narrative.", audience: "Mustang/Yukon precincts 090216, 090504, 090202, 090205", channel: "CTV + Digital", priority: "HIGH" },
+];
+
+function AnimBar({ value, max, color, delay = 0 }: { value: number; max: number; color: string; delay?: number }) {
+  const [w, setW] = useState(0);
+  useEffect(() => { const t = setTimeout(() => setW((value / max) * 100), delay + 200); return () => clearTimeout(t); }, [value, max, delay]);
+  return (
+    <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4, overflow: "hidden" }}>
+      <div style={{ height: "100%", width: `${w}%`, background: color, borderRadius: 4, transition: "width 0.9s cubic-bezier(0.23,1,0.32,1)" }} />
+    </div>
+  );
+}
+
+const TABS = ["Overview", "County Map", "Strongholds", "Win Path", "Messaging", "EA Strategy"];
 
 export default function MazzeiPitchDashboard() {
   const [, navigate] = useLocation();
-  const [tab, setTab] = useState<Tab>("Overview");
-
-  const accent = CANDIDATE.color;
-  const bg = "#0c0618";
-  const cardBg = "#130a28";
-  const border = "#2a1a4a";
-  const textPrimary = "#ffffff";
-  const textSecondary = "#ffffff";
-  const textMuted = "#ffffff";
+  const [tab, setTab] = useState("Overview");
 
   return (
-    <div style={{ minHeight: "100vh", background: bg, color: textPrimary, fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
-      <style>{`
-        .pitch-tab { padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; transition: all 0.15s; border: 1px solid transparent; }
-        .pitch-tab:hover { background: rgba(245,158,11,0.12); }
-        .pitch-tab.active { background: rgba(245,158,11,0.18); border-color: rgba(245,158,11,0.4); color: #fb923c; }
-        .pitch-card { background: ${cardBg}; border: 1px solid ${border}; border-radius: 12px; padding: 24px; }
-        .pitch-card-accent { background: ${cardBg}; border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; padding: 24px; }
-        .step-row { display: flex; align-items: flex-start; gap: 16px; padding: 14px 0; border-bottom: 1px solid ${border}; }
-        .step-row:last-child { border-bottom: none; }
-        .step-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(232,93,4,0.2); border: 1px solid rgba(245,158,11,0.4); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fb923c; flex-shrink: 0; margin-top: 2px; }
-        .tactic-row { padding: 16px 0; border-bottom: 1px solid ${border}; }
-        .tactic-row:last-child { border-bottom: none; }
-        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
-        .poll-bar { height: 8px; border-radius: 4px; transition: width 0.6s ease; }
-        @media (max-width: 768px) { .pitch-grid-2 { grid-template-columns: 1fr !important; } }
-      `}</style>
-
-      {/* ── Header ── */}
-      <div style={{ background: "linear-gradient(135deg, #0d0d2b 0%, #1a0a00 100%)", borderBottom: `1px solid ${border}`, padding: "0 24px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          {/* Nav */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 0", borderBottom: `1px solid ${border}` }}>
-            <button onClick={() => navigate("/campaigns")} style={{ background: "none", border: "none", color: textSecondary, cursor: "pointer", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
-              ← Campaign Directory
-            </button>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ fontSize: 11, color: textMuted, letterSpacing: "0.1em", textTransform: "uppercase" }}>Exact Audience</span>
-              <span style={{ fontSize: 11, color: textMuted }}>•</span>
-              <span style={{ fontSize: 11, color: textMuted }}>Confidential Pitch</span>
-            </div>
+    <div style={{ minHeight: "100vh", background: bg, color: textPrimary, fontFamily: "'Inter', sans-serif", paddingBottom: 60 }}>
+      {/* Header */}
+      <div style={{ background: surface, borderBottom: `1px solid ${border}`, padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <img src="/manus-storage/ea-logo_6e5af419.png" alt="Exact Audience" style={{ height: 22, objectFit: "contain" }} />
+          <div style={{ width: 1, height: 28, background: border }} />
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: accentAlt, letterSpacing: "-0.02em" }}>MIKE MAZZEI</div>
+            <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Oklahoma Governor · Runoff Strategy · August 25, 2026</div>
           </div>
-
-          {/* Hero */}
-          <div style={{ padding: "32px 0 28px" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 20, flexWrap: "wrap" }}>
-              <div style={{ flex: 1, minWidth: 280 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                  <span className="badge" style={{ background: "rgba(232,93,4,0.15)", border: "1px solid rgba(245,158,11,0.3)", color: "#fb923c" }}>
-                    ★ TRUMP ENDORSED
-                  </span>
-                  <span className="badge" style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#fbbf24" }}>
-                    PRIMARY FRONTRUNNER
-                  </span>
-                </div>
-                <h1 style={{ fontSize: 36, fontWeight: 800, margin: "0 0 6px", letterSpacing: "-0.02em" }}>
-                  Mike Mazzei
-                </h1>
-                <p style={{ fontSize: 16, color: textSecondary, margin: "0 0 4px" }}>{CANDIDATE.title}</p>
-                <p style={{ fontSize: 14, color: accent, fontWeight: 600, margin: 0 }}>{CANDIDATE.tagline}</p>
-              </div>
-              <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                {[
-                  { label: "Current Polling", value: `${CANDIDATE.polling}%`, sub: "Post-endorsement: 26–32%" },
-                  { label: "Primary Date", value: "June 16", sub: "9 days away" },
-                  { label: "Runoff Date", value: "Aug 25", sub: "79 days if needed" },
-                  { label: "Cash on Hand", value: CANDIDATE.cashOnHand, sub: "Est. as of June 7" },
-                ].map(kpi => (
-                  <div key={kpi.label} style={{ background: "rgba(255,255,255,0.08)", border: `1px solid ${border}`, borderRadius: 10, padding: "14px 20px", minWidth: 120, textAlign: "center" }}>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: accent }}>{kpi.value}</div>
-                    <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{kpi.label}</div>
-                    <div style={{ fontSize: 11, color: textSecondary, marginTop: 3 }}>{kpi.sub}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ padding: "6px 14px", background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.3)", borderRadius: 20, fontSize: 12, fontWeight: 700, color: accentAlt }}>
+            ★ TRUMP ENDORSED · 46.5% PROJECTED
           </div>
-
-          {/* Tabs */}
-          <div style={{ display: "flex", gap: 4, paddingBottom: 0 }}>
-            {TABS.map(t => (
-              <button key={t} className={`pitch-tab${tab === t ? " active" : ""}`} onClick={() => setTab(t)} style={{ color: tab === t ? "#fb923c" : textSecondary }}>
-                {t}
-              </button>
-            ))}
-          </div>
+          <button onClick={() => navigate("/campaigns")} style={{ padding: "6px 14px", background: "transparent", border: `1px solid ${border}`, borderRadius: 8, color: textMuted, fontSize: 12, cursor: "pointer" }}>← Back</button>
         </div>
       </div>
 
-      {/* ── Content ── */}
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
+      {/* Tabs */}
+      <div style={{ background: surface, borderBottom: `1px solid ${border}`, padding: "0 24px", display: "flex", gap: 4, overflowX: "auto" }}>
+        {TABS.map(t => (
+          <button key={t} onClick={() => setTab(t)} style={{ padding: "12px 16px", background: "transparent", border: "none", cursor: "pointer", fontSize: 13, fontWeight: tab === t ? 700 : 400, color: tab === t ? accentAlt : textMuted, borderBottom: tab === t ? `2px solid ${accentAlt}` : "2px solid transparent", whiteSpace: "nowrap", transition: "color 0.2s" }}>{t}</button>
+        ))}
+      </div>
 
-        {/* ── OVERVIEW ── */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px" }}>
+
         {tab === "Overview" && (
           <div>
-            {/* Alert: Club for Growth */}
-            <div style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.25)", borderRadius: 10, padding: "14px 20px", marginBottom: 24, display: "flex", alignItems: "flex-start", gap: 12 }}>
-              <span style={{ fontSize: 18 }}>⚠️</span>
-              <div>
-                <span style={{ fontWeight: 700, color: "#fbbf24", fontSize: 13 }}>Active Attack: </span>
-                <span style={{ color: textSecondary, fontSize: 13 }}>Club for Growth PAC has spent <strong style={{ color: textPrimary }}>$4.3 million</strong> in attack ads targeting Mazzei. Total PAC spending in the race: $7.1M. This is the primary threat to his frontrunner position.</span>
-              </div>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}60, transparent)`, border: `1px solid ${accent}40`, borderRadius: 16, padding: "28px 32px", marginBottom: 28, textAlign: "center" }}>
+              <div style={{ fontSize: 30, fontWeight: 900, color: accentAlt, lineHeight: 1.2, marginBottom: 10 }}>Mazzei Is 1,158 Votes Behind.<br />The Votes to Win Are Right There.</div>
+              <div style={{ fontSize: 15, color: textSecondary, maxWidth: 680, margin: "0 auto" }}>He trails by less than 0.6 points. McCall's 47,000 voters are in his backyard. Merrick's 58,000 are up for grabs. Win those two groups and Mazzei wins the runoff.</div>
             </div>
-
-            <div className="pitch-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
-              {/* Strengths */}
-              <div className="pitch-card-accent">
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: accent, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 16px" }}>Campaign Strengths</h3>
-                {CANDIDATE.strengths.map((s, i) => (
-                  <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-                    <span style={{ color: "#fbbf24", fontSize: 14, marginTop: 1, flexShrink: 0 }}>✓</span>
-                    <span style={{ fontSize: 14, color: textSecondary, lineHeight: 1.5 }}>{s}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Vulnerabilities */}
-              <div className="pitch-card">
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#fbbf24", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 16px" }}>Vulnerabilities to Address</h3>
-                {CANDIDATE.vulnerabilities.map((v, i) => (
-                  <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-                    <span style={{ color: "#fbbf24", fontSize: 14, marginTop: 1, flexShrink: 0 }}>!</span>
-                    <span style={{ fontSize: 14, color: textSecondary, lineHeight: 1.5 }}>{v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Race Polling */}
-            <div className="pitch-card" style={{ marginBottom: 20 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: textSecondary, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 20px" }}>Current Race Polling — NonDoc/Independent Survey, May 26</h3>
-              {GOV_POLLING.filter(p => p.pct >= 5).map(p => (
-                <div key={p.candidate} style={{ marginBottom: 14 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-                    <span style={{ fontSize: 14, fontWeight: p.candidate === "Mike Mazzei" ? 700 : 400, color: p.candidate === "Mike Mazzei" ? accent : textSecondary }}>
-                      {p.candidate} {p.trump && "★"}
-                    </span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: p.candidate === "Mike Mazzei" ? accent : textPrimary }}>{p.pct}%</span>
-                  </div>
-                  <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 4, overflow: "hidden" }}>
-                    <div className="poll-bar" style={{ width: `${p.pct * 3}%`, background: p.candidate === "Mike Mazzei" ? accent : (p.color || "#ffffff") }} />
-                  </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14, marginBottom: 28 }}>
+              {[
+                { label: "Primary Votes", value: "104,629", color: accentAlt },
+                { label: "Deficit to Close", value: "1,158 votes", color: orange },
+                { label: "McCall Votes Up for Grabs", value: "47,501", color: green },
+                { label: "Merrick Votes Up for Grabs", value: "58,314", color: blue },
+                { label: "Rogers Co. Margin", value: "3 votes", color: orange },
+                { label: "Projected Runoff %", value: "46.5%", color: accentAlt },
+              ].map((s, i) => (
+                <div key={i} style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: "18px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: 24, fontWeight: 800, color: s.color }}>{s.value}</div>
+                  <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 6 }}>{s.label}</div>
                 </div>
               ))}
-              <p style={{ fontSize: 12, color: textMuted, marginTop: 12, marginBottom: 0 }}>★ Trump-endorsed. Post-endorsement projections: Mazzei 26–32% | Drummond 22–26% | Keating 20–24% | McCall 16–20%</p>
             </div>
-
-            {/* Competitive Advantage */}
-            <div style={{ background: `linear-gradient(135deg, rgba(232,93,4,0.08) 0%, rgba(232,93,4,0.03) 100%)`, border: `1px solid rgba(245,158,11,0.25)`, borderRadius: 12, padding: 24 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: accent, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 12px" }}>Why Exact Audience for Mazzei</h3>
-              <p style={{ fontSize: 15, color: textPrimary, lineHeight: 1.7, margin: 0 }}>{CANDIDATE.competitiveAdvantage}</p>
+            <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: 24, marginBottom: 20 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 20 }}>Primary Result — Head to Head</div>
+              {[{ name: "Mike Mazzei", pct: 49.7, votes: 104629, color: accentAlt }, { name: "Gentner Drummond", pct: 50.3, votes: 105787, color: "#64748b" }].map((c, i) => (
+                <div key={i} style={{ marginBottom: 16 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: c.color }}>{c.name}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: c.color }}>{c.pct}% · {c.votes.toLocaleString()} votes</span>
+                  </div>
+                  <AnimBar value={c.pct} max={55} color={c.color} delay={i * 150} />
+                </div>
+              ))}
+              <div style={{ marginTop: 16, padding: "10px 14px", background: "rgba(99,102,241,0.08)", borderRadius: 8, border: "1px solid rgba(99,102,241,0.2)" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: accentAlt }}>Mazzei trails by just 1,158 votes (0.55 pts). This is a coin flip heading into August 25.</span>
+              </div>
+            </div>
+            <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: 24 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 20 }}>The 193,000 Eliminated Votes — Mazzei's Opportunity</div>
+              {[
+                { name: "Jake Merrick",   votes: 58314, pct: 14.7, leans: "SPLIT",  leansColor: orange, reason: "Outsider/populist — Mazzei can win these as the 'change' candidate" },
+                { name: "Charles McCall", votes: 47501, pct: 12.0, leans: "MAZZEI", leansColor: accentAlt, reason: "SE Oklahoma base — natural Mazzei territory" },
+                { name: "Chip Keating",   votes: 74356, pct: 18.8, leans: "DRUMMOND", leansColor: "#64748b", reason: "OKC suburb overlap — Drummond's best consolidation target" },
+                { name: "Minor Candidates", votes: 13000, pct: 3.3, leans: "SPLIT", leansColor: "#64748b", reason: "Scattered" },
+              ].map((c, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, padding: "12px 0", borderBottom: i < 3 ? `1px solid ${border}` : "none", flexWrap: "wrap" }}>
+                  <div style={{ flex: 1, minWidth: 160 }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary }}>{c.name}</div>
+                    <div style={{ fontSize: 12, color: textMuted, marginTop: 2 }}>{c.reason}</div>
+                  </div>
+                  <div style={{ width: 110, textAlign: "right" }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: textPrimary }}>{c.votes.toLocaleString()}</div>
+                    <div style={{ fontSize: 11, color: textMuted }}>{c.pct}% of primary</div>
+                  </div>
+                  <div style={{ padding: "4px 12px", background: `${c.leansColor}20`, border: `1px solid ${c.leansColor}40`, borderRadius: 20, fontSize: 11, fontWeight: 700, color: c.leansColor, minWidth: 90, textAlign: "center" }}>→ {c.leans}</div>
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* ── PATH TO WIN ── */}
-        {tab === "Path to Win" && (
+        {tab === "County Map" && (
           <div>
-            <div className="pitch-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
-              {/* Primary Path */}
-              <div className="pitch-card-accent">
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: accent, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px" }}>Phase 1: Primary Path</h3>
-                <p style={{ fontSize: 12, color: textMuted, margin: "0 0 20px" }}>June 16, 2026 — Qualify for Runoff</p>
-                {CANDIDATE.pathToRunoff.map((s, i) => (
-                  <div key={i} className="step-row">
-                    <div className="step-num">{i + 1}</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-                        <span style={{ fontSize: 14, fontWeight: 600, color: textPrimary }}>{s.step}</span>
-                        <span style={{ fontSize: 14, fontWeight: 800, color: accent, whiteSpace: "nowrap" }}>{s.target}</span>
-                      </div>
-                      <p style={{ fontSize: 12, color: textMuted, margin: "4px 0 0" }}>{s.note}</p>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}40, transparent)`, border: `1px solid ${accent}30`, borderRadius: 16, padding: "20px 24px", marginBottom: 24 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: accentAlt, marginBottom: 6 }}>Hold Tulsa. Win SE Oklahoma. Steal Grady and Canadian.</div>
+              <div style={{ fontSize: 14, color: textSecondary }}>Mazzei's base is Tulsa + eastern Oklahoma. His path to winning is holding that base while flipping Rogers County (3-vote tie) and stealing Merrick voters in Grady and Canadian counties.</div>
+            </div>
+            {COUNTY_DATA.map((c, i) => {
+              const edgeColor = c.runoffEdge.includes("STRONG M") ? accentAlt : c.runoffEdge.includes("LEAN M") ? accent : c.runoffEdge.includes("TOSS") ? orange : "#64748b";
+              return (
+                <div key={i} style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: "16px 20px", marginBottom: 12 }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 16, fontWeight: 800, color: textPrimary }}>{c.county} County</div>
+                      <div style={{ fontSize: 12, color: textMuted, marginTop: 2 }}>{c.votes.toLocaleString()} votes · {c.note}</div>
+                    </div>
+                    <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                      <div style={{ textAlign: "center" }}><div style={{ fontSize: 20, fontWeight: 800, color: accentAlt }}>{c.m}%</div><div style={{ fontSize: 10, color: textMuted }}>Mazzei</div></div>
+                      <div style={{ fontSize: 14, color: textMuted }}>vs</div>
+                      <div style={{ textAlign: "center" }}><div style={{ fontSize: 20, fontWeight: 800, color: "#64748b" }}>{c.d}%</div><div style={{ fontSize: 10, color: textMuted }}>Drummond</div></div>
+                      <div style={{ padding: "4px 12px", background: `${edgeColor}20`, border: `1px solid ${edgeColor}40`, borderRadius: 20, fontSize: 11, fontWeight: 700, color: edgeColor }}>{c.runoffEdge}</div>
                     </div>
                   </div>
-                ))}
-              </div>
-
-              {/* Runoff Path */}
-              <div className="pitch-card">
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#fbbf24", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px" }}>Phase 2: Runoff Path</h3>
-                <p style={{ fontSize: 12, color: textMuted, margin: "0 0 20px" }}>August 25, 2026 — Win the Governorship</p>
-                {CANDIDATE.pathToRunoffWin.map((s, i) => (
-                  <div key={i} className="step-row">
-                    <div className="step-num" style={{ background: "rgba(251,191,36,0.1)", borderColor: "rgba(52,211,153,0.3)", color: "#fbbf24" }}>{i + 1}</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-                        <span style={{ fontSize: 14, fontWeight: 600, color: textPrimary }}>{s.step}</span>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: "#fbbf24", whiteSpace: "nowrap" }}>{s.target}</span>
-                      </div>
-                      <p style={{ fontSize: 12, color: textMuted, margin: "4px 0 0" }}>{s.note}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Need to Persuade */}
-            <div className="pitch-card" style={{ marginBottom: 20 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: textSecondary, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 16px" }}>Need To Persuade</h3>
-              <div className="pitch-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                <div>
-                  <div style={{ fontSize: 12, color: textMuted, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Primary Universe</div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: accent }}>{CANDIDATE.needToPersuade.primary}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 12, color: textMuted, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Runoff Migration Target</div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "#fbbf24" }}>{CANDIDATE.needToPersuade.runoff}</div>
-                </div>
-              </div>
-              <div style={{ marginTop: 16 }}>
-                <div style={{ fontSize: 12, color: textMuted, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.06em" }}>Key Voter Segments</div>
-                {CANDIDATE.needToPersuade.keySegments.map((seg, i) => (
-                  <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
-                    <span style={{ color: accent, fontSize: 14, flexShrink: 0 }}>→</span>
-                    <span style={{ fontSize: 14, color: textSecondary }}>{seg}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Win Math */}
-            <div style={{ background: `linear-gradient(135deg, rgba(52,211,153,0.06) 0%, rgba(52,211,153,0.02) 100%)`, border: "1px solid rgba(251,191,36,0.2)", borderRadius: 12, padding: 24 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#fbbf24", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 16px" }}>Runoff Win Math</h3>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16 }}>
-                {[
-                  { label: "Expected Runoff Turnout", value: "280,000" },
-                  { label: "Win Threshold", value: "140,001" },
-                  { label: "Mazzei Projected Total", value: "192,400" },
-                  { label: "Projected Win Margin", value: "+52,399" },
-                  { label: "Projected Vote Share", value: "48.1%" },
-                  { label: "Structural Advantage", value: "Keating voters" },
-                ].map(m => (
-                  <div key={m.label} style={{ textAlign: "center", padding: "12px 8px", background: "rgba(52,211,153,0.05)", borderRadius: 8, border: "1px solid rgba(251,191,36,0.1)" }}>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: "#fbbf24" }}>{m.value}</div>
-                    <div style={{ fontSize: 11, color: textMuted, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>{m.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── EA STRATEGY ── */}
-        {tab === "EA Strategy" && (
-          <div>
-            {/* What Makes EA Different */}
-            <div style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${border}`, borderRadius: 12, padding: 24, marginBottom: 24 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: textSecondary, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 16px" }}>Why Exact Audience Is Different</h3>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
-                {[
-                  { label: "Traditional Agency", items: ["Platform-defined audiences", "Cookie-based anonymous targeting", "Demographic segments", "Impressions to 'target demo'", "No voter file connection", "CTR and CPM metrics only"] },
-                  { label: "Exact Audience", items: ["Named voter file targeting", "Individual-level identity resolution", "Specific registered Republican by name", "Confirmed delivery to voter file match", "Voter suppression + persuasion model", "Voters behaviorally moved — tracked back to file"], accent: true },
-                ].map(col => (
-                  <div key={col.label} style={{ background: col.accent ? "rgba(232,93,4,0.06)" : "rgba(255,255,255,0.04)", border: col.accent ? "1px solid rgba(245,158,11,0.25)" : `1px solid ${border}`, borderRadius: 10, padding: 16 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: col.accent ? accent : textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>{col.label}</div>
-                    {col.items.map((item, i) => (
-                      <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                        <span style={{ color: col.accent ? "#fbbf24" : "#f59e0b", fontSize: 13, flexShrink: 0, marginTop: 1 }}>{col.accent ? "✓" : "✗"}</span>
-                        <span style={{ fontSize: 13, color: col.accent ? textPrimary : textMuted }}>{item}</span>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                    {[{ label: "Keating", val: c.keating, color: "#64748b" }, { label: "Merrick", val: c.merrick, color: blue }, { label: "McCall", val: c.mccall, color: green }].map((s, j) => (
+                      <div key={j} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "8px 10px" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: s.color }}>{s.val}%</div>
+                        <div style={{ fontSize: 10, color: textMuted }}>{s.label} vote</div>
+                        <AnimBar value={s.val} max={45} color={s.color} delay={i * 80 + j * 40} />
                       </div>
                     ))}
                   </div>
-                ))}
-              </div>
-              <div style={{ marginTop: 16, padding: "12px 16px", background: "rgba(232,93,4,0.08)", borderRadius: 8, borderLeft: `3px solid ${accent}` }}>
-                <p style={{ margin: 0, fontSize: 14, color: textPrimary, fontStyle: "italic" }}>
-                  "Your current agency buys ads that reach people <em>like</em> your voters. Exact Audience buys ads that reach <em>your actual voters</em> — by name, on the voter file — and tells you which ones moved."
-                </p>
-              </div>
-            </div>
-
-            {/* Phase 1 */}
-            <div className="pitch-card-accent" style={{ marginBottom: 20 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
-                <div>
-                  <h3 style={{ fontSize: 16, fontWeight: 700, color: accent, margin: "0 0 4px" }}>{CANDIDATE.eaStrategy.phase1.label}</h3>
-                  <p style={{ fontSize: 13, color: textMuted, margin: 0 }}>{CANDIDATE.eaStrategy.phase1.objective}</p>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: accent }}>{CANDIDATE.eaStrategy.phase1.budget}</div>
-                  <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.06em" }}>Recommended Budget</div>
-                </div>
-              </div>
-              {CANDIDATE.eaStrategy.phase1.tactics.map((t, i) => (
-                <div key={i} className="tactic-row">
-                  <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary, marginBottom: 4 }}>{t.tactic}</div>
-                  <div style={{ fontSize: 13, color: textSecondary, lineHeight: 1.6 }}>{t.detail}</div>
-                </div>
-              ))}
-              <div style={{ marginTop: 16, padding: "10px 14px", background: "rgba(251,191,36,0.08)", borderRadius: 8, border: "1px solid rgba(251,191,36,0.2)" }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#fbbf24" }}>Expected Result: </span>
-                <span style={{ fontSize: 13, color: textSecondary }}>{CANDIDATE.eaStrategy.phase1.expectedResult}</span>
-              </div>
-            </div>
-
-            {/* Phase 2 */}
-            <div className="pitch-card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
-                <div>
-                  <h3 style={{ fontSize: 16, fontWeight: 700, color: "#fbbf24", margin: "0 0 4px" }}>{CANDIDATE.eaStrategy.phase2.label}</h3>
-                  <p style={{ fontSize: 13, color: textMuted, margin: 0 }}>{CANDIDATE.eaStrategy.phase2.objective}</p>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: "#fbbf24" }}>{CANDIDATE.eaStrategy.phase2.budget}</div>
-                  <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.06em" }}>Recommended Budget</div>
-                </div>
-              </div>
-              {CANDIDATE.eaStrategy.phase2.tactics.map((t, i) => (
-                <div key={i} className="tactic-row">
-                  <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary, marginBottom: 4 }}>{t.tactic}</div>
-                  <div style={{ fontSize: 13, color: textSecondary, lineHeight: 1.6 }}>{t.detail}</div>
-                </div>
-              ))}
-              <div style={{ marginTop: 16, padding: "10px 14px", background: "rgba(251,191,36,0.08)", borderRadius: 8, border: "1px solid rgba(251,191,36,0.2)" }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#fbbf24" }}>Expected Result: </span>
-                <span style={{ fontSize: 13, color: textSecondary }}>{CANDIDATE.eaStrategy.phase2.expectedResult}</span>
-              </div>
-            </div>
+              );
+            })}
           </div>
         )}
 
-        {/* ── RACE CONTEXT ── */}
-        {tab === "Race Context" && (
+        {tab === "Strongholds" && (
           <div>
-            {/* Key Stats */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}40, transparent)`, border: `1px solid ${accent}30`, borderRadius: 16, padding: "20px 24px", marginBottom: 24 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: accentAlt, marginBottom: 6 }}>These Are Your Neighborhoods. They Voted for You First.</div>
+              <div style={{ fontSize: 14, color: textSecondary }}>Mazzei's strongholds are in Claremore, Guthrie, and the Mustang corridor. In the runoff, McCall voters in these same areas will add another 5–10 points.</div>
+            </div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>🔒 Locked — Mazzei Strongholds</div>
+            {STRONGHOLD_PRECINCTS.map((p, i) => (
+              <div key={i} style={{ background: card, border: `1px solid ${border}`, borderRadius: 10, padding: "14px 18px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 10 }}>
+                <div style={{ flex: 1, minWidth: 180 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary }}>Precinct {p.prec} — {p.area}</div>
+                  <div style={{ fontSize: 12, color: textMuted, marginTop: 2 }}>{p.county} · {p.votes} votes · {p.note}</div>
+                </div>
+                <div style={{ display: "flex", gap: 20 }}>
+                  <div style={{ textAlign: "center" }}><div style={{ fontSize: 18, fontWeight: 800, color: accentAlt }}>{p.m}%</div><div style={{ fontSize: 10, color: textMuted }}>Mazzei</div></div>
+                  <div style={{ textAlign: "center" }}><div style={{ fontSize: 18, fontWeight: 800, color: "#64748b" }}>{p.d}%</div><div style={{ fontSize: 10, color: textMuted }}>Drummond</div></div>
+                  <div style={{ textAlign: "center" }}><div style={{ fontSize: 18, fontWeight: 800, color: blue }}>{p.k}%</div><div style={{ fontSize: 10, color: textMuted }}>Keating</div></div>
+                </div>
+                <div style={{ padding: "4px 12px", background: `${accentAlt}20`, border: `1px solid ${accentAlt}40`, borderRadius: 20, fontSize: 11, fontWeight: 700, color: accentAlt }}>+{(p.m - p.d).toFixed(1)} pts</div>
+              </div>
+            ))}
+            <div style={{ fontSize: 12, fontWeight: 700, color: textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12, marginTop: 24 }}>⚡ Swing Precincts — Win These, Win the Runoff</div>
+            {SWING_PRECINCTS.map((p, i) => {
+              const mLeads = p.m > p.d;
+              return (
+                <div key={i} style={{ background: card, border: "1px solid rgba(249,115,22,0.3)", borderRadius: 10, padding: "14px 18px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 10 }}>
+                  <div style={{ flex: 1, minWidth: 180 }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary }}>Precinct {p.prec} — {p.area}</div>
+                    <div style={{ fontSize: 12, color: textMuted, marginTop: 2 }}>{p.county} · {p.votes} votes · {p.note}</div>
+                  </div>
+                  <div style={{ display: "flex", gap: 20 }}>
+                    <div style={{ textAlign: "center" }}><div style={{ fontSize: 18, fontWeight: 800, color: mLeads ? accentAlt : "#64748b" }}>{p.m}%</div><div style={{ fontSize: 10, color: textMuted }}>Mazzei</div></div>
+                    <div style={{ textAlign: "center" }}><div style={{ fontSize: 18, fontWeight: 800, color: !mLeads ? orange : "#64748b" }}>{p.d}%</div><div style={{ fontSize: 10, color: textMuted }}>Drummond</div></div>
+                    <div style={{ textAlign: "center" }}><div style={{ fontSize: 18, fontWeight: 800, color: blue }}>{p.k}%</div><div style={{ fontSize: 10, color: textMuted }}>Keating</div></div>
+                  </div>
+                  <div style={{ padding: "4px 12px", background: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.3)", borderRadius: 20, fontSize: 11, fontWeight: 700, color: orange }}>{mLeads ? `M +${(p.m-p.d).toFixed(1)}` : `D +${(p.d-p.m).toFixed(1)}`} · SWING</div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {tab === "Win Path" && (
+          <div>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}40, transparent)`, border: `1px solid ${accent}30`, borderRadius: 16, padding: "20px 24px", marginBottom: 24 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: accentAlt, marginBottom: 6 }}>Here's Exactly How Mazzei Wins in August</div>
+              <div style={{ fontSize: 14, color: textSecondary }}>He starts with 104,000 votes. McCall's 47,000 voters are in SE Oklahoma — his home turf. Win 60% of them and the gap is closed before the Merrick vote even matters.</div>
+            </div>
+            {WIN_PATH.map((s, i) => (
+              <div key={i} style={{ background: card, border: `1px solid ${i === WIN_PATH.length-1 ? accentAlt : border}`, borderRadius: 12, padding: "18px 20px", marginBottom: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: i === WIN_PATH.length-1 ? accentAlt : textPrimary }}>{s.label}</div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.votes.toLocaleString()}</div>
+                    <div style={{ fontSize: 11, color: textMuted }}>{s.pct}% of runoff</div>
+                  </div>
+                </div>
+                <AnimBar value={s.pct} max={60} color={s.color} delay={i * 120} />
+              </div>
+            ))}
+            <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: 24, marginTop: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 20 }}>McCall Vote Geography — Where the 47,000 Live</div>
               {[
-                { label: "Registered Republicans", value: "900,000" },
-                { label: "Expected Primary Turnout", value: "400,000" },
-                { label: "Win Threshold (Primary)", value: "200,001" },
-                { label: "Expected Runoff Turnout", value: "280,000" },
-                { label: "Win Threshold (Runoff)", value: "140,001" },
-                { label: "Total PAC Spending", value: "$7.1M" },
-              ].map(s => (
-                <div key={s.label} className="pitch-card" style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: accent }}>{s.value}</div>
-                  <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 4 }}>{s.label}</div>
+                { area: "SE Oklahoma (Pittsburg, Sequoyah, Atoka, Johnston)", mccall: 8200, mShare: "65%", netGain: "+5,330", note: "McCall's home base — natural Mazzei territory" },
+                { area: "Tulsa County",                                        mccall: 4250, mShare: "60%", netGain: "+2,550", note: "Mazzei anchor county — McCall voters follow" },
+                { area: "Logan County (Guthrie)",                              mccall: 2200, mShare: "55%", netGain: "+1,210", note: "Mazzei already leads Logan — McCall seals it" },
+                { area: "Canadian County",                                     mccall: 1620, mShare: "50%", netGain: "+810",   note: "Split territory — Merrick also strong here" },
+                { area: "All Other Counties",                                  mccall: 31231,mShare: "58%", netGain: "+18,114",note: "Statewide McCall voters lean Mazzei" },
+              ].map((r, i) => (
+                <div key={i} style={{ padding: "12px 0", borderBottom: i < 4 ? `1px solid ${border}` : "none", display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+                  <div style={{ flex: 1, minWidth: 180 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: textPrimary }}>{r.area}</div>
+                    <div style={{ fontSize: 12, color: textMuted, marginTop: 2 }}>{r.note}</div>
+                  </div>
+                  <div style={{ display: "flex", gap: 20 }}>
+                    <div style={{ textAlign: "center" }}><div style={{ fontSize: 15, fontWeight: 700, color: green }}>{r.mccall.toLocaleString()}</div><div style={{ fontSize: 10, color: textMuted }}>McCall votes</div></div>
+                    <div style={{ textAlign: "center" }}><div style={{ fontSize: 15, fontWeight: 700, color: accentAlt }}>{r.mShare}</div><div style={{ fontSize: 10, color: textMuted }}>→ Mazzei</div></div>
+                    <div style={{ textAlign: "center" }}><div style={{ fontSize: 15, fontWeight: 700, color: green }}>{r.netGain}</div><div style={{ fontSize: 10, color: textMuted }}>Net gain</div></div>
+                  </div>
                 </div>
               ))}
             </div>
+          </div>
+        )}
 
-            {/* Timeline */}
-            <div className="pitch-card">
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: textSecondary, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 20px" }}>Race Timeline</h3>
-              {GOV_TIMELINE.map((ev, i) => (
-                <div key={i} style={{ display: "flex", gap: 16, paddingBottom: 16, marginBottom: 16, borderBottom: i < GOV_TIMELINE.length - 1 ? `1px solid ${border}` : "none" }}>
-                  <div style={{ width: 90, flexShrink: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: accent }}>{ev.date.split(",")[0]}</div>
-                    <div style={{ fontSize: 10, color: textMuted }}>{ev.date.split(",")[1]?.trim()}</div>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: textPrimary, marginBottom: 4 }}>{ev.event}</div>
-                    <div style={{ fontSize: 13, color: textSecondary, lineHeight: 1.5 }}>{ev.impact}</div>
-                  </div>
+        {tab === "Messaging" && (
+          <div>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}40, transparent)`, border: `1px solid ${accent}30`, borderRadius: 16, padding: "20px 24px", marginBottom: 24 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: accentAlt, marginBottom: 6 }}>What to Say. Who to Say It To. Where to Say It.</div>
+              <div style={{ fontSize: 14, color: textSecondary }}>Five message tracks, each aimed at a specific voter segment. Exact Audience delivers each message to the exact precincts and households where it will move votes.</div>
+            </div>
+            {MESSAGING.map((m, i) => (
+              <div key={i} style={{ background: card, border: `1px solid ${m.priority === "CRITICAL" ? accentAlt : border}`, borderRadius: 12, padding: "20px 24px", marginBottom: 16 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+                  <div style={{ padding: "3px 10px", background: m.priority === "CRITICAL" ? `${accentAlt}25` : "rgba(255,255,255,0.06)", border: `1px solid ${m.priority === "CRITICAL" ? accentAlt : border}`, borderRadius: 20, fontSize: 11, fontWeight: 700, color: m.priority === "CRITICAL" ? accentAlt : textMuted }}>{m.priority}</div>
+                  <div style={{ padding: "3px 10px", background: "rgba(56,189,248,0.1)", border: "1px solid rgba(56,189,248,0.2)", borderRadius: 20, fontSize: 11, color: blue }}>{m.channel}</div>
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: textPrimary, marginBottom: 10, lineHeight: 1.3 }}>{m.headline}</div>
+                <div style={{ fontSize: 14, color: textSecondary, lineHeight: 1.6, marginBottom: 12 }}>{m.subhead}</div>
+                <div style={{ padding: "8px 12px", background: "rgba(255,255,255,0.04)", borderRadius: 8, fontSize: 12, color: textMuted }}>
+                  <span style={{ fontWeight: 700, color: textSecondary }}>Target: </span>{m.audience}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "EA Strategy" && (
+          <div>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}40, transparent)`, border: `1px solid ${accent}30`, borderRadius: 16, padding: "20px 24px", marginBottom: 24 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: accentAlt, marginBottom: 6 }}>Exact Audience Finds Your Voters by Name. Not by Zip Code.</div>
+              <div style={{ fontSize: 14, color: textSecondary }}>Every McCall voter in SE Oklahoma. Every Merrick voter in Grady County. Every swing voter in Claremore. We match them to the voter file and put your message on their TV — by name.</div>
+            </div>
+            {[
+              { phase: "Phase 1 — McCall Voter Absorption (Now → July 15)", budget: "$40,000–$55,000", objective: "Lock in McCall's 47,000 voters before Drummond reaches them", tactics: [
+                { tactic: "SE Oklahoma CTV Blitz", detail: "Match McCall voter addresses in Pittsburg, Sequoyah, Atoka, and Johnston counties to streaming households. Deliver Mazzei's 'change' message 6–8x before July 15. These voters are in Mazzei's natural territory." },
+                { tactic: "Tulsa County McCall Outreach", detail: "4,250 McCall voters in Tulsa County. Mazzei already leads Tulsa — these voters are the easiest consolidation. CTV + digital sequence targeting McCall household addresses." },
+                { tactic: "Logan County Guthrie Lock-In", detail: "Mazzei leads Logan County by 3.9 pts. McCall got 10.6% there. 2,200 McCall voters in Logan — lock them in early to prevent Drummond from flipping Guthrie's Keating precincts." },
+              ], result: "Close the 1,158-vote gap and build a 5,000-vote cushion before July 15" },
+              { phase: "Phase 2 — Merrick Voter Persuasion (July 15 → August 15)", budget: "$35,000–$50,000", objective: "Win the Merrick vote in Grady and Canadian counties — the true swing voters", tactics: [
+                { tactic: "Grady County Merrick Targeting", detail: "Merrick WON Grady County at 31.7%. Precincts 260037, 260040, 260041 (Chickasha area) — 1,700+ votes, Merrick ran 32–47%. These voters are populist outsiders. Mazzei's message: 'I'm the change candidate, not the incumbent.'" },
+                { tactic: "Canadian County Mustang Blitz", detail: "Precinct 090216 (714 votes, dead tie) and 090504 (659 votes, Mazzei +1 pt). Merrick ran 23–27% in these precincts. CTV + digital to Merrick household addresses in Mustang/Yukon before Drummond defines the Keating narrative." },
+                { tactic: "Rogers County Claremore Turnout Drive", detail: "Rogers County is a 3-vote tie. Mazzei leads Claremore (660021, 660030, 660018 — 2,200 votes, M +4–13 pts). Drive turnout in Claremore specifically — doors + mail + CTV — to bank a 300–400 vote cushion before Election Day." },
+              ], result: "Win Grady County, flip Canadian County, hold Rogers — net +8,000 votes" },
+            ].map((phase, pi) => (
+              <div key={pi} style={{ background: card, border: `1px solid ${pi === 0 ? accentAlt : border}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
                   <div>
-                    <span className="badge" style={{
-                      background: ev.type === "election" ? "rgba(245,158,11,0.12)" : ev.type === "endorsement" ? "rgba(251,191,36,0.1)" : "rgba(255,255,255,0.07)",
-                      border: `1px solid ${ev.type === "election" ? "rgba(245,158,11,0.3)" : ev.type === "endorsement" ? "rgba(52,211,153,0.25)" : border}`,
-                      color: ev.type === "election" ? accent : ev.type === "endorsement" ? "#fbbf24" : textMuted,
-                      textTransform: "uppercase",
-                    }}>
-                      {ev.type}
-                    </span>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: pi === 0 ? accentAlt : "#818cf8" }}>{phase.phase}</div>
+                    <div style={{ fontSize: 13, color: textMuted, marginTop: 4 }}>{phase.objective}</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 24, fontWeight: 800, color: pi === 0 ? accentAlt : "#818cf8" }}>{phase.budget}</div>
+                    <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.06em" }}>Recommended Budget</div>
                   </div>
                 </div>
-              ))}
+                {phase.tactics.map((t, i) => (
+                  <div key={i} style={{ padding: "12px 0", borderBottom: i < phase.tactics.length - 1 ? `1px solid ${border}` : "none" }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary, marginBottom: 4 }}>{t.tactic}</div>
+                    <div style={{ fontSize: 13, color: textSecondary, lineHeight: 1.6 }}>{t.detail}</div>
+                  </div>
+                ))}
+                <div style={{ marginTop: 16, padding: "10px 14px", background: "rgba(99,102,241,0.08)", borderRadius: 8, border: "1px solid rgba(99,102,241,0.2)" }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: accentAlt }}>Expected Result: </span>
+                  <span style={{ fontSize: 13, color: textSecondary }}>{phase.result}</span>
+                </div>
+              </div>
+            ))}
+            <div style={{ padding: "20px 24px", borderLeft: `3px solid ${accentAlt}`, background: "rgba(99,102,241,0.05)", borderRadius: "0 8px 8px 0" }}>
+              <p style={{ margin: 0, fontSize: 14, color: textSecondary, fontStyle: "italic", lineHeight: 1.7 }}>"Your current agency buys ads that reach people <em>like</em> your voters. Exact Audience buys ads that reach <em>your actual voters</em> — by name, on the voter file — and tells you which precincts moved."</p>
             </div>
-          </div>
-
-        )}
-        {tab === "Voter Intelligence" && (
-          <div style={{ padding: "0 4px" }}>
-            <VoterIntelligence
-              candidateName="Mazzei"
-              accent="#f59e0b"
-              mode="runoff"
-            />
-          </div>
-        )}
-        {tab === "Voter Migration" && (
-          <div style={{ padding: "0 4px" }}>
-            <VoterMigration
-              candidateName="Mazzei"
-              mode="runoff"
-            />
           </div>
         )}
       </div>
