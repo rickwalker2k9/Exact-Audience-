@@ -107,7 +107,7 @@ const PATH_TO_WIN = [
     action: "Consolidate McCall's SE Oklahoma Base",
     votes: "~30,000 votes",
     counties: "Pittsburg, Sequoyah, McCurtain, Pushmataha, Atoka, Johnston",
-    detail: "Charles McCall got 47,501 votes statewide — and his base is concentrated in SE Oklahoma where he served as House Speaker. Atoka County went 69.4% McCall. Johnston went 62.5%. These voters are deeply familiar with McCall and trusted him. They are NOT Drummond voters — they're eastern Oklahoma conservatives who want a change from the Drummond administration. Mazzei's coalition already includes this geography. The play is to reach McCall voters directly and make the case that Mazzei is the natural home for their vote.",
+    detail: "Charles McCall got 47,501 votes statewide — and his base is concentrated in SE Oklahoma where he served as House Speaker. Atoka County went 69.4% McCall. Johnston went 62.5%. These voters are deeply familiar with McCall and trusted him. They are NOT Drummond voters — they're eastern Oklahoma conservatives who want a change from the status quo, and Drummond — the former AG — represents that establishment. Mazzei's coalition already includes this geography. The play is to reach McCall voters directly and make the case that Mazzei is the natural home for their vote.",
   },
   {
     priority: "3", color: purple,
@@ -121,7 +121,7 @@ const PATH_TO_WIN = [
     action: "Hold Guthrie in Logan County Against the Keating Threat",
     votes: "7,500-vote county",
     counties: "Logan Co. (420207, 420107, 420105, 420104)",
-    detail: "Mazzei leads Logan County by 161 votes. Drummond's only path here is to consolidate Keating voters in Guthrie — precincts 420107 and 420105 both had 21–22% Keating and Drummond is within 3–5 pts. If Keating voters in Guthrie break 65% for Drummond, he flips Logan. Mazzei needs to reach those Keating voters first with a message that resonates: Mazzei is the change candidate, Drummond is more of the same. The Keating voter who rejected the incumbent governor's brand in the primary can be persuaded to stay in the anti-Drummond column.",
+    detail: "Mazzei leads Logan County by 161 votes. Drummond's only path here is to consolidate Keating voters in Guthrie — precincts 420107 and 420105 both had 21–22% Keating and Drummond is within 3–5 pts. If Keating voters in Guthrie break 65% for Drummond, he flips Logan. Mazzei needs to reach those Keating voters first with a message that resonates: Mazzei is the change candidate, Drummond is more of the same. The Keating voter who rejected the establishment brand in the primary can be persuaded to stay in the anti-Drummond column.",
   },
   {
     priority: "5", color: "#f87171",
@@ -252,7 +252,7 @@ export default function MazzeiPitchDashboard() {
               {[
                 { label: "Where It Helped", color: green, body: "The endorsement gave Mazzei instant credibility with the MAGA-aligned base in Tulsa, Wagoner, eastern Oklahoma, and SE Oklahoma. It likely kept him from finishing third — McCall had deep SE Oklahoma roots and could have eaten into that vote without the Trump signal. Mazzei consolidated his eastern coalition because of the endorsement." },
                 { label: "Where It Created a Problem", color: "#f87171", body: "The suburban OKC precincts Mazzei needs — Edmond, Mustang, Yukon, Nichols Hills — are exactly where Trump's brand has been quietly eroding. These are college-educated, higher-income Republicans who split from Trump in 2020 and 2022. Keating ran 40–52% in those precincts. Those voters already showed they weren't voting for the Trump-endorsed candidate in the primary. The Trump label makes it harder to win them in the runoff." },
-                { label: "The Runoff Strategy Implication", color: accent, body: "Mazzei can't un-ring the Trump bell — but he can reframe it. The message in the suburbs isn't 'Trump endorsed me.' It's 'I'm the change candidate. Drummond has been governor for 4 years. If you wanted something different, I'm the only option left.' The Merrick voters in Grady and Canadian (who ran away from the establishment) and the McCall voters in SE Oklahoma (who wanted a different kind of conservative) are reachable on that message — regardless of the Trump endorsement." },
+                { label: "The Runoff Strategy Implication", color: accent, body: "Mazzei can't un-ring the Trump bell — but he can reframe it. The message in the suburbs isn't 'Trump endorsed me.' It's 'I'm the change candidate. Drummond was the AG — he's the establishment. If you wanted something different, I'm the only option left.' The Merrick voters in Grady and Canadian (who ran away from the establishment) and the McCall voters in SE Oklahoma (who wanted a different kind of conservative) are reachable on that message — regardless of the Trump endorsement." },
               ].map((r, i) => (
                 <div key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: i < 2 ? `1px solid rgba(251,191,36,0.15)` : "none" }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: r.color, marginBottom: 6 }}>{r.label}</div>
