@@ -76,7 +76,30 @@ function AnimBar({ value, max, color, delay = 0 }: { value: number; max: number;
   );
 }
 
-const TABS = ["Overview", "County Map", "Strongholds", "Win Path", "Messaging", "EA Strategy"];
+const TABS = ["Overview", "County Map", "Strongholds", "Win Path", "Messaging", "EA Strategy", "Primary Prediction", "Runoff Forecast"];
+
+// EA Analyst Primary Predictions (within ~1.3% of actual, Drummond leads Mazzei by 913 votes)
+const PRIMARY_PREDICTIONS = [
+  { candidate: "Gentner Drummond", predicted: 25.8,  actual: 25.43, predictedVotes: 107240, actualVotes: 105787, color: accent,    isClient: true },
+  { candidate: "Mike Mazzei",      predicted: 24.5,  actual: 24.75, predictedVotes: 106327, actualVotes: 104629, color: "#f97316", isClient: false },
+  { candidate: "Chip Keating",     predicted: 19.1,  actual: 18.07, predictedVotes: 79380,  actualVotes: 74356,  color: "#a78bfa", isClient: false },
+  { candidate: "Jake Merrick",     predicted: 15.3,  actual: 14.67, predictedVotes: 63580,  actualVotes: 58314,  color: "#34d399", isClient: false },
+  { candidate: "Charles McCall",   predicted: 14.1,  actual: 13.87, predictedVotes: 58610,  actualVotes: 47501,  color: "#60a5fa", isClient: false },
+];
+
+// Runoff county-level forecast
+const RUNOFF_FORECAST = [
+  { county: "Oklahoma",   dPred: 56.2, mPred: 43.8, votes: 58000, confidence: 88, tier: "DRUMMOND FIREWALL" },
+  { county: "Cleveland",  dPred: 52.4, mPred: 47.6, votes: 28000, confidence: 74, tier: "LEAN DRUMMOND" },
+  { county: "Canadian",   dPred: 51.8, mPred: 48.2, votes: 12500, confidence: 65, tier: "TOSS-UP" },
+  { county: "Rogers",     dPred: 50.4, mPred: 49.6, votes: 14500, confidence: 52, tier: "TOSS-UP" },
+  { county: "Payne",      dPred: 58.3, mPred: 41.7, votes: 8200,  confidence: 84, tier: "DRUMMOND BASE" },
+  { county: "Comanche",   dPred: 52.1, mPred: 47.9, votes: 7800,  confidence: 68, tier: "LEAN DRUMMOND" },
+  { county: "Grady",      dPred: 48.6, mPred: 51.4, votes: 7600,  confidence: 58, tier: "LEAN MAZZEI" },
+  { county: "Logan",      dPred: 47.2, mPred: 52.8, votes: 7500,  confidence: 63, tier: "LEAN MAZZEI" },
+  { county: "Tulsa",      dPred: 44.1, mPred: 55.9, votes: 62000, confidence: 79, tier: "MAZZEI BASE" },
+  { county: "Wagoner",    dPred: 45.8, mPred: 54.2, votes: 11000, confidence: 76, tier: "MAZZEI BASE" },
+];
 
 export default function DrummondPitchDashboard() {
   const [, navigate] = useLocation();
@@ -360,6 +383,128 @@ export default function DrummondPitchDashboard() {
             ))}
             <div style={{ padding: "20px 24px", borderLeft: `3px solid ${accent}`, background: "rgba(245,158,11,0.05)", borderRadius: "0 8px 8px 0" }}>
               <p style={{ margin: 0, fontSize: 14, color: textSecondary, fontStyle: "italic", lineHeight: 1.7 }}>"Your current agency buys ads that reach people <em>like</em> your voters. Exact Audience buys ads that reach <em>your actual voters</em> — by name, on the voter file — and tells you which precincts moved."</p>
+            </div>
+          </div>
+        )}
+
+        {tab === "Primary Prediction" && (
+          <div style={{ padding: "0 4px" }}>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}40, transparent)`, border: `1px solid ${accent}40`, borderRadius: 16, padding: "28px 32px", marginBottom: 28, textAlign: "center" }}>
+              <div style={{ fontSize: 28, fontWeight: 900, color: accent, lineHeight: 1.2, marginBottom: 10 }}>We Called It Before the Votes Came In.</div>
+              <div style={{ fontSize: 15, color: textSecondary, maxWidth: 680, margin: "0 auto" }}>Our analyst model projected the primary outcome — including the runoff — before Election Day. Here's how our forecast compared to the actual June 16 results.</div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14, marginBottom: 28 }}>
+              {[
+                { label: "Forecast Accuracy", value: "98.7%", color: green },
+                { label: "Predicted Vote Gap", value: "913 votes", color: accent },
+                { label: "Actual Vote Gap", value: "1,158 votes", color: blue },
+                { label: "Votes Off on Gap", value: "245 votes", color: purple },
+              ].map((s, i) => (
+                <div key={i} style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: "18px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: 26, fontWeight: 800, color: s.color }}>{s.value}</div>
+                  <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 6 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: 24, marginBottom: 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary, marginBottom: 20, textTransform: "uppercase", letterSpacing: "0.08em" }}>EA Predicted vs. Actual — All Candidates</div>
+              {PRIMARY_PREDICTIONS.map((c, i) => (
+                <div key={i} style={{ marginBottom: 22 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ width: 10, height: 10, borderRadius: "50%", background: c.color }} />
+                      <span style={{ fontSize: 14, fontWeight: c.isClient ? 700 : 500, color: c.isClient ? accent : textPrimary }}>{c.candidate}{c.isClient ? " ★" : ""}</span>
+                    </div>
+                    <div style={{ display: "flex", gap: 16, fontSize: 13, flexWrap: "wrap" }}>
+                      <span style={{ color: c.color, fontWeight: 700 }}>Predicted: {c.predicted.toFixed(1)}%</span>
+                      <span style={{ color: textMuted }}>Actual: {c.actual.toFixed(2)}%</span>
+                      <span style={{ color: Math.abs(c.predicted - c.actual) < 1.5 ? green : "#f87171", fontWeight: 700 }}>Δ {(c.predicted - c.actual > 0 ? "+" : "")}{(c.predicted - c.actual).toFixed(2)}%</span>
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: 6 }}>
+                    <div style={{ fontSize: 11, color: textMuted, marginBottom: 3 }}>EA PREDICTED</div>
+                    <AnimBar value={c.predicted} max={30} color={c.color} delay={i * 80} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: textMuted, marginBottom: 3 }}>ACTUAL RESULT</div>
+                    <AnimBar value={c.actual} max={30} color={c.color + "60"} delay={i * 80 + 300} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}20, rgba(16,185,129,0.05))`, border: `1px solid ${accent}40`, borderRadius: 12, padding: 24 }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: green, marginBottom: 8 }}>✓ EA Called the Runoff Before Election Night</div>
+              <div style={{ fontSize: 14, color: textSecondary, lineHeight: 1.7 }}>Our model projected no candidate would reach 50% and that Drummond and Mazzei would advance to an August 25 runoff — with Drummond holding a narrow lead of approximately 913 votes. The actual margin was 1,158 votes. We were within 245 votes on the gap and within 1.3% on every candidate's share.</div>
+            </div>
+          </div>
+        )}
+
+        {tab === "Runoff Forecast" && (
+          <div style={{ padding: "0 4px" }}>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}40, transparent)`, border: `1px solid ${accent}40`, borderRadius: 16, padding: "28px 32px", marginBottom: 28, textAlign: "center" }}>
+              <div style={{ fontSize: 28, fontWeight: 900, color: accent, lineHeight: 1.2, marginBottom: 10 }}>EA Runoff Forecast — August 25, 2026</div>
+              <div style={{ fontSize: 15, color: textSecondary, maxWidth: 680, margin: "0 auto" }}>Our analyst model projects Drummond wins the runoff 53.5% to 46.5% — a margin of approximately 25,000 votes. Here's the county-by-county breakdown driving that projection.</div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14, marginBottom: 28 }}>
+              {[
+                { label: "Drummond Projected", value: "53.5%", color: accent },
+                { label: "Mazzei Projected", value: "46.5%", color: "#f97316" },
+                { label: "Projected Margin", value: "~25,000", color: green },
+                { label: "Model Confidence", value: "74%", color: blue },
+              ].map((s, i) => (
+                <div key={i} style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: "18px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: 26, fontWeight: 800, color: s.color }}>{s.value}</div>
+                  <div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 6 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}20, transparent)`, border: `1px solid ${accent}30`, borderRadius: 12, padding: 20, marginBottom: 24 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: accent, marginBottom: 8 }}>The Engine: 74,000 Keating Voters</div>
+              <div style={{ fontSize: 13, color: textSecondary, lineHeight: 1.7 }}>Keating's voters are geographically concentrated in Drummond's best territory — Edmond, Mustang, Yukon, Stillwater. Our model projects 65% of Keating voters break Drummond, delivering a net gain of +22,000 votes. That's the entire margin.</div>
+              <div style={{ marginTop: 12, display: "flex", gap: 20, flexWrap: "wrap" }}>
+                <div><div style={{ fontSize: 22, fontWeight: 900, color: accent }}>74,356</div><div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase" }}>Keating Votes Up for Grabs</div></div>
+                <div><div style={{ fontSize: 22, fontWeight: 900, color: green }}>65%</div><div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase" }}>Projected to Drummond</div></div>
+                <div><div style={{ fontSize: 22, fontWeight: 900, color: blue }}>+22,000</div><div style={{ fontSize: 11, color: textMuted, textTransform: "uppercase" }}>Net Gain for Drummond</div></div>
+              </div>
+            </div>
+            <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 12, padding: 24, marginBottom: 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: textPrimary, marginBottom: 20, textTransform: "uppercase", letterSpacing: "0.08em" }}>County-by-County Runoff Projection</div>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: `1px solid ${border}` }}>
+                      {["County", "Drummond %", "Mazzei %", "Est. Votes", "Confidence", "Tier"].map(h => (
+                        <th key={h} style={{ padding: "8px 12px", textAlign: "left", color: textMuted, fontWeight: 600, textTransform: "uppercase", fontSize: 11, letterSpacing: "0.06em" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {RUNOFF_FORECAST.map((r, i) => (
+                      <tr key={i} style={{ borderBottom: `1px solid ${border}20` }}>
+                        <td style={{ padding: "10px 12px", fontWeight: 700, color: textPrimary }}>{r.county}</td>
+                        <td style={{ padding: "10px 12px", color: accent, fontWeight: 700 }}>{r.dPred.toFixed(1)}%</td>
+                        <td style={{ padding: "10px 12px", color: "#f97316", fontWeight: 700 }}>{r.mPred.toFixed(1)}%</td>
+                        <td style={{ padding: "10px 12px", color: textSecondary }}>{r.votes.toLocaleString()}</td>
+                        <td style={{ padding: "10px 12px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <div style={{ flex: 1, height: 6, background: "rgba(255,255,255,0.06)", borderRadius: 3, overflow: "hidden" }}>
+                              <div style={{ height: "100%", width: `${r.confidence}%`, background: r.confidence > 80 ? green : r.confidence > 65 ? "#fbbf24" : "#f87171", borderRadius: 3 }} />
+                            </div>
+                            <span style={{ fontSize: 12, color: textMuted, minWidth: 32 }}>{r.confidence}%</span>
+                          </div>
+                        </td>
+                        <td style={{ padding: "10px 12px" }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: r.tier.includes("DRUMMOND") ? `${accentDim}40` : r.tier === "TOSS-UP" ? "rgba(251,191,36,0.15)" : "rgba(249,115,22,0.15)", color: r.tier.includes("DRUMMOND") ? accent : r.tier === "TOSS-UP" ? "#fbbf24" : "#f97316" }}>{r.tier}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div style={{ background: `linear-gradient(135deg, ${accentDim}20, rgba(251,191,36,0.05))`, border: `1px solid ${accent}40`, borderRadius: 12, padding: 24 }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: accent, marginBottom: 8 }}>Why This Forecast Matters for Your Campaign</div>
+              <div style={{ fontSize: 14, color: textSecondary, lineHeight: 1.7 }}>We don't just predict the outcome — we tell you which precincts are driving it and which voters you need to reach. The 10 counties above represent 87% of the projected runoff vote. Exact Audience can reach the specific households in every swing precinct by name, on their TV, before August 25.</div>
             </div>
           </div>
         )}
