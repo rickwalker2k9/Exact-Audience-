@@ -8,6 +8,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { getProfilesByDashboard, type BuyerProfile } from "@/lib/buyerProfiles";
+import { getDailyProfiles } from "@/lib/dynamicProfiles";
 import type { PGPerson } from "@/lib/policyGeniusPeopleSegment";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
@@ -997,7 +998,9 @@ function TabPeople({ mobile, C, dashboardId, accentColor, audienceSegment, audie
   audienceSegmentStats?: { totalList: number; homeowners: number; avgIncomeLabel: string; netWorthLabel: string; creditGrade: string; withPhone: number; withEmail: number; targetUniverse: number; };
 }) {
   const [, navigate] = useLocation();
-  const profiles = getProfilesByDashboard(dashboardId);
+  const DYNAMIC_DASHBOARDS = ["land-rover", "lamborghini", "warby-parker", "policygenius", "breeze-insurance", "barrett-financial"];
+  const dynamicProfiles = DYNAMIC_DASHBOARDS.includes(dashboardId) ? getDailyProfiles(dashboardId as any) : [];
+  const profiles = dynamicProfiles.length > 0 ? dynamicProfiles : getProfilesByDashboard(dashboardId);
   const windowColors = ["#4ade80", "#f59e0b", "#38bdf8"];
   const [search, setSearch] = useState("");
   const [filterState, setFilterState] = useState("All");
