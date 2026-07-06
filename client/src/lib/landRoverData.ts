@@ -9,7 +9,7 @@ export const LANDROVER_CLIENT = {
   location: "Scottsdale, AZ",
   vertical: "Luxury Automotive",
   campaign: "Defender Conquest 2026",
-  startDate: "May 1, 2026",
+  startDate: "Jun 2, 2026",
   budget: "$97,500",
   website: "landrovernorthscottsdale.com",
 };
@@ -57,8 +57,8 @@ export const LANDROVER_DAILY_IMPRESSIONS = [
   { day: "May 29", ctv: 128000, youtube: 29100, display: 14300, meta: 17100, google: 10900, email: 8500, qr: 8700 },
   { day: "May 30", ctv: 132400, youtube: 30100, display: 14800, meta: 17700, google: 11300, email: 8800, qr: 9000 },
   { day: "May 31", ctv: 137200, youtube: 31200, display: 15300, meta: 18400, google: 11700, email: 9100, qr: 9300 },
-  { day: "Jun 1",  ctv: 142400, youtube: 32400, display: 15900, meta: 19000, google: 12200, email: 9500, qr: 9700 },
-  { day: "Jun 2",  ctv: 146200, youtube: 33200, display: 16300, meta: 19500, google: 12500, email: 9700, qr: 9900 },
+  { day: "Jul 5",  ctv: 142400, youtube: 32400, display: 15900, meta: 19000, google: 12200, email: 9500, qr: 9700 },
+  { day: "Jul 6",  ctv: 146200, youtube: 33200, display: 16300, meta: 19500, google: 12500, email: 9700, qr: 9900 },
 ];
 
 export const LANDROVER_MEDIA_MIX = [

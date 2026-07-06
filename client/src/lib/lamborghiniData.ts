@@ -6,7 +6,7 @@ export const LAMBO_CLIENT = {
   location: "Scottsdale, AZ",
   vertical: "Ultra-Luxury Automotive",
   campaign: "Urus Conquest 2026",
-  startDate: "May 1, 2026",
+  startDate: "Jun 2, 2026",
   budget: "$112,000",
   website: "lamborghiniofscottsdale.com",
 };
@@ -60,8 +60,8 @@ export const LAMBO_DAILY_IMPRESSIONS = [
   { day: "May 27", ctv: 122400, youtube: 27800, display: 13700, meta: 16400, google: 10500, email: 8100, qr: 8200 },
   { day: "May 28", ctv: 131200, youtube: 29800, display: 14700, meta: 17600, google: 11300, email: 8700, qr: 8900 },
   { day: "May 29", ctv: 136800, youtube: 31100, display: 15300, meta: 18300, google: 11700, email: 9100, qr: 9300 },
-  { day: "Jun 1",  ctv: 141400, youtube: 32200, display: 15800, meta: 18900, google: 12100, email: 9400, qr: 9600 },
-  { day: "Jun 2",  ctv: 144800, youtube: 32900, display: 16200, meta: 19400, google: 12400, email: 9600, qr: 9800 },
+  { day: "Jul 5",  ctv: 141400, youtube: 32200, display: 15800, meta: 18900, google: 12100, email: 9400, qr: 9600 },
+  { day: "Jul 6",  ctv: 144800, youtube: 32900, display: 16200, meta: 19400, google: 12400, email: 9600, qr: 9800 },
 ];
 
 // Media Mix — CTV dominant (73%)
