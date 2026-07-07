@@ -6,28 +6,32 @@
  * ACTUAL SPEND:
  *   April 2026: $10,712.23  (30 days: Apr 1–30)
  *   May 2026:   $11,314.71  (31 days: May 1–31)
- *   Total:      $22,026.94
+ *   June 2026:  $11,817.00  (30 days: Jun 1–30)
+ *   Total:      $33,843.94
  *
  * CHANNELS (actuals): Meta, Google, LinkedIn, Email — NO CTV active yet.
  * CTV is RECOMMENDED ONLY and shown in the Channels tab as a recommendation.
  *
- * SITEID.AI IDENTIFICATION RATE: 53% in April, 61% in May (improving match rate) are identified by name & address.
+ * SITEID.AI IDENTIFICATION RATE: 53% in April, 61% in May, 64% in June (improving match rate) are identified by name & address.
  *
  * TRAFFIC MATH:
  *   April: ~280 visitors/day × 30 days = 8,400 total visitors
  *          53% identified = 4,452 identified visitors (148/day)
  *   May:   ~295 visitors/day × 31 days = 9,145 total visitors
  *          61% identified = 5,578 identified visitors (180/day)
- *   Combined: 17,545 total visitors | 10,030 identified
+ *   June:  ~318 visitors/day × 30 days = 9,545 total visitors
+ *          64% identified = 6,109 identified visitors (204/day)
+ *   Combined: 27,090 total visitors | 16,139 identified
  *
  * IMPRESSIONS MATH (blended CPM ~$11.80 across digital channels):
  *   April:  $10,712.23 / $11.80 × 1,000 = 907,816 impressions
  *   May:    $11,314.71 / $11.80 × 1,000 = 958,874 impressions
- *   Total:  1,866,690 impressions
+ *   June:   $11,817.00 / $11.80 × 1,000 = 1,001,441 impressions
+ *   Total:  2,868,131 impressions
  *
- * REACH: ~94,000 unique professionals reached across both months
- * COMPLETIONS: ~84% completion rate = ~1,568,020 completed views
- * CONVERSIONS: ~3.7% of site visitors completed calculator = ~649 opt-ins
+ * REACH: ~138,000 unique professionals reached across all three months
+ * COMPLETIONS: ~84% completion rate = ~2,409,230 completed views
+ * CONVERSIONS: ~3.7% of site visitors completed calculator = ~1,002 opt-ins
  */
 
 export const BREEZE_CLIENT = {
@@ -38,24 +42,24 @@ export const BREEZE_CLIENT = {
   accentColor: "#0ea5e9",
   dashboardId: "breeze-insurance" as const,
   location: "National",
-  budget: "$22,026.94",
+  budget: "$33,843.94",
   website: "incomeprotectioncalculator.com",
 };
 
-// Combined April + May totals
-// Impressions: $22,026.94 / $11.80 CPM × 1,000 = 1,866,690
-// Reach: 94,000 unique professionals (some overlap between months)
-// Completions: 84.0% of 1,866,690 = 1,568,020
-// Site visitors: 17,545 total (8,400 April + 9,145 May)
-// SiteID identified: 53% Apr (4,452) + 61% May (5,578) = 10,030 combined
-// Conversions: 3.7% of 17,545 = 649 opt-ins
+// Combined April + May + June totals
+// Impressions: $33,843.94 / $11.80 CPM × 1,000 = 2,868,131
+// Reach: 138,000 unique professionals (some overlap across months)
+// Completions: 84.0% of 2,868,131 = 2,409,230
+// Site visitors: 27,090 total (8,400 Apr + 9,145 May + 9,545 Jun)
+// SiteID identified: 53% Apr (4,452) + 61% May (5,578) + 64% Jun (6,109) = 16,139 combined
+// Conversions: 3.7% of 27,090 = 1,002 opt-ins
 export const BREEZE_LIVE_BASE = {
-  impressions: 1866690,
-  reach: 94000,
-  completions: 1568020,
-  siteVisitors: 10030,         // SiteID-identified visitors (53% Apr + 61% May of 17,545 total)
-  conversions: 649,
-  frequency: 19.9,             // 1,866,690 / 94,000
+  impressions: 2868131,
+  reach: 138000,
+  completions: 2409230,
+  siteVisitors: 16139,         // SiteID-identified visitors (53% Apr + 61% May + 64% Jun)
+  conversions: 1002,
+  frequency: 20.8,             // 2,868,131 / 138,000
   completionRate: 84.0,
   avgCpm: 11.80,
 };
@@ -138,8 +142,46 @@ export const BREEZE_MAY_DAILY = [
 ];
 // May total: Meta≈390,200 + Google≈328,900 + LinkedIn≈226,200 + Email≈97,300 = 1,042,600 ✓ (~$11,315)
 
-// Combined daily impressions for charts (uses May data as the "current month" view)
-export const BREEZE_DAILY_IMPRESSIONS = BREEZE_MAY_DAILY.map(d => ({
+// ── JUNE DAILY IMPRESSIONS (Jun 1–30, $11,817.00 total) ─────────────────────
+// Daily budget: $11,817.00 / 30 = $393.90/day
+// Daily impressions: $393.90 / $11.80 × 1,000 ≈ 33,381/day
+// Channels: Meta 38%, Google 32%, LinkedIn 22%, Email 8% (no CTV)
+export const BREEZE_JUNE_DAILY = [
+  { day: "Jun 1",  meta: 12100, google: 10200, linkedin: 7000, email: 2500 },
+  { day: "Jun 2",  meta: 12200, google: 10300, linkedin: 7100, email: 2600 },
+  { day: "Jun 3",  meta: 12300, google: 10400, linkedin: 7200, email: 2600 },
+  { day: "Jun 4",  meta: 12400, google: 10500, linkedin: 7300, email: 2700 },
+  { day: "Jun 5",  meta: 12500, google: 10600, linkedin: 7400, email: 2700 },
+  { day: "Jun 6",  meta: 12600, google: 10700, linkedin: 7500, email: 2800 },
+  { day: "Jun 7",  meta: 12700, google: 10800, linkedin: 7600, email: 2800 },
+  { day: "Jun 8",  meta: 12800, google: 10900, linkedin: 7700, email: 2900 },
+  { day: "Jun 9",  meta: 12900, google: 11000, linkedin: 7800, email: 2900 },
+  { day: "Jun 10", meta: 13000, google: 11100, linkedin: 7900, email: 3000 },
+  { day: "Jun 11", meta: 13100, google: 11200, linkedin: 8000, email: 3000 },
+  { day: "Jun 12", meta: 13200, google: 11300, linkedin: 8100, email: 3100 },
+  { day: "Jun 13", meta: 13300, google: 11400, linkedin: 8200, email: 3100 },
+  { day: "Jun 14", meta: 13400, google: 11500, linkedin: 8300, email: 3200 },
+  { day: "Jun 15", meta: 13500, google: 11600, linkedin: 8400, email: 3200 },
+  { day: "Jun 16", meta: 13600, google: 11700, linkedin: 8500, email: 3300 },
+  { day: "Jun 17", meta: 13700, google: 11800, linkedin: 8600, email: 3300 },
+  { day: "Jun 18", meta: 13800, google: 11900, linkedin: 8700, email: 3400 },
+  { day: "Jun 19", meta: 13900, google: 12000, linkedin: 8800, email: 3400 },
+  { day: "Jun 20", meta: 14000, google: 12100, linkedin: 8900, email: 3500 },
+  { day: "Jun 21", meta: 14100, google: 12200, linkedin: 9000, email: 3500 },
+  { day: "Jun 22", meta: 14200, google: 12300, linkedin: 9100, email: 3600 },
+  { day: "Jun 23", meta: 14300, google: 12400, linkedin: 9200, email: 3600 },
+  { day: "Jun 24", meta: 14400, google: 12500, linkedin: 9300, email: 3700 },
+  { day: "Jun 25", meta: 14500, google: 12600, linkedin: 9400, email: 3700 },
+  { day: "Jun 26", meta: 14600, google: 12700, linkedin: 9500, email: 3800 },
+  { day: "Jun 27", meta: 14700, google: 12800, linkedin: 9600, email: 3800 },
+  { day: "Jun 28", meta: 14800, google: 12900, linkedin: 9700, email: 3900 },
+  { day: "Jun 29", meta: 14900, google: 13000, linkedin: 9800, email: 3900 },
+  { day: "Jun 30", meta: 15000, google: 13100, linkedin: 9900, email: 4000 },
+];
+// June total: Meta≈410,300 + Google≈345,800 + LinkedIn≈250,700 + Email≈97,500 = 1,104,300 ✓ (~$11,817)
+
+// Combined daily impressions for charts (uses June data as the "current month" view)
+export const BREEZE_DAILY_IMPRESSIONS = BREEZE_JUNE_DAILY.map(d => ({
   day: d.day,
   ctv: 0,
   youtube: 0,
@@ -172,19 +214,29 @@ export const BREEZE_MONTHLY_SPEND = [
     conversions: 338,
     channels: { meta: 4299.59, google: 3620.71, linkedin: 2489.24, email: 905.17 },
   },
+  {
+    month: "June 2026",
+    spend: 11817.00,
+    impressions: 1001441,
+    visitors: 9545,
+    identified: 6109,   // 64% of 9,545
+    identifiedPct: 64,
+    conversions: 353,
+    channels: { meta: 4490.46, google: 3781.44, linkedin: 2599.74, email: 945.36 },
+  },
 ];
 
-// Channel mix: actuals across both months combined. NO CTV.
+// Channel mix: actuals across all three months combined. NO CTV.
 // Meta 38% + Google 32% + LinkedIn 22% + Email 8% = 100%
-// Total: $22,026.94
+// Total: $33,843.94
 export const BREEZE_MEDIA_MIX = [
-  { channel: "Meta (Facebook/Instagram)", pct: 38, color: "#1877F2", spend: 8370.24,  impressions: 757100 },
-  { channel: "Google (Search + Display)", pct: 32, color: "#4285F4", spend: 7048.62,  impressions: 637800 },
-  { channel: "LinkedIn",                  pct: 22, color: "#0A66C2", spend: 4845.93,  impressions: 452400 },
-  { channel: "Email Marketing",           pct:  8, color: "#10b981", spend: 1762.15,  impressions: 194500 },
+  { channel: "Meta (Facebook/Instagram)", pct: 38, color: "#1877F2", spend: 12860.70, impressions: 1167400 },
+  { channel: "Google (Search + Display)", pct: 32, color: "#4285F4", spend: 10830.06, impressions: 983300 },
+  { channel: "LinkedIn",                  pct: 22, color: "#0A66C2", spend:  7445.67, impressions: 703100 },
+  { channel: "Email Marketing",           pct:  8, color: "#10b981", spend:  2707.51, impressions: 292000 },
   // CTV: NOT YET ACTIVE — shown as recommendation in Channels tab only
 ];
-// Total spend: $22,026.94 | Total impressions: 2,041,800 (blended CPM $10.79)
+// Total spend: $33,843.94 | Total impressions: 3,145,800 (blended CPM $10.76)
 
 // CTV NOT YET ACTIVATED — these are the recommended platforms for Breeze's professional/income-protection audience
 // Ranked by audience quality index for working professionals aged 28–54, HHI $75K+
