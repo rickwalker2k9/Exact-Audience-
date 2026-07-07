@@ -46,6 +46,30 @@ export const BREEZE_BUYER_PROFILES: BuyerProfile[] = [
     ],
     tags: ["High Intent", "Completed Calculator", "Abandoned Bestow", "Age 62", "California"],
     journeySummary: "Nick spent 3 weeks comparing disability income products across 5 carriers, abandoned a Bestow application, then converted through our EA calculator after seeing our Google ad, Meta display ad, and email. He scheduled a coverage review — highest-priority close.",
+    outreachKit: {
+      email: {
+        subject: "Vanessa — your disability income comparison across 4 carriers",
+        body: "Vanessa,\n\nYou've been comparing disability income products across four carriers and you know your numbers. I wanted to reach out personally.\n\nBreeze specializes in high-income professionals like you — and we can show you side-by-side options that match your exact income replacement target. Most of our clients in your situation lock in coverage within one call.\n\nCan I schedule 20 minutes with you this week?\n\n— The Breeze Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Vanessa — I'm with Breeze Insurance. I noticed you've been comparing disability income products and wanted to connect.",
+        followUp: "Vanessa, thanks for connecting. You've clearly done your research across multiple carriers. Breeze specializes in high-income professionals and can show you side-by-side options in one session. Would 20 minutes this week work?",
+      },
+      facebookAd: {
+        headline: "Vanessa — Your Disability Income Coverage, Simplified",
+        primaryText: "You've compared 4 carriers. Now let Breeze show you everything side-by-side in one session. High-income professionals trust Breeze for disability income coverage. Schedule your free consultation today.",
+        cta: "Schedule Free Consultation",
+      },
+      googleAd: {
+        headlines: ["Disability Income Insurance — Compare Now", "High-Income Professionals Trust Breeze", "Breeze — Side-by-Side Carrier Comparison"],
+        descriptions: ["Compare disability income products from top carriers in one session. Breeze specializes in high-income professionals. Free consultation.", "Stop comparing spreadsheets. Breeze shows you all your options side-by-side. Lock in coverage in one call."],
+        keywords: ["disability income insurance high income", "disability insurance compare carriers", "Breeze disability insurance", "income protection insurance professionals"],
+      },
+      directMail: {
+        headline: "Stop Comparing. Start Covered.",
+        body: "Vanessa — you've compared 4 carriers. Breeze can show you everything side-by-side in one 20-minute session. High-income professionals trust Breeze for disability income coverage. Visit meetbreeze.com or call [phone] to schedule your free consultation.",
+      },
+    },
   },
   {
     id: "bz-008",
@@ -90,6 +114,30 @@ export const BREEZE_BUYER_PROFILES: BuyerProfile[] = [
     ],
     tags: ["Ethos Approved", "Did Not Finalize", "High Intent", "Financial Advisor", "Sarasota FL"],
     journeySummary: "Jonathan completed a full Ethos application, received a $42/mo quote, and walked away. After seeing our Google ad, Meta display ad, and email, he returned to our calculator and completed all 6 steps. He is a competitive close — needs a better offer than Ethos.",
+    outreachKit: {
+      email: {
+        subject: "Raymond — Breeze vs. Ethos: here's what you're missing",
+        body: "Raymond,\n\nYou completed a full Ethos application and received a $42/month quote. Before you finalize, I wanted to show you what Breeze offers at a similar price point.\n\nBreeze specializes in financial professionals and our disability income products are specifically designed for your income structure. Most clients in your situation find better coverage at the same price — or the same coverage at a lower price.\n\nCan I show you a side-by-side comparison?\n\n— The Breeze Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Raymond — I'm with Breeze Insurance. I noticed you've been comparing disability income options and wanted to reach out.",
+        followUp: "Raymond, thanks for connecting. I know you received a $42/mo quote from Ethos. Before you finalize, I'd love to show you a side-by-side comparison with Breeze. Financial professionals often find better coverage at the same price. Can I set up a quick call?",
+      },
+      facebookAd: {
+        headline: "Raymond — Better Coverage Than Ethos?",
+        primaryText: "You got a $42/mo quote from Ethos. Before you finalize, see what Breeze offers. Financial professionals often find better disability income coverage at the same price. Get your free comparison today.",
+        cta: "Get Free Comparison",
+      },
+      googleAd: {
+        headlines: ["Breeze vs Ethos — Disability Insurance", "Financial Professionals — Better Coverage", "Disability Income Insurance Comparison"],
+        descriptions: ["Got an Ethos quote? Compare it to Breeze before you finalize. Financial professionals often find better coverage at the same price.", "Breeze specializes in disability income for financial professionals. Side-by-side carrier comparison. Free and no obligation."],
+        keywords: ["Breeze vs Ethos disability insurance", "disability income insurance financial advisor", "disability insurance comparison", "Breeze disability insurance"],
+      },
+      directMail: {
+        headline: "Before You Sign With Ethos — See This.",
+        body: "Raymond — you received a $42/mo quote from Ethos. Breeze specializes in disability income for financial professionals and often finds better coverage at the same price. Visit meetbreeze.com or call [phone] for a free side-by-side comparison.",
+      },
+    },
   },
   {
     id: "bz-012",
@@ -132,5 +180,29 @@ export const BREEZE_BUYER_PROFILES: BuyerProfile[] = [
     ],
     tags: ["Ethos Approved", "Healthcare Professional", "High Intent", "Completed Calculator", "Florida"],
     journeySummary: "Evelyn researched 6 carriers over 3 weeks, started a Guardian quote, was previously approved via Ethos, then converted through our EA calculator after our Google ad, Meta display ad, and email sequence. She is a high-priority close with a strong professional identity hook.",
+    outreachKit: {
+      email: {
+        subject: "Priya — you were approved before. Here's what changed.",
+        body: "Priya,\n\nYou were previously approved through Ethos but didn't purchase. I wanted to reach out personally — because healthcare professionals in your situation often find that waiting costs more than acting.\n\nBreeze has a streamlined approval process for healthcare professionals, and your previous approval history makes the process faster. We can likely match or beat your previous quote.\n\nCan I pull your options today?\n\n— The Breeze Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Priya — I'm with Breeze Insurance. I noticed you've been researching disability coverage and wanted to connect.",
+        followUp: "Priya, thanks for connecting. I know you were previously approved through Ethos. Breeze has a streamlined process for healthcare professionals and can likely match or beat your previous quote. Want me to pull your options today?",
+      },
+      facebookAd: {
+        headline: "Priya — You Were Approved Before. Act Now.",
+        primaryText: "Healthcare professional? You were previously approved for disability coverage. Breeze has a streamlined process for healthcare professionals and can match or beat your previous quote. Get covered today.",
+        cta: "Get Covered Today",
+      },
+      googleAd: {
+        headlines: ["Disability Insurance for Healthcare Pros", "Previously Approved? Fast Re-Approval", "Breeze — Healthcare Professional Plans"],
+        descriptions: ["Healthcare professional previously approved for disability coverage? Breeze offers fast re-approval and competitive rates. Get covered today.", "Breeze specializes in disability income for healthcare professionals. Streamlined approval. Competitive rates."],
+        keywords: ["disability insurance healthcare professional", "disability income insurance nurse doctor", "Breeze disability insurance healthcare", "disability insurance fast approval"],
+      },
+      directMail: {
+        headline: "You Were Approved Before. Don't Wait Again.",
+        body: "Priya — you were previously approved for disability coverage. Breeze has a streamlined process for healthcare professionals and can match or beat your previous quote. Visit meetbreeze.com or call [phone] to get covered today.",
+      },
+    },
   },
 ];

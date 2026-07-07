@@ -5,8 +5,9 @@
  * personalized messaging, and recommended media mix.
  */
 
+import { useState } from "react";
 import { useParams, useLocation } from "wouter";
-import { getProfileById, type BuyerProfile } from "@/lib/buyerProfiles";
+import { getProfileById, type BuyerProfile, type OutreachKit } from "@/lib/buyerProfiles";
 import { useTheme } from "@/contexts/ThemeContext";
 
 // ── Signal strength badge ─────────────────────────────────────────────────────
@@ -54,7 +55,124 @@ function ChannelIcon({ channel }: { channel: string }) {
   return <span style={{ fontSize: 16 }}>{icons[channel] ?? "📡"}</span>;
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
+// ── Copy block with copy button ──────────────────────────────────────────────
+function CopyBlock({ label, value, C }: { label: string; value: string; C: Record<string, string> }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+        <span style={{ fontSize: 10, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em" }}>{label}</span>
+        <button onClick={copy} style={{ background: copied ? "#14532d" : "rgba(255,255,255,0.07)", color: copied ? "#4ade80" : C.muted, border: "none", borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "all 0.15s" }}>
+          {copied ? "Copied!" : "Copy"}
+        </button>
+      </div>
+      <div style={{ background: "rgba(0,0,0,0.25)", border: `1px solid ${C.border}`, borderRadius: 8, padding: "12px 14px", fontSize: 13, color: C.white, lineHeight: 1.75, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{value}</div>
+    </div>
+  );
+}
+
+// ── Outreach Kit Section ───────────────────────────────────────────────────────
+const OUTREACH_TABS = [
+  { key: "email",      label: "Email",       icon: "✉️" },
+  { key: "linkedin",   label: "LinkedIn",    icon: "💼" },
+  { key: "facebookAd", label: "Facebook Ad", icon: "🎟️" },
+  { key: "googleAd",   label: "Google Ad",   icon: "🔍" },
+  { key: "directMail", label: "Direct Mail", icon: "📬" },
+] as const;
+
+function OutreachKitSection({ profile, accentColor, C }: { profile: BuyerProfile; accentColor: string; C: Record<string, string> }) {
+  const [activeTab, setActiveTab] = useState<typeof OUTREACH_TABS[number]["key"]>("email");
+  const kit = profile.outreachKit;
+
+  if (!kit) {
+    return (
+      <div className="fade-up" style={{ background: C.card, border: `1px solid ${accentColor}55`, borderRadius: 14, padding: "24px 28px" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: accentColor, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16 }}>✉️ Recommended Personalized Message</div>
+        <div style={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: "20px 24px" }}>
+          <CopyBlock label="Subject" value={profile.personalizedMessage.subject} C={C} />
+          <CopyBlock label="Message" value={profile.personalizedMessage.body} C={C} />
+        </div>
+      </div>
+    );
+  }
+
+  const renderTab = () => {
+    switch (activeTab) {
+      case "email":
+        return (
+          <div>
+            <CopyBlock label="Subject Line" value={kit.email.subject} C={C} />
+            <CopyBlock label="Email Body" value={kit.email.body} C={C} />
+          </div>
+        );
+      case "linkedin":
+        return (
+          <div>
+            <CopyBlock label="Connection Request" value={kit.linkedin.connectionRequest} C={C} />
+            <CopyBlock label="Follow-Up Message" value={kit.linkedin.followUp} C={C} />
+          </div>
+        );
+      case "facebookAd":
+        return (
+          <div>
+            <CopyBlock label="Headline" value={kit.facebookAd.headline} C={C} />
+            <CopyBlock label="Primary Text" value={kit.facebookAd.primaryText} C={C} />
+            <CopyBlock label="Call to Action" value={kit.facebookAd.cta} C={C} />
+          </div>
+        );
+      case "googleAd":
+        return (
+          <div>
+            <CopyBlock label="Headlines (use up to 3)" value={kit.googleAd.headlines.join("\n")} C={C} />
+            <CopyBlock label="Descriptions (use up to 2)" value={kit.googleAd.descriptions.join("\n")} C={C} />
+            <CopyBlock label="Target Keywords" value={kit.googleAd.keywords.join("\n")} C={C} />
+          </div>
+        );
+      case "directMail":
+        return (
+          <div>
+            <CopyBlock label="Postcard Headline" value={kit.directMail.headline} C={C} />
+            <CopyBlock label="Postcard Body Copy" value={kit.directMail.body} C={C} />
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="fade-up" style={{ background: C.card, border: `1px solid ${accentColor}55`, borderRadius: 14, padding: "24px 28px" }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: accentColor, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 4 }}>📤 Personalized Outreach Kit</div>
+      <div style={{ fontSize: 12, color: C.muted, marginBottom: 20 }}>Every message below is written specifically for {profile.name.split(" ")[0]} based on their Buyer's DNA and site journey. Click any field to copy.</div>
+      <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
+        {OUTREACH_TABS.map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            style={{
+              background: activeTab === tab.key ? accentColor : "rgba(255,255,255,0.06)",
+              color: activeTab === tab.key ? "#fff" : C.muted,
+              border: activeTab === tab.key ? `1px solid ${accentColor}` : `1px solid ${C.border}`,
+              borderRadius: 8, padding: "7px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer",
+              transition: "all 0.15s", display: "flex", alignItems: "center", gap: 5,
+            }}
+          >
+            <span>{tab.icon}</span> {tab.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: "20px 24px" }}>
+        {renderTab()}
+      </div>
+    </div>
+  );
+}
+
+// ── Copy block with copy button ──────────────────────────────────────────────
 export default function BuyerProfilePage() {
   const { id } = useParams<{ id: string }>();
   const [, navigate] = useLocation();

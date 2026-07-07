@@ -6,7 +6,10 @@
  * Same 3 profiles show all day; they rotate at midnight.
  */
 
-import type { BuyerProfile, IntentSignal } from "./buyerProfiles";
+import type { BuyerProfile, IntentSignal, OutreachKit } from "./buyerProfiles";
+import { WARBY_PROFILES, POLICYGENIUS_PROFILES } from "./buyerProfiles";
+import { BREEZE_BUYER_PROFILES } from "./breezeProfiles";
+import { BARRETT_BUYER_PROFILE_CARDS } from "./barrettProfiles";
 
 // ─── Seeded RNG ───────────────────────────────────────────────────────────────
 function seedRng(seed: number) {
@@ -95,6 +98,30 @@ const LR_POOL: RawProfile[] = [
     ],
     tags: ["Defender 110", "BMW Conquest", "7-Seat", "Finance Ready", "High Intent"],
     journeySummary: "Cameron has configured his exact Defender 110, checked his BMW payoff, and clicked through an inventory email. He is a 7-day close.",
+    outreachKit: {
+      email: {
+        subject: "Cameron — your Fuji White Defender 110 with 7-seat config is in stock",
+        body: "Cameron,\n\nWe noticed you built a Fuji White Defender 110 with the 7-seat option and tow package on our configurator — and we have that exact spec in stock right now.\n\nWe can also take your BMW X5 M on trade and structure a deal that makes the monthly work. Your payoff is likely around $58K, and current trade values on the X5 M are strong.\n\nWould you like to come in for a private showing this week? I can have the keys ready.\n\n— [Sales Rep Name]\nLand Rover North Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hi Cameron — I'm with Land Rover North Scottsdale. I noticed you've been researching the Defender 110 and wanted to connect. Happy to answer any questions.",
+        followUp: "Cameron, thanks for connecting. I wanted to reach out personally — we have a Fuji White Defender 110 with the 7-seat option in stock right now. Given your BMW X5 M, the trade-in timing is actually ideal. Would a private showing work for you this week?",
+      },
+      facebookAd: {
+        headline: "Your Defender 110 Is Ready",
+        primaryText: "Cameron, the Fuji White Defender 110 with 7-seat option you configured is in stock at Land Rover North Scottsdale. Strong trade values on BMW X5 M right now. Book a private showing today.",
+        cta: "Schedule Private Showing",
+      },
+      googleAd: {
+        headlines: ["Defender 110 In Stock Scottsdale", "7-Seat Defender — Take Your BMW on Trade", "Land Rover North Scottsdale — Book Now"],
+        descriptions: ["Fuji White Defender 110 with 7-seat + tow package available now. Strong BMW X5 M trade values.", "Private showings available. Finance-ready buyers welcome. Call or book online today."],
+        keywords: ["Defender 110 in stock Scottsdale", "Land Rover Defender 7 seat AZ", "BMW X5 trade in Land Rover", "Defender 110 tow package"],
+      },
+      directMail: {
+        headline: "Your Defender 110 Is Waiting",
+        body: "Cameron — the Fuji White Defender 110 with 7-seat option and tow package you configured is in stock at Land Rover North Scottsdale. We're also seeing strong trade values on BMW X5 M right now. Call [phone] or visit us at [address] to schedule a private showing. This unit won't last.",
+      },
+    },
   },
   {
     id: "lr-p02", dashboardId: "land-rover",
@@ -130,6 +157,30 @@ const LR_POOL: RawProfile[] = [
     ],
     tags: ["Range Rover Sport", "CPO", "Safety Buyer", "Family", "Finance Research"],
     journeySummary: "Natalie is a safety-first family buyer who has saved two CPO Range Rover Sport units and checked financing rates. A personal outreach referencing her saved units will convert her.",
+    outreachKit: {
+      email: {
+        subject: "Natalie — your two saved CPO Range Rover Sport units + a safety note",
+        body: "Natalie,\n\nYou saved two CPO Range Rover Sport units on our site, and I wanted to reach out personally before they move.\n\nBoth units have passed our 165-point CPO inspection and carry the full manufacturer warranty. The Range Rover Sport received a Top Safety Pick+ from IIHS — the same rating you were researching.\n\nI'd love to schedule a test drive for you and your family this weekend. Which day works best?\n\n— [Sales Rep Name]\nLand Rover North Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hi Natalie — I'm with Land Rover North Scottsdale. I saw you've been researching the Range Rover Sport for your family and wanted to connect.",
+        followUp: "Natalie, thanks for connecting. I wanted to personally follow up on the two CPO Range Rover Sport units you saved. Both are still available and carry the full IIHS Top Safety Pick+ rating you were researching. Would a family test drive this weekend work for you?",
+      },
+      facebookAd: {
+        headline: "Top Safety Pick+ — CPO Range Rover Sport",
+        primaryText: "Natalie, your two saved CPO Range Rover Sport units are still available at Land Rover North Scottsdale. IIHS Top Safety Pick+. Full manufacturer warranty. Up to $18K below new MSRP. Schedule your family test drive today.",
+        cta: "Book Family Test Drive",
+      },
+      googleAd: {
+        headlines: ["CPO Range Rover Sport Scottsdale", "IIHS Top Safety Pick+ — In Stock Now", "Save $18K vs New — CPO Warranty Included"],
+        descriptions: ["Certified Pre-Owned Range Rover Sport with full manufacturer warranty. IIHS Top Safety Pick+. Available now.", "Family-ready luxury SUV. CPO inspection certified. Book your test drive at Land Rover North Scottsdale."],
+        keywords: ["CPO Range Rover Sport Scottsdale", "safest luxury SUV 2024", "Range Rover Sport CPO AZ", "Range Rover Sport vs Defender 130"],
+      },
+      directMail: {
+        headline: "The Safest Luxury SUV — Now CPO Certified",
+        body: "Natalie — the two CPO Range Rover Sport units you saved are still available. Both carry IIHS Top Safety Pick+ and the full manufacturer warranty — at up to $18,000 below new MSRP. Call [phone] or visit Land Rover North Scottsdale to schedule your family test drive.",
+      },
+    },
   },
   {
     id: "lr-p03", dashboardId: "land-rover",
@@ -164,6 +215,30 @@ const LR_POOL: RawProfile[] = [
     ],
     tags: ["Defender 90", "Accessories", "Lease", "Toyota Conquest", "Overlanding"],
     journeySummary: "Troy is a first-time luxury buyer currently leasing a 4Runner. He is deep in accessories research and has checked his trade-in value. A lease pull-ahead offer is his conversion path.",
+    outreachKit: {
+      email: {
+        subject: "Troy — Defender 90 lease from $879/mo + the accessory build you've been planning",
+        body: "Troy,\n\nI noticed you've been deep in Defender 90 research — overlanding builds, accessories, and community forums. I wanted to reach out personally.\n\nWe have a Defender 90 available now, and current lease rates start at $879/mo with $0 down. We can also include a factory accessory credit so you can start building it out from day one.\n\nWant to come in and see it? I'll have it pulled out front for you.\n\n— [Sales Rep Name]\nLand Rover North Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hey Troy — I'm with Land Rover North Scottsdale. Saw you've been researching the Defender 90 for overlanding and wanted to connect.",
+        followUp: "Troy, thanks for connecting. I wanted to reach out about the Defender 90 — we have one available now and current lease rates are $879/mo. We can also include an accessory credit to start your build. Would you want to come see it this week?",
+      },
+      facebookAd: {
+        headline: "Defender 90 — Lease from $879/mo",
+        primaryText: "Troy, the Defender 90 you've been researching is available now at Land Rover North Scottsdale. Lease from $879/mo with accessory credit included. Built for overlanding. Come see it this week.",
+        cta: "See It This Week",
+      },
+      googleAd: {
+        headlines: ["Defender 90 Lease AZ — $879/mo", "Defender 90 vs 4Runner — See the Difference", "Overlanding-Ready Defender 90 In Stock"],
+        descriptions: ["Lease a Defender 90 from $879/mo with accessory credit. Pull-ahead available on your 4Runner lease.", "Built for overlanding. Available now at Land Rover North Scottsdale. Book a test drive today."],
+        keywords: ["Defender 90 lease AZ", "Defender 90 vs 4Runner", "Defender 90 overlanding build", "Land Rover Defender 90 Scottsdale"],
+      },
+      directMail: {
+        headline: "Built for More. Lease from $879/mo.",
+        body: "Troy — the Defender 90 you've been researching is available now at Land Rover North Scottsdale. Lease from $879/mo with an accessory credit to start your build. We can also do a lease pull-ahead on your 4Runner. Call [phone] or stop by — I'll have it ready for you.",
+      },
+    },
   },
   {
     id: "lr-p04", dashboardId: "land-rover",
@@ -196,6 +271,30 @@ const LR_POOL: RawProfile[] = [
     ],
     tags: ["Range Rover Velar", "Volvo Conquest", "Brochure Request", "High Intent", "Lease Buyer"],
     journeySummary: "Stephanie has submitted a brochure request, configured her exact spec, and checked her Volvo trade-in value. A personal outreach call will close her within 7 days.",
+    outreachKit: {
+      email: {
+        subject: "Stephanie — your Defender 130 brochure request + a personal note",
+        body: "Stephanie,\n\nThank you for requesting the Defender 130 brochure and for spending time on our configurator. I noticed you also checked your Volvo trade-in value — which tells me you're getting serious.\n\nI'd love to set up a personal call to walk through your exact spec and talk through the trade. We're seeing strong values on Volvo XC90s right now.\n\nWhen works best for a quick 15-minute call?\n\n— [Sales Rep Name]\nLand Rover North Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hi Stephanie — I'm with Land Rover North Scottsdale. I saw you've been researching the Defender 130 and wanted to reach out personally.",
+        followUp: "Stephanie, thanks for connecting. I wanted to follow up on your Defender 130 brochure request. You've clearly done your research — I'd love to set up a 15-minute call to walk through your exact spec and discuss your Volvo trade. When works for you?",
+      },
+      facebookAd: {
+        headline: "Stephanie — Your Defender 130 Awaits",
+        primaryText: "You've configured it. You've researched it. Now let's make it yours. Land Rover North Scottsdale has Defender 130 units available and strong Volvo XC90 trade values right now. Schedule your personal consultation today.",
+        cta: "Schedule Consultation",
+      },
+      googleAd: {
+        headlines: ["Defender 130 — Personal Consultation", "Strong Volvo XC90 Trade Values Now", "Land Rover Defender 130 In Stock Scottsdale"],
+        descriptions: ["Defender 130 available now. Strong trade values on Volvo XC90. Personal consultation with no pressure.", "Book your Defender 130 test drive at Land Rover North Scottsdale. Trade-in appraisal included."],
+        keywords: ["Defender 130 Scottsdale", "Volvo XC90 trade in Land Rover", "Defender 130 vs Volvo XC90", "Land Rover Defender 130 AZ"],
+      },
+      directMail: {
+        headline: "Your Defender 130 Is Ready When You Are",
+        body: "Stephanie — you've done the research. You've configured your exact spec. Now let's make it happen. Land Rover North Scottsdale has Defender 130 units available and we're seeing strong trade values on Volvo XC90 right now. Call [phone] to schedule your personal consultation.",
+      },
+    },
   },
   {
     id: "lr-p05", dashboardId: "land-rover",
@@ -228,6 +327,30 @@ const LR_POOL: RawProfile[] = [
     ],
     tags: ["Defender 130", "Chevy Conquest", "In-Person Visit", "Cash Buyer", "Family Vehicle"],
     journeySummary: "Marcus test drove a Defender 130 X and is comparing to a Suburban High Country. A personal follow-up from the sales rep who met him will close this within 30 days.",
+    outreachKit: {
+      email: {
+        subject: "Marcus — following up on your Defender 130 X test drive",
+        body: "Marcus,\n\nIt was great having you in for the Defender 130 X test drive. I know you're comparing it to the Suburban High Country, and I wanted to share a few things that might help.\n\nThe Defender 130 X has a significantly higher tow rating (8,200 lbs vs. 8,000 lbs), a more capable off-road suspension, and a far more distinctive ownership experience. We also have a strong conquest offer available for Suburban owners right now.\n\nWould you like to come back in for a side-by-side comparison? I can have both vehicles ready.\n\n— [Sales Rep Name]\nLand Rover North Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hi Marcus — I'm with Land Rover North Scottsdale. You came in for a Defender 130 X test drive recently and I wanted to follow up personally.",
+        followUp: "Marcus, thanks for connecting. I know you're comparing the Defender 130 X to the Suburban High Country. I'd love to share some side-by-side specs and our current conquest offer for Suburban owners. Would a follow-up visit work for you this week?",
+      },
+      facebookAd: {
+        headline: "Defender 130 X vs. Suburban — See the Difference",
+        primaryText: "Marcus, you test drove the Defender 130 X. Now compare it side-by-side with the Suburban High Country. Land Rover North Scottsdale has a conquest offer available for Suburban owners. Come back in this week.",
+        cta: "Book Comparison Drive",
+      },
+      googleAd: {
+        headlines: ["Defender 130 X vs Suburban High Country", "Conquest Offer for Suburban Owners", "Defender 130 X — 8,200 lb Tow Rating"],
+        descriptions: ["Test drove the Defender 130 X? Compare it to your Suburban High Country. Conquest offer available now at Land Rover North Scottsdale.", "Higher tow rating. Better off-road capability. More distinctive. Book your comparison drive today."],
+        keywords: ["Defender 130 X vs Suburban High Country", "Land Rover Defender 130 X Scottsdale", "Suburban conquest offer Land Rover", "Defender 130 X tow rating"],
+      },
+      directMail: {
+        headline: "You Drove It. Now Own It.",
+        body: "Marcus — you test drove the Defender 130 X. We know you're comparing it to the Suburban High Country. The Defender 130 X has a higher tow rating, better off-road capability, and we have a conquest offer available for Suburban owners right now. Call [phone] to schedule your follow-up visit.",
+      },
+    },
   },
   {
     id: "lr-p06", dashboardId: "land-rover",
@@ -262,6 +385,30 @@ const LR_POOL: RawProfile[] = [
     ],
     tags: ["Range Rover Sport", "Mercedes Conquest", "Saved Units", "Lease Buyer", "High Intent"],
     journeySummary: "Jennifer has saved two inventory units, checked her Mercedes lease payoff, and opened every email. A personal call referencing her saved units and the early termination offer will close her.",
+    outreachKit: {
+      email: {
+        subject: "Jennifer — your two saved Range Rover Sport units + an early termination offer",
+        body: "Jennifer,\n\nYou've saved two Range Rover Sport units on our site and you've opened every email we've sent — which tells me you're ready.\n\nI also noticed you checked your Mercedes lease payoff. We have an early termination program that can get you out of your current lease and into a new Range Rover Sport with minimal penalty. I'd love to walk you through the numbers.\n\nCan I give you a quick call this week?\n\n— [Sales Rep Name]\nLand Rover North Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hi Jennifer — I'm with Land Rover North Scottsdale. I noticed you've been researching the Range Rover Sport and wanted to connect.",
+        followUp: "Jennifer, thanks for connecting. You've saved two Range Rover Sport units and I know you've been looking at your Mercedes lease payoff. We have an early termination program that can get you out of your lease with minimal penalty. Would a quick call work this week?",
+      },
+      facebookAd: {
+        headline: "Jennifer — Get Out of Your Mercedes Lease Early",
+        primaryText: "Land Rover North Scottsdale has an early termination program that can get you into a new Range Rover Sport with minimal penalty. Your two saved units are still available. Call us today.",
+        cta: "Get Early Termination Details",
+      },
+      googleAd: {
+        headlines: ["Early Lease Termination — Range Rover Sport", "Get Out of Your Mercedes Lease Now", "Range Rover Sport — Your Two Saved Units Available"],
+        descriptions: ["Land Rover North Scottsdale early termination program. Get out of your Mercedes lease with minimal penalty. Range Rover Sport in stock.", "Your saved units are still available. Call today to discuss early termination and trade-in options."],
+        keywords: ["Mercedes lease early termination Land Rover", "Range Rover Sport Scottsdale", "lease swap Mercedes to Land Rover", "Range Rover Sport in stock AZ"],
+      },
+      directMail: {
+        headline: "Your Mercedes Lease Doesn't Have to Wait",
+        body: "Jennifer — your two saved Range Rover Sport units are still available at Land Rover North Scottsdale. We have an early termination program that can get you out of your Mercedes lease with minimal penalty. Call [phone] to get the numbers today.",
+      },
+    },
   },
 ];
 
@@ -299,6 +446,30 @@ const LAMBO_POOL: RawProfile[] = [
     ],
     tags: ["Urus S", "Nero Noctis", "Allocation", "Inbound Caller", "Immediate Close", "HNW Buyer"],
     journeySummary: "Preston has called the dealership twice, completed a full Urus S configuration, and researched financing. He is a confirmed buyer.",
+    outreachKit: {
+      email: {
+        subject: "Preston — your Nero Noctis Urus S allocation is confirmed",
+        body: "Preston,\n\nThank you for your calls. I wanted to reach out personally to confirm that we have a Nero Noctis Urus S with Senso interior allocation available for you.\n\nI'd like to invite you for a private viewing before it's publicly listed. We can walk through the full spec, discuss delivery timeline, and compare it to the Cayenne Turbo GT availability you've been tracking.\n\nWhen can I have you in?\n\n— [Dealership Principal]\nLamborghini of Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Preston — I'm the principal at Lamborghini of Scottsdale. You've called us twice about the Urus S and I wanted to connect directly.",
+        followUp: "Preston, thanks for connecting. I have a Nero Noctis Urus S with Senso interior allocation available right now — before it's publicly listed. I'd like to invite you for a private viewing. When works for you?",
+      },
+      facebookAd: {
+        headline: "Your Nero Noctis Urus S Is Ready",
+        primaryText: "Preston — Lamborghini of Scottsdale has a Nero Noctis Urus S with Senso interior available for private viewing. Confirmed allocation. No waitlist. Contact us today.",
+        cta: "Request Private Viewing",
+      },
+      googleAd: {
+        headlines: ["Urus S Nero Noctis — Private Allocation", "Lamborghini of Scottsdale — Confirmed Stock", "Urus S vs Cayenne Turbo GT — See Both"],
+        descriptions: ["Nero Noctis Urus S with Senso interior available now. Private viewing before public listing. Call Lamborghini of Scottsdale.", "Confirmed allocation. No waitlist. Compare Urus S to Cayenne Turbo GT. Schedule your private appointment."],
+        keywords: ["Urus S Nero Noctis Scottsdale", "Lamborghini Urus S allocation AZ", "Urus S vs Cayenne Turbo GT", "Lamborghini of Scottsdale"],
+      },
+      directMail: {
+        headline: "Your Allocation Is Confirmed.",
+        body: "Preston — Lamborghini of Scottsdale has a Nero Noctis Urus S with Senso interior available for private viewing. This is a confirmed allocation — not a waitlist. Call [phone] or reply to this card to schedule your private appointment.",
+      },
+    },
   },
   {
     id: "lb-p02", dashboardId: "lamborghini",
@@ -333,6 +504,30 @@ const LAMBO_POOL: RawProfile[] = [
     ],
     tags: ["Huracán Sterrato", "First Lambo", "Post-Exit Founder", "Instagram Active", "Test Drive Ready"],
     journeySummary: "Alexis is a first-time Lamborghini buyer who has DM'd the dealership asking about a test drive. A private, experience-first test drive will close her.",
+    outreachKit: {
+      email: {
+        subject: "Alexis — a private Huracán Tecnica experience, just for you",
+        body: "Alexis,\n\nI saw your DM about a test drive and I wanted to reach out personally. We'd love to set up a private, no-pressure Huracán Tecnica experience — just you, the car, and one of our specialists.\n\nNo crowds. No sales floor. Just the car.\n\nWhen works for you?\n\n— [Sales Specialist]\nLamborghini of Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hi Alexis — I'm with Lamborghini of Scottsdale. I saw your message about a test drive and wanted to connect directly.",
+        followUp: "Alexis, thanks for connecting. I'd love to set up a private Huracán Tecnica experience for you — no pressure, no crowds. Just you and the car. When works for you this week?",
+      },
+      facebookAd: {
+        headline: "A Private Huracán Experience — Just for You",
+        primaryText: "Alexis, Lamborghini of Scottsdale is offering a private, no-pressure Huracán Tecnica experience. No sales floor. No crowds. Just you and the car. Book your private drive today.",
+        cta: "Book Private Drive",
+      },
+      googleAd: {
+        headlines: ["Private Huracán Tecnica Test Drive", "Lamborghini of Scottsdale — No Pressure", "First Lamborghini? We'll Make It Special"],
+        descriptions: ["Private, no-pressure Huracán Tecnica experience at Lamborghini of Scottsdale. No crowds. Just you and the car.", "First-time Lamborghini buyer? We specialize in making it memorable. Book your private drive today."],
+        keywords: ["Huracán Tecnica test drive Scottsdale", "Lamborghini private experience AZ", "buy Lamborghini Huracán Scottsdale", "Lamborghini of Scottsdale"],
+      },
+      directMail: {
+        headline: "Your Private Huracán Experience Awaits.",
+        body: "Alexis — Lamborghini of Scottsdale is inviting you to a private, no-pressure Huracán Tecnica experience. No sales floor. No crowds. Just you and the car. Call [phone] to book your private drive.",
+      },
+    },
   },
   {
     id: "lb-p03", dashboardId: "lamborghini",
@@ -367,6 +562,30 @@ const LAMBO_POOL: RawProfile[] = [
     ],
     tags: ["Urus Performante", "Porsche Conquest", "Performance Buyer", "Track Experience", "Repeat Luxury"],
     journeySummary: "Diane is a repeat luxury buyer comparing the Urus Performante to her Taycan Turbo S. A private track experience will convert her.",
+    outreachKit: {
+      email: {
+        subject: "Diane — a private Urus Performante track experience, by invitation only",
+        body: "Diane,\n\nYou've been comparing the Urus Performante to your Taycan Turbo S, and I wanted to invite you to something special.\n\nWe're hosting a private track experience for a small group of serious buyers — a chance to push the Urus Performante on a closed course and feel the difference yourself.\n\nThis is by invitation only. Would you like to join us?\n\n— [Sales Specialist]\nLamborghini of Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hi Diane — I'm with Lamborghini of Scottsdale. I know you've been comparing the Urus Performante to your Taycan Turbo S and wanted to reach out.",
+        followUp: "Diane, thanks for connecting. We're hosting a private track experience for a small group of serious buyers — a chance to push the Urus Performante on a closed course. This is by invitation only. Would you like to join us?",
+      },
+      facebookAd: {
+        headline: "Urus Performante — Private Track Experience",
+        primaryText: "Diane, Lamborghini of Scottsdale is hosting a private track experience for serious Urus Performante buyers. Push it on a closed course. Compare it to your Taycan Turbo S. By invitation only.",
+        cta: "Request Your Invitation",
+      },
+      googleAd: {
+        headlines: ["Urus Performante vs Taycan Turbo S", "Private Track Day — Lamborghini Scottsdale", "Urus Performante — By Invitation Only"],
+        descriptions: ["Compare the Urus Performante to your Porsche Taycan Turbo S on a private track. Invitation-only event at Lamborghini of Scottsdale.", "Serious buyers only. Private track experience. Push the Urus Performante on a closed course. Request your invitation."],
+        keywords: ["Urus Performante vs Taycan Turbo S", "Lamborghini Urus Performante Scottsdale", "private track day Lamborghini AZ", "Urus Performante test drive"],
+      },
+      directMail: {
+        headline: "By Invitation Only.",
+        body: "Diane — Lamborghini of Scottsdale is hosting a private track experience for a small group of serious Urus Performante buyers. Push it on a closed course. Compare it to your Taycan Turbo S. This invitation is exclusive. Call [phone] to confirm your spot.",
+      },
+    },
   },
   {
     id: "lb-p04", dashboardId: "lamborghini",
@@ -398,6 +617,30 @@ const LAMBO_POOL: RawProfile[] = [
     ],
     tags: ["Urus S", "Verde Mantis", "Repeat Owner", "Cash Buyer", "In-Person Visit", "Immediate Close"],
     journeySummary: "Victor is a repeat Lamborghini owner who test drove a Urus S and confirmed a cash purchase. A delivery date confirmation will close him immediately.",
+    outreachKit: {
+      email: {
+        subject: "Victor — your Urus S delivery date is ready to confirm",
+        body: "Victor,\n\nThank you for coming in and for confirming your cash purchase. I wanted to reach out personally to let you know we're ready to confirm your delivery date.\n\nWe can have the Urus S prepped, detailed, and ready for delivery within the week. I'd love to make this a proper handover experience — champagne, photos, the works.\n\nWhen would you like to take delivery?\n\n— [Sales Manager]\nLamborghini of Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Victor — I'm the sales manager at Lamborghini of Scottsdale. You test drove the Urus S and confirmed your purchase. I wanted to connect directly to coordinate delivery.",
+        followUp: "Victor, thanks for connecting. We're ready to confirm your Urus S delivery date. We can have it ready within the week. I'd love to make this a proper handover experience. When works for you?",
+      },
+      facebookAd: {
+        headline: "Victor — Your Urus S Is Ready for Delivery",
+        primaryText: "Lamborghini of Scottsdale is ready to confirm your Urus S delivery date. Cash purchase confirmed. We'll make it a handover experience you won't forget. Call us today.",
+        cta: "Confirm Delivery Date",
+      },
+      googleAd: {
+        headlines: ["Urus S Delivery — Confirm Your Date", "Lamborghini of Scottsdale — Ready Now", "Cash Purchase Urus S — Delivery This Week"],
+        descriptions: ["Your Urus S is ready. Confirm your delivery date at Lamborghini of Scottsdale. Cash purchase. No delays.", "We'll make it a proper handover experience. Call today to confirm your Urus S delivery date."],
+        keywords: ["Urus S delivery Scottsdale", "Lamborghini Urus S cash purchase AZ", "Lamborghini of Scottsdale delivery", "buy Urus S Scottsdale"],
+      },
+      directMail: {
+        headline: "Your Urus S Is Ready.",
+        body: "Victor — Lamborghini of Scottsdale is ready to confirm your Urus S delivery date. Cash purchase confirmed. We can have it prepped and ready within the week. Call [phone] to schedule your handover.",
+      },
+    },
   },
   {
     id: "lb-p05", dashboardId: "lamborghini",
@@ -431,8 +674,41 @@ const LAMBO_POOL: RawProfile[] = [
     ],
     tags: ["Urus S", "Bianco Monocerus", "Bentley Conquest", "Event Attendee", "First Lambo", "Female Buyer"],
     journeySummary: "Rachel attended a dealership event, test drove a Urus S, and configured her exact spec. A private female-forward consultation will convert her within 30 days.",
+    outreachKit: {
+      email: {
+        subject: "Rachel — a private Urus S consultation, just for you",
+        body: "Rachel,\n\nThank you for attending our event and for test driving the Urus S. I wanted to follow up personally.\n\nI'd love to set up a private consultation — just you and one of our female specialists — to walk through your exact configuration and answer any questions without the noise of the showroom.\n\nWhen works best for you?\n\n— [Female Sales Specialist]\nLamborghini of Scottsdale",
+      },
+      linkedin: {
+        connectionRequest: "Hi Rachel — I'm a specialist at Lamborghini of Scottsdale. You attended our event and test drove the Urus S. I wanted to follow up personally.",
+        followUp: "Rachel, thanks for connecting. I'd love to set up a private consultation for you — just you and me, walking through your exact Urus S configuration. No pressure, no showroom noise. When works for you?",
+      },
+      facebookAd: {
+        headline: "Rachel — Your Private Urus S Consultation",
+        primaryText: "Lamborghini of Scottsdale is offering a private, female-forward Urus S consultation. You test drove it. Now let's configure it exactly the way you want it. Book your private session today.",
+        cta: "Book Private Consultation",
+      },
+      googleAd: {
+        headlines: ["Private Urus S Consultation — Scottsdale", "Female-Forward Lamborghini Experience", "Configure Your Urus S — No Pressure"],
+        descriptions: ["Private Urus S consultation at Lamborghini of Scottsdale. Female specialist. No pressure. Configure your exact spec.", "You test drove it. Now make it yours. Book a private Urus S consultation at Lamborghini of Scottsdale."],
+        keywords: ["Urus S Scottsdale private consultation", "Lamborghini female buyer AZ", "Urus S configuration Scottsdale", "Lamborghini of Scottsdale women"],
+      },
+      directMail: {
+        headline: "Your Private Urus S Consultation Awaits.",
+        body: "Rachel — Lamborghini of Scottsdale is offering a private, female-forward Urus S consultation. You test drove it at our event. Now let's configure it exactly the way you want it. Call [phone] to book your private session.",
+      },
+    },
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATIC POOLS — Warby Parker, PolicyGenius, Breeze, Barrett
+// These use the static profiles from their respective files.
+// ─────────────────────────────────────────────────────────────────────────────
+const WARBY_POOL: RawProfile[] = WARBY_PROFILES as RawProfile[];
+const PG_POOL: RawProfile[] = POLICYGENIUS_PROFILES as RawProfile[];
+const BREEZE_POOL: RawProfile[] = BREEZE_BUYER_PROFILES as RawProfile[];
+const BARRETT_POOL: RawProfile[] = BARRETT_BUYER_PROFILE_CARDS as RawProfile[];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN EXPORT: getDailyProfiles
@@ -442,6 +718,10 @@ type DashboardId = "land-rover" | "lamborghini" | "warby-parker" | "policygenius
 const POOL_MAP: Record<string, RawProfile[]> = {
   "land-rover": LR_POOL,
   "lamborghini": LAMBO_POOL,
+  "warby-parker": WARBY_POOL,
+  "policygenius": PG_POOL,
+  "breeze-insurance": BREEZE_POOL,
+  "barrett-financial": BARRETT_POOL,
 };
 
 /**

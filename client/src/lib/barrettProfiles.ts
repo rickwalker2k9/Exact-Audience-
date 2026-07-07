@@ -48,6 +48,30 @@ export const BARRETT_BUYER_PROFILE_CARDS: BuyerProfile[] = [
     ],
     tags: ["Jumbo Buyer", "14 Site Visits", "Abandoned Rocket Mortgage", "Visited /contact", "High Equity"],
     journeySummary: "Michael spent 30 days researching a $720K jumbo loan, abandoned a Rocket Mortgage application, visited Barrett's /contact page twice without submitting, and was identified by SiteID. He is a direct-outreach close — the highest-value prospect in the identified pool.",
+    outreachKit: {
+      email: {
+        subject: "Michael — your $720K jumbo loan comparison + a rate note",
+        body: "Michael,\n\nYou've been comparing $720K jumbo loan options across four lenders. I wanted to reach out personally before rates move.\n\nBarrett Financial has a jumbo product specifically designed for move-up buyers with strong equity positions — and with $420K in equity, you're in an excellent position. We can likely beat the rates you've seen elsewhere and close in 21 days.\n\nCan I pull a custom quote for you today?\n\n— [Loan Officer]\nBarrett Financial Group",
+      },
+      linkedin: {
+        connectionRequest: "Hi Michael — I'm a loan officer at Barrett Financial Group. I noticed you've been comparing jumbo loan options and wanted to connect.",
+        followUp: "Michael, thanks for connecting. I know you're comparing $720K jumbo loan options. Barrett Financial specializes in move-up buyers with strong equity positions. We can likely beat the rates you've seen and close in 21 days. Can I pull a custom quote for you?",
+      },
+      facebookAd: {
+        headline: "Michael — Your $720K Jumbo Loan, Simplified",
+        primaryText: "You have $420K in equity and you're comparing jumbo loan options. Barrett Financial specializes in move-up buyers like you. Competitive rates. 21-day close. Get your custom quote today.",
+        cta: "Get Custom Quote",
+      },
+      googleAd: {
+        headlines: ["$720K Jumbo Loan — Competitive Rates", "Move-Up Buyer? Barrett Financial Specializes", "Jumbo Loan — 21-Day Close Guaranteed"],
+        descriptions: ["$420K in equity? Barrett Financial has a jumbo product designed for move-up buyers. Competitive rates and 21-day close.", "Comparing jumbo loan options? Barrett Financial can likely beat your best rate. Get your custom quote today."],
+        keywords: ["jumbo loan Scottsdale AZ", "$720K jumbo mortgage", "move-up buyer jumbo loan", "Barrett Financial Group mortgage"],
+      },
+      directMail: {
+        headline: "Your $720K Jumbo Loan — We Can Beat Your Best Rate.",
+        body: "Michael — you have $420K in equity and you're comparing jumbo loan options. Barrett Financial specializes in move-up buyers and can likely beat the rates you've seen elsewhere. 21-day close. Call [phone] or visit barrettfinancial.com for your custom quote.",
+      },
+    },
   },
   {
     id: "bf-002",
@@ -90,6 +114,30 @@ export const BARRETT_BUYER_PROFILE_CARDS: BuyerProfile[] = [
     ],
     tags: ["Jumbo $1.85M", "Physician Buyer", "Interest-Only", "Compared Chase + Wells Fargo", "812 Credit Score"],
     journeySummary: "James is a $1.85M jumbo buyer who compared Chase Private Client and Wells Fargo Private Mortgage before returning to Barrett 6 times. He viewed loan officer profiles — he is selecting who to call. A VIP outreach from a senior loan officer will close this deal within 7 days.",
+    outreachKit: {
+      email: {
+        subject: "James — your $1.85M interest-only jumbo: a private conversation",
+        body: "James,\n\nYou've been researching $1.85M jumbo and interest-only loan options, and you've compared Chase Private Client and First Republic. I wanted to reach out personally.\n\nBarrett Financial has a private client program for ultra-high-net-worth buyers that most lenders don't advertise. We can structure an interest-only product that optimizes your cash flow and preserves your investment capital.\n\nThis is a conversation worth having. When can I call you?\n\n— [Senior Loan Officer]\nBarrett Financial Group",
+      },
+      linkedin: {
+        connectionRequest: "James — I'm a senior loan officer at Barrett Financial Group. I specialize in ultra-high-net-worth mortgage solutions and wanted to connect.",
+        followUp: "James, thanks for connecting. I know you're researching $1.85M interest-only jumbo options. Barrett Financial has a private client program that most lenders don't advertise — designed specifically for buyers in your position. This is a conversation worth having. When can I call you?",
+      },
+      facebookAd: {
+        headline: "James — $1.85M Interest-Only Jumbo, Private Client",
+        primaryText: "Barrett Financial has a private client program for ultra-high-net-worth buyers researching $1.85M+ interest-only jumbo loans. Optimize your cash flow. Preserve your investment capital. Schedule a private consultation today.",
+        cta: "Schedule Private Consultation",
+      },
+      googleAd: {
+        headlines: ["$1.85M Interest-Only Jumbo Loan", "Private Client Mortgage — Barrett Financial", "Ultra-High-Net-Worth Mortgage Solutions"],
+        descriptions: ["Barrett Financial private client program for $1.85M+ interest-only jumbo loans. Optimize cash flow. Preserve investment capital.", "Ultra-high-net-worth mortgage solutions. Private consultation. Competitive rates. Call Barrett Financial today."],
+        keywords: ["interest-only jumbo loan $1.85M", "ultra-high-net-worth mortgage Scottsdale", "private client mortgage AZ", "Barrett Financial Group jumbo"],
+      },
+      directMail: {
+        headline: "A Mortgage Solution Most Lenders Won't Tell You About.",
+        body: "James — Barrett Financial has a private client program for ultra-high-net-worth buyers researching $1.85M+ interest-only jumbo loans. Optimize your cash flow. Preserve your investment capital. Call [phone] for a private consultation.",
+      },
+    },
   },
   {
     id: "bf-003",
@@ -132,5 +180,29 @@ export const BARRETT_BUYER_PROFILE_CARDS: BuyerProfile[] = [
     ],
     tags: ["First-Time Buyer", "FHA / DPA", "Abandoned LoanDepot", "741 Credit Score", "Gilbert AZ"],
     journeySummary: "Jennifer spent 4 weeks researching FHA loans and DPA programs, abandoned a LoanDepot pre-approval, rejected a Better.com quote, and used Barrett's mortgage calculator with specific numbers. She visited /contact and didn't submit. A DPA-led outreach will close her within 7 days.",
+    outreachKit: {
+      email: {
+        subject: "Jennifer — your FHA + DPA options: let's get you pre-approved today",
+        body: "Jennifer,\n\nYou've been researching FHA loans and down payment assistance programs, and you started a pre-approval with LoanDepot. I wanted to reach out personally.\n\nBarrett Financial specializes in first-time buyers and we have access to DPA programs that can cover up to 5% of your purchase price — which means you could be in a home with as little as $0 out of pocket.\n\nCan I pull your pre-approval today? It takes about 10 minutes.\n\n— [Loan Officer]\nBarrett Financial Group",
+      },
+      linkedin: {
+        connectionRequest: "Hi Jennifer — I'm a loan officer at Barrett Financial Group. I specialize in first-time buyer programs and wanted to connect.",
+        followUp: "Jennifer, thanks for connecting. I know you're researching FHA and DPA programs. Barrett Financial has access to DPA programs that can cover up to 5% of your purchase price — potentially $0 out of pocket. I can pull your pre-approval in 10 minutes. Want me to?",
+      },
+      facebookAd: {
+        headline: "Jennifer — $0 Down with DPA. Get Pre-Approved Today.",
+        primaryText: "First-time buyer? Barrett Financial has down payment assistance programs that can cover up to 5% of your purchase price. Get pre-approved in 10 minutes. $0 out of pocket possible.",
+        cta: "Get Pre-Approved Now",
+      },
+      googleAd: {
+        headlines: ["First-Time Buyer DPA Programs AZ", "$0 Down Payment Assistance — Pre-Approve Now", "FHA Loan + DPA — Barrett Financial"],
+        descriptions: ["First-time buyer? Barrett Financial has DPA programs covering up to 5% of purchase price. Get pre-approved in 10 minutes.", "FHA loans + down payment assistance. $0 out of pocket possible. Barrett Financial specializes in first-time buyers."],
+        keywords: ["FHA loan first-time buyer AZ", "down payment assistance Arizona", "first-time buyer pre-approval", "Barrett Financial Group FHA"],
+      },
+      directMail: {
+        headline: "First-Time Buyer? $0 Down Is Possible.",
+        body: "Jennifer — Barrett Financial has down payment assistance programs that can cover up to 5% of your purchase price. Get pre-approved in 10 minutes. Visit barrettfinancial.com or call [phone] today.",
+      },
+    },
   },
 ];

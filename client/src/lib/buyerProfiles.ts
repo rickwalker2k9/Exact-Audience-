@@ -27,6 +27,14 @@ export type MediaRecommendation = {
   color: string;
 };
 
+export type OutreachKit = {
+  email: { subject: string; body: string };
+  linkedin: { connectionRequest: string; followUp: string };
+  facebookAd: { headline: string; primaryText: string; cta: string };
+  googleAd: { headlines: string[]; descriptions: string[]; keywords: string[] };
+  directMail: { headline: string; body: string };
+};
+
 export type BuyerProfile = {
   id: string;
   dashboardId: "land-rover" | "lamborghini" | "warby-parker" | "policygenius" | "mccarty" | "breeze-insurance" | "barrett-financial";
@@ -47,6 +55,7 @@ export type BuyerProfile = {
   mediaRecommendations: MediaRecommendation[];
   tags: string[];
   journeySummary: string;
+  outreachKit?: OutreachKit;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -342,6 +351,30 @@ export const WARBY_PROFILES: BuyerProfile[] = [
     ],
     tags: ["Home Try-On", "Prescription Frames", "Repeat Buyer", "Style-Driven", "High Intent"],
     journeySummary: "Jasmine is a style-conscious repeat buyer who discovered new frames via Instagram, validated through reviews, and submitted a Home Try-On. She's a near-certain purchase within 7 days.",
+    outreachKit: {
+      email: {
+        subject: "Jasmine — your saved frames are still available + a style note",
+        body: "Jasmine,\n\nYou saved three frames on Warby Parker and spent time comparing lens options. I wanted to reach out personally before those styles sell out.\n\nBased on your browsing, you're drawn to bold, statement frames — and your prescription is straightforward. We can have your exact pair ready in 7-10 days.\n\nWant to lock them in? Use code JASMINE15 for 15% off your first order.\n\n— The Warby Parker Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Jasmine — I'm with Warby Parker. I noticed you've been exploring our frames and wanted to connect.",
+        followUp: "Jasmine, thanks for connecting. I noticed you saved a few frames and wanted to follow up. Your prescription is on file and we can have your exact pair ready in 7-10 days. Use code JASMINE15 for 15% off. Happy to help you finalize your choice.",
+      },
+      facebookAd: {
+        headline: "Jasmine — Your Saved Frames Are Ready",
+        primaryText: "You saved three Warby Parker frames. Your prescription is ready. We can have your exact pair delivered in 7-10 days. Use code JASMINE15 for 15% off. Don't let your favorites sell out.",
+        cta: "Complete Your Order",
+      },
+      googleAd: {
+        headlines: ["Your Warby Parker Frames Are Waiting", "Bold Prescription Frames — 15% Off", "Warby Parker — 7-Day Delivery"],
+        descriptions: ["You saved frames. Your prescription is ready. Complete your order and get 15% off with code JASMINE15.", "Bold, statement frames with your exact prescription. Delivered in 7-10 days. Free shipping and returns."],
+        keywords: ["Warby Parker prescription frames", "bold eyeglasses women", "Warby Parker discount code", "prescription sunglasses Warby Parker"],
+      },
+      directMail: {
+        headline: "Your Frames Are Waiting.",
+        body: "Jasmine — you saved three Warby Parker frames and your prescription is ready. Complete your order and use code JASMINE15 for 15% off. Your exact pair can be delivered in 7-10 days. Visit warbyparker.com or call [phone] to finalize.",
+      },
+    },
   },
   {
     id: "wb-002",
@@ -380,6 +413,30 @@ export const WARBY_PROFILES: BuyerProfile[] = [
     ],
     tags: ["Reading Glasses", "Cart Abandonment", "Price-Conscious", "LensCrafters Conquest", "First-Time Buyer"],
     journeySummary: "Carlos is a practical first-time buyer who validated Warby Parker's value, added items to cart, but abandoned at checkout. A cart recovery email with a friction-reducing offer is his conversion path.",
+    outreachKit: {
+      email: {
+        subject: "Carlos — your reading glasses + prescription sunglasses, ready to ship",
+        body: "Carlos,\n\nYou've been comparing reading glasses and prescription sunglasses on Warby Parker. I wanted to make it easy for you.\n\nWe have a bundle option — reading glasses + prescription sunglasses — that saves you $40 vs. buying separately. Both can be delivered in 7-10 days.\n\nWant me to put together a recommendation based on your prescription?\n\n— The Warby Parker Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Carlos — I'm with Warby Parker. I noticed you've been comparing reading glasses and prescription sunglasses and wanted to help.",
+        followUp: "Carlos, thanks for connecting. I noticed you were comparing reading glasses and prescription sunglasses. We have a bundle option that saves $40 vs. buying separately. Both delivered in 7-10 days. Want me to put together a recommendation?",
+      },
+      facebookAd: {
+        headline: "Reading Glasses + Sunglasses Bundle — Save $40",
+        primaryText: "Carlos, Warby Parker has a bundle option for reading glasses + prescription sunglasses that saves you $40 vs. buying separately. Both delivered in 7-10 days. Practical. Affordable. Done.",
+        cta: "Shop the Bundle",
+      },
+      googleAd: {
+        headlines: ["Reading Glasses + Sunglasses Bundle", "Warby Parker — Save $40 on a Bundle", "Prescription Sunglasses Under $200"],
+        descriptions: ["Get reading glasses and prescription sunglasses from Warby Parker. Bundle and save $40. Delivered in 7-10 days.", "Practical, affordable prescription eyewear. Free shipping and returns. Home try-on available."],
+        keywords: ["Warby Parker reading glasses", "prescription sunglasses affordable", "Warby Parker bundle deal", "reading glasses prescription online"],
+      },
+      directMail: {
+        headline: "Reading Glasses + Sunglasses. Save $40.",
+        body: "Carlos — Warby Parker has a bundle option for reading glasses + prescription sunglasses that saves you $40 vs. buying separately. Both delivered in 7-10 days. Visit warbyparker.com or call [phone] to order.",
+      },
+    },
   },
   {
     id: "wb-003",
@@ -418,6 +475,30 @@ export const WARBY_PROFILES: BuyerProfile[] = [
     ],
     tags: ["Gift Buyer", "Father's Day", "High AOV", "Self-Purchase", "Repeat Buyer Type"],
     journeySummary: "Rachel is a dual-intent buyer — shopping for a Father's Day gift and considering a new pair for herself. Father's Day urgency + a 'buy one, gift one' offer creates a high-AOV conversion opportunity.",
+    outreachKit: {
+      email: {
+        subject: "Rachel — the perfect gift frames for your partner (and a pair for you)",
+        body: "Rachel,\n\nYou've been shopping for frames as a birthday gift for your partner — and browsing a few styles for yourself too. I love that.\n\nWe have a gift option that includes a personalized note card and gift packaging at no extra charge. And if you want to grab a pair for yourself at the same time, we can bundle both orders and save you $30.\n\nWant me to help you finalize both?\n\n— The Warby Parker Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Rachel — I'm with Warby Parker. I noticed you've been shopping for a birthday gift and wanted to help make it special.",
+        followUp: "Rachel, thanks for connecting. I noticed you're shopping for a birthday gift for your partner — and maybe a pair for yourself too. We have gift packaging and a bundle discount available. Want me to help you finalize both orders?",
+      },
+      facebookAd: {
+        headline: "The Perfect Birthday Gift — Warby Parker",
+        primaryText: "Rachel, give your partner the gift of great frames. Warby Parker includes gift packaging and a personalized note card at no extra charge. Bundle with a pair for yourself and save $30. Order today.",
+        cta: "Shop Gift Frames",
+      },
+      googleAd: {
+        headlines: ["Warby Parker Gift Frames — Free Packaging", "Birthday Gift Eyeglasses — Same-Day Order", "Bundle & Save $30 — Warby Parker"],
+        descriptions: ["Give the gift of Warby Parker frames. Free gift packaging and personalized note card. Bundle with your own pair and save $30.", "Perfect birthday gift. Free shipping. 30-day returns. Gift packaging included at no extra charge."],
+        keywords: ["Warby Parker gift eyeglasses", "birthday gift glasses", "Warby Parker gift packaging", "prescription glasses gift"],
+      },
+      directMail: {
+        headline: "The Gift They'll Actually Use.",
+        body: "Rachel — Warby Parker includes free gift packaging and a personalized note card with every gift order. Bundle with a pair for yourself and save $30. Visit warbyparker.com or call [phone] to order.",
+      },
+    },
   },
 ];
 
@@ -464,6 +545,30 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
     ],
     tags: ["Term Life", "New Parent", "No Medical Exam", "Competitor Quotes", "High Urgency", "$1M Coverage"],
     journeySummary: "Marcus is a new father with quotes from two competitors and a PolicyGenius quote saved. Urgency is real — a no-exam, fast-approval offer at $34/mo will close him within 7 days.",
+    outreachKit: {
+      email: {
+        subject: "Marcus — your $1M term life quotes are ready to compare",
+        body: "Marcus,\n\nCongratulations on the new baby. I know you've been comparing $1M term life quotes across a few carriers, and I wanted to make it simple.\n\nPolicyGenius lets you compare all your quotes side-by-side in one place — and our advisors can help you lock in coverage before your 8-week window closes (rates go up after 30 days of shopping).\n\nCan I connect you with an advisor today?\n\n— The PolicyGenius Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Marcus — I'm with PolicyGenius. I noticed you've been comparing life insurance quotes and wanted to reach out.",
+        followUp: "Marcus, thanks for connecting. Congrats on the new baby. I know you're comparing $1M term life quotes — PolicyGenius can show you all your options side-by-side and lock in your rate before it changes. Can I connect you with an advisor today?",
+      },
+      facebookAd: {
+        headline: "Marcus — Lock In Your $1M Term Life Rate Today",
+        primaryText: "New dad? Rates go up the longer you wait. PolicyGenius compares $1M term life quotes from top carriers in minutes. Lock in your rate before your window closes. Get your free quote today.",
+        cta: "Get Free Quote",
+      },
+      googleAd: {
+        headlines: ["$1M Term Life — Compare Quotes Now", "New Dad? Lock In Your Rate Today", "PolicyGenius — Best Term Life Rates"],
+        descriptions: ["Compare $1M term life quotes from top carriers in minutes. Rates go up the longer you wait. Get your free quote at PolicyGenius.", "New father? Protect your family with $1M term life coverage. PolicyGenius compares all carriers. Free, no-obligation quote."],
+        keywords: ["$1M term life insurance quotes", "best term life insurance new dad", "PolicyGenius life insurance", "term life insurance compare rates"],
+      },
+      directMail: {
+        headline: "Protect Your New Family. Lock In Your Rate.",
+        body: "Marcus — congratulations on the new baby. $1M term life rates go up the longer you wait. PolicyGenius compares quotes from top carriers in minutes. Visit policygenius.com or call [phone] to lock in your rate today.",
+      },
+    },
   },
   {
     id: "pg-002",
@@ -503,6 +608,30 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
     ],
     tags: ["Disability Insurance", "Whole Life", "Self-Employed", "Solo Practice", "Legacy Planning", "Education Buyer"],
     journeySummary: "Renata is a self-employed attorney who has used the income replacement calculator and returned twice. She is an education-first buyer — an advisor call focused on her specific situation will convert her.",
+    outreachKit: {
+      email: {
+        subject: "Renata — your disability + whole life comparison is ready",
+        body: "Renata,\n\nYou've been researching disability insurance and whole life coverage — and you've already had a 12-minute call with one of our advisors. I wanted to follow up personally.\n\nAs a self-employed attorney, your income protection strategy is more complex than most. Our advisors specialize in exactly this situation — and we can show you side-by-side options from multiple carriers in one session.\n\nWould you like to schedule a follow-up call?\n\n— The PolicyGenius Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Renata — I'm with PolicyGenius. I noticed you've been researching disability and whole life insurance and wanted to follow up.",
+        followUp: "Renata, thanks for connecting. As a self-employed attorney, your income protection needs are unique. PolicyGenius specializes in exactly this situation. I'd love to schedule a follow-up call to walk through your disability + whole life options side-by-side. When works for you?",
+      },
+      facebookAd: {
+        headline: "Self-Employed? Protect Your Income.",
+        primaryText: "Renata, PolicyGenius specializes in disability insurance and whole life coverage for self-employed professionals. Compare options from multiple carriers in one session. Schedule your free consultation today.",
+        cta: "Schedule Free Consultation",
+      },
+      googleAd: {
+        headlines: ["Disability Insurance for Self-Employed", "Whole Life + Disability — Compare Now", "PolicyGenius — Self-Employed Specialists"],
+        descriptions: ["Self-employed attorney? PolicyGenius compares disability insurance and whole life options from top carriers. Free consultation.", "Protect your income as a self-employed professional. PolicyGenius advisors specialize in complex coverage needs."],
+        keywords: ["disability insurance self-employed attorney", "whole life insurance self-employed", "PolicyGenius disability insurance", "income protection self-employed"],
+      },
+      directMail: {
+        headline: "Your Income Is Your Business. Protect It.",
+        body: "Renata — as a self-employed attorney, your income protection needs are unique. PolicyGenius compares disability insurance and whole life options from top carriers in one session. Visit policygenius.com or call [phone] to schedule your free consultation.",
+      },
+    },
   },
   {
     id: "pg-003",
@@ -541,6 +670,30 @@ export const POLICYGENIUS_PROFILES: BuyerProfile[] = [
     ],
     tags: ["Term Life", "Coverage Gap", "No Medical Exam", "Fast Approval", "High Urgency", "Healthcare Worker"],
     journeySummary: "Derek has a real, time-sensitive coverage gap and has saved quotes. Urgency is his conversion driver — a fast-approval, no-exam offer at $24/mo will close him within 7 days.",
+    outreachKit: {
+      email: {
+        subject: "Derek — short-term coverage during your 90-day waiting period",
+        body: "Derek,\n\nCongratulations on the new job. I know you're in a 90-day benefits waiting period and looking for short-term coverage to bridge the gap.\n\nPolicyGenius has short-term health plans that activate in as little as 24 hours — no waiting period, no medical exam for most applicants. We can get you covered today.\n\nWant me to pull your options?\n\n— The PolicyGenius Team",
+      },
+      linkedin: {
+        connectionRequest: "Hi Derek — I'm with PolicyGenius. I noticed you're in a benefits waiting period and looking for short-term coverage. I can help.",
+        followUp: "Derek, thanks for connecting. Congrats on the new job. PolicyGenius has short-term health plans that activate in 24 hours — no waiting period for most applicants. I can pull your options right now. Want me to?",
+      },
+      facebookAd: {
+        headline: "90-Day Benefits Gap? We've Got You.",
+        primaryText: "Derek, new job with a 90-day waiting period? PolicyGenius has short-term health plans that activate in 24 hours. No waiting period for most applicants. Get covered today.",
+        cta: "Get Covered Today",
+      },
+      googleAd: {
+        headlines: ["Short-Term Health Insurance — 24hr Activation", "New Job Benefits Gap? Get Covered Now", "PolicyGenius — No Waiting Period Plans"],
+        descriptions: ["New job with a 90-day benefits waiting period? PolicyGenius has short-term health plans that activate in 24 hours. Get covered today.", "Bridge your benefits gap with short-term health insurance from PolicyGenius. Fast activation. No medical exam for most."],
+        keywords: ["short-term health insurance 90 day waiting period", "health insurance between jobs", "PolicyGenius short-term health", "benefits gap health insurance"],
+      },
+      directMail: {
+        headline: "New Job. Benefits Gap. We've Got You.",
+        body: "Derek — PolicyGenius has short-term health plans that activate in 24 hours. No waiting period for most applicants. Bridge your 90-day benefits gap today. Visit policygenius.com or call [phone].",
+      },
+    },
   },
 ];
 
