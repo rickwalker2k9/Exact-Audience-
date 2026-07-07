@@ -8,6 +8,7 @@
 import { useState } from "react";
 import { useParams, useLocation } from "wouter";
 import { getProfileById, type BuyerProfile, type OutreachKit } from "@/lib/buyerProfiles";
+import { getDailyProfiles } from "@/lib/dynamicProfiles";
 import { useTheme } from "@/contexts/ThemeContext";
 
 // ── Signal strength badge ─────────────────────────────────────────────────────
@@ -179,7 +180,10 @@ export default function BuyerProfilePage() {
   const { theme } = useTheme();
   const dark = theme === "dark";
 
-  const profile = getProfileById(id ?? "");
+  // Search dynamic pools first (date-shifted signals), then fall back to static ALL_PROFILES
+  const DYNAMIC_IDS = ["land-rover", "lamborghini", "warby-parker", "policygenius", "breeze-insurance", "barrett-financial"] as const;
+  const allDynamic = DYNAMIC_IDS.flatMap(d => getDailyProfiles(d));
+  const profile = allDynamic.find(p => p.id === (id ?? "")) ?? getProfileById(id ?? "");
 
   const C = dark ? {
     bg: "#07071a", bg2: "#0d0d28", card: "#0f0f2e", card2: "#141440",
