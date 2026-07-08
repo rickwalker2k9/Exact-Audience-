@@ -149,14 +149,9 @@ const SLUG_ROUTES: Record<string, string> = {
   "lamborghini-scottsdale":      "/lamborghini",
   "warby-parker":                "/warby-parker",
   "policygenius":                "/policygenius",
-  "colleen-mccarty":             "/mccarty",
   "breeze-insurance":            "/breeze-insurance",
-
-  "barrett-financial":            "/barrett-financial",
-  "governor-race":                 "/governor",
-  "pitch/mazzei":                   "/pitch/mazzei",
-  "pitch/drummond":                  "/pitch/drummond",
-
+  "barrett-financial":           "/barrett-financial",
+  "neurocatch":                  "/neurocatch",
 };
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
