@@ -142,6 +142,27 @@ export const CLIENTS: CampaignClient[] = [
     primaryColor: "#1d4ed8",
   },
 
+  // ── NEUROCATCH ────────────────────────────────────────────────────────────────
+  {
+    id: 39,
+    slug: "neurocatch",
+    name: "NeuroCatch",
+    vertical: "MedTech / Cognitive Assessment",
+    location: "Phoenix, AZ (US HQ)",
+    description: "Brain Vital Signs Platform — B2B & B2C market entry intelligence, search demand, and outreach kits",
+    domain: "neurocatch.com",
+    logoDomain: "neurocatch.com",
+    campaign: "Brain Vital Signs — B2B & B2C Market Entry 2026",
+    budget: "Pre-Launch",
+    startDate: "July 8, 2026",
+    status: "active" as ClientStatus,
+    hasDashboard: true,
+    trend: risingTrend(8820),
+    impressionsToDate: 30000,
+    reachToDate: 30000,
+    completionRate: 10.0,
+    primaryColor: "#f59e0b",
+  },
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
   {
     id: 6,

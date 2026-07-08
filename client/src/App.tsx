@@ -17,6 +17,7 @@ import BuyerProfilePage from "./pages/BuyerProfilePage";
 import BreezeDashboard from "./pages/BreezeDashboard";
 import LandRoverDashboard from "./pages/LandRoverDashboard";
 import BarrettDashboard from "./pages/BarrettDashboard";
+import NeuroCatchDashboard from "./pages/NeuroCatchDashboard";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/breeze-insurance" component={BreezeDashboard} />
       <Route path="/land-rover" component={LandRoverDashboard} />
       <Route path="/barrett-financial" component={BarrettDashboard} />
+      <Route path="/neurocatch" component={NeuroCatchDashboard} />
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />
