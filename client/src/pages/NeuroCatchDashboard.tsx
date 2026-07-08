@@ -123,19 +123,7 @@ function TabMarket() {
         </div>
       </div>
 
-      {/* Two core barriers */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <Card style={{ borderColor: "rgba(245,158,11,0.3)" }}>
-          <div className="text-lg mb-2">🏈</div>
-          <div className="font-bold mb-2" style={{ color: P.gold }}>The NFL Problem</div>
-          <p className="text-xs leading-relaxed" style={{ color: P.muted }}>The NFL has institutional incentives to avoid objective real-time cognitive data. <strong style={{ color: P.white }}>Strategy: Go directly to the NFLPA, NCAA, and combat sports — where liability runs the other direction.</strong></p>
-        </Card>
-        <Card style={{ borderColor: "rgba(249,115,22,0.3)" }}>
-          <div className="text-lg mb-2">🧠</div>
-          <div className="font-bold mb-2" style={{ color: P.orange }}>The Neurosurgeon Barrier</div>
-          <p className="text-xs leading-relaxed" style={{ color: P.muted }}>Senior neurologists may perceive a 6-minute automated device as a threat. <strong style={{ color: P.white }}>Strategy: Seed clinical champions first — sports med physicians, GPs, VA clinicians — then let outcomes data convert neurosurgeons.</strong></p>
-        </Card>
-      </div>
+
     </div>
   );
 }
