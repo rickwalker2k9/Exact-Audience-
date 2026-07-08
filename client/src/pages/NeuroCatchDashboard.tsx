@@ -29,7 +29,7 @@ const P = {
   card2:   "#141440",
   border:  "#252560",
   white:   "#f1f5f9",
-  muted:   "#8892b0",
+  muted:   "#c8d0e8",
   gold:    "#f59e0b",
   orange:  "#f97316",
   deep:    "#ea580c",
