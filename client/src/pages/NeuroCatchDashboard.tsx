@@ -978,17 +978,36 @@ const CHANNEL_ACTIVATION = [
 
 // Separated so rotation animation doesn't remount region cards
 // Isolated rotation component — never causes card remounts
+// Brain with animated neuron firing — no rotation, just synaptic pulses
 function BrainVisual({ selected, hovered }: { selected: string | null; hovered: string | null }) {
-  const [rotAngle, setRotAngle] = useState(0);
+  const [tick, setTick] = useState(0);
   const animRef = useRef<number | null>(null);
   useEffect(() => {
-    let frame = 0;
-    const tick = () => { frame++; setRotAngle(frame * 0.25); animRef.current = requestAnimationFrame(tick); };
-    animRef.current = requestAnimationFrame(tick);
+    let f = 0;
+    const loop = () => { f++; setTick(f); animRef.current = requestAnimationFrame(loop); };
+    animRef.current = requestAnimationFrame(loop);
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, []);
-  const skewY = 0;
-  const scaleX = 1;
+
+  const t = tick / 60;
+
+  // Neuron nodes positioned over the brain image (viewBox 0-100)
+  const NEURONS = [
+    { id: 'n1',  cx: 22, cy: 18 }, { id: 'n2',  cx: 35, cy: 12 }, { id: 'n3',  cx: 50, cy: 10 },
+    { id: 'n4',  cx: 63, cy: 14 }, { id: 'n5',  cx: 74, cy: 20 }, { id: 'n6',  cx: 80, cy: 30 },
+    { id: 'n7',  cx: 82, cy: 42 }, { id: 'n8',  cx: 78, cy: 55 }, { id: 'n9',  cx: 68, cy: 62 },
+    { id: 'n10', cx: 55, cy: 65 }, { id: 'n11', cx: 42, cy: 62 }, { id: 'n12', cx: 30, cy: 58 },
+    { id: 'n13', cx: 20, cy: 50 }, { id: 'n14', cx: 15, cy: 38 }, { id: 'n15', cx: 18, cy: 28 },
+    { id: 'n16', cx: 40, cy: 35 }, { id: 'n17', cx: 55, cy: 38 }, { id: 'n18', cx: 65, cy: 45 },
+    { id: 'n19', cx: 45, cy: 50 }, { id: 'n20', cx: 30, cy: 42 },
+  ];
+
+  const SYNAPSES = [
+    [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],
+    [10,11],[11,12],[12,13],[13,14],[14,0],[15,16],[16,17],[17,18],[18,19],[19,15],
+    [1,15],[3,16],[5,17],[7,18],[9,19],[11,15],[2,16],[4,17],[6,18],[8,19],
+  ];
+
   const ZONE_PATHS: Record<string, string> = {
     prefrontal:         "M 14,6 Q 28,2 44,9 Q 38,26 28,31 Q 18,28 11,18 Z",
     amygdala:           "M 34,53 Q 44,49 51,56 Q 49,66 39,68 Q 31,64 32,56 Z",
@@ -997,127 +1016,80 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
     insula:             "M 41,36 Q 54,31 61,41 Q 59,51 49,53 Q 39,49 39,41 Z",
     anterior_cingulate: "M 24,31 Q 37,26 44,36 Q 41,46 31,48 Q 21,45 22,37 Z",
   };
-  return (
-    <div className="relative rounded-xl overflow-hidden" style={{ flex: '1 1 0', minWidth: 0, background: 'transparent', perspective: '1200px' }}>
-      <div style={{ transform: `rotateY(${rotAngle}deg)`, transition: 'none', willChange: 'transform', position: 'relative', transformStyle: 'preserve-3d' }}>
-        <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
-          alt="Brain" style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.2) brightness(1.05) drop-shadow(0 0 18px rgba(245,158,11,0.5))' }} draggable={false} />
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-          <defs><filter id="zg"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-          {BRAIN_REGIONS.map((r) => {
-            const isActive = selected === r.id || hovered === r.id;
-            const path = ZONE_PATHS[r.id];
-            if (!path) return null;
-            return <path key={r.id} d={path} fill={isActive ? r.color : 'transparent'} stroke={isActive ? r.color : 'transparent'}
-              strokeWidth={isActive ? 0.8 : 0} opacity={isActive ? 0.5 : 0} filter={isActive ? 'url(#zg)' : 'none'}
-              style={{ transition: 'all 0.35s ease' }} />;
-          })}
-        </svg>
-      </div>
-    </div>
-  );
-}
-
-// Animated neural network SVG for Channel Activation
-function NeuralChannelMap() {
-  const [tick, setTick] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setTick(n => n + 1), 60);
-    return () => clearInterval(t);
-  }, []);
-
-  const channels = [
-    { id: 'linkedin',    label: 'LinkedIn',    x: 160, y: 40,  rational: 90, emotional: 40, memory: 70, color: '#f59e0b' },
-    { id: 'google',      label: 'Google',      x: 340, y: 40,  rational: 85, emotional: 55, memory: 65, color: '#f97316' },
-    { id: 'email',       label: 'Email',       x: 460, y: 140, rational: 80, emotional: 70, memory: 75, color: '#fb923c' },
-    { id: 'video',       label: 'Video/Demo',  x: 400, y: 270, rational: 70, emotional: 65, memory: 80, color: '#f59e0b' },
-    { id: 'direct',      label: 'Direct Mail', x: 100, y: 270, rational: 75, emotional: 50, memory: 60, color: '#f97316' },
-    { id: 'social',      label: 'Social',      x: 40,  y: 140, rational: 45, emotional: 80, memory: 55, color: '#fb923c' },
-  ];
-  const brainRegions = [
-    { id: 'pfc', label: 'PFC', x: 250, y: 100, color: '#f59e0b' },
-    { id: 'amy', label: 'AMY', x: 200, y: 180, color: '#f97316' },
-    { id: 'hpc', label: 'HPC', x: 300, y: 180, color: '#fb923c' },
-  ];
-  const connections = [
-    { from: channels[0], to: brainRegions[0], strength: 0.9 },
-    { from: channels[0], to: brainRegions[1], strength: 0.4 },
-    { from: channels[1], to: brainRegions[0], strength: 0.85 },
-    { from: channels[1], to: brainRegions[1], strength: 0.55 },
-    { from: channels[2], to: brainRegions[0], strength: 0.8 },
-    { from: channels[2], to: brainRegions[1], strength: 0.7 },
-    { from: channels[2], to: brainRegions[2], strength: 0.75 },
-    { from: channels[3], to: brainRegions[1], strength: 0.65 },
-    { from: channels[3], to: brainRegions[2], strength: 0.8 },
-    { from: channels[4], to: brainRegions[0], strength: 0.75 },
-    { from: channels[4], to: brainRegions[2], strength: 0.6 },
-    { from: channels[5], to: brainRegions[1], strength: 0.8 },
-    { from: channels[5], to: brainRegions[2], strength: 0.55 },
-  ];
-
-  const t = tick / 60;
 
   return (
-    <div className="rounded-2xl border p-5" style={{ background: P.card, borderColor: P.border }}>
-      <div className="mb-3">
-        <div className="font-semibold" style={{ color: P.white }}>Channel → Brain Activation Map</div>
-        <div className="text-xs mt-0.5" style={{ color: P.muted }}>Live neural pathway visualization — which channels fire which brain regions</div>
-      </div>
-      <svg viewBox="0 0 500 320" style={{ width: '100%', height: 'auto', display: 'block' }}>
+    <div className="relative rounded-xl overflow-hidden" style={{ flex: '1 1 0', minWidth: 0, background: 'transparent' }}>
+      <img
+        src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
+        alt="Brain"
+        style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.15) brightness(1.0) drop-shadow(0 0 22px rgba(245,158,11,0.4))' }}
+        draggable={false}
+      />
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none"
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
         <defs>
-          <filter id="nodeGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <filter id="brainGlow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="neuronGlow">
+            <feGaussianBlur stdDeviation="1.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="zoneGlow">
+            <feGaussianBlur stdDeviation="2.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
 
-        {/* Animated connection lines with traveling pulses */}
-        {connections.map((c, i) => {
-          const phase = (t * 1.2 + i * 0.4) % 1;
-          const px = c.from.x + (c.to.x - c.from.x) * phase;
-          const py = c.from.y + (c.to.y - c.from.y) * phase;
-          const opacity = 0.15 + c.strength * 0.25;
+        {/* Zone highlights when a region is selected/hovered */}
+        {BRAIN_REGIONS.map((r) => {
+          const isActive = selected === r.id || hovered === r.id;
+          const path = ZONE_PATHS[r.id];
+          if (!path) return null;
+          return (
+            <path key={r.id} d={path}
+              fill={isActive ? r.color : 'transparent'}
+              opacity={isActive ? 0.45 : 0}
+              filter={isActive ? 'url(#zoneGlow)' : 'none'}
+              style={{ transition: 'opacity 0.35s ease' }}
+            />
+          );
+        })}
+
+        {/* Synaptic connection lines — traveling pulse dots */}
+        {SYNAPSES.map(([a, b], i) => {
+          const na = NEURONS[a];
+          const nb = NEURONS[b];
+          // Each synapse fires at a different phase
+          const phase = (t * 0.7 + i * 0.31) % 1;
+          const px = na.cx + (nb.cx - na.cx) * phase;
+          const py = na.cy + (nb.cy - na.cy) * phase;
+          // Line brightness pulses gently
+          const lineOpacity = 0.08 + Math.sin(t * 1.2 + i * 0.5) * 0.06;
           return (
             <g key={i}>
-              <line x1={c.from.x} y1={c.from.y} x2={c.to.x} y2={c.to.y}
-                stroke={c.from.color} strokeWidth={c.strength * 1.5}
-                opacity={opacity} strokeDasharray="4 6" />
-              <circle cx={px} cy={py} r={2.5} fill={c.from.color} opacity={0.9} filter="url(#nodeGlow)" />
+              <line
+                x1={na.cx} y1={na.cy} x2={nb.cx} y2={nb.cy}
+                stroke="#f59e0b" strokeWidth="0.25" opacity={lineOpacity}
+              />
+              <circle cx={px} cy={py} r="0.8" fill="#fbbf24" opacity={0.85} filter="url(#neuronGlow)" />
             </g>
           );
         })}
 
-        {/* Brain region nodes — center */}
-        {brainRegions.map((r) => {
-          const pulse = 0.85 + Math.sin(t * 2.5 + r.x * 0.05) * 0.15;
+        {/* Neuron nodes — pulse independently */}
+        {NEURONS.map((n, i) => {
+          const pulse = 0.7 + Math.sin(t * 1.5 + i * 0.7) * 0.3;
+          const glow = 0.4 + Math.sin(t * 1.8 + i * 0.9) * 0.3;
           return (
-            <g key={r.id}>
-              <circle cx={r.x} cy={r.y} r={28 * pulse} fill={r.color} opacity={0.08} />
-              <circle cx={r.x} cy={r.y} r={18} fill={r.color} opacity={0.18} filter="url(#brainGlow)" />
-              <circle cx={r.x} cy={r.y} r={12} fill={r.color} opacity={0.6} />
-              <circle cx={r.x} cy={r.y} r={5} fill={r.color} opacity={1} />
-              <text x={r.x} y={r.y + 30} textAnchor="middle" fill={r.color} fontSize="9" fontWeight="700">{r.label}</text>
+            <g key={n.id}>
+              <circle cx={n.cx} cy={n.cy} r={2.5 * pulse} fill="#f59e0b" opacity={0.12} />
+              <circle cx={n.cx} cy={n.cy} r={1.2} fill="#fbbf24" opacity={glow} filter="url(#neuronGlow)" />
             </g>
           );
         })}
-
-        {/* Channel nodes — outer ring */}
-        {channels.map((c) => {
-          const pulse = 0.9 + Math.sin(t * 1.8 + c.x * 0.03) * 0.1;
-          return (
-            <g key={c.id}>
-              <circle cx={c.x} cy={c.y} r={20 * pulse} fill={c.color} opacity={0.07} />
-              <circle cx={c.x} cy={c.y} r={10} fill={c.color} opacity={0.25} filter="url(#nodeGlow)" />
-              <circle cx={c.x} cy={c.y} r={6} fill={c.color} opacity={0.85} />
-              <text x={c.x} y={c.y - 16} textAnchor="middle" fill="#e2e8f0" fontSize="9" fontWeight="600">{c.label}</text>
-            </g>
-          );
-        })}
-
-        {/* Legend */}
-        <text x={10} y={310} fill="#64748b" fontSize="8">● Channel nodes  ● Brain regions (PFC=Prefrontal, AMY=Amygdala, HPC=Hippocampus)  — Pulse intensity = activation strength</text>
       </svg>
     </div>
   );
 }
+
 
 function TabBrainMap() {
   const [selected, setSelected] = useState<string | null>(null);
