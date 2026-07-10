@@ -1497,18 +1497,18 @@ function TabReadiness() {
 
 // ── Main Dashboard ────────────────────────────────────────────────────────────
 const TABS = [
+  { id: "brain",     label: "Brain Map",           icon: Brain },
   { id: "site",      label: "Site Intelligence",  icon: Activity },
   { id: "market",    label: "Market Intelligence", icon: BarChart2 },
   { id: "segments",  label: "B2B Segments",        icon: Users },
   { id: "keywords",  label: "Search Volume",       icon: Search },
-  { id: "brain",     label: "Brain Map",           icon: Brain },
   { id: "outreach",  label: "Outreach Kit",        icon: Megaphone },
   { id: "readiness", label: "Readiness",           icon: CheckCircle2 },
 ];
 
 export default function NeuroCatchDashboard() {
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState("site");
+  const [activeTab, setActiveTab] = useState("brain");
 
   return (
     <div className="min-h-screen" style={{ background: P.bg, color: P.white }}>
