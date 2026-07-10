@@ -308,119 +308,353 @@ const customTooltipStyle = {
 
 // ── Animated Brain SVG ────────────────────────────────────────────────────────
 function BrainMap() {
+  const [selected, setSelected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const [pulse, setPulse] = useState(0);
+  const [rotAngle, setRotAngle] = useState(0);
+  const animRef = useRef<number | null>(null);
 
+  // Slow rotation animation
   useEffect(() => {
-    const t = setInterval(() => setPulse(p => (p + 1) % 5), 1200);
+    let frame = 0;
+    const tick = () => {
+      frame++;
+      // Very slow rotation: full cycle every ~600 frames (~10s at 60fps)
+      setRotAngle(frame * 0.06);
+      animRef.current = requestAnimationFrame(tick);
+    };
+    animRef.current = requestAnimationFrame(tick);
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, []);
+
+  // Pulse through nodes
+  useEffect(() => {
+    const t = setInterval(() => setPulse(p => (p + 1) % 8), 1400);
     return () => clearInterval(t);
   }, []);
 
-  const nodes = [
-    { id: "linkedin",  label: "LinkedIn",     icon: Linkedin,    x: 155, y: 95,  desc: "B2B decision-maker outreach — Athletic Directors, VA CMOs, EHS Directors", color: P.gold },
-    { id: "google",    label: "Google Search", icon: Search,      x: 290, y: 75,  desc: "High-intent keyword capture — 22K/mo 'concussion testing near me'", color: P.orange },
-    { id: "email",     label: "Email",         icon: Mail,        x: 370, y: 160, desc: "Personalized clinical outreach with pilot program offer", color: P.gold },
-    { id: "display",   label: "Display Ads",   icon: Eye,         x: 320, y: 250, desc: "Brand awareness across medical and sports media networks", color: P.deep },
-    { id: "direct",    label: "Direct Mail",   icon: FileText,    x: 130, y: 240, desc: "Physical touchpoint for high-value B2B targets", color: P.orange },
-    { id: "social",    label: "Social",        icon: Megaphone,   x: 80,  y: 155, desc: "B2C biohacker and athlete audience on Instagram/Facebook", color: P.gold },
+  // 8 anatomically accurate brain regions mapped to the lateral view image
+  // Positions are percentages of the image container (left-view brain)
+  const regions = [
+    {
+      id: "prefrontal",
+      label: "Prefrontal Cortex",
+      shortLabel: "PFC",
+      // Front-top of brain
+      cx: 22, cy: 28,
+      color: P.gold,
+      function: "Decision-Making & Rational Evaluation",
+      marketingChannel: "Case Studies & Clinical Data",
+      channels: ["White papers", "ROI calculators", "Clinical trial results", "Peer-reviewed citations"],
+      insight: "The prefrontal cortex governs executive function, cost-benefit analysis, and trust formation. B2B buyers evaluating NeuroCatch engage this region when reviewing clinical validation data, pricing models, and implementation case studies. Logic-first content — data sheets, outcome studies, ROI models — activates this region and moves prospects toward a rational purchase decision.",
+      brainRole: "Executive function, working memory, risk assessment, trust evaluation",
+    },
+    {
+      id: "amygdala",
+      label: "Amygdala",
+      shortLabel: "AMY",
+      // Deep center, slightly forward
+      cx: 42, cy: 58,
+      color: P.orange,
+      function: "Fear, Urgency & Emotional Response",
+      marketingChannel: "Risk & Consequence Messaging",
+      channels: ["'What if you miss a concussion?' copy", "Liability risk messaging", "Second-impact syndrome statistics", "Urgency-driven CTAs"],
+      insight: "The amygdala processes threat signals and triggers the fight-or-flight response. In B2B marketing, this is activated by liability risk messaging — 'what happens if an athlete is cleared too soon?' Athletic directors, military medical officers, and occupational health directors all carry institutional liability. Messaging that surfaces the consequences of inaction activates the amygdala and creates urgency to act.",
+      brainRole: "Threat detection, emotional memory, fear response, urgency",
+    },
+    {
+      id: "nucleus_accumbens",
+      label: "Nucleus Accumbens",
+      shortLabel: "NAc",
+      // Deep center
+      cx: 48, cy: 50,
+      color: P.gold,
+      function: "Reward, Desire & Dopamine Response",
+      marketingChannel: "Success Stories & Outcome Visualization",
+      channels: ["Athlete return-to-play testimonials", "'Imagine the outcome' copy", "Before/after case studies", "Award and recognition content"],
+      insight: "The nucleus accumbens is the brain's reward center — it releases dopamine in anticipation of a positive outcome. Testimonials from athletic trainers who caught a concussion that would have been missed, or stories of athletes who returned to play safely because of NeuroCatch, activate this region. The buyer imagines the positive outcome for their program, creating desire and forward momentum.",
+      brainRole: "Reward anticipation, dopamine release, motivation, desire",
+    },
+    {
+      id: "hippocampus",
+      label: "Hippocampus",
+      shortLabel: "HPC",
+      // Center-back
+      cx: 62, cy: 55,
+      color: P.orange,
+      function: "Memory Formation & Brand Recall",
+      marketingChannel: "Retargeting & Consistent Brand Presence",
+      channels: ["Retargeting display ads", "Consistent logo/color usage", "Email drip sequences", "Conference presence + follow-up"],
+      insight: "The hippocampus encodes experiences into long-term memory. Repeated exposure to the NeuroCatch brand — at conferences, in retargeting ads, in email sequences — builds the memory trace that makes the brand feel familiar and trustworthy when a decision is finally made. Familiarity reduces perceived risk. The buyer who has seen NeuroCatch 12 times before a demo call is far more likely to convert.",
+      brainRole: "Long-term memory encoding, spatial navigation, familiarity recognition",
+    },
+    {
+      id: "visual_cortex",
+      label: "Visual Cortex",
+      shortLabel: "V1",
+      // Back of brain (occipital lobe)
+      cx: 82, cy: 42,
+      color: P.gold,
+      function: "Visual Processing & First Impressions",
+      marketingChannel: "Video Demos & Visual Brand Assets",
+      channels: ["Product demo videos", "Infographics", "LinkedIn carousel posts", "Conference booth visuals"],
+      insight: "The visual cortex processes imagery before language — a prospect's first impression of NeuroCatch is formed visually before they read a single word. High-quality demo videos showing the 3-minute EEG process, clean product photography, and professional infographics activate this region and establish credibility instantly. Poor visual presentation triggers the visual cortex to flag the brand as low-quality.",
+      brainRole: "Primary visual processing, pattern recognition, first impression formation",
+    },
+    {
+      id: "brocas",
+      label: "Broca's Area",
+      shortLabel: "BRO",
+      // Left temporal, front
+      cx: 28, cy: 62,
+      color: P.orange,
+      function: "Language Processing & Copy Comprehension",
+      marketingChannel: "Email Subject Lines & Ad Headlines",
+      channels: ["Email subject line optimization", "LinkedIn message copy", "Google ad headlines", "Landing page headline hierarchy"],
+      insight: "Broca's area processes the production and comprehension of language. This is the region engaged when a prospect reads an email subject line, a Google ad headline, or a LinkedIn message. Clear, specific, jargon-free language activates smooth processing — the brain rewards clarity. Overly technical or vague copy creates friction in Broca's area, increasing the likelihood the message is ignored.",
+      brainRole: "Speech production, language comprehension, reading fluency",
+    },
+    {
+      id: "insula",
+      label: "Insula",
+      shortLabel: "INS",
+      // Deep lateral, center
+      cx: 55, cy: 42,
+      color: P.gold,
+      function: "Empathy, Gut Feeling & Physical Sensation",
+      marketingChannel: "Human-Centered Stories & Patient Narratives",
+      channels: ["Athlete injury stories", "Parent testimonials", "Clinician empathy content", "Human faces in ad creative"],
+      insight: "The insula processes interoception — the brain's awareness of internal body states — and is the seat of empathy and gut-level intuition. When a prospect reads a story about an athlete whose career was saved because NeuroCatch caught a concussion that ImPACT missed, the insula fires. This is the 'gut feeling' that something matters. Human-centered storytelling activates the insula and creates emotional resonance that data alone cannot.",
+      brainRole: "Interoception, empathy, disgust/pleasure, gut intuition",
+    },
+    {
+      id: "anterior_cingulate",
+      label: "Anterior Cingulate",
+      shortLabel: "ACC",
+      // Front-center, slightly deep
+      cx: 35, cy: 42,
+      color: P.orange,
+      function: "Conflict Resolution & Social Proof",
+      marketingChannel: "Peer Validation & Authority Endorsements",
+      channels: ["'Trusted by 400+ clinics' social proof", "Peer institution logos", "Clinical champion endorsements", "Conference speaker credibility"],
+      insight: "The anterior cingulate cortex (ACC) activates during decision conflict — the 'should I or shouldn't I?' moment. It is highly sensitive to social proof and peer behavior. When a prospect sees that a peer institution (a rival university's sports medicine program, or a competing VA facility) has adopted NeuroCatch, the ACC resolves the conflict in favor of adoption. Peer validation is the most powerful signal for this region.",
+      brainRole: "Conflict monitoring, error detection, social norm processing, decision finalization",
+    },
   ];
 
+  const selectedRegion = regions.find(r => r.id === selected);
+  const hoveredRegion = regions.find(r => r.id === hovered);
+
+  // Perspective skew for slow rotation effect (simulates 3D spin on X axis)
+  const skewY = Math.sin(rotAngle * Math.PI / 180) * 3;
+  const scaleX = 0.97 + Math.cos(rotAngle * Math.PI / 180) * 0.03;
+
   return (
-    <div className="relative w-full" style={{ maxWidth: 480, margin: "0 auto" }}>
-      <svg viewBox="0 0 460 320" className="w-full" style={{ filter: "drop-shadow(0 0 30px rgba(245,158,11,0.15))" }}>
-        {/* Brain outline - simplified anatomical shape */}
-        <defs>
-          <radialGradient id="brainGrad" cx="50%" cy="45%" r="55%">
-            <stop offset="0%" stopColor="#1a1a4e" />
-            <stop offset="100%" stopColor="#0a0a28" />
-          </radialGradient>
-          <radialGradient id="glowGold" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
-          </radialGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
+    <div className="space-y-6">
+      <div className="grid lg:grid-cols-2 gap-6 items-start">
+        {/* Brain image with SVG overlay */}
+        <div className="relative select-none" style={{ maxWidth: 520, margin: "0 auto" }}>
+          {/* Outer glow container */}
+          <div className="relative rounded-2xl overflow-hidden" style={{
+            background: "radial-gradient(ellipse at center, rgba(245,158,11,0.08) 0%, transparent 70%)",
+            padding: "12px",
+          }}>
+            <div
+              className="relative"
+              style={{
+                transform: `skewY(${skewY}deg) scaleX(${scaleX})`,
+                transition: "transform 0.05s linear",
+                willChange: "transform",
+              }}
+            >
+              {/* Brain image */}
+              <img
+                src="/manus-storage/brain_972ad3c4.png"
+                alt="Brain"
+                className="w-full rounded-xl"
+                style={{
+                  filter: "hue-rotate(0deg) saturate(1.2) brightness(0.95)",
+                  mixBlendMode: "normal",
+                }}
+                draggable={false}
+              />
+              {/* SVG overlay for region hotspots */}
+              <svg
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="absolute inset-0 w-full h-full"
+                style={{ top: 0, left: 0 }}
+              >
+                <defs>
+                  <filter id="nodeGlow">
+                    <feGaussianBlur stdDeviation="1.5" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                  <filter id="nodeGlowStrong">
+                    <feGaussianBlur stdDeviation="2.5" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                </defs>
 
-        {/* Brain body */}
-        <ellipse cx="230" cy="165" rx="170" ry="130" fill="url(#brainGrad)" stroke={P.border} strokeWidth="1.5" />
+                {/* Connection lines from each node to center */}
+                {regions.map((r) => {
+                  const isActive = selected === r.id || hovered === r.id;
+                  return (
+                    <line
+                      key={r.id + "-line"}
+                      x1={r.cx} y1={r.cy}
+                      x2={50} y2={52}
+                      stroke={isActive ? r.color : "#f59e0b"}
+                      strokeWidth={isActive ? 0.5 : 0.2}
+                      strokeDasharray={isActive ? "none" : "1.5,2"}
+                      opacity={isActive ? 0.7 : 0.2}
+                      style={{ transition: "all 0.3s ease" }}
+                    />
+                  );
+                })}
 
-        {/* Brain hemisphere line */}
-        <path d="M 230 45 Q 235 165 230 285" stroke={P.border} strokeWidth="1" fill="none" strokeDasharray="4,4" opacity="0.5" />
-
-        {/* Cortex folds - left hemisphere */}
-        <path d="M 100 120 Q 130 100 155 115 Q 170 125 160 145" stroke={P.gold} strokeWidth="1.2" fill="none" opacity="0.3" />
-        <path d="M 85 155 Q 100 140 125 148 Q 145 155 140 175" stroke={P.gold} strokeWidth="1.2" fill="none" opacity="0.3" />
-        <path d="M 95 190 Q 120 178 145 185 Q 162 192 158 210" stroke={P.gold} strokeWidth="1.2" fill="none" opacity="0.3" />
-        <path d="M 115 225 Q 140 215 165 222 Q 178 228 172 245" stroke={P.gold} strokeWidth="1.2" fill="none" opacity="0.3" />
-
-        {/* Cortex folds - right hemisphere */}
-        <path d="M 305 120 Q 275 100 250 115 Q 235 125 245 145" stroke={P.orange} strokeWidth="1.2" fill="none" opacity="0.3" />
-        <path d="M 320 155 Q 305 140 280 148 Q 260 155 265 175" stroke={P.orange} strokeWidth="1.2" fill="none" opacity="0.3" />
-        <path d="M 310 190 Q 285 178 260 185 Q 243 192 247 210" stroke={P.orange} strokeWidth="1.2" fill="none" opacity="0.3" />
-        <path d="M 290 225 Q 265 215 240 222 Q 227 228 233 245" stroke={P.orange} strokeWidth="1.2" fill="none" opacity="0.3" />
-
-        {/* Connection lines from nodes to brain */}
-        {nodes.map((n) => (
-          <line
-            key={n.id + "-line"}
-            x1={n.x} y1={n.y}
-            x2={230} y2={165}
-            stroke={hovered === n.id ? n.color : P.border}
-            strokeWidth={hovered === n.id ? 1.5 : 0.8}
-            strokeDasharray={hovered === n.id ? "none" : "3,4"}
-            opacity={hovered === n.id ? 0.8 : 0.35}
-            style={{ transition: "all 0.3s ease" }}
-          />
-        ))}
-
-        {/* Center brain core glow */}
-        <circle cx="230" cy="165" r="18" fill="url(#glowGold)" />
-        <circle cx="230" cy="165" r="8" fill={P.gold} opacity="0.9" filter="url(#glow)" />
-        <circle cx="230" cy="165" r={12 + Math.sin(pulse * 1.2) * 3} fill="none" stroke={P.gold} strokeWidth="1" opacity="0.4" />
-
-        {/* Node circles */}
-        {nodes.map((n, i) => {
-          const isHov = hovered === n.id;
-          const isPulsing = pulse === i;
-          const Icon = n.icon;
-          return (
-            <g key={n.id} style={{ cursor: "pointer" }} onMouseEnter={() => setHovered(n.id)} onMouseLeave={() => setHovered(null)}>
-              {/* Pulse ring */}
-              <circle cx={n.x} cy={n.y} r={isPulsing ? 22 : 16} fill="none" stroke={n.color} strokeWidth="1"
-                opacity={isPulsing ? 0.6 : 0.2} style={{ transition: "all 0.4s ease" }} />
-              {/* Node bg */}
-              <circle cx={n.x} cy={n.y} r="14" fill={isHov ? n.color : P.card2}
-                stroke={n.color} strokeWidth={isHov ? 2 : 1}
-                filter={isHov ? "url(#glow)" : "none"}
-                style={{ transition: "all 0.25s ease" }} />
-              {/* Icon placeholder (text) */}
-              <text x={n.x} y={n.y + 4} textAnchor="middle" fontSize="10" fill={isHov ? "#000" : n.color} fontWeight="bold">
-                {n.label.slice(0, 2).toUpperCase()}
-              </text>
-              {/* Label */}
-              <text x={n.x} y={n.y + 26} textAnchor="middle" fontSize="9" fill={isHov ? n.color : P.muted}
-                style={{ transition: "all 0.25s ease" }}>
-                {n.label}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-
-      {/* Hover tooltip */}
-      {hovered && (() => {
-        const n = nodes.find(x => x.id === hovered)!;
-        return (
-          <div className="absolute inset-x-0 bottom-0 mx-4 rounded-xl border p-3 text-sm"
-            style={{ background: P.card2, borderColor: n.color + "60", color: P.white }}>
-            <div className="font-semibold mb-1" style={{ color: n.color }}>{n.label}</div>
-            <div style={{ color: P.muted, fontSize: 12 }}>{n.desc}</div>
+                {/* Region nodes */}
+                {regions.map((r, i) => {
+                  const isSelected = selected === r.id;
+                  const isHov = hovered === r.id;
+                  const isPulse = pulse === i;
+                  const isActive = isSelected || isHov;
+                  return (
+                    <g
+                      key={r.id}
+                      style={{ cursor: "pointer" }}
+                      onMouseEnter={() => setHovered(r.id)}
+                      onMouseLeave={() => setHovered(null)}
+                      onClick={() => setSelected(isSelected ? null : r.id)}
+                    >
+                      {/* Outer pulse ring */}
+                      <circle
+                        cx={r.cx} cy={r.cy}
+                        r={isPulse ? 5.5 : isActive ? 4.5 : 3.5}
+                        fill="none"
+                        stroke={r.color}
+                        strokeWidth="0.4"
+                        opacity={isPulse ? 0.8 : isActive ? 0.6 : 0.3}
+                        style={{ transition: "all 0.4s ease" }}
+                      />
+                      {/* Node circle */}
+                      <circle
+                        cx={r.cx} cy={r.cy}
+                        r={isActive ? 3.2 : 2.5}
+                        fill={isActive ? r.color : "rgba(245,158,11,0.25)"}
+                        stroke={r.color}
+                        strokeWidth={isActive ? 0.6 : 0.4}
+                        filter={isActive ? "url(#nodeGlowStrong)" : isPulse ? "url(#nodeGlow)" : "none"}
+                        style={{ transition: "all 0.25s ease" }}
+                      />
+                      {/* Inner dot */}
+                      <circle
+                        cx={r.cx} cy={r.cy}
+                        r={isActive ? 1.2 : 0.8}
+                        fill={isActive ? "#000" : r.color}
+                        opacity={isActive ? 0.9 : 0.7}
+                        style={{ transition: "all 0.25s ease" }}
+                      />
+                      {/* Short label */}
+                      <text
+                        x={r.cx}
+                        y={r.cy - 4.5}
+                        textAnchor="middle"
+                        fontSize="2.8"
+                        fill={isActive ? r.color : "#c8d0e8"}
+                        fontWeight={isActive ? "700" : "400"}
+                        style={{ transition: "all 0.25s ease", pointerEvents: "none" }}
+                      >{r.shortLabel}</text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
           </div>
-        );
-      })()}
+          {/* Hover tooltip */}
+          {hoveredRegion && !selected && (
+            <div
+              className="absolute left-1/2 -translate-x-1/2 bottom-0 mb-2 px-3 py-2 rounded-xl text-xs font-semibold pointer-events-none z-10"
+              style={{ background: P.card2, border: `1px solid ${hoveredRegion.color}60`, color: hoveredRegion.color, whiteSpace: "nowrap" }}
+            >
+              {hoveredRegion.label} — {hoveredRegion.function}
+            </div>
+          )}
+          <div className="text-center mt-2 text-xs" style={{ color: P.muted }}>Click any node to explore the marketing strategy</div>
+        </div>
+
+        {/* Right panel: region detail or legend */}
+        <div>
+          {selectedRegion ? (
+            <motion.div
+              key={selectedRegion.id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+              className="rounded-2xl border p-5 space-y-4"
+              style={{ background: P.card, borderColor: selectedRegion.color + "60" }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-xs font-semibold tracking-widest mb-1" style={{ color: selectedRegion.color }}>{selectedRegion.function.toUpperCase()}</div>
+                  <h3 className="text-xl font-bold" style={{ color: P.white }}>{selectedRegion.label}</h3>
+                  <div className="text-xs mt-1" style={{ color: P.muted }}>{selectedRegion.brainRole}</div>
+                </div>
+                <button
+                  onClick={() => setSelected(null)}
+                  className="text-xs px-2 py-1 rounded-lg"
+                  style={{ background: P.card2, color: P.muted }}
+                >✕ Close</button>
+              </div>
+              <div className="rounded-xl p-3" style={{ background: P.card2, borderLeft: `3px solid ${selectedRegion.color}` }}>
+                <div className="text-xs font-semibold mb-1" style={{ color: selectedRegion.color }}>Primary Marketing Channel</div>
+                <div className="text-sm font-bold" style={{ color: P.white }}>{selectedRegion.marketingChannel}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold mb-2" style={{ color: P.gold }}>Activation Tactics</div>
+                <div className="space-y-1.5">
+                  {selectedRegion.channels.map((ch, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: selectedRegion.color }} />
+                      <span style={{ color: P.muted }}>{ch}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="text-sm leading-relaxed" style={{ color: P.muted }}>
+                {selectedRegion.insight}
+              </div>
+            </motion.div>
+          ) : (
+            <div className="space-y-2">
+              <div className="text-xs font-semibold tracking-widest mb-3" style={{ color: P.gold }}>8 BRAIN REGIONS — CLICK TO EXPLORE</div>
+              {regions.map((r) => (
+                <motion.div
+                  key={r.id}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: regions.indexOf(r) * 0.05, duration: 0.3 }}
+                  className="flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-200"
+                  style={{
+                    background: hovered === r.id ? "rgba(245,158,11,0.06)" : P.card,
+                    borderColor: hovered === r.id ? r.color : P.border,
+                  }}
+                  onMouseEnter={() => setHovered(r.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  onClick={() => setSelected(r.id)}
+                >
+                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: r.color, boxShadow: `0 0 6px ${r.color}80` }} />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold" style={{ color: P.white }}>{r.label}</div>
+                    <div className="text-xs truncate" style={{ color: P.muted }}>{r.function}</div>
+                  </div>
+                  <div className="text-xs font-medium flex-shrink-0" style={{ color: r.color }}>{r.marketingChannel.split(" ")[0]}</div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
