@@ -1095,7 +1095,7 @@ function TabBrainMap() {
       </div>
 
       {/* ── Row 2: 6 region buttons — 3 rows of 2, compact ── */}
-      <div className="grid grid-cols-2 gap-3" style={{ maxWidth: 560, margin: "0 auto", width: "100%" }}>
+      <div className="grid grid-cols-3 gap-2" style={{ maxWidth: 700, margin: "0 auto", width: "100%" }}>
         {BRAIN_REGIONS.map((r) => {
           const isActive = selected === r.id;
           const isHov = hovered === r.id;
@@ -1105,15 +1105,15 @@ function TabBrainMap() {
               onClick={() => setSelected(isActive ? null : r.id)}
               onMouseEnter={() => setHovered(r.id)}
               onMouseLeave={() => setHovered(null)}
-              className="flex flex-col items-start gap-1.5 p-4 rounded-xl border text-left transition-all duration-200"
+              className="flex flex-col items-center gap-1 px-3 py-2.5 rounded-xl border text-center transition-all duration-200"
               style={{
                 background: isActive ? `${r.color}18` : isHov ? `${r.color}0e` : P.card,
                 borderColor: isActive ? r.color : isHov ? `${r.color}80` : P.border,
                 boxShadow: isActive ? `0 0 16px ${r.color}30` : "none",
               }}
             >
-              <div className="w-3 h-3 rounded-full" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : "none" }} />
-              <div className="text-sm font-bold leading-tight" style={{ color: isActive ? r.color : P.white }}>{r.label}</div>
+              <div className="w-2.5 h-2.5 rounded-full" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : "none" }} />
+              <div className="text-xs font-bold leading-tight" style={{ color: isActive ? r.color : P.white }}>{r.label}</div>
               <div className="text-xs leading-tight" style={{ color: P.muted }}>{r.function}</div>
             </button>
           );
