@@ -1029,12 +1029,11 @@ function TabBrainMap() {
       </div>
 
       {/* ── Row 1: Brain image — full width ── */}
-      <div className="relative w-full" style={{ maxWidth: "100%" }}>
+      <div className="relative w-full">
         <div
-          className="relative rounded-2xl overflow-hidden mx-auto"
+          className="relative rounded-2xl overflow-hidden w-full"
           style={{
             background: "radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 70%)",
-            maxWidth: 780,
           }}
         >
           <div
@@ -1048,7 +1047,7 @@ function TabBrainMap() {
               src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
               alt="Brain"
               className="w-full rounded-xl"
-              style={{ filter: "saturate(1.2) brightness(0.95)", display: "block" }}
+              style={{ filter: "saturate(1.2) brightness(0.95)", display: "block", maxHeight: 480, objectFit: "cover", objectPosition: "center" }}
               draggable={false}
             />
             {/* SVG hotspot overlay */}
