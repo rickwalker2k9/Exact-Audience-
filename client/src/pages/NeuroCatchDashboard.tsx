@@ -982,14 +982,11 @@ function TabBrainMap() {
   const [pulse, setPulse] = useState(0);
   const [rotAngle, setRotAngle] = useState(0);
   const animRef = useRef<number | null>(null);
+  const detailRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let frame = 0;
-    const tick = () => {
-      frame++;
-      setRotAngle(frame * 0.06);
-      animRef.current = requestAnimationFrame(tick);
-    };
+    const tick = () => { frame++; setRotAngle(frame * 0.06); animRef.current = requestAnimationFrame(tick); };
     animRef.current = requestAnimationFrame(tick);
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, []);
@@ -1003,41 +1000,64 @@ function TabBrainMap() {
   const skewY = Math.sin(rotAngle * Math.PI / 180) * 2.5;
   const scaleX = 0.97 + Math.cos(rotAngle * Math.PI / 180) * 0.03;
 
-  const RegionButton = ({ r }: { r: typeof BRAIN_REGIONS[0] }) => {
+  const RegionCard = ({ r }: { r: typeof BRAIN_REGIONS[0] }) => {
     const isActive = selected === r.id;
     const isHov = hovered === r.id;
     return (
-      <button
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setSelected(isActive ? null : r.id)}
         onMouseEnter={() => setHovered(r.id)}
         onMouseLeave={() => setHovered(null)}
-        className="flex flex-col items-start gap-1 px-3 py-3 rounded-xl border text-left transition-all duration-200 w-full"
+        onKeyDown={e => e.key === 'Enter' && setSelected(isActive ? null : r.id)}
+        className="flex flex-col gap-1.5 px-4 py-4 rounded-2xl border cursor-pointer transition-all duration-250 flex-1"
         style={{
-          background: isActive ? `${r.color}20` : isHov ? `${r.color}10` : P.card,
-          borderColor: isActive ? r.color : isHov ? `${r.color}80` : P.border,
-          boxShadow: isActive ? `0 0 14px ${r.color}35` : 'none',
+          background: isActive
+            ? `linear-gradient(135deg, ${r.color}28 0%, ${r.color}10 100%)`
+            : isHov
+            ? `${r.color}12`
+            : P.card,
+          borderColor: isActive ? r.color : isHov ? `${r.color}70` : P.border,
+          boxShadow: isActive
+            ? `0 0 24px ${r.color}40, inset 0 1px 0 ${r.color}30`
+            : isHov
+            ? `0 0 12px ${r.color}20`
+            : 'none',
+          transform: isActive ? 'scale(1.02)' : 'scale(1)',
         }}
       >
-        <div className="w-2 h-2 rounded-full mb-0.5" style={{ background: r.color, boxShadow: isActive ? `0 0 6px ${r.color}` : 'none' }} />
-        <div className="text-xs font-bold leading-tight" style={{ color: isActive ? r.color : P.white }}>{r.label}</div>
-        <div style={{ color: P.muted, fontSize: '0.6rem', lineHeight: 1.3 }}>{r.function}</div>
-      </button>
+        <div className="flex items-center gap-2">
+          <div
+            className="w-2.5 h-2.5 rounded-full"
+            style={{
+              background: r.color,
+              boxShadow: isActive ? `0 0 10px ${r.color}, 0 0 20px ${r.color}60` : isHov ? `0 0 6px ${r.color}` : 'none',
+            }}
+          />
+          <span className="text-xs font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
+        </div>
+        <div style={{ color: P.muted, fontSize: '0.65rem', lineHeight: 1.4 }}>{r.function}</div>
+        {isActive && (
+          <div className="mt-1 text-xs font-medium" style={{ color: r.color }}>▼ See strategy</div>
+        )}
+      </div>
     );
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
         <h2 className="text-2xl font-bold mb-1" style={{ color: P.white }}>Marketing Brain Map</h2>
         <p className="text-sm" style={{ color: P.muted }}>Every marketing channel activates a different region of the buyer's decision-making process. Click any region to explore the strategy.</p>
       </div>
 
-      {/* ── Main row: left buttons | brain | right buttons ── */}
-      <div className="flex items-center gap-4">
+      {/* ── 3 cards | brain | 3 cards on one row ── */}
+      <div className="flex items-stretch gap-4">
 
-        {/* Left column — regions 0,1,2 */}
-        <div className="flex flex-col gap-3" style={{ width: 190, flexShrink: 0 }}>
-          {BRAIN_REGIONS.slice(0, 3).map(r => <RegionButton key={r.id} r={r} />)}
+        {/* Left 3 cards */}
+        <div className="flex flex-col gap-3" style={{ width: 195, flexShrink: 0 }}>
+          {BRAIN_REGIONS.slice(0, 3).map(r => <RegionCard key={r.id} r={r} />)}
         </div>
 
         {/* Brain center */}
@@ -1046,23 +1066,22 @@ function TabBrainMap() {
             <img
               src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
               alt="Brain"
-              className="w-full rounded-xl"
               style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.2) brightness(0.95)' }}
               draggable={false}
             />
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" style={{ top: 0, left: 0 }}>
               <defs>
                 <filter id="ng"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                <filter id="ngs"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <filter id="ngs"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
               </defs>
               {BRAIN_REGIONS.map((r) => {
                 const isActive = selected === r.id || hovered === r.id;
                 return (
                   <line key={r.id + '-l'} x1={r.cx} y1={r.cy} x2={50} y2={52}
                     stroke={isActive ? r.color : '#f59e0b'}
-                    strokeWidth={isActive ? 0.5 : 0.15}
+                    strokeWidth={isActive ? 0.6 : 0.15}
                     strokeDasharray={isActive ? 'none' : '1.5,2'}
-                    opacity={isActive ? 0.7 : 0.15}
+                    opacity={isActive ? 0.8 : 0.12}
                     style={{ transition: 'all 0.3s ease' }}
                   />
                 );
@@ -1078,18 +1097,19 @@ function TabBrainMap() {
                     onMouseLeave={() => setHovered(null)}
                     onClick={() => setSelected(isSelected ? null : r.id)}
                   >
-                    <circle cx={r.cx} cy={r.cy} r={isPulse ? 5.5 : isActive ? 4.5 : 3.5}
-                      fill="none" stroke={r.color} strokeWidth="0.4"
-                      opacity={isPulse ? 0.8 : isActive ? 0.6 : 0.25}
+                    {isActive && <circle cx={r.cx} cy={r.cy} r={7} fill={r.color} opacity={0.12} style={{ transition: 'all 0.3s ease' }} />}
+                    <circle cx={r.cx} cy={r.cy} r={isPulse ? 5.5 : isActive ? 5 : 3.5}
+                      fill="none" stroke={r.color} strokeWidth="0.5"
+                      opacity={isPulse ? 0.9 : isActive ? 0.8 : 0.25}
                       style={{ transition: 'all 0.4s ease' }}
                     />
-                    <circle cx={r.cx} cy={r.cy} r={isActive ? 3.2 : 2.5}
-                      fill={isActive ? r.color : 'rgba(245,158,11,0.25)'}
-                      stroke={r.color} strokeWidth={isActive ? 0.6 : 0.4}
+                    <circle cx={r.cx} cy={r.cy} r={isActive ? 3.5 : 2.5}
+                      fill={isActive ? r.color : 'rgba(245,158,11,0.3)'}
+                      stroke={r.color} strokeWidth={isActive ? 0.7 : 0.4}
                       filter={isActive ? 'url(#ngs)' : isPulse ? 'url(#ng)' : 'none'}
                       style={{ transition: 'all 0.25s ease' }}
                     />
-                    <circle cx={r.cx} cy={r.cy} r={isActive ? 1.2 : 0.8}
+                    <circle cx={r.cx} cy={r.cy} r={isActive ? 1.4 : 0.9}
                       fill={isActive ? '#000' : r.color} opacity={isActive ? 0.9 : 0.7}
                       style={{ transition: 'all 0.25s ease' }}
                     />
@@ -1098,50 +1118,46 @@ function TabBrainMap() {
               })}
             </svg>
           </div>
-          <div className="text-center mt-2 text-xs" style={{ color: P.muted }}>Click a node or button to explore</div>
         </div>
 
-        {/* Right column — regions 3,4,5 */}
-        <div className="flex flex-col gap-3" style={{ width: 190, flexShrink: 0 }}>
-          {BRAIN_REGIONS.slice(3, 6).map(r => <RegionButton key={r.id} r={r} />)}
+        {/* Right 3 cards */}
+        <div className="flex flex-col gap-3" style={{ width: 195, flexShrink: 0 }}>
+          {BRAIN_REGIONS.slice(3, 6).map(r => <RegionCard key={r.id} r={r} />)}
         </div>
       </div>
 
-      {/* ── Full-width expand panel on click ── */}
+      {/* ── Detail panel — immediately below, no scroll ── */}
       <AnimatePresence mode="wait">
         {selectedRegion && (
           <motion.div
+            ref={detailRef}
             key={selectedRegion.id}
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
-            className="rounded-2xl border p-6"
+            transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+            className="rounded-2xl border p-5"
             style={{ background: `${selectedRegion.color}08`, borderColor: `${selectedRegion.color}50` }}
           >
-            <div className="flex items-start justify-between gap-4 mb-5">
+            <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="text-xs font-semibold tracking-widest mb-1" style={{ color: selectedRegion.color }}>{selectedRegion.function.toUpperCase()}</div>
-                <h3 className="text-2xl font-bold" style={{ color: P.white }}>{selectedRegion.label}</h3>
-                <div className="text-sm mt-1" style={{ color: P.muted }}>{selectedRegion.brainRole}</div>
+                <h3 className="text-xl font-bold" style={{ color: P.white }}>{selectedRegion.label}</h3>
+                <div className="text-xs mt-0.5" style={{ color: P.muted }}>{selectedRegion.brainRole}</div>
               </div>
-              <button onClick={() => setSelected(null)}
-                className="text-xs px-3 py-1.5 rounded-lg shrink-0"
-                style={{ background: P.card2, color: P.muted }}>
-                ✕ Close
-              </button>
+              <button onClick={() => setSelected(null)} className="text-xs px-3 py-1.5 rounded-lg shrink-0" style={{ background: P.card2, color: P.muted }}>✕ Close</button>
             </div>
-            <div className="grid md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-3 gap-4">
               <div className="rounded-xl p-4" style={{ background: P.card2, borderLeft: `3px solid ${selectedRegion.color}` }}>
-                <div className="text-xs font-semibold mb-1" style={{ color: selectedRegion.color }}>Primary Marketing Channel</div>
-                <div className="text-lg font-bold" style={{ color: P.white }}>{selectedRegion.marketingChannel}</div>
+                <div className="text-xs font-semibold mb-1" style={{ color: selectedRegion.color }}>Primary Channel</div>
+                <div className="text-base font-bold" style={{ color: P.white }}>{selectedRegion.marketingChannel}</div>
               </div>
               <div className="rounded-xl p-4" style={{ background: P.card2 }}>
-                <div className="text-xs font-semibold mb-3" style={{ color: P.gold }}>Activation Tactics</div>
-                <div className="space-y-2">
+                <div className="text-xs font-semibold mb-2" style={{ color: P.gold }}>Activation Tactics</div>
+                <div className="space-y-1.5">
                   {selectedRegion.channels.map((ch, i) => (
-                    <div key={i} className="flex items-start gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5" style={{ background: selectedRegion.color }} />
+                    <div key={i} className="flex items-start gap-2 text-xs">
+                      <div className="w-1.5 h-1.5 rounded-full shrink-0 mt-1" style={{ background: selectedRegion.color }} />
                       <span style={{ color: P.muted }}>{ch}</span>
                     </div>
                   ))}
@@ -1149,7 +1165,7 @@ function TabBrainMap() {
               </div>
               <div className="rounded-xl p-4" style={{ background: P.card2 }}>
                 <div className="text-xs font-semibold mb-2" style={{ color: P.gold }}>Neuroscience Insight</div>
-                <p className="text-sm leading-relaxed" style={{ color: P.muted }}>{selectedRegion.insight}</p>
+                <p className="text-xs leading-relaxed" style={{ color: P.muted }}>{selectedRegion.insight}</p>
               </div>
             </div>
           </motion.div>
@@ -1157,14 +1173,12 @@ function TabBrainMap() {
       </AnimatePresence>
 
       {/* ── Channel Activation bar chart ── */}
-      <div className="rounded-2xl border p-6" style={{ background: P.card, borderColor: P.border }}>
-        <div className="flex items-center justify-between mb-5">
-          <div>
-            <div className="font-semibold text-lg" style={{ color: P.white }}>Channel Activation Map</div>
-            <div className="text-xs mt-0.5" style={{ color: P.muted }}>Brain region engagement score per marketing channel (0–100)</div>
-          </div>
+      <div className="rounded-2xl border p-5" style={{ background: P.card, borderColor: P.border }}>
+        <div className="mb-4">
+          <div className="font-semibold" style={{ color: P.white }}>Channel Activation Map</div>
+          <div className="text-xs mt-0.5" style={{ color: P.muted }}>Brain region engagement score per marketing channel (0–100)</div>
         </div>
-        <ResponsiveContainer width="100%" height={240}>
+        <ResponsiveContainer width="100%" height={220}>
           <BarChart data={CHANNEL_ACTIVATION} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={P.border} />
             <XAxis dataKey="channel" tick={{ fill: P.muted, fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -1177,7 +1191,7 @@ function TabBrainMap() {
             <Bar dataKey="acc"        name="ACC"        stackId="a" fill="#9a3412" radius={[4,4,0,0]} />
           </BarChart>
         </ResponsiveContainer>
-        <div className="flex flex-wrap gap-3 mt-3">
+        <div className="flex flex-wrap gap-3 mt-2">
           {[{label:'Prefrontal',color:'#f59e0b'},{label:'Amygdala',color:'#f97316'},{label:'Insula',color:'#ea580c'},{label:'Visual',color:'#c2410c'},{label:'ACC',color:'#9a3412'}].map(l => (
             <div key={l.label} className="flex items-center gap-1.5 text-xs">
               <div className="w-2.5 h-2.5 rounded-sm" style={{ background: l.color }} />
