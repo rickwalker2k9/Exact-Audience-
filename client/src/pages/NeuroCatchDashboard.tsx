@@ -1028,15 +1028,15 @@ function TabBrainMap() {
         <p className="text-sm" style={{ color: P.muted }}>Every marketing channel activates a different region of the buyer's decision-making process. Click any region to explore the strategy.</p>
       </div>
 
-      {/* ── Row 1: Brain image — centered, ~60% width, correct aspect ratio ── */}
-      <div className="flex justify-center">
+      {/* ── Row 1: Brain image — centered, correct aspect ratio ── */}
+      <div className="flex flex-col items-center w-full">
         <div
           className="relative rounded-2xl overflow-hidden"
           style={{
             background: "radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 70%)",
-            width: "60%",
-            maxWidth: 560,
-            minWidth: 280,
+            width: "55%",
+            maxWidth: 520,
+            minWidth: 260,
           }}
         >
           <div
@@ -1113,11 +1113,11 @@ function TabBrainMap() {
             </svg>
           </div>
         </div>
-        <div className="text-center mt-2 text-xs" style={{ color: P.muted }}>Click any labeled node on the brain to explore the marketing strategy for that region</div>
+        <div className="text-center mt-3 text-xs" style={{ color: P.muted }}>Click any labeled node on the brain to explore the marketing strategy for that region</div>
       </div>
 
       {/* ── Row 2: 8 region buttons — 4 rows of 2 ── */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {BRAIN_REGIONS.map((r) => {
           const isActive = selected === r.id;
           const isHov = hovered === r.id;
@@ -1127,7 +1127,7 @@ function TabBrainMap() {
               onClick={() => setSelected(isActive ? null : r.id)}
               onMouseEnter={() => setHovered(r.id)}
               onMouseLeave={() => setHovered(null)}
-              className="flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all duration-200"
+              className="flex flex-col items-start gap-2 p-5 rounded-xl border text-left transition-all duration-200"
               style={{
                 background: isActive ? `${r.color}18` : isHov ? `${r.color}0e` : P.card,
                 borderColor: isActive ? r.color : isHov ? `${r.color}80` : P.border,
