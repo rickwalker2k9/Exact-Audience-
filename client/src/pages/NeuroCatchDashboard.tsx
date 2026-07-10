@@ -978,7 +978,7 @@ const CHANNEL_ACTIVATION = [
 
 // Separated so rotation animation doesn't remount region cards
 // Isolated rotation component — never causes card remounts
-// Brain with animated neuron firing — no rotation, just synaptic pulses
+// Brain with subtle neural pathway electric current animation
 function BrainVisual({ selected, hovered }: { selected: string | null; hovered: string | null }) {
   const [tick, setTick] = useState(0);
   const animRef = useRef<number | null>(null);
@@ -991,21 +991,44 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
 
   const t = tick / 60;
 
-  // Neuron nodes positioned over the brain image (viewBox 0-100)
-  const NEURONS = [
-    { id: 'n1',  cx: 22, cy: 18 }, { id: 'n2',  cx: 35, cy: 12 }, { id: 'n3',  cx: 50, cy: 10 },
-    { id: 'n4',  cx: 63, cy: 14 }, { id: 'n5',  cx: 74, cy: 20 }, { id: 'n6',  cx: 80, cy: 30 },
-    { id: 'n7',  cx: 82, cy: 42 }, { id: 'n8',  cx: 78, cy: 55 }, { id: 'n9',  cx: 68, cy: 62 },
-    { id: 'n10', cx: 55, cy: 65 }, { id: 'n11', cx: 42, cy: 62 }, { id: 'n12', cx: 30, cy: 58 },
-    { id: 'n13', cx: 20, cy: 50 }, { id: 'n14', cx: 15, cy: 38 }, { id: 'n15', cx: 18, cy: 28 },
-    { id: 'n16', cx: 40, cy: 35 }, { id: 'n17', cx: 55, cy: 38 }, { id: 'n18', cx: 65, cy: 45 },
-    { id: 'n19', cx: 45, cy: 50 }, { id: 'n20', cx: 30, cy: 42 },
-  ];
-
-  const SYNAPSES = [
-    [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],
-    [10,11],[11,12],[12,13],[13,14],[14,0],[15,16],[16,17],[17,18],[18,19],[19,15],
-    [1,15],[3,16],[5,17],[7,18],[9,19],[11,15],[2,16],[4,17],[6,18],[8,19],
+  // Neural pathway segments — each is a short curved line segment that lights up
+  // Positioned to follow the brain's actual gyri/sulci structure
+  const PATHWAYS = [
+    // Outer cortex ring — top arc
+    { x1: 20, y1: 20, x2: 32, y2: 13, cx: 26, cy: 14 },
+    { x1: 32, y1: 13, x2: 46, y2: 10, cx: 39, cy: 9  },
+    { x1: 46, y1: 10, x2: 60, y2: 12, cx: 53, cy: 8  },
+    { x1: 60, y1: 12, x2: 72, y2: 18, cx: 67, cy: 12 },
+    { x1: 72, y1: 18, x2: 80, y2: 28, cx: 79, cy: 21 },
+    { x1: 80, y1: 28, x2: 83, y2: 40, cx: 85, cy: 34 },
+    // Right side going down
+    { x1: 83, y1: 40, x2: 80, y2: 53, cx: 85, cy: 47 },
+    { x1: 80, y1: 53, x2: 73, y2: 62, cx: 80, cy: 60 },
+    // Bottom arc
+    { x1: 73, y1: 62, x2: 60, y2: 67, cx: 67, cy: 68 },
+    { x1: 60, y1: 67, x2: 47, y2: 65, cx: 53, cy: 69 },
+    { x1: 47, y1: 65, x2: 34, y2: 60, cx: 40, cy: 66 },
+    { x1: 34, y1: 60, x2: 22, y2: 52, cx: 26, cy: 60 },
+    // Left side going up
+    { x1: 22, y1: 52, x2: 16, y2: 40, cx: 14, cy: 47 },
+    { x1: 16, y1: 40, x2: 18, y2: 28, cx: 13, cy: 34 },
+    { x1: 18, y1: 28, x2: 20, y2: 20, cx: 14, cy: 23 },
+    // Inner pathways — horizontal
+    { x1: 25, y1: 35, x2: 40, y2: 32, cx: 32, cy: 29 },
+    { x1: 40, y1: 32, x2: 55, y2: 35, cx: 47, cy: 30 },
+    { x1: 55, y1: 35, x2: 70, y2: 38, cx: 62, cy: 32 },
+    // Inner pathways — diagonal
+    { x1: 30, y1: 45, x2: 45, y2: 40, cx: 37, cy: 39 },
+    { x1: 45, y1: 40, x2: 60, y2: 43, cx: 52, cy: 38 },
+    { x1: 60, y1: 43, x2: 72, y2: 50, cx: 68, cy: 44 },
+    // Deep pathways
+    { x1: 35, y1: 50, x2: 48, y2: 52, cx: 41, cy: 48 },
+    { x1: 48, y1: 52, x2: 62, y2: 55, cx: 55, cy: 50 },
+    // Cross connections
+    { x1: 28, y1: 25, x2: 38, y2: 38, cx: 30, cy: 32 },
+    { x1: 55, y1: 22, x2: 60, y2: 35, cx: 60, cy: 28 },
+    { x1: 70, y1: 28, x2: 68, y2: 42, cx: 73, cy: 35 },
+    { x1: 25, y1: 42, x2: 35, y2: 52, cx: 27, cy: 49 },
   ];
 
   const ZONE_PATHS: Record<string, string> = {
@@ -1022,14 +1045,14 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
       <img
         src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
         alt="Brain"
-        style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.15) brightness(1.0) drop-shadow(0 0 22px rgba(245,158,11,0.4))' }}
+        style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.1) brightness(1.0) drop-shadow(0 0 18px rgba(245,158,11,0.35))' }}
         draggable={false}
       />
       <svg viewBox="0 0 100 100" preserveAspectRatio="none"
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
         <defs>
-          <filter id="neuronGlow">
-            <feGaussianBlur stdDeviation="1.5" result="b"/>
+          <filter id="pathGlow">
+            <feGaussianBlur stdDeviation="0.6" result="b"/>
             <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
           <filter id="zoneGlow">
@@ -1038,7 +1061,7 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
           </filter>
         </defs>
 
-        {/* Zone highlights when a region is selected/hovered */}
+        {/* Zone highlights on click/hover */}
         {BRAIN_REGIONS.map((r) => {
           const isActive = selected === r.id || hovered === r.id;
           const path = ZONE_PATHS[r.id];
@@ -1046,42 +1069,48 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
           return (
             <path key={r.id} d={path}
               fill={isActive ? r.color : 'transparent'}
-              opacity={isActive ? 0.45 : 0}
+              opacity={isActive ? 0.38 : 0}
               filter={isActive ? 'url(#zoneGlow)' : 'none'}
-              style={{ transition: 'opacity 0.35s ease' }}
+              style={{ transition: 'opacity 0.4s ease' }}
             />
           );
         })}
 
-        {/* Synaptic connection lines — traveling pulse dots */}
-        {SYNAPSES.map(([a, b], i) => {
-          const na = NEURONS[a];
-          const nb = NEURONS[b];
-          // Each synapse fires at a different phase
-          const phase = (t * 0.7 + i * 0.31) % 1;
-          const px = na.cx + (nb.cx - na.cx) * phase;
-          const py = na.cy + (nb.cy - na.cy) * phase;
-          // Line brightness pulses gently
-          const lineOpacity = 0.08 + Math.sin(t * 1.2 + i * 0.5) * 0.06;
-          return (
-            <g key={i}>
-              <line
-                x1={na.cx} y1={na.cy} x2={nb.cx} y2={nb.cy}
-                stroke="#f59e0b" strokeWidth="0.25" opacity={lineOpacity}
-              />
-              <circle cx={px} cy={py} r="0.8" fill="#fbbf24" opacity={0.85} filter="url(#neuronGlow)" />
-            </g>
-          );
-        })}
+        {/* Neural pathways — each lights up as a traveling electric current */}
+        {PATHWAYS.map((p, i) => {
+          // Each pathway has its own phase offset — fires at different times
+          const speed = 0.55 + (i % 5) * 0.08;
+          const phase = (t * speed + i * 0.23) % 1;
+          // The "lit" portion travels along the path — we draw a short bright segment
+          // using strokeDasharray trick: total length ~20 units, lit segment = 3, gap = 17
+          const dashLen = 3;
+          const gapLen = 17;
+          const offset = -(phase * (dashLen + gapLen));
+          // Base line — very faint, always visible
+          const baseOpacity = 0.06 + (i % 3) * 0.01;
+          // Active segment opacity — subtle pulse
+          const activeOpacity = 0.18 + Math.sin(t * 2 + i * 0.4) * 0.06;
 
-        {/* Neuron nodes — pulse independently */}
-        {NEURONS.map((n, i) => {
-          const pulse = 0.7 + Math.sin(t * 1.5 + i * 0.7) * 0.3;
-          const glow = 0.4 + Math.sin(t * 1.8 + i * 0.9) * 0.3;
           return (
-            <g key={n.id}>
-              <circle cx={n.cx} cy={n.cy} r={2.5 * pulse} fill="#f59e0b" opacity={0.12} />
-              <circle cx={n.cx} cy={n.cy} r={1.2} fill="#fbbf24" opacity={glow} filter="url(#neuronGlow)" />
+            <g key={i} filter="url(#pathGlow)">
+              {/* Base pathway — always faintly visible */}
+              <path
+                d={`M ${p.x1} ${p.y1} Q ${p.cx} ${p.cy} ${p.x2} ${p.y2}`}
+                fill="none"
+                stroke="#f59e0b"
+                strokeWidth="0.18"
+                opacity={baseOpacity}
+              />
+              {/* Traveling electric pulse */}
+              <path
+                d={`M ${p.x1} ${p.y1} Q ${p.cx} ${p.cy} ${p.x2} ${p.y2}`}
+                fill="none"
+                stroke="#fde68a"
+                strokeWidth="0.45"
+                opacity={activeOpacity}
+                strokeDasharray={`${dashLen} ${gapLen}`}
+                strokeDashoffset={offset}
+              />
             </g>
           );
         })}
