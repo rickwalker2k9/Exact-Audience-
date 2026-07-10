@@ -929,17 +929,8 @@ const BRAIN_REGIONS = [
     brainRole: "Threat detection, emotional memory, fear response, urgency",
   },
   {
-    id: "nucleus_accumbens", label: "Nucleus Accumbens", shortLabel: "NAc",
-    cx: 48, cy: 50, color: "#f59e0b",
-    function: "Reward, Desire & Dopamine Response",
-    marketingChannel: "Success Stories & Outcome Visualization",
-    channels: ["Athlete return-to-play testimonials", "'Imagine the outcome' copy", "Before/after case studies", "Award and recognition content"],
-    insight: "The nucleus accumbens is the brain's reward center — it releases dopamine in anticipation of a positive outcome. Testimonials from athletic trainers who caught a concussion that would have been missed, or stories of athletes who returned to play safely because of NeuroCatch, activate this region. The buyer imagines the positive outcome for their program, creating desire and forward momentum.",
-    brainRole: "Reward anticipation, dopamine release, motivation, desire",
-  },
-  {
     id: "hippocampus", label: "Hippocampus", shortLabel: "HPC",
-    cx: 62, cy: 55, color: "#f97316",
+    cx: 62, cy: 55, color: "#f59e0b",
     function: "Memory Formation & Brand Recall",
     marketingChannel: "Retargeting & Consistent Brand Presence",
     channels: ["Retargeting display ads", "Consistent logo/color usage", "Email drip sequences", "Conference presence + follow-up"],
@@ -948,7 +939,7 @@ const BRAIN_REGIONS = [
   },
   {
     id: "visual_cortex", label: "Visual Cortex", shortLabel: "V1",
-    cx: 82, cy: 42, color: "#f59e0b",
+    cx: 82, cy: 42, color: "#f97316",
     function: "Visual Processing & First Impressions",
     marketingChannel: "Video Demos & Visual Brand Assets",
     channels: ["Product demo videos", "Infographics", "LinkedIn carousel posts", "Conference booth visuals"],
@@ -956,17 +947,8 @@ const BRAIN_REGIONS = [
     brainRole: "Primary visual processing, pattern recognition, first impression formation",
   },
   {
-    id: "brocas", label: "Broca's Area", shortLabel: "BRO",
-    cx: 28, cy: 62, color: "#f97316",
-    function: "Language Processing & Copy Comprehension",
-    marketingChannel: "Email Subject Lines & Ad Headlines",
-    channels: ["Email subject line optimization", "LinkedIn message copy", "Google ad headlines", "Landing page headline hierarchy"],
-    insight: "Broca's area processes the production and comprehension of language. This is the region engaged when a prospect reads an email subject line, a Google ad headline, or a LinkedIn message. Clear, specific, jargon-free language activates smooth processing — the brain rewards clarity. Overly technical or vague copy creates friction in Broca's area, increasing the likelihood the message is ignored.",
-    brainRole: "Speech production, language comprehension, reading fluency",
-  },
-  {
     id: "insula", label: "Insula", shortLabel: "INS",
-    cx: 55, cy: 42, color: "#f59e0b",
+    cx: 52, cy: 44, color: "#f59e0b",
     function: "Empathy, Gut Feeling & Physical Sensation",
     marketingChannel: "Human-Centered Stories & Patient Narratives",
     channels: ["Athlete injury stories", "Parent testimonials", "Clinician empathy content", "Human faces in ad creative"],
@@ -975,7 +957,7 @@ const BRAIN_REGIONS = [
   },
   {
     id: "anterior_cingulate", label: "Anterior Cingulate", shortLabel: "ACC",
-    cx: 35, cy: 42, color: "#f97316",
+    cx: 35, cy: 38, color: "#f97316",
     function: "Conflict Resolution & Social Proof",
     marketingChannel: "Peer Validation & Authority Endorsements",
     channels: ["'Trusted by 400+ clinics' social proof", "Peer institution logos", "Clinical champion endorsements", "Conference speaker credibility"],
@@ -1033,7 +1015,7 @@ function TabBrainMap() {
         <div
           className="relative rounded-2xl overflow-hidden"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 70%)",
+            background: "transparent",
             width: "55%",
             maxWidth: 520,
             minWidth: 260,
@@ -1102,11 +1084,7 @@ function TabBrainMap() {
                       fill={isActive ? "#000" : r.color} opacity={isActive ? 0.9 : 0.7}
                       style={{ transition: "all 0.25s ease" }}
                     />
-                    <text x={r.cx} y={r.cy - 4.5} textAnchor="middle" fontSize="2.8"
-                      fill={isActive ? r.color : "#c8d0e8"}
-                      fontWeight={isActive ? "700" : "400"}
-                      style={{ transition: "all 0.25s ease", pointerEvents: "none" }}
-                    >{r.shortLabel}</text>
+
                   </g>
                 );
               })}
@@ -1116,8 +1094,8 @@ function TabBrainMap() {
         <div className="text-center mt-3 text-xs" style={{ color: P.muted }}>Click any labeled node on the brain to explore the marketing strategy for that region</div>
       </div>
 
-      {/* ── Row 2: 8 region buttons — 4 rows of 2 ── */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* ── Row 2: 6 region buttons — 3 rows of 2, compact ── */}
+      <div className="grid grid-cols-2 gap-3" style={{ maxWidth: 560, margin: "0 auto", width: "100%" }}>
         {BRAIN_REGIONS.map((r) => {
           const isActive = selected === r.id;
           const isHov = hovered === r.id;
@@ -1127,7 +1105,7 @@ function TabBrainMap() {
               onClick={() => setSelected(isActive ? null : r.id)}
               onMouseEnter={() => setHovered(r.id)}
               onMouseLeave={() => setHovered(null)}
-              className="flex flex-col items-start gap-2 p-5 rounded-xl border text-left transition-all duration-200"
+              className="flex flex-col items-start gap-1.5 p-4 rounded-xl border text-left transition-all duration-200"
               style={{
                 background: isActive ? `${r.color}18` : isHov ? `${r.color}0e` : P.card,
                 borderColor: isActive ? r.color : isHov ? `${r.color}80` : P.border,
