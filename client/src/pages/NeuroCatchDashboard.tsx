@@ -1005,7 +1005,7 @@ function BrainVisual({ selected, hovered, onSelect, onHover }: {
   };
 
   return (
-    <div className="relative rounded-xl overflow-hidden shrink-0" style={{ width: 320, background: 'transparent' }}>
+    <div className="relative rounded-xl overflow-hidden shrink-0" style={{ width: 420, background: 'transparent' }}>
       <div style={{ transform: `skewY(${skewY}deg) scaleX(${scaleX})`, transition: 'transform 0.05s linear', willChange: 'transform', position: 'relative' }}>
         <img
           src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
@@ -1067,10 +1067,10 @@ function TabBrainMap() {
       </div>
 
       {/* ── 3 cards | brain | 3 cards ── */}
-      <div className="flex items-stretch gap-3">
+      <div className="flex items-center gap-3">
 
         {/* Left 3 cards */}
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap-2" style={{ width: 200, flexShrink: 0 }}>
           {BRAIN_REGIONS.slice(0, 3).map((r, i) => {
             const isActive = selected === r.id;
             const isHov = hovered === r.id;
@@ -1084,7 +1084,7 @@ function TabBrainMap() {
                 onMouseEnter={() => setHovered(r.id)}
                 onMouseLeave={() => setHovered(null)}
                 onKeyDown={e => e.key === 'Enter' && setSelected(isActive ? null : r.id)}
-                className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5 flex-1"
+                className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5"
                 style={{
                   background: isActive ? `${r.color}22` : isHov ? `${r.color}0e` : P.card,
                   borderColor: isActive ? r.color : isHov ? `${r.color}60` : isPulse ? `${r.color}40` : P.border,
@@ -1110,7 +1110,7 @@ function TabBrainMap() {
         />
 
         {/* Right 3 cards */}
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap-2" style={{ width: 200, flexShrink: 0 }}>
           {BRAIN_REGIONS.slice(3, 6).map((r, i) => {
             const isActive = selected === r.id;
             const isHov = hovered === r.id;
@@ -1124,7 +1124,7 @@ function TabBrainMap() {
                 onMouseEnter={() => setHovered(r.id)}
                 onMouseLeave={() => setHovered(null)}
                 onKeyDown={e => e.key === 'Enter' && setSelected(isActive ? null : r.id)}
-                className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5 flex-1"
+                className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5"
                 style={{
                   background: isActive ? `${r.color}22` : isHov ? `${r.color}0e` : P.card,
                   borderColor: isActive ? r.color : isHov ? `${r.color}60` : isPulse ? `${r.color}40` : P.border,
