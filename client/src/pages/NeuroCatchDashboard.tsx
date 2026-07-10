@@ -712,8 +712,8 @@ function DifferentiatorsSection() {
   const cards = [
     {
       num: "01",
-      title: "You Cannot Fake It",
-      subtitle: "Involuntary physiological response vs. behavioral self-report",
+      title: "Involuntary Neural Response",
+      subtitle: "Objective physiological measurement — not subject to patient effort or bias",
       icon: Brain,
       visual: (
         <div className="relative h-32 w-full">
@@ -735,7 +735,7 @@ function DifferentiatorsSection() {
           <div className="absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "rgba(245,158,11,0.15)", color: P.gold }}>LIVE</div>
         </div>
       ),
-      insight: "The P300 brainwave fires automatically when the brain processes a stimulus. No athlete can suppress it — making NeuroCatch the only concussion test that cannot be gamed.",
+      insight: "The P300 brainwave fires automatically when the brain processes a stimulus — it is an involuntary electrophysiological response that cannot be consciously suppressed or altered. This makes NeuroCatch the only point-of-care cognitive assessment that is entirely independent of patient effort, motivation, or cooperation.",
     },
     {
       num: "02",
