@@ -6,6 +6,7 @@
  * Real SimilarWeb traffic data wired in.
  */
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import {
   AreaChart, Area, BarChart, Bar, RadarChart, Radar, PolarGrid,
@@ -630,7 +631,247 @@ function TabMarket() {
             </tbody>
           </table>
         </div>
-      </Card>
+            </Card>
+
+      {/* ── 3 Key Differentiators ── */}
+      <DifferentiatorsSection />
+    </div>
+  );
+}
+
+// ── Animated Differentiators Component ───────────────────────────────────────
+function DifferentiatorsSection() {
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [wavePhase, setWavePhase] = useState(0);
+  const [symptomStep, setSymptomStep] = useState(0);
+  const [baselineStep, setBaselineStep] = useState(0);
+  const animRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    let frame = 0;
+    const tick = () => {
+      frame++;
+      setWavePhase(frame);
+      animRef.current = requestAnimationFrame(tick);
+    };
+    animRef.current = requestAnimationFrame(tick);
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => setSymptomStep(s => (s + 1) % 8), 900);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => setBaselineStep(s => (s + 1) % 6), 1100);
+    return () => clearInterval(t);
+  }, []);
+
+  // EEG waveform points — P300 spike
+  const eegPoints = Array.from({ length: 60 }, (_, i) => {
+    const x = (i / 59) * 280 + 10;
+    const base = Math.sin((i + wavePhase * 0.3) * 0.4) * 4;
+    const p300 = i >= 30 && i <= 38 ? Math.sin((i - 30) * Math.PI / 8) * 38 : 0;
+    const y = 55 - base - p300;
+    return `${x},${y}`;
+  }).join(" ");
+
+  const behavioralPoints = Array.from({ length: 60 }, (_, i) => {
+    const x = (i / 59) * 280 + 10;
+    const y = 55 + Math.sin((i + wavePhase * 0.15) * 0.2) * 3;
+    return `${x},${y}`;
+  }).join(" ");
+
+  // Symptom vs brain signal data
+  const symptomData = [
+    { day: "Injury", symptoms: 100, brain: 100 },
+    { day: "Day 1",  symptoms: 85,  brain: 92 },
+    { day: "Day 2",  symptoms: 60,  brain: 88 },
+    { day: "Day 3",  symptoms: 30,  brain: 81 },
+    { day: "Day 4",  symptoms: 10,  brain: 74 },
+    { day: "Day 5",  symptoms: 5,   brain: 68 },
+    { day: "Day 7",  symptoms: 0,   brain: 58 },
+    { day: "Day 10", symptoms: 0,   brain: 44 },
+  ];
+
+  const baselineSteps = [
+    { label: "Pre-Season Baseline", color: P.muted, competitor: true },
+    { label: "Season Plays",        color: P.muted, competitor: true },
+    { label: "Injury Occurs",       color: P.orange, competitor: true },
+    { label: "Compare to Baseline", color: P.muted, competitor: true },
+    { label: "Clearance Decision",  color: P.muted, competitor: true },
+  ];
+
+  const ncSteps = [
+    { label: "Injury Occurs",       color: P.orange },
+    { label: "3-Min EEG Scan",      color: P.gold },
+    { label: "Instant Result",      color: P.gold },
+  ];
+
+  const cards = [
+    {
+      num: "01",
+      title: "You Cannot Fake It",
+      subtitle: "Involuntary physiological response vs. behavioral self-report",
+      icon: Brain,
+      visual: (
+        <div className="relative h-32 w-full">
+          <svg width="100%" height="100%" viewBox="0 0 300 110" preserveAspectRatio="none">
+            {/* Grid lines */}
+            {[20, 40, 60, 80].map(y => (
+              <line key={y} x1="10" y1={y} x2="290" y2={y} stroke={P.border} strokeWidth="0.5" strokeDasharray="3,3" />
+            ))}
+            {/* Behavioral flat line */}
+            <polyline points={behavioralPoints} fill="none" stroke={P.muted} strokeWidth="1.5" opacity="0.5" />
+            <text x="15" y="95" fontSize="8" fill={P.muted}>ImPACT / Sway — Behavioral (can be sandbagged)</text>
+            {/* EEG P300 spike */}
+            <polyline points={eegPoints} fill="none" stroke={P.gold} strokeWidth="2" />
+            <text x="15" y="12" fontSize="8" fill={P.gold}>NeuroCatch — P300 EEG (involuntary brain response)</text>
+            {/* P300 label */}
+            <line x1="148" y1="17" x2="148" y2="55" stroke={P.orange} strokeWidth="1" strokeDasharray="2,2" />
+            <text x="152" y="25" fontSize="8" fill={P.orange}>P300 Spike</text>
+          </svg>
+          <div className="absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "rgba(245,158,11,0.15)", color: P.gold }}>LIVE</div>
+        </div>
+      ),
+      insight: "The P300 brainwave fires automatically when the brain processes a stimulus. No athlete can suppress it — making NeuroCatch the only concussion test that cannot be gamed.",
+    },
+    {
+      num: "02",
+      title: "No Baseline Required",
+      subtitle: "Population norms replace pre-season testing — works anywhere, anytime",
+      icon: Clock,
+      visual: (
+        <div className="space-y-4">
+          <div>
+            <div className="text-xs font-semibold mb-2" style={{ color: P.muted }}>COMPETITORS — 5 steps, requires pre-season setup</div>
+            <div className="flex items-center gap-1 flex-wrap">
+              {baselineSteps.map((s, i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <motion.div
+                    className="text-xs px-2 py-1 rounded-lg font-medium"
+                    animate={{ opacity: baselineStep >= i ? 1 : 0.25, scale: baselineStep === i ? 1.05 : 1 }}
+                    transition={{ duration: 0.3 }}
+                    style={{ background: baselineStep >= i ? "rgba(139,92,246,0.15)" : P.card2, color: baselineStep >= i ? P.muted : P.border, border: `1px solid ${baselineStep === i ? P.muted : P.border}` }}
+                  >{s.label}</motion.div>
+                  {i < baselineSteps.length - 1 && <ChevronRight size={10} style={{ color: P.border }} />}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-semibold mb-2" style={{ color: P.gold }}>NEUROCATCH — 3 steps, no setup needed</div>
+            <div className="flex items-center gap-1">
+              {ncSteps.map((s, i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <motion.div
+                    className="text-xs px-2 py-1 rounded-lg font-semibold"
+                    animate={{ opacity: (baselineStep % 3) >= i ? 1 : 0.3, scale: (baselineStep % 3) === i ? 1.08 : 1 }}
+                    transition={{ duration: 0.3 }}
+                    style={{ background: (baselineStep % 3) >= i ? "rgba(245,158,11,0.15)" : P.card2, color: (baselineStep % 3) >= i ? P.gold : P.border, border: `1px solid ${(baselineStep % 3) >= i ? P.gold : P.border}` }}
+                  >{s.label}</motion.div>
+                  {i < ncSteps.length - 1 && <ChevronRight size={10} style={{ color: P.gold }} />}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ),
+      insight: "Every competitor requires a pre-season baseline. If an athlete never took one — or sandbagged it — the comparison is worthless. NeuroCatch compares against population norms from thousands of healthy adults, making it deployable in ERs, military field units, and occupational clinics with zero setup.",
+    },
+    {
+      num: "03",
+      title: "Measures What Actually Happened",
+      subtitle: "Brain signal latency vs. self-reported symptoms — they diverge dangerously",
+      icon: Activity,
+      visual: (
+        <div className="h-36">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={symptomData.slice(0, Math.max(2, symptomStep + 1))} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={P.border} opacity={0.4} />
+              <XAxis dataKey="day" tick={{ fill: P.muted, fontSize: 9 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: P.muted, fontSize: 9 }} axisLine={false} tickLine={false} domain={[0, 110]} />
+              <Tooltip
+                contentStyle={{ background: P.card2, border: `1px solid ${P.border}`, borderRadius: 8, fontSize: 11 }}
+                labelStyle={{ color: P.white }}
+                formatter={(val: number, name: string) => [val + "%", name === "symptoms" ? "Reported Symptoms" : "Brain Signal Impairment"]}
+              />
+              <Line type="monotone" dataKey="symptoms" stroke={P.muted} strokeWidth={2} dot={false} name="symptoms" strokeDasharray="4 2" />
+              <Line type="monotone" dataKey="brain" stroke={P.gold} strokeWidth={2.5} dot={false} name="brain" />
+            </LineChart>
+          </ResponsiveContainer>
+          <div className="flex items-center gap-4 mt-1 text-xs">
+            <div className="flex items-center gap-1.5"><div className="w-5 h-0.5" style={{ background: P.gold }} /><span style={{ color: P.gold }}>Brain Signal Impairment</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-5 h-0.5 border-t-2 border-dashed" style={{ borderColor: P.muted }} /><span style={{ color: P.muted }}>Reported Symptoms</span></div>
+          </div>
+        </div>
+      ),
+      insight: "Symptoms (headache, dizziness) can resolve within 24–48 hours while the brain is still measurably impaired. Clearing an athlete based on symptoms alone is the leading cause of second-impact syndrome. NeuroCatch shows the actual neural processing speed — not how the patient feels.",
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <div className="text-xs font-semibold tracking-widest mb-1" style={{ color: P.gold }}>THE 3 DIFFERENTIATORS THAT MATTER</div>
+        <h3 className="text-xl font-bold" style={{ color: P.white }}>Why NeuroCatch Wins on Science</h3>
+        <p className="text-sm mt-1" style={{ color: P.muted }}>Every competitor relies on behavioral self-report. NeuroCatch is the only platform that measures involuntary brain physiology.</p>
+      </div>
+      <div className="grid gap-5">
+        {cards.map((card, idx) => {
+          const Icon = card.icon;
+          const isActive = activeCard === idx;
+          return (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.12, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <div
+                className="rounded-2xl border p-5 cursor-pointer transition-all duration-300"
+                style={{
+                  background: isActive ? "rgba(245,158,11,0.06)" : P.card,
+                  borderColor: isActive ? P.gold : P.border,
+                  boxShadow: isActive ? `0 0 24px rgba(245,158,11,0.12)` : "none",
+                }}
+                onClick={() => setActiveCard(isActive ? null : idx)}
+              >
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="text-3xl font-black leading-none" style={{ background: P.gradText, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{card.num}</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <Icon size={16} style={{ color: P.gold }} />
+                      <div className="font-bold text-base" style={{ color: P.white }}>{card.title}</div>
+                    </div>
+                    <div className="text-xs" style={{ color: P.muted }}>{card.subtitle}</div>
+                  </div>
+                  <motion.div animate={{ rotate: isActive ? 90 : 0 }} transition={{ duration: 0.2 }}>
+                    <ChevronRight size={16} style={{ color: P.muted }} />
+                  </motion.div>
+                </div>
+                {card.visual}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4 pt-4 text-sm" style={{ borderTop: `1px solid ${P.border}`, color: P.muted }}>
+                        {card.insight}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 }
