@@ -983,12 +983,12 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
   const animRef = useRef<number | null>(null);
   useEffect(() => {
     let frame = 0;
-    const tick = () => { frame++; setRotAngle(frame * 0.05); animRef.current = requestAnimationFrame(tick); };
+    const tick = () => { frame++; setRotAngle(frame * 0.25); animRef.current = requestAnimationFrame(tick); };
     animRef.current = requestAnimationFrame(tick);
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, []);
-  const skewY = Math.sin(rotAngle * Math.PI / 180) * 2;
-  const scaleX = 0.98 + Math.cos(rotAngle * Math.PI / 180) * 0.02;
+  const skewY = 0;
+  const scaleX = 1;
   const ZONE_PATHS: Record<string, string> = {
     prefrontal:         "M 14,6 Q 28,2 44,9 Q 38,26 28,31 Q 18,28 11,18 Z",
     amygdala:           "M 34,53 Q 44,49 51,56 Q 49,66 39,68 Q 31,64 32,56 Z",
@@ -998,10 +998,10 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
     anterior_cingulate: "M 24,31 Q 37,26 44,36 Q 41,46 31,48 Q 21,45 22,37 Z",
   };
   return (
-    <div className="relative rounded-xl overflow-hidden" style={{ flex: '1 1 0', minWidth: 0, background: 'transparent' }}>
-      <div style={{ transform: `skewY(${skewY}deg) scaleX(${scaleX})`, transition: 'transform 0.05s linear', willChange: 'transform', position: 'relative' }}>
-        <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
-          alt="Brain" style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.1) brightness(0.88)' }} draggable={false} />
+    <div className="relative rounded-xl overflow-hidden" style={{ flex: '1 1 0', minWidth: 0, background: 'transparent', perspective: '1200px' }}>
+      <div style={{ transform: `rotateY(${rotAngle}deg)`, transition: 'none', willChange: 'transform', position: 'relative', transformStyle: 'preserve-3d' }}>
+        <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
+          alt="Brain" style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.2) brightness(1.05) drop-shadow(0 0 18px rgba(245,158,11,0.5))' }} draggable={false} />
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
           <defs><filter id="zg"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
           {BRAIN_REGIONS.map((r) => {
