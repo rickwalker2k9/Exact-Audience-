@@ -977,12 +977,8 @@ const CHANNEL_ACTIVATION = [
 ];
 
 // Separated so rotation animation doesn't remount region cards
-function BrainVisual({ selected, hovered, onSelect, onHover }: {
-  selected: string | null;
-  hovered: string | null;
-  onSelect: (id: string | null) => void;
-  onHover: (id: string | null) => void;
-}) {
+// Isolated rotation component — never causes card remounts
+function BrainVisual({ selected, hovered }: { selected: string | null; hovered: string | null }) {
   const [rotAngle, setRotAngle] = useState(0);
   const animRef = useRef<number | null>(null);
   useEffect(() => {
@@ -991,10 +987,8 @@ function BrainVisual({ selected, hovered, onSelect, onHover }: {
     animRef.current = requestAnimationFrame(tick);
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, []);
-
   const skewY = Math.sin(rotAngle * Math.PI / 180) * 2;
   const scaleX = 0.98 + Math.cos(rotAngle * Math.PI / 180) * 0.02;
-
   const ZONE_PATHS: Record<string, string> = {
     prefrontal:         "M 14,6 Q 28,2 44,9 Q 38,26 28,31 Q 18,28 11,18 Z",
     amygdala:           "M 34,53 Q 44,49 51,56 Q 49,66 39,68 Q 31,64 32,56 Z",
@@ -1003,37 +997,124 @@ function BrainVisual({ selected, hovered, onSelect, onHover }: {
     insula:             "M 41,36 Q 54,31 61,41 Q 59,51 49,53 Q 39,49 39,41 Z",
     anterior_cingulate: "M 24,31 Q 37,26 44,36 Q 41,46 31,48 Q 21,45 22,37 Z",
   };
-
   return (
-    <div className="relative rounded-xl overflow-hidden shrink-0" style={{ width: 420, background: 'transparent' }}>
+    <div className="relative rounded-xl overflow-hidden" style={{ flex: '1 1 0', minWidth: 0, background: 'transparent' }}>
       <div style={{ transform: `skewY(${skewY}deg) scaleX(${scaleX})`, transition: 'transform 0.05s linear', willChange: 'transform', position: 'relative' }}>
-        <img
-          src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
-          alt="Brain"
-          style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.1) brightness(0.88)' }}
-          draggable={false}
-        />
+        <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
+          alt="Brain" style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.1) brightness(0.88)' }} draggable={false} />
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-          <defs>
-            <filter id="zg"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
+          <defs><filter id="zg"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
           {BRAIN_REGIONS.map((r) => {
             const isActive = selected === r.id || hovered === r.id;
             const path = ZONE_PATHS[r.id];
             if (!path) return null;
-            return (
-              <path key={r.id} d={path}
-                fill={isActive ? r.color : 'transparent'}
-                stroke={isActive ? r.color : 'transparent'}
-                strokeWidth={isActive ? 0.8 : 0}
-                opacity={isActive ? 0.5 : 0}
-                filter={isActive ? 'url(#zg)' : 'none'}
-                style={{ transition: 'all 0.35s ease' }}
-              />
-            );
+            return <path key={r.id} d={path} fill={isActive ? r.color : 'transparent'} stroke={isActive ? r.color : 'transparent'}
+              strokeWidth={isActive ? 0.8 : 0} opacity={isActive ? 0.5 : 0} filter={isActive ? 'url(#zg)' : 'none'}
+              style={{ transition: 'all 0.35s ease' }} />;
           })}
         </svg>
       </div>
+    </div>
+  );
+}
+
+// Animated neural network SVG for Channel Activation
+function NeuralChannelMap() {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setTick(n => n + 1), 60);
+    return () => clearInterval(t);
+  }, []);
+
+  const channels = [
+    { id: 'linkedin',    label: 'LinkedIn',    x: 160, y: 40,  rational: 90, emotional: 40, memory: 70, color: '#f59e0b' },
+    { id: 'google',      label: 'Google',      x: 340, y: 40,  rational: 85, emotional: 55, memory: 65, color: '#f97316' },
+    { id: 'email',       label: 'Email',       x: 460, y: 140, rational: 80, emotional: 70, memory: 75, color: '#fb923c' },
+    { id: 'video',       label: 'Video/Demo',  x: 400, y: 270, rational: 70, emotional: 65, memory: 80, color: '#f59e0b' },
+    { id: 'direct',      label: 'Direct Mail', x: 100, y: 270, rational: 75, emotional: 50, memory: 60, color: '#f97316' },
+    { id: 'social',      label: 'Social',      x: 40,  y: 140, rational: 45, emotional: 80, memory: 55, color: '#fb923c' },
+  ];
+  const brainRegions = [
+    { id: 'pfc', label: 'PFC', x: 250, y: 100, color: '#f59e0b' },
+    { id: 'amy', label: 'AMY', x: 200, y: 180, color: '#f97316' },
+    { id: 'hpc', label: 'HPC', x: 300, y: 180, color: '#fb923c' },
+  ];
+  const connections = [
+    { from: channels[0], to: brainRegions[0], strength: 0.9 },
+    { from: channels[0], to: brainRegions[1], strength: 0.4 },
+    { from: channels[1], to: brainRegions[0], strength: 0.85 },
+    { from: channels[1], to: brainRegions[1], strength: 0.55 },
+    { from: channels[2], to: brainRegions[0], strength: 0.8 },
+    { from: channels[2], to: brainRegions[1], strength: 0.7 },
+    { from: channels[2], to: brainRegions[2], strength: 0.75 },
+    { from: channels[3], to: brainRegions[1], strength: 0.65 },
+    { from: channels[3], to: brainRegions[2], strength: 0.8 },
+    { from: channels[4], to: brainRegions[0], strength: 0.75 },
+    { from: channels[4], to: brainRegions[2], strength: 0.6 },
+    { from: channels[5], to: brainRegions[1], strength: 0.8 },
+    { from: channels[5], to: brainRegions[2], strength: 0.55 },
+  ];
+
+  const t = tick / 60;
+
+  return (
+    <div className="rounded-2xl border p-5" style={{ background: P.card, borderColor: P.border }}>
+      <div className="mb-3">
+        <div className="font-semibold" style={{ color: P.white }}>Channel → Brain Activation Map</div>
+        <div className="text-xs mt-0.5" style={{ color: P.muted }}>Live neural pathway visualization — which channels fire which brain regions</div>
+      </div>
+      <svg viewBox="0 0 500 320" style={{ width: '100%', height: 'auto', display: 'block' }}>
+        <defs>
+          <filter id="nodeGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="brainGlow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        {/* Animated connection lines with traveling pulses */}
+        {connections.map((c, i) => {
+          const phase = (t * 1.2 + i * 0.4) % 1;
+          const px = c.from.x + (c.to.x - c.from.x) * phase;
+          const py = c.from.y + (c.to.y - c.from.y) * phase;
+          const opacity = 0.15 + c.strength * 0.25;
+          return (
+            <g key={i}>
+              <line x1={c.from.x} y1={c.from.y} x2={c.to.x} y2={c.to.y}
+                stroke={c.from.color} strokeWidth={c.strength * 1.5}
+                opacity={opacity} strokeDasharray="4 6" />
+              <circle cx={px} cy={py} r={2.5} fill={c.from.color} opacity={0.9} filter="url(#nodeGlow)" />
+            </g>
+          );
+        })}
+
+        {/* Brain region nodes — center */}
+        {brainRegions.map((r) => {
+          const pulse = 0.85 + Math.sin(t * 2.5 + r.x * 0.05) * 0.15;
+          return (
+            <g key={r.id}>
+              <circle cx={r.x} cy={r.y} r={28 * pulse} fill={r.color} opacity={0.08} />
+              <circle cx={r.x} cy={r.y} r={18} fill={r.color} opacity={0.18} filter="url(#brainGlow)" />
+              <circle cx={r.x} cy={r.y} r={12} fill={r.color} opacity={0.6} />
+              <circle cx={r.x} cy={r.y} r={5} fill={r.color} opacity={1} />
+              <text x={r.x} y={r.y + 30} textAnchor="middle" fill={r.color} fontSize="9" fontWeight="700">{r.label}</text>
+            </g>
+          );
+        })}
+
+        {/* Channel nodes — outer ring */}
+        {channels.map((c) => {
+          const pulse = 0.9 + Math.sin(t * 1.8 + c.x * 0.03) * 0.1;
+          return (
+            <g key={c.id}>
+              <circle cx={c.x} cy={c.y} r={20 * pulse} fill={c.color} opacity={0.07} />
+              <circle cx={c.x} cy={c.y} r={10} fill={c.color} opacity={0.25} filter="url(#nodeGlow)" />
+              <circle cx={c.x} cy={c.y} r={6} fill={c.color} opacity={0.85} />
+              <text x={c.x} y={c.y - 16} textAnchor="middle" fill="#e2e8f0" fontSize="9" fontWeight="600">{c.label}</text>
+            </g>
+          );
+        })}
+
+        {/* Legend */}
+        <text x={10} y={310} fill="#64748b" fontSize="8">● Channel nodes  ● Brain regions (PFC=Prefrontal, AMY=Amygdala, HPC=Hippocampus)  — Pulse intensity = activation strength</text>
+      </svg>
     </div>
   );
 }
@@ -1050,15 +1131,6 @@ function TabBrainMap() {
 
   const selectedRegion = BRAIN_REGIONS.find(r => r.id === selected);
 
-  const radarData = [
-    { subject: 'LinkedIn',    rational: 90, emotional: 40, memory: 70 },
-    { subject: 'Google',      rational: 85, emotional: 55, memory: 65 },
-    { subject: 'Email',       rational: 80, emotional: 70, memory: 75 },
-    { subject: 'Video/Demo',  rational: 70, emotional: 65, memory: 80 },
-    { subject: 'Direct Mail', rational: 75, emotional: 50, memory: 60 },
-    { subject: 'Social',      rational: 45, emotional: 80, memory: 55 },
-  ];
-
   return (
     <div className="space-y-4">
       <div>
@@ -1066,90 +1138,80 @@ function TabBrainMap() {
         <p className="text-xs" style={{ color: P.muted }}>Every marketing channel activates a different region of the buyer's decision-making process. Click a region to explore the strategy.</p>
       </div>
 
-      {/* ── 3 cards | brain | 3 cards ── */}
-      <div className="flex items-center gap-3">
+      {/* ── 3 compact cards | brain (flex-1) | 3 compact cards ── */}
+      <div className="flex items-center gap-4">
 
-        {/* Left 3 cards */}
-        <div className="flex flex-col gap-2" style={{ width: 200, flexShrink: 0 }}>
+        {/* Left 3 cards — auto width, content-sized */}
+        <div className="flex flex-col gap-2.5" style={{ flexShrink: 0 }}>
           {BRAIN_REGIONS.slice(0, 3).map((r, i) => {
             const isActive = selected === r.id;
             const isHov = hovered === r.id;
             const isPulse = pulse === i;
             return (
-              <div
-                key={r.id}
-                role="button"
-                tabIndex={0}
+              <div key={r.id} role="button" tabIndex={0}
                 onClick={() => setSelected(isActive ? null : r.id)}
                 onMouseEnter={() => setHovered(r.id)}
                 onMouseLeave={() => setHovered(null)}
                 onKeyDown={e => e.key === 'Enter' && setSelected(isActive ? null : r.id)}
-                className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5"
+                className="cursor-pointer rounded-xl border transition-all duration-200"
                 style={{
+                  padding: '10px 14px',
                   background: isActive ? `${r.color}22` : isHov ? `${r.color}0e` : P.card,
                   borderColor: isActive ? r.color : isHov ? `${r.color}60` : isPulse ? `${r.color}40` : P.border,
                   boxShadow: isActive ? `0 0 20px ${r.color}40` : isPulse ? `0 0 8px ${r.color}20` : 'none',
+                  width: 175,
                 }}
               >
-                <div className="flex items-center gap-1.5 mb-0.5">
+                <div className="flex items-center gap-2 mb-1">
                   <div className="w-2 h-2 rounded-full shrink-0" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : 'none' }} />
-                  <span className="text-xs font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
+                  <span className="text-sm font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
                 </div>
-                <div style={{ color: P.muted, fontSize: '0.6rem', lineHeight: 1.3 }}>{r.function}</div>
+                <div className="text-xs" style={{ color: P.muted, lineHeight: 1.4 }}>{r.function}</div>
               </div>
             );
           })}
         </div>
 
-        {/* Brain — isolated component so its animation doesn't remount cards */}
-        <BrainVisual
-          selected={selected}
-          hovered={hovered}
-          onSelect={setSelected}
-          onHover={setHovered}
-        />
+        {/* Brain — takes all remaining space */}
+        <BrainVisual selected={selected} hovered={hovered} />
 
         {/* Right 3 cards */}
-        <div className="flex flex-col gap-2" style={{ width: 200, flexShrink: 0 }}>
+        <div className="flex flex-col gap-2.5" style={{ flexShrink: 0 }}>
           {BRAIN_REGIONS.slice(3, 6).map((r, i) => {
             const isActive = selected === r.id;
             const isHov = hovered === r.id;
             const isPulse = pulse === (i + 3);
             return (
-              <div
-                key={r.id}
-                role="button"
-                tabIndex={0}
+              <div key={r.id} role="button" tabIndex={0}
                 onClick={() => setSelected(isActive ? null : r.id)}
                 onMouseEnter={() => setHovered(r.id)}
                 onMouseLeave={() => setHovered(null)}
                 onKeyDown={e => e.key === 'Enter' && setSelected(isActive ? null : r.id)}
-                className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5"
+                className="cursor-pointer rounded-xl border transition-all duration-200"
                 style={{
+                  padding: '10px 14px',
                   background: isActive ? `${r.color}22` : isHov ? `${r.color}0e` : P.card,
                   borderColor: isActive ? r.color : isHov ? `${r.color}60` : isPulse ? `${r.color}40` : P.border,
                   boxShadow: isActive ? `0 0 20px ${r.color}40` : isPulse ? `0 0 8px ${r.color}20` : 'none',
+                  width: 175,
                 }}
               >
-                <div className="flex items-center gap-1.5 mb-0.5">
+                <div className="flex items-center gap-2 mb-1">
                   <div className="w-2 h-2 rounded-full shrink-0" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : 'none' }} />
-                  <span className="text-xs font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
+                  <span className="text-sm font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
                 </div>
-                <div style={{ color: P.muted, fontSize: '0.6rem', lineHeight: 1.3 }}>{r.function}</div>
+                <div className="text-xs" style={{ color: P.muted, lineHeight: 1.4 }}>{r.function}</div>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* ── Detail panel — immediately below, no scroll ── */}
+      {/* ── Detail panel ── */}
       <AnimatePresence mode="wait">
         {selectedRegion && (
-          <motion.div
-            key={selectedRegion.id}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
+          <motion.div key={selectedRegion.id}
+            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
             className="rounded-2xl border p-5"
             style={{ background: `${selectedRegion.color}0a`, borderColor: `${selectedRegion.color}50` }}
@@ -1189,25 +1251,8 @@ function TabBrainMap() {
         )}
       </AnimatePresence>
 
-      {/* ── Channel Activation Radar ── */}
-      <div className="rounded-2xl border p-5" style={{ background: P.card, borderColor: P.border }}>
-        <div className="mb-3">
-          <div className="font-semibold" style={{ color: P.white }}>Channel Activation Map</div>
-          <div className="text-xs mt-0.5" style={{ color: P.muted }}>How each marketing channel engages key brain decision regions</div>
-        </div>
-        <ResponsiveContainer width="100%" height={280}>
-          <RadarChart data={radarData} margin={{ top: 10, right: 40, bottom: 10, left: 40 }}>
-            <PolarGrid stroke={P.border} strokeDasharray="3 3" />
-            <PolarAngleAxis dataKey="subject" tick={{ fill: P.muted, fontSize: 11, fontWeight: 500 }} />
-            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: P.muted, fontSize: 9 }} axisLine={false} tickCount={4} />
-            <Radar name="Rational (PFC/ACC)" dataKey="rational" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.18} strokeWidth={2} dot={{ fill: '#f59e0b', r: 3 }} />
-            <Radar name="Emotional (AMY/INS)" dataKey="emotional" stroke="#f97316" fill="#f97316" fillOpacity={0.14} strokeWidth={2} dot={{ fill: '#f97316', r: 3 }} />
-            <Radar name="Memory (HPC/VC)" dataKey="memory" stroke="#fb923c" fill="#fb923c" fillOpacity={0.10} strokeWidth={2} dot={{ fill: '#fb923c', r: 3 }} />
-            <Tooltip contentStyle={{ background: P.card2, border: `1px solid ${P.border}`, borderRadius: 10, color: P.white, fontSize: 12 }} />
-            <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11, color: P.muted, paddingTop: 8 }} />
-          </RadarChart>
-        </ResponsiveContainer>
-      </div>
+      {/* ── Animated neural network channel map ── */}
+      <NeuralChannelMap />
     </div>
   );
 }
