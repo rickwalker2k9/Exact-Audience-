@@ -976,12 +976,15 @@ const CHANNEL_ACTIVATION = [
   { channel: "Social",      prefrontal: 45, amygdala: 80, hippocampus: 55, insula: 90, brocas: 50, visual: 85, acc: 75, nac: 90 },
 ];
 
-function TabBrainMap() {
-  const [selected, setSelected] = useState<string | null>(null);
-  const [hovered, setHovered] = useState<string | null>(null);
+// Separated so rotation animation doesn't remount region cards
+function BrainVisual({ selected, hovered, onSelect, onHover }: {
+  selected: string | null;
+  hovered: string | null;
+  onSelect: (id: string | null) => void;
+  onHover: (id: string | null) => void;
+}) {
   const [rotAngle, setRotAngle] = useState(0);
   const animRef = useRef<number | null>(null);
-
   useEffect(() => {
     let frame = 0;
     const tick = () => { frame++; setRotAngle(frame * 0.05); animRef.current = requestAnimationFrame(tick); };
@@ -989,58 +992,71 @@ function TabBrainMap() {
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, []);
 
-  const selectedRegion = BRAIN_REGIONS.find(r => r.id === selected);
   const skewY = Math.sin(rotAngle * Math.PI / 180) * 2;
   const scaleX = 0.98 + Math.cos(rotAngle * Math.PI / 180) * 0.02;
 
-  // Anatomical zone paths (approximate SVG paths in 0-100 viewBox space)
   const ZONE_PATHS: Record<string, string> = {
-    prefrontal:        "M 15,5 Q 30,2 45,8 Q 40,25 30,30 Q 20,28 12,20 Z",
-    amygdala:          "M 35,52 Q 45,48 52,55 Q 50,65 40,67 Q 32,63 33,55 Z",
-    hippocampus:       "M 55,50 Q 68,46 75,55 Q 73,65 62,68 Q 53,64 54,55 Z",
-    visual_cortex:     "M 72,30 Q 88,25 95,38 Q 92,52 82,55 Q 72,50 70,40 Z",
-    insula:            "M 42,35 Q 55,30 62,40 Q 60,50 50,52 Q 40,48 40,40 Z",
-    anterior_cingulate:"M 25,30 Q 38,25 45,35 Q 42,45 32,47 Q 22,44 23,36 Z",
+    prefrontal:         "M 14,6 Q 28,2 44,9 Q 38,26 28,31 Q 18,28 11,18 Z",
+    amygdala:           "M 34,53 Q 44,49 51,56 Q 49,66 39,68 Q 31,64 32,56 Z",
+    hippocampus:        "M 54,51 Q 67,47 74,56 Q 72,66 61,69 Q 52,65 53,56 Z",
+    visual_cortex:      "M 71,31 Q 87,26 94,39 Q 91,53 81,56 Q 71,51 69,41 Z",
+    insula:             "M 41,36 Q 54,31 61,41 Q 59,51 49,53 Q 39,49 39,41 Z",
+    anterior_cingulate: "M 24,31 Q 37,26 44,36 Q 41,46 31,48 Q 21,45 22,37 Z",
   };
 
-  const RegionCard = ({ r }: { r: typeof BRAIN_REGIONS[0] }) => {
-    const isActive = selected === r.id;
-    const isHov = hovered === r.id;
-    return (
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => setSelected(isActive ? null : r.id)}
-        onMouseEnter={() => setHovered(r.id)}
-        onMouseLeave={() => setHovered(null)}
-        onKeyDown={e => e.key === 'Enter' && setSelected(isActive ? null : r.id)}
-        className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5"
-        style={{
-          background: isActive ? `${r.color}20` : isHov ? `${r.color}0e` : P.card,
-          borderColor: isActive ? r.color : isHov ? `${r.color}60` : P.border,
-          boxShadow: isActive ? `0 0 18px ${r.color}35, inset 0 1px 0 ${r.color}25` : 'none',
-        }}
-      >
-        <div className="flex items-center gap-1.5 mb-0.5">
-          <div className="w-2 h-2 rounded-full shrink-0" style={{
-            background: r.color,
-            boxShadow: isActive ? `0 0 8px ${r.color}` : 'none',
-          }} />
-          <span className="text-xs font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
-        </div>
-        <div style={{ color: P.muted, fontSize: '0.62rem', lineHeight: 1.35 }}>{r.function}</div>
+  return (
+    <div className="relative rounded-xl overflow-hidden shrink-0" style={{ width: 320, background: 'transparent' }}>
+      <div style={{ transform: `skewY(${skewY}deg) scaleX(${scaleX})`, transition: 'transform 0.05s linear', willChange: 'transform', position: 'relative' }}>
+        <img
+          src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
+          alt="Brain"
+          style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.1) brightness(0.88)' }}
+          draggable={false}
+        />
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+          <defs>
+            <filter id="zg"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          {BRAIN_REGIONS.map((r) => {
+            const isActive = selected === r.id || hovered === r.id;
+            const path = ZONE_PATHS[r.id];
+            if (!path) return null;
+            return (
+              <path key={r.id} d={path}
+                fill={isActive ? r.color : 'transparent'}
+                stroke={isActive ? r.color : 'transparent'}
+                strokeWidth={isActive ? 0.8 : 0}
+                opacity={isActive ? 0.5 : 0}
+                filter={isActive ? 'url(#zg)' : 'none'}
+                style={{ transition: 'all 0.35s ease' }}
+              />
+            );
+          })}
+        </svg>
       </div>
-    );
-  };
+    </div>
+  );
+}
 
-  // Radar chart data
+function TabBrainMap() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [pulse, setPulse] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setPulse(p => (p + 1) % BRAIN_REGIONS.length), 1600);
+    return () => clearInterval(t);
+  }, []);
+
+  const selectedRegion = BRAIN_REGIONS.find(r => r.id === selected);
+
   const radarData = [
-    { subject: 'LinkedIn',    A: 90, B: 40, C: 70, fullMark: 100 },
-    { subject: 'Google',      A: 85, B: 55, C: 65, fullMark: 100 },
-    { subject: 'Email',       A: 80, B: 70, C: 75, fullMark: 100 },
-    { subject: 'Video',       A: 70, B: 65, C: 80, fullMark: 100 },
-    { subject: 'Direct Mail', A: 75, B: 50, C: 60, fullMark: 100 },
-    { subject: 'Social',      A: 45, B: 80, C: 55, fullMark: 100 },
+    { subject: 'LinkedIn',    rational: 90, emotional: 40, memory: 70 },
+    { subject: 'Google',      rational: 85, emotional: 55, memory: 65 },
+    { subject: 'Email',       rational: 80, emotional: 70, memory: 75 },
+    { subject: 'Video/Demo',  rational: 70, emotional: 65, memory: 80 },
+    { subject: 'Direct Mail', rational: 75, emotional: 50, memory: 60 },
+    { subject: 'Social',      rational: 45, emotional: 80, memory: 55 },
   ];
 
   return (
@@ -1050,68 +1066,88 @@ function TabBrainMap() {
         <p className="text-xs" style={{ color: P.muted }}>Every marketing channel activates a different region of the buyer's decision-making process. Click a region to explore the strategy.</p>
       </div>
 
-      {/* ── 3 compact cards | brain | 3 compact cards ── */}
-      <div className="flex items-center gap-3">
+      {/* ── 3 cards | brain | 3 cards ── */}
+      <div className="flex items-stretch gap-3">
 
         {/* Left 3 cards */}
-        <div className="flex flex-col gap-2" style={{ width: 170, flexShrink: 0 }}>
-          {BRAIN_REGIONS.slice(0, 3).map(r => <RegionCard key={r.id} r={r} />)}
+        <div className="flex flex-col gap-2 flex-1">
+          {BRAIN_REGIONS.slice(0, 3).map((r, i) => {
+            const isActive = selected === r.id;
+            const isHov = hovered === r.id;
+            const isPulse = pulse === i;
+            return (
+              <div
+                key={r.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelected(isActive ? null : r.id)}
+                onMouseEnter={() => setHovered(r.id)}
+                onMouseLeave={() => setHovered(null)}
+                onKeyDown={e => e.key === 'Enter' && setSelected(isActive ? null : r.id)}
+                className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5 flex-1"
+                style={{
+                  background: isActive ? `${r.color}22` : isHov ? `${r.color}0e` : P.card,
+                  borderColor: isActive ? r.color : isHov ? `${r.color}60` : isPulse ? `${r.color}40` : P.border,
+                  boxShadow: isActive ? `0 0 20px ${r.color}40` : isPulse ? `0 0 8px ${r.color}20` : 'none',
+                }}
+              >
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : 'none' }} />
+                  <span className="text-xs font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
+                </div>
+                <div style={{ color: P.muted, fontSize: '0.6rem', lineHeight: 1.3 }}>{r.function}</div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Brain — smaller, fixed width */}
-        <div className="relative rounded-xl overflow-hidden shrink-0" style={{ width: 340, background: 'transparent' }}>
-          <div style={{ transform: `skewY(${skewY}deg) scaleX(${scaleX})`, transition: 'transform 0.05s linear', willChange: 'transform', position: 'relative' }}>
-            <img
-              src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
-              alt="Brain"
-              style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.15) brightness(0.9)' }}
-              draggable={false}
-            />
-            {/* Anatomical zone overlay */}
-            <svg
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-            >
-              <defs>
-                <filter id="zoneGlow">
-                  <feGaussianBlur stdDeviation="2" result="blur"/>
-                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                </filter>
-              </defs>
-              {BRAIN_REGIONS.map((r) => {
-                const isActive = selected === r.id || hovered === r.id;
-                const path = ZONE_PATHS[r.id];
-                if (!path) return null;
-                return (
-                  <path
-                    key={r.id}
-                    d={path}
-                    fill={isActive ? r.color : 'transparent'}
-                    stroke={isActive ? r.color : 'transparent'}
-                    strokeWidth={isActive ? 0.5 : 0}
-                    opacity={isActive ? 0.45 : 0}
-                    filter={isActive ? 'url(#zoneGlow)' : 'none'}
-                    style={{ transition: 'all 0.35s ease' }}
-                  />
-                );
-              })}
-            </svg>
-          </div>
-        </div>
+        {/* Brain — isolated component so its animation doesn't remount cards */}
+        <BrainVisual
+          selected={selected}
+          hovered={hovered}
+          onSelect={setSelected}
+          onHover={setHovered}
+        />
 
         {/* Right 3 cards */}
-        <div className="flex flex-col gap-2" style={{ width: 170, flexShrink: 0 }}>
-          {BRAIN_REGIONS.slice(3, 6).map(r => <RegionCard key={r.id} r={r} />)}
+        <div className="flex flex-col gap-2 flex-1">
+          {BRAIN_REGIONS.slice(3, 6).map((r, i) => {
+            const isActive = selected === r.id;
+            const isHov = hovered === r.id;
+            const isPulse = pulse === (i + 3);
+            return (
+              <div
+                key={r.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelected(isActive ? null : r.id)}
+                onMouseEnter={() => setHovered(r.id)}
+                onMouseLeave={() => setHovered(null)}
+                onKeyDown={e => e.key === 'Enter' && setSelected(isActive ? null : r.id)}
+                className="cursor-pointer rounded-xl border transition-all duration-200 px-3 py-2.5 flex-1"
+                style={{
+                  background: isActive ? `${r.color}22` : isHov ? `${r.color}0e` : P.card,
+                  borderColor: isActive ? r.color : isHov ? `${r.color}60` : isPulse ? `${r.color}40` : P.border,
+                  boxShadow: isActive ? `0 0 20px ${r.color}40` : isPulse ? `0 0 8px ${r.color}20` : 'none',
+                }}
+              >
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : 'none' }} />
+                  <span className="text-xs font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
+                </div>
+                <div style={{ color: P.muted, fontSize: '0.6rem', lineHeight: 1.3 }}>{r.function}</div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* ── Detail panel — immediately below ── */}
+      {/* ── Detail panel — immediately below, no scroll ── */}
       <AnimatePresence mode="wait">
         {selectedRegion && (
           <motion.div
             key={selectedRegion.id}
-            initial={{ opacity: 0, y: -6 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
@@ -1124,20 +1160,18 @@ function TabBrainMap() {
                 <h3 className="text-xl font-bold" style={{ color: P.white }}>{selectedRegion.label}</h3>
                 <div className="text-xs mt-0.5" style={{ color: P.muted }}>{selectedRegion.brainRole}</div>
               </div>
-              <button
-                onClick={() => setSelected(null)}
-                className="text-xs px-3 py-1.5 rounded-lg shrink-0"
-                style={{ background: P.card2, color: P.muted }}
-              >✕ Close</button>
+              <button onClick={() => setSelected(null)} className="text-xs px-3 py-1.5 rounded-lg shrink-0" style={{ background: P.card2, color: P.muted }}>✕ Close</button>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="rounded-xl p-4" style={{ background: P.card2, borderLeft: `3px solid ${selectedRegion.color}` }}>
                 <div className="text-xs font-semibold mb-1" style={{ color: selectedRegion.color }}>Primary Channel</div>
-                <div className="text-base font-bold" style={{ color: P.white }}>{selectedRegion.marketingChannel}</div>
+                <div className="text-base font-bold mb-3" style={{ color: P.white }}>{selectedRegion.marketingChannel}</div>
+                <div className="text-xs font-semibold mb-1" style={{ color: P.muted }}>MESSAGING ANGLE</div>
+                <div className="text-xs" style={{ color: P.muted }}>{selectedRegion.insight.split('.')[0]}.</div>
               </div>
               <div className="rounded-xl p-4" style={{ background: P.card2 }}>
                 <div className="text-xs font-semibold mb-2" style={{ color: P.gold }}>Activation Tactics</div>
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   {selectedRegion.channels.map((ch, i) => (
                     <div key={i} className="flex items-start gap-2 text-xs">
                       <div className="w-1.5 h-1.5 rounded-full shrink-0 mt-1" style={{ background: selectedRegion.color }} />
@@ -1155,26 +1189,24 @@ function TabBrainMap() {
         )}
       </AnimatePresence>
 
-      {/* ── Channel Activation — Radar chart ── */}
+      {/* ── Channel Activation Radar ── */}
       <div className="rounded-2xl border p-5" style={{ background: P.card, borderColor: P.border }}>
         <div className="mb-3">
           <div className="font-semibold" style={{ color: P.white }}>Channel Activation Map</div>
           <div className="text-xs mt-0.5" style={{ color: P.muted }}>How each marketing channel engages key brain decision regions</div>
         </div>
-        <div className="flex gap-6 items-center">
-          <ResponsiveContainer width="100%" height={280}>
-            <RadarChart data={radarData} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
-              <PolarGrid stroke={P.border} strokeDasharray="3 3" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: P.muted, fontSize: 11, fontWeight: 500 }} />
-              <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: P.muted, fontSize: 9 }} axisLine={false} />
-              <Radar name="Rational (PFC/ACC)" dataKey="A" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.18} strokeWidth={2} dot={{ fill: '#f59e0b', r: 3 }} />
-              <Radar name="Emotional (AMY/INS)" dataKey="B" stroke="#f97316" fill="#f97316" fillOpacity={0.15} strokeWidth={2} dot={{ fill: '#f97316', r: 3 }} />
-              <Radar name="Memory (HPC/VC)" dataKey="C" stroke="#fb923c" fill="#fb923c" fillOpacity={0.12} strokeWidth={2} dot={{ fill: '#fb923c', r: 3 }} />
-              <Tooltip contentStyle={{ background: P.card2, border: `1px solid ${P.border}`, borderRadius: 10, color: P.white, fontSize: 12 }} />
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11, color: P.muted, paddingTop: 8 }} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
+        <ResponsiveContainer width="100%" height={280}>
+          <RadarChart data={radarData} margin={{ top: 10, right: 40, bottom: 10, left: 40 }}>
+            <PolarGrid stroke={P.border} strokeDasharray="3 3" />
+            <PolarAngleAxis dataKey="subject" tick={{ fill: P.muted, fontSize: 11, fontWeight: 500 }} />
+            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: P.muted, fontSize: 9 }} axisLine={false} tickCount={4} />
+            <Radar name="Rational (PFC/ACC)" dataKey="rational" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.18} strokeWidth={2} dot={{ fill: '#f59e0b', r: 3 }} />
+            <Radar name="Emotional (AMY/INS)" dataKey="emotional" stroke="#f97316" fill="#f97316" fillOpacity={0.14} strokeWidth={2} dot={{ fill: '#f97316', r: 3 }} />
+            <Radar name="Memory (HPC/VC)" dataKey="memory" stroke="#fb923c" fill="#fb923c" fillOpacity={0.10} strokeWidth={2} dot={{ fill: '#fb923c', r: 3 }} />
+            <Tooltip contentStyle={{ background: P.card2, border: `1px solid ${P.border}`, borderRadius: 10, color: P.white, fontSize: 12 }} />
+            <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11, color: P.muted, paddingTop: 8 }} />
+          </RadarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
