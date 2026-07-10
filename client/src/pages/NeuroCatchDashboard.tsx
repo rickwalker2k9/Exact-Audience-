@@ -469,7 +469,7 @@ function BrainMap() {
             >
               {/* Brain image */}
               <img
-                src="/manus-storage/brain_972ad3c4.png"
+                src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
                 alt="Brain"
                 className="w-full rounded-xl"
                 style={{
