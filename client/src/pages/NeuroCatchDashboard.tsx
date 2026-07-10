@@ -1091,6 +1091,96 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
 }
 
 
+// Animated neural network SVG — channel nodes firing to brain region nodes
+function NeuralChannelMap() {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    let f = 0;
+    const t = setInterval(() => { f++; setTick(f); }, 16);
+    return () => clearInterval(t);
+  }, []);
+  const t = tick / 60;
+  const channels = [
+    { id: 'linkedin',    label: 'LinkedIn',    x: 160, y: 40,  color: '#f59e0b' },
+    { id: 'google',      label: 'Google',      x: 340, y: 40,  color: '#f97316' },
+    { id: 'email',       label: 'Email',       x: 460, y: 140, color: '#fb923c' },
+    { id: 'video',       label: 'Video/Demo',  x: 400, y: 270, color: '#f59e0b' },
+    { id: 'direct',      label: 'Direct Mail', x: 100, y: 270, color: '#f97316' },
+    { id: 'social',      label: 'Social',      x: 40,  y: 140, color: '#fb923c' },
+  ];
+  const brainNodes = [
+    { id: 'pfc', label: 'PFC', x: 250, y: 100, color: '#f59e0b' },
+    { id: 'amy', label: 'AMY', x: 200, y: 180, color: '#f97316' },
+    { id: 'hpc', label: 'HPC', x: 300, y: 180, color: '#fb923c' },
+  ];
+  const connections = [
+    { from: channels[0], to: brainNodes[0], strength: 0.9 },
+    { from: channels[0], to: brainNodes[1], strength: 0.4 },
+    { from: channels[1], to: brainNodes[0], strength: 0.85 },
+    { from: channels[1], to: brainNodes[1], strength: 0.55 },
+    { from: channels[2], to: brainNodes[0], strength: 0.8 },
+    { from: channels[2], to: brainNodes[1], strength: 0.7 },
+    { from: channels[2], to: brainNodes[2], strength: 0.75 },
+    { from: channels[3], to: brainNodes[1], strength: 0.65 },
+    { from: channels[3], to: brainNodes[2], strength: 0.8 },
+    { from: channels[4], to: brainNodes[0], strength: 0.75 },
+    { from: channels[4], to: brainNodes[2], strength: 0.6 },
+    { from: channels[5], to: brainNodes[1], strength: 0.8 },
+    { from: channels[5], to: brainNodes[2], strength: 0.55 },
+  ];
+  return (
+    <div className="rounded-2xl border p-5" style={{ background: P.card, borderColor: P.border }}>
+      <div className="mb-3">
+        <div className="font-semibold" style={{ color: P.white }}>Channel \u2192 Brain Activation Map</div>
+        <div className="text-xs mt-0.5" style={{ color: P.muted }}>Live neural pathway visualization — which channels fire which brain regions</div>
+      </div>
+      <svg viewBox="0 0 500 310" style={{ width: '100%', height: 'auto', display: 'block' }}>
+        <defs>
+          <filter id="nodeGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="brainGlow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        {connections.map((c, i) => {
+          const phase = (t * 1.2 + i * 0.4) % 1;
+          const px = c.from.x + (c.to.x - c.from.x) * phase;
+          const py = c.from.y + (c.to.y - c.from.y) * phase;
+          const lineOpacity = 0.12 + c.strength * 0.2;
+          return (
+            <g key={i}>
+              <line x1={c.from.x} y1={c.from.y} x2={c.to.x} y2={c.to.y}
+                stroke={c.from.color} strokeWidth={c.strength * 1.5} opacity={lineOpacity} strokeDasharray="4 6" />
+              <circle cx={px} cy={py} r={2.5} fill={c.from.color} opacity={0.9} filter="url(#nodeGlow)" />
+            </g>
+          );
+        })}
+        {brainNodes.map((r) => {
+          const pulse = 0.85 + Math.sin(t * 2.5 + r.x * 0.05) * 0.15;
+          return (
+            <g key={r.id}>
+              <circle cx={r.x} cy={r.y} r={28 * pulse} fill={r.color} opacity={0.07} />
+              <circle cx={r.x} cy={r.y} r={18} fill={r.color} opacity={0.18} filter="url(#brainGlow)" />
+              <circle cx={r.x} cy={r.y} r={12} fill={r.color} opacity={0.6} />
+              <circle cx={r.x} cy={r.y} r={5} fill={r.color} opacity={1} />
+              <text x={r.x} y={r.y + 30} textAnchor="middle" fill={r.color} fontSize="9" fontWeight="700">{r.label}</text>
+            </g>
+          );
+        })}
+        {channels.map((c) => {
+          const pulse = 0.9 + Math.sin(t * 1.8 + c.x * 0.03) * 0.1;
+          return (
+            <g key={c.id}>
+              <circle cx={c.x} cy={c.y} r={20 * pulse} fill={c.color} opacity={0.07} />
+              <circle cx={c.x} cy={c.y} r={10} fill={c.color} opacity={0.25} filter="url(#nodeGlow)" />
+              <circle cx={c.x} cy={c.y} r={6} fill={c.color} opacity={0.85} />
+              <text x={c.x} y={c.y - 16} textAnchor="middle" fill="#e2e8f0" fontSize="9" fontWeight="600">{c.label}</text>
+            </g>
+          );
+        })}
+        <text x={10} y={302} fill="#475569" fontSize="7.5">\u25cf Channel nodes  \u25cf Brain regions (PFC=Prefrontal, AMY=Amygdala, HPC=Hippocampus)  \u2014 Pulse intensity = activation strength</text>
+      </svg>
+    </div>
+  );
+}
+
 function TabBrainMap() {
   const [selected, setSelected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
