@@ -1028,12 +1028,15 @@ function TabBrainMap() {
         <p className="text-sm" style={{ color: P.muted }}>Every marketing channel activates a different region of the buyer's decision-making process. Click any region to explore the strategy.</p>
       </div>
 
-      {/* ── Row 1: Brain image — full width ── */}
-      <div className="relative w-full">
+      {/* ── Row 1: Brain image — centered, ~60% width, correct aspect ratio ── */}
+      <div className="flex justify-center">
         <div
-          className="relative rounded-2xl overflow-hidden w-full"
+          className="relative rounded-2xl overflow-hidden"
           style={{
             background: "radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 70%)",
+            width: "60%",
+            maxWidth: 560,
+            minWidth: 280,
           }}
         >
           <div
@@ -1047,7 +1050,7 @@ function TabBrainMap() {
               src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
               alt="Brain"
               className="w-full rounded-xl"
-              style={{ filter: "saturate(1.2) brightness(0.95)", display: "block", maxHeight: 480, objectFit: "cover", objectPosition: "center" }}
+              style={{ filter: "saturate(1.2) brightness(0.95)", display: "block", width: "100%", height: "auto" }}
               draggable={false}
             />
             {/* SVG hotspot overlay */}
@@ -1113,8 +1116,8 @@ function TabBrainMap() {
         <div className="text-center mt-2 text-xs" style={{ color: P.muted }}>Click any labeled node on the brain to explore the marketing strategy for that region</div>
       </div>
 
-      {/* ── Row 2: 8 region buttons — evenly spaced horizontal row ── */}
-      <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+      {/* ── Row 2: 8 region buttons — 4 rows of 2 ── */}
+      <div className="grid grid-cols-2 gap-3">
         {BRAIN_REGIONS.map((r) => {
           const isActive = selected === r.id;
           const isHov = hovered === r.id;
@@ -1132,8 +1135,8 @@ function TabBrainMap() {
               }}
             >
               <div className="w-3 h-3 rounded-full" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : "none" }} />
-              <div className="text-xs font-bold leading-tight" style={{ color: isActive ? r.color : P.white }}>{r.shortLabel}</div>
-              <div className="text-xs leading-tight hidden md:block" style={{ color: P.muted, fontSize: "0.6rem" }}>{r.label.split(" ").slice(0,2).join(" ")}</div>
+              <div className="text-sm font-bold leading-tight" style={{ color: isActive ? r.color : P.white }}>{r.label}</div>
+              <div className="text-xs leading-tight" style={{ color: P.muted }}>{r.function}</div>
             </button>
           );
         })}
