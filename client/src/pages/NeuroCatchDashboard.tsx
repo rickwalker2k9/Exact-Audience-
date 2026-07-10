@@ -307,358 +307,6 @@ const customTooltipStyle = {
 };
 
 // ── Animated Brain SVG ────────────────────────────────────────────────────────
-function BrainMap() {
-  const [selected, setSelected] = useState<string | null>(null);
-  const [hovered, setHovered] = useState<string | null>(null);
-  const [pulse, setPulse] = useState(0);
-  const [rotAngle, setRotAngle] = useState(0);
-  const animRef = useRef<number | null>(null);
-
-  // Slow rotation animation
-  useEffect(() => {
-    let frame = 0;
-    const tick = () => {
-      frame++;
-      // Very slow rotation: full cycle every ~600 frames (~10s at 60fps)
-      setRotAngle(frame * 0.06);
-      animRef.current = requestAnimationFrame(tick);
-    };
-    animRef.current = requestAnimationFrame(tick);
-    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
-  }, []);
-
-  // Pulse through nodes
-  useEffect(() => {
-    const t = setInterval(() => setPulse(p => (p + 1) % 8), 1400);
-    return () => clearInterval(t);
-  }, []);
-
-  // 8 anatomically accurate brain regions mapped to the lateral view image
-  // Positions are percentages of the image container (left-view brain)
-  const regions = [
-    {
-      id: "prefrontal",
-      label: "Prefrontal Cortex",
-      shortLabel: "PFC",
-      // Front-top of brain
-      cx: 22, cy: 28,
-      color: P.gold,
-      function: "Decision-Making & Rational Evaluation",
-      marketingChannel: "Case Studies & Clinical Data",
-      channels: ["White papers", "ROI calculators", "Clinical trial results", "Peer-reviewed citations"],
-      insight: "The prefrontal cortex governs executive function, cost-benefit analysis, and trust formation. B2B buyers evaluating NeuroCatch engage this region when reviewing clinical validation data, pricing models, and implementation case studies. Logic-first content — data sheets, outcome studies, ROI models — activates this region and moves prospects toward a rational purchase decision.",
-      brainRole: "Executive function, working memory, risk assessment, trust evaluation",
-    },
-    {
-      id: "amygdala",
-      label: "Amygdala",
-      shortLabel: "AMY",
-      // Deep center, slightly forward
-      cx: 42, cy: 58,
-      color: P.orange,
-      function: "Fear, Urgency & Emotional Response",
-      marketingChannel: "Risk & Consequence Messaging",
-      channels: ["'What if you miss a concussion?' copy", "Liability risk messaging", "Second-impact syndrome statistics", "Urgency-driven CTAs"],
-      insight: "The amygdala processes threat signals and triggers the fight-or-flight response. In B2B marketing, this is activated by liability risk messaging — 'what happens if an athlete is cleared too soon?' Athletic directors, military medical officers, and occupational health directors all carry institutional liability. Messaging that surfaces the consequences of inaction activates the amygdala and creates urgency to act.",
-      brainRole: "Threat detection, emotional memory, fear response, urgency",
-    },
-    {
-      id: "nucleus_accumbens",
-      label: "Nucleus Accumbens",
-      shortLabel: "NAc",
-      // Deep center
-      cx: 48, cy: 50,
-      color: P.gold,
-      function: "Reward, Desire & Dopamine Response",
-      marketingChannel: "Success Stories & Outcome Visualization",
-      channels: ["Athlete return-to-play testimonials", "'Imagine the outcome' copy", "Before/after case studies", "Award and recognition content"],
-      insight: "The nucleus accumbens is the brain's reward center — it releases dopamine in anticipation of a positive outcome. Testimonials from athletic trainers who caught a concussion that would have been missed, or stories of athletes who returned to play safely because of NeuroCatch, activate this region. The buyer imagines the positive outcome for their program, creating desire and forward momentum.",
-      brainRole: "Reward anticipation, dopamine release, motivation, desire",
-    },
-    {
-      id: "hippocampus",
-      label: "Hippocampus",
-      shortLabel: "HPC",
-      // Center-back
-      cx: 62, cy: 55,
-      color: P.orange,
-      function: "Memory Formation & Brand Recall",
-      marketingChannel: "Retargeting & Consistent Brand Presence",
-      channels: ["Retargeting display ads", "Consistent logo/color usage", "Email drip sequences", "Conference presence + follow-up"],
-      insight: "The hippocampus encodes experiences into long-term memory. Repeated exposure to the NeuroCatch brand — at conferences, in retargeting ads, in email sequences — builds the memory trace that makes the brand feel familiar and trustworthy when a decision is finally made. Familiarity reduces perceived risk. The buyer who has seen NeuroCatch 12 times before a demo call is far more likely to convert.",
-      brainRole: "Long-term memory encoding, spatial navigation, familiarity recognition",
-    },
-    {
-      id: "visual_cortex",
-      label: "Visual Cortex",
-      shortLabel: "V1",
-      // Back of brain (occipital lobe)
-      cx: 82, cy: 42,
-      color: P.gold,
-      function: "Visual Processing & First Impressions",
-      marketingChannel: "Video Demos & Visual Brand Assets",
-      channels: ["Product demo videos", "Infographics", "LinkedIn carousel posts", "Conference booth visuals"],
-      insight: "The visual cortex processes imagery before language — a prospect's first impression of NeuroCatch is formed visually before they read a single word. High-quality demo videos showing the 3-minute EEG process, clean product photography, and professional infographics activate this region and establish credibility instantly. Poor visual presentation triggers the visual cortex to flag the brand as low-quality.",
-      brainRole: "Primary visual processing, pattern recognition, first impression formation",
-    },
-    {
-      id: "brocas",
-      label: "Broca's Area",
-      shortLabel: "BRO",
-      // Left temporal, front
-      cx: 28, cy: 62,
-      color: P.orange,
-      function: "Language Processing & Copy Comprehension",
-      marketingChannel: "Email Subject Lines & Ad Headlines",
-      channels: ["Email subject line optimization", "LinkedIn message copy", "Google ad headlines", "Landing page headline hierarchy"],
-      insight: "Broca's area processes the production and comprehension of language. This is the region engaged when a prospect reads an email subject line, a Google ad headline, or a LinkedIn message. Clear, specific, jargon-free language activates smooth processing — the brain rewards clarity. Overly technical or vague copy creates friction in Broca's area, increasing the likelihood the message is ignored.",
-      brainRole: "Speech production, language comprehension, reading fluency",
-    },
-    {
-      id: "insula",
-      label: "Insula",
-      shortLabel: "INS",
-      // Deep lateral, center
-      cx: 55, cy: 42,
-      color: P.gold,
-      function: "Empathy, Gut Feeling & Physical Sensation",
-      marketingChannel: "Human-Centered Stories & Patient Narratives",
-      channels: ["Athlete injury stories", "Parent testimonials", "Clinician empathy content", "Human faces in ad creative"],
-      insight: "The insula processes interoception — the brain's awareness of internal body states — and is the seat of empathy and gut-level intuition. When a prospect reads a story about an athlete whose career was saved because NeuroCatch caught a concussion that ImPACT missed, the insula fires. This is the 'gut feeling' that something matters. Human-centered storytelling activates the insula and creates emotional resonance that data alone cannot.",
-      brainRole: "Interoception, empathy, disgust/pleasure, gut intuition",
-    },
-    {
-      id: "anterior_cingulate",
-      label: "Anterior Cingulate",
-      shortLabel: "ACC",
-      // Front-center, slightly deep
-      cx: 35, cy: 42,
-      color: P.orange,
-      function: "Conflict Resolution & Social Proof",
-      marketingChannel: "Peer Validation & Authority Endorsements",
-      channels: ["'Trusted by 400+ clinics' social proof", "Peer institution logos", "Clinical champion endorsements", "Conference speaker credibility"],
-      insight: "The anterior cingulate cortex (ACC) activates during decision conflict — the 'should I or shouldn't I?' moment. It is highly sensitive to social proof and peer behavior. When a prospect sees that a peer institution (a rival university's sports medicine program, or a competing VA facility) has adopted NeuroCatch, the ACC resolves the conflict in favor of adoption. Peer validation is the most powerful signal for this region.",
-      brainRole: "Conflict monitoring, error detection, social norm processing, decision finalization",
-    },
-  ];
-
-  const selectedRegion = regions.find(r => r.id === selected);
-  const hoveredRegion = regions.find(r => r.id === hovered);
-
-  // Perspective skew for slow rotation effect (simulates 3D spin on X axis)
-  const skewY = Math.sin(rotAngle * Math.PI / 180) * 3;
-  const scaleX = 0.97 + Math.cos(rotAngle * Math.PI / 180) * 0.03;
-
-  return (
-    <div className="space-y-6">
-      <div className="grid lg:grid-cols-2 gap-6 items-start">
-        {/* Brain image with SVG overlay */}
-        <div className="relative select-none" style={{ maxWidth: 520, margin: "0 auto" }}>
-          {/* Outer glow container */}
-          <div className="relative rounded-2xl overflow-hidden" style={{
-            background: "radial-gradient(ellipse at center, rgba(245,158,11,0.08) 0%, transparent 70%)",
-            padding: "12px",
-          }}>
-            <div
-              className="relative"
-              style={{
-                transform: `skewY(${skewY}deg) scaleX(${scaleX})`,
-                transition: "transform 0.05s linear",
-                willChange: "transform",
-              }}
-            >
-              {/* Brain image */}
-              <img
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
-                alt="Brain"
-                className="w-full rounded-xl"
-                style={{
-                  filter: "hue-rotate(0deg) saturate(1.2) brightness(0.95)",
-                  mixBlendMode: "normal",
-                }}
-                draggable={false}
-              />
-              {/* SVG overlay for region hotspots */}
-              <svg
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                className="absolute inset-0 w-full h-full"
-                style={{ top: 0, left: 0 }}
-              >
-                <defs>
-                  <filter id="nodeGlow">
-                    <feGaussianBlur stdDeviation="1.5" result="blur" />
-                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                  </filter>
-                  <filter id="nodeGlowStrong">
-                    <feGaussianBlur stdDeviation="2.5" result="blur" />
-                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                  </filter>
-                </defs>
-
-                {/* Connection lines from each node to center */}
-                {regions.map((r) => {
-                  const isActive = selected === r.id || hovered === r.id;
-                  return (
-                    <line
-                      key={r.id + "-line"}
-                      x1={r.cx} y1={r.cy}
-                      x2={50} y2={52}
-                      stroke={isActive ? r.color : "#f59e0b"}
-                      strokeWidth={isActive ? 0.5 : 0.2}
-                      strokeDasharray={isActive ? "none" : "1.5,2"}
-                      opacity={isActive ? 0.7 : 0.2}
-                      style={{ transition: "all 0.3s ease" }}
-                    />
-                  );
-                })}
-
-                {/* Region nodes */}
-                {regions.map((r, i) => {
-                  const isSelected = selected === r.id;
-                  const isHov = hovered === r.id;
-                  const isPulse = pulse === i;
-                  const isActive = isSelected || isHov;
-                  return (
-                    <g
-                      key={r.id}
-                      style={{ cursor: "pointer" }}
-                      onMouseEnter={() => setHovered(r.id)}
-                      onMouseLeave={() => setHovered(null)}
-                      onClick={() => setSelected(isSelected ? null : r.id)}
-                    >
-                      {/* Outer pulse ring */}
-                      <circle
-                        cx={r.cx} cy={r.cy}
-                        r={isPulse ? 5.5 : isActive ? 4.5 : 3.5}
-                        fill="none"
-                        stroke={r.color}
-                        strokeWidth="0.4"
-                        opacity={isPulse ? 0.8 : isActive ? 0.6 : 0.3}
-                        style={{ transition: "all 0.4s ease" }}
-                      />
-                      {/* Node circle */}
-                      <circle
-                        cx={r.cx} cy={r.cy}
-                        r={isActive ? 3.2 : 2.5}
-                        fill={isActive ? r.color : "rgba(245,158,11,0.25)"}
-                        stroke={r.color}
-                        strokeWidth={isActive ? 0.6 : 0.4}
-                        filter={isActive ? "url(#nodeGlowStrong)" : isPulse ? "url(#nodeGlow)" : "none"}
-                        style={{ transition: "all 0.25s ease" }}
-                      />
-                      {/* Inner dot */}
-                      <circle
-                        cx={r.cx} cy={r.cy}
-                        r={isActive ? 1.2 : 0.8}
-                        fill={isActive ? "#000" : r.color}
-                        opacity={isActive ? 0.9 : 0.7}
-                        style={{ transition: "all 0.25s ease" }}
-                      />
-                      {/* Short label */}
-                      <text
-                        x={r.cx}
-                        y={r.cy - 4.5}
-                        textAnchor="middle"
-                        fontSize="2.8"
-                        fill={isActive ? r.color : "#c8d0e8"}
-                        fontWeight={isActive ? "700" : "400"}
-                        style={{ transition: "all 0.25s ease", pointerEvents: "none" }}
-                      >{r.shortLabel}</text>
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
-          </div>
-          {/* Hover tooltip */}
-          {hoveredRegion && !selected && (
-            <div
-              className="absolute left-1/2 -translate-x-1/2 bottom-0 mb-2 px-3 py-2 rounded-xl text-xs font-semibold pointer-events-none z-10"
-              style={{ background: P.card2, border: `1px solid ${hoveredRegion.color}60`, color: hoveredRegion.color, whiteSpace: "nowrap" }}
-            >
-              {hoveredRegion.label} — {hoveredRegion.function}
-            </div>
-          )}
-          <div className="text-center mt-2 text-xs" style={{ color: P.muted }}>Click any node to explore the marketing strategy</div>
-        </div>
-
-        {/* Right panel: region detail or legend */}
-        <div>
-          {selectedRegion ? (
-            <motion.div
-              key={selectedRegion.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-              className="rounded-2xl border p-5 space-y-4"
-              style={{ background: P.card, borderColor: selectedRegion.color + "60" }}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-xs font-semibold tracking-widest mb-1" style={{ color: selectedRegion.color }}>{selectedRegion.function.toUpperCase()}</div>
-                  <h3 className="text-xl font-bold" style={{ color: P.white }}>{selectedRegion.label}</h3>
-                  <div className="text-xs mt-1" style={{ color: P.muted }}>{selectedRegion.brainRole}</div>
-                </div>
-                <button
-                  onClick={() => setSelected(null)}
-                  className="text-xs px-2 py-1 rounded-lg"
-                  style={{ background: P.card2, color: P.muted }}
-                >✕ Close</button>
-              </div>
-              <div className="rounded-xl p-3" style={{ background: P.card2, borderLeft: `3px solid ${selectedRegion.color}` }}>
-                <div className="text-xs font-semibold mb-1" style={{ color: selectedRegion.color }}>Primary Marketing Channel</div>
-                <div className="text-sm font-bold" style={{ color: P.white }}>{selectedRegion.marketingChannel}</div>
-              </div>
-              <div>
-                <div className="text-xs font-semibold mb-2" style={{ color: P.gold }}>Activation Tactics</div>
-                <div className="space-y-1.5">
-                  {selectedRegion.channels.map((ch, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: selectedRegion.color }} />
-                      <span style={{ color: P.muted }}>{ch}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="text-sm leading-relaxed" style={{ color: P.muted }}>
-                {selectedRegion.insight}
-              </div>
-            </motion.div>
-          ) : (
-            <div className="space-y-2">
-              <div className="text-xs font-semibold tracking-widest mb-3" style={{ color: P.gold }}>8 BRAIN REGIONS — CLICK TO EXPLORE</div>
-              {regions.map((r) => (
-                <motion.div
-                  key={r.id}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: regions.indexOf(r) * 0.05, duration: 0.3 }}
-                  className="flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-200"
-                  style={{
-                    background: hovered === r.id ? "rgba(245,158,11,0.06)" : P.card,
-                    borderColor: hovered === r.id ? r.color : P.border,
-                  }}
-                  onMouseEnter={() => setHovered(r.id)}
-                  onMouseLeave={() => setHovered(null)}
-                  onClick={() => setSelected(r.id)}
-                >
-                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: r.color, boxShadow: `0 0 6px ${r.color}80` }} />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold" style={{ color: P.white }}>{r.label}</div>
-                    <div className="text-xs truncate" style={{ color: P.muted }}>{r.function}</div>
-                  </div>
-                  <div className="text-xs font-medium flex-shrink-0" style={{ color: r.color }}>{r.marketingChannel.split(" ")[0]}</div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ── Tab: Site Intelligence ────────────────────────────────────────────────────
 function TabSite() {
   const [animDone, setAnimDone] = useState(false);
@@ -1259,35 +907,330 @@ function TabKeywords() {
   );
 }
 
-// ── Tab: Brain Map ────────────────────────────────────────────────────────────
+
+// ── Brain Map (full-width layout) ────────────────────────────────────────────
+const BRAIN_REGIONS = [
+  {
+    id: "prefrontal", label: "Prefrontal Cortex", shortLabel: "PFC",
+    cx: 22, cy: 28, color: "#f59e0b",
+    function: "Decision-Making & Rational Evaluation",
+    marketingChannel: "Case Studies & Clinical Data",
+    channels: ["White papers & ROI calculators", "Clinical trial results", "Peer-reviewed citations", "Implementation case studies"],
+    insight: "The prefrontal cortex governs executive function, cost-benefit analysis, and trust formation. B2B buyers evaluating NeuroCatch engage this region when reviewing clinical validation data, pricing models, and implementation case studies. Logic-first content — data sheets, outcome studies, ROI models — activates this region and moves prospects toward a rational purchase decision.",
+    brainRole: "Executive function, working memory, risk assessment, trust evaluation",
+  },
+  {
+    id: "amygdala", label: "Amygdala", shortLabel: "AMY",
+    cx: 42, cy: 58, color: "#f97316",
+    function: "Fear, Urgency & Emotional Response",
+    marketingChannel: "Risk & Consequence Messaging",
+    channels: ["'What if you miss a concussion?' copy", "Liability risk messaging", "Second-impact syndrome statistics", "Urgency-driven CTAs"],
+    insight: "The amygdala processes threat signals and triggers the fight-or-flight response. In B2B marketing, this is activated by liability risk messaging — 'what happens if an athlete is cleared too soon?' Athletic directors, military medical officers, and occupational health directors all carry institutional liability. Messaging that surfaces the consequences of inaction activates the amygdala and creates urgency to act.",
+    brainRole: "Threat detection, emotional memory, fear response, urgency",
+  },
+  {
+    id: "nucleus_accumbens", label: "Nucleus Accumbens", shortLabel: "NAc",
+    cx: 48, cy: 50, color: "#f59e0b",
+    function: "Reward, Desire & Dopamine Response",
+    marketingChannel: "Success Stories & Outcome Visualization",
+    channels: ["Athlete return-to-play testimonials", "'Imagine the outcome' copy", "Before/after case studies", "Award and recognition content"],
+    insight: "The nucleus accumbens is the brain's reward center — it releases dopamine in anticipation of a positive outcome. Testimonials from athletic trainers who caught a concussion that would have been missed, or stories of athletes who returned to play safely because of NeuroCatch, activate this region. The buyer imagines the positive outcome for their program, creating desire and forward momentum.",
+    brainRole: "Reward anticipation, dopamine release, motivation, desire",
+  },
+  {
+    id: "hippocampus", label: "Hippocampus", shortLabel: "HPC",
+    cx: 62, cy: 55, color: "#f97316",
+    function: "Memory Formation & Brand Recall",
+    marketingChannel: "Retargeting & Consistent Brand Presence",
+    channels: ["Retargeting display ads", "Consistent logo/color usage", "Email drip sequences", "Conference presence + follow-up"],
+    insight: "The hippocampus encodes experiences into long-term memory. Repeated exposure to the NeuroCatch brand — at conferences, in retargeting ads, in email sequences — builds the memory trace that makes the brand feel familiar and trustworthy when a decision is finally made. Familiarity reduces perceived risk. The buyer who has seen NeuroCatch 12 times before a demo call is far more likely to convert.",
+    brainRole: "Long-term memory encoding, spatial navigation, familiarity recognition",
+  },
+  {
+    id: "visual_cortex", label: "Visual Cortex", shortLabel: "V1",
+    cx: 82, cy: 42, color: "#f59e0b",
+    function: "Visual Processing & First Impressions",
+    marketingChannel: "Video Demos & Visual Brand Assets",
+    channels: ["Product demo videos", "Infographics", "LinkedIn carousel posts", "Conference booth visuals"],
+    insight: "The visual cortex processes imagery before language — a prospect's first impression of NeuroCatch is formed visually before they read a single word. High-quality demo videos showing the 3-minute EEG process, clean product photography, and professional infographics activate this region and establish credibility instantly.",
+    brainRole: "Primary visual processing, pattern recognition, first impression formation",
+  },
+  {
+    id: "brocas", label: "Broca's Area", shortLabel: "BRO",
+    cx: 28, cy: 62, color: "#f97316",
+    function: "Language Processing & Copy Comprehension",
+    marketingChannel: "Email Subject Lines & Ad Headlines",
+    channels: ["Email subject line optimization", "LinkedIn message copy", "Google ad headlines", "Landing page headline hierarchy"],
+    insight: "Broca's area processes the production and comprehension of language. This is the region engaged when a prospect reads an email subject line, a Google ad headline, or a LinkedIn message. Clear, specific, jargon-free language activates smooth processing — the brain rewards clarity. Overly technical or vague copy creates friction in Broca's area, increasing the likelihood the message is ignored.",
+    brainRole: "Speech production, language comprehension, reading fluency",
+  },
+  {
+    id: "insula", label: "Insula", shortLabel: "INS",
+    cx: 55, cy: 42, color: "#f59e0b",
+    function: "Empathy, Gut Feeling & Physical Sensation",
+    marketingChannel: "Human-Centered Stories & Patient Narratives",
+    channels: ["Athlete injury stories", "Parent testimonials", "Clinician empathy content", "Human faces in ad creative"],
+    insight: "The insula processes interoception — the brain's awareness of internal body states — and is the seat of empathy and gut-level intuition. When a prospect reads a story about an athlete whose career was saved because NeuroCatch caught a concussion that ImPACT missed, the insula fires. Human-centered storytelling activates the insula and creates emotional resonance that data alone cannot.",
+    brainRole: "Interoception, empathy, disgust/pleasure, gut intuition",
+  },
+  {
+    id: "anterior_cingulate", label: "Anterior Cingulate", shortLabel: "ACC",
+    cx: 35, cy: 42, color: "#f97316",
+    function: "Conflict Resolution & Social Proof",
+    marketingChannel: "Peer Validation & Authority Endorsements",
+    channels: ["'Trusted by 400+ clinics' social proof", "Peer institution logos", "Clinical champion endorsements", "Conference speaker credibility"],
+    insight: "The anterior cingulate cortex (ACC) activates during decision conflict — the 'should I or shouldn't I?' moment. It is highly sensitive to social proof and peer behavior. When a prospect sees that a peer institution has adopted NeuroCatch, the ACC resolves the conflict in favor of adoption. Peer validation is the most powerful signal for this region.",
+    brainRole: "Conflict monitoring, error detection, social norm processing, decision finalization",
+  },
+];
+
+// Channel activation data for the radar/bar chart below the region buttons
+const CHANNEL_ACTIVATION = [
+  { channel: "LinkedIn",    prefrontal: 90, amygdala: 40, hippocampus: 70, insula: 60, brocas: 80, visual: 50, acc: 85, nac: 45 },
+  { channel: "Google",      prefrontal: 85, amygdala: 55, hippocampus: 65, insula: 30, brocas: 95, visual: 40, acc: 50, nac: 60 },
+  { channel: "Email",       prefrontal: 80, amygdala: 70, hippocampus: 75, insula: 65, brocas: 90, visual: 35, acc: 60, nac: 55 },
+  { channel: "Video/Demo",  prefrontal: 70, amygdala: 65, hippocampus: 80, insula: 75, brocas: 60, visual: 98, acc: 70, nac: 85 },
+  { channel: "Direct Mail", prefrontal: 75, amygdala: 50, hippocampus: 60, insula: 55, brocas: 70, visual: 65, acc: 45, nac: 40 },
+  { channel: "Social",      prefrontal: 45, amygdala: 80, hippocampus: 55, insula: 90, brocas: 50, visual: 85, acc: 75, nac: 90 },
+];
+
 function TabBrainMap() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [pulse, setPulse] = useState(0);
+  const [rotAngle, setRotAngle] = useState(0);
+  const animRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    let frame = 0;
+    const tick = () => {
+      frame++;
+      setRotAngle(frame * 0.06);
+      animRef.current = requestAnimationFrame(tick);
+    };
+    animRef.current = requestAnimationFrame(tick);
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => setPulse(p => (p + 1) % 8), 1400);
+    return () => clearInterval(t);
+  }, []);
+
+  const selectedRegion = BRAIN_REGIONS.find(r => r.id === selected);
+  const skewY = Math.sin(rotAngle * Math.PI / 180) * 2.5;
+  const scaleX = 0.97 + Math.cos(rotAngle * Math.PI / 180) * 0.03;
+
   return (
     <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-bold mb-1" style={{ color: P.white }}>Marketing Brain Map</h2>
-        <p className="text-sm" style={{ color: P.muted }}>Every marketing channel activates a different region of the buyer's decision-making process. Hover each node to see the strategy.</p>
+        <p className="text-sm" style={{ color: P.muted }}>Every marketing channel activates a different region of the buyer's decision-making process. Click any region to explore the strategy.</p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 items-start">
-        <BrainMap />
+      {/* ── Row 1: Brain image — full width ── */}
+      <div className="relative w-full" style={{ maxWidth: "100%" }}>
+        <div
+          className="relative rounded-2xl overflow-hidden mx-auto"
+          style={{
+            background: "radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 70%)",
+            maxWidth: 780,
+          }}
+        >
+          <div
+            style={{
+              transform: `skewY(${skewY}deg) scaleX(${scaleX})`,
+              transition: "transform 0.05s linear",
+              willChange: "transform",
+            }}
+          >
+            <img
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/kvqzIFMXNVcuEODc.png"
+              alt="Brain"
+              className="w-full rounded-xl"
+              style={{ filter: "saturate(1.2) brightness(0.95)", display: "block" }}
+              draggable={false}
+            />
+            {/* SVG hotspot overlay */}
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="absolute inset-0 w-full h-full"
+              style={{ top: 0, left: 0 }}
+            >
+              <defs>
+                <filter id="ng"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <filter id="ngs"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              {BRAIN_REGIONS.map((r) => {
+                const isActive = selected === r.id || hovered === r.id;
+                return (
+                  <line key={r.id+"-l"} x1={r.cx} y1={r.cy} x2={50} y2={52}
+                    stroke={isActive ? r.color : "#f59e0b"}
+                    strokeWidth={isActive ? 0.5 : 0.2}
+                    strokeDasharray={isActive ? "none" : "1.5,2"}
+                    opacity={isActive ? 0.7 : 0.2}
+                    style={{ transition: "all 0.3s ease" }}
+                  />
+                );
+              })}
+              {BRAIN_REGIONS.map((r, i) => {
+                const isSelected = selected === r.id;
+                const isHov = hovered === r.id;
+                const isPulse = pulse === i;
+                const isActive = isSelected || isHov;
+                return (
+                  <g key={r.id} style={{ cursor: "pointer" }}
+                    onMouseEnter={() => setHovered(r.id)}
+                    onMouseLeave={() => setHovered(null)}
+                    onClick={() => setSelected(isSelected ? null : r.id)}
+                  >
+                    <circle cx={r.cx} cy={r.cy} r={isPulse ? 5.5 : isActive ? 4.5 : 3.5}
+                      fill="none" stroke={r.color} strokeWidth="0.4"
+                      opacity={isPulse ? 0.8 : isActive ? 0.6 : 0.3}
+                      style={{ transition: "all 0.4s ease" }}
+                    />
+                    <circle cx={r.cx} cy={r.cy} r={isActive ? 3.2 : 2.5}
+                      fill={isActive ? r.color : "rgba(245,158,11,0.25)"}
+                      stroke={r.color} strokeWidth={isActive ? 0.6 : 0.4}
+                      filter={isActive ? "url(#ngs)" : isPulse ? "url(#ng)" : "none"}
+                      style={{ transition: "all 0.25s ease" }}
+                    />
+                    <circle cx={r.cx} cy={r.cy} r={isActive ? 1.2 : 0.8}
+                      fill={isActive ? "#000" : r.color} opacity={isActive ? 0.9 : 0.7}
+                      style={{ transition: "all 0.25s ease" }}
+                    />
+                    <text x={r.cx} y={r.cy - 4.5} textAnchor="middle" fontSize="2.8"
+                      fill={isActive ? r.color : "#c8d0e8"}
+                      fontWeight={isActive ? "700" : "400"}
+                      style={{ transition: "all 0.25s ease", pointerEvents: "none" }}
+                    >{r.shortLabel}</text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+        </div>
+        <div className="text-center mt-2 text-xs" style={{ color: P.muted }}>Click any labeled node on the brain to explore the marketing strategy for that region</div>
+      </div>
 
-        <div className="space-y-3">
-          <div className="font-semibold text-sm mb-3" style={{ color: P.gold }}>Channel Activation Map</div>
-          {[
-            { icon: Linkedin,   label: "LinkedIn",      desc: "B2B decision-maker outreach", reach: "Athletic Directors, VA CMOs, EHS Directors" },
-            { icon: Search,     label: "Google Search", desc: "High-intent keyword capture",  reach: "22K/mo 'concussion testing near me'" },
-            { icon: Mail,       label: "Email",         desc: "Clinical outreach + pilots",   reach: "Personalized with 30-day pilot offer" },
-            { icon: Eye,        label: "Display Ads",   desc: "Brand awareness",              reach: "Medical and sports media networks" },
-            { icon: FileText,   label: "Direct Mail",   desc: "High-value B2B touchpoint",    reach: "Physical mail to key decision-makers" },
-            { icon: Megaphone,  label: "Social",        desc: "B2C biohacker audience",       reach: "Instagram/Facebook — brain health enthusiasts" },
-          ].map((c) => (
-            <div key={c.label} className="flex items-start gap-3 p-3 rounded-xl border" style={{ background: P.card, borderColor: P.border }}>
-              <c.icon size={16} style={{ color: P.gold, marginTop: 2, flexShrink: 0 }} />
+      {/* ── Row 2: 8 region buttons — evenly spaced horizontal row ── */}
+      <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+        {BRAIN_REGIONS.map((r) => {
+          const isActive = selected === r.id;
+          const isHov = hovered === r.id;
+          return (
+            <button
+              key={r.id}
+              onClick={() => setSelected(isActive ? null : r.id)}
+              onMouseEnter={() => setHovered(r.id)}
+              onMouseLeave={() => setHovered(null)}
+              className="flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all duration-200"
+              style={{
+                background: isActive ? `${r.color}18` : isHov ? `${r.color}0e` : P.card,
+                borderColor: isActive ? r.color : isHov ? `${r.color}80` : P.border,
+                boxShadow: isActive ? `0 0 16px ${r.color}30` : "none",
+              }}
+            >
+              <div className="w-3 h-3 rounded-full" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : "none" }} />
+              <div className="text-xs font-bold leading-tight" style={{ color: isActive ? r.color : P.white }}>{r.shortLabel}</div>
+              <div className="text-xs leading-tight hidden md:block" style={{ color: P.muted, fontSize: "0.6rem" }}>{r.label.split(" ").slice(0,2).join(" ")}</div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Row 3: Full-width expand panel (when region selected) ── */}
+      <AnimatePresence mode="wait">
+        {selectedRegion && (
+          <motion.div
+            key={selectedRegion.id}
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+            className="rounded-2xl border p-6"
+            style={{ background: `${selectedRegion.color}08`, borderColor: `${selectedRegion.color}50` }}
+          >
+            <div className="flex items-start justify-between gap-4 mb-5">
               <div>
-                <div className="text-sm font-semibold" style={{ color: P.white }}>{c.label}</div>
-                <div className="text-xs" style={{ color: P.muted }}>{c.desc}</div>
-                <div className="text-xs mt-0.5" style={{ color: P.orange }}>{c.reach}</div>
+                <div className="text-xs font-semibold tracking-widest mb-1" style={{ color: selectedRegion.color }}>{selectedRegion.function.toUpperCase()}</div>
+                <h3 className="text-2xl font-bold" style={{ color: P.white }}>{selectedRegion.label}</h3>
+                <div className="text-sm mt-1" style={{ color: P.muted }}>{selectedRegion.brainRole}</div>
               </div>
+              <button onClick={() => setSelected(null)}
+                className="text-xs px-3 py-1.5 rounded-lg shrink-0"
+                style={{ background: P.card2, color: P.muted }}>
+                ✕ Close
+              </button>
+            </div>
+            <div className="grid md:grid-cols-3 gap-5">
+              {/* Channel */}
+              <div className="rounded-xl p-4" style={{ background: P.card2, borderLeft: `3px solid ${selectedRegion.color}` }}>
+                <div className="text-xs font-semibold mb-1" style={{ color: selectedRegion.color }}>Primary Marketing Channel</div>
+                <div className="text-lg font-bold" style={{ color: P.white }}>{selectedRegion.marketingChannel}</div>
+              </div>
+              {/* Tactics */}
+              <div className="rounded-xl p-4" style={{ background: P.card2 }}>
+                <div className="text-xs font-semibold mb-3" style={{ color: P.gold }}>Activation Tactics</div>
+                <div className="space-y-2">
+                  {selectedRegion.channels.map((ch, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: selectedRegion.color }} />
+                      <span style={{ color: P.muted }}>{ch}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Insight */}
+              <div className="rounded-xl p-4" style={{ background: P.card2 }}>
+                <div className="text-xs font-semibold mb-2" style={{ color: P.gold }}>Neuroscience Insight</div>
+                <p className="text-sm leading-relaxed" style={{ color: P.muted }}>{selectedRegion.insight}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Row 4: Channel Activation visual (bar chart) ── */}
+      <div className="rounded-2xl border p-6" style={{ background: P.card, borderColor: P.border }}>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <div className="font-semibold text-lg" style={{ color: P.white }}>Channel Activation Map</div>
+            <div className="text-xs mt-0.5" style={{ color: P.muted }}>Brain region engagement score per marketing channel (0–100)</div>
+          </div>
+          <div className="flex gap-3 text-xs">
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm" style={{ background: P.gold }}/><span style={{ color: P.muted }}>High activation</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm" style={{ background: P.deep }}/><span style={{ color: P.muted }}>Moderate</span></div>
+          </div>
+        </div>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={CHANNEL_ACTIVATION} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke={P.border} />
+            <XAxis dataKey="channel" tick={{ fill: P.muted, fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: P.muted, fontSize: 10 }} axisLine={false} tickLine={false} domain={[0, 100]} />
+            <Tooltip
+              contentStyle={{ background: P.card2, border: `1px solid ${P.border}`, borderRadius: 10, color: P.white, fontSize: 12 }}
+              cursor={{ fill: "rgba(245,158,11,0.05)" }}
+            />
+            <Bar dataKey="prefrontal" name="Prefrontal" stackId="a" fill="#f59e0b" radius={[0,0,0,0]} />
+            <Bar dataKey="amygdala"   name="Amygdala"   stackId="a" fill="#f97316" />
+            <Bar dataKey="insula"     name="Insula"     stackId="a" fill="#ea580c" />
+            <Bar dataKey="visual"     name="Visual"     stackId="a" fill="#c2410c" />
+            <Bar dataKey="acc"        name="ACC"        stackId="a" fill="#9a3412" radius={[4,4,0,0]} />
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="flex flex-wrap gap-3 mt-3">
+          {[
+            { label: "Prefrontal", color: "#f59e0b" },
+            { label: "Amygdala",   color: "#f97316" },
+            { label: "Insula",     color: "#ea580c" },
+            { label: "Visual",     color: "#c2410c" },
+            { label: "ACC",        color: "#9a3412" },
+          ].map(l => (
+            <div key={l.label} className="flex items-center gap-1.5 text-xs">
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: l.color }} />
+              <span style={{ color: P.muted }}>{l.label}</span>
             </div>
           ))}
         </div>
@@ -1295,6 +1238,7 @@ function TabBrainMap() {
     </div>
   );
 }
+
 
 // ── Tab: Outreach Kit ─────────────────────────────────────────────────────────
 function TabOutreach() {
