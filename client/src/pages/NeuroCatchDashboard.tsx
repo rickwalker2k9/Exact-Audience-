@@ -1087,9 +1087,9 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
           const gapLen = 17;
           const offset = -(phase * (dashLen + gapLen));
           // Base line  -  very faint, always visible
-          const baseOpacity = 0.06 + (i % 3) * 0.01;
+          const baseOpacity = 0.08 + (i % 3) * 0.02;
           // Active segment opacity  -  subtle pulse
-          const activeOpacity = 0.18 + Math.sin(t * 2 + i * 0.4) * 0.06;
+          const activeOpacity = 0.28 + Math.sin(t * 2 + i * 0.4) * 0.08;
 
           return (
             <g key={i} filter="url(#pathGlow)">
@@ -1098,7 +1098,7 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
                 d={`M ${p.x1} ${p.y1} Q ${p.cx} ${p.cy} ${p.x2} ${p.y2}`}
                 fill="none"
                 stroke="#f59e0b"
-                strokeWidth="0.18"
+                strokeWidth="0.35"
                 opacity={baseOpacity}
               />
               {/* Traveling electric pulse */}
@@ -1106,7 +1106,7 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
                 d={`M ${p.x1} ${p.y1} Q ${p.cx} ${p.cy} ${p.x2} ${p.y2}`}
                 fill="none"
                 stroke="#fde68a"
-                strokeWidth="0.45"
+                strokeWidth="0.8"
                 opacity={activeOpacity}
                 strokeDasharray={`${dashLen} ${gapLen}`}
                 strokeDashoffset={offset}
