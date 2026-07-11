@@ -1662,46 +1662,11 @@ const TBI_REGIONS = [
 
 function TabTBI() {
   const [selected, setSelected] = useState<string | null>('frontal');
-  const [hovered, setHovered] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
 
-  useEffect(() => {
-    let f = 0;
-    const loop = () => { f++; setTick(f); requestAnimationFrame(loop); };
-    const id = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(id);
-  }, []);
-
-  const t = tick / 60;
   const selectedRegion = TBI_REGIONS.find(r => r.id === selected);
 
-  // Neural pathway animation data (same as BrainVisual but lighter)
-  const PATHWAYS = [
-    { x1: 20, y1: 20, x2: 32, y2: 13, cx: 26, cy: 14 },
-    { x1: 32, y1: 13, x2: 46, y2: 10, cx: 39, cy: 9  },
-    { x1: 46, y1: 10, x2: 60, y2: 12, cx: 53, cy: 8  },
-    { x1: 60, y1: 12, x2: 72, y2: 18, cx: 67, cy: 12 },
-    { x1: 72, y1: 18, x2: 80, y2: 28, cx: 79, cy: 21 },
-    { x1: 80, y1: 28, x2: 83, y2: 40, cx: 85, cy: 34 },
-    { x1: 83, y1: 40, x2: 80, y2: 53, cx: 85, cy: 47 },
-    { x1: 80, y1: 53, x2: 73, y2: 62, cx: 80, cy: 60 },
-    { x1: 73, y1: 62, x2: 60, y2: 67, cx: 67, cy: 68 },
-    { x1: 60, y1: 67, x2: 47, y2: 65, cx: 53, cy: 69 },
-    { x1: 47, y1: 65, x2: 34, y2: 60, cx: 40, cy: 66 },
-    { x1: 34, y1: 60, x2: 22, y2: 52, cx: 26, cy: 60 },
-    { x1: 22, y1: 52, x2: 16, y2: 40, cx: 14, cy: 47 },
-    { x1: 16, y1: 40, x2: 18, y2: 28, cx: 13, cy: 34 },
-    { x1: 25, y1: 35, x2: 40, y2: 32, cx: 32, cy: 29 },
-    { x1: 40, y1: 32, x2: 55, y2: 35, cx: 47, cy: 30 },
-    { x1: 55, y1: 35, x2: 70, y2: 38, cx: 62, cy: 32 },
-    { x1: 30, y1: 45, x2: 45, y2: 40, cx: 37, cy: 39 },
-    { x1: 45, y1: 40, x2: 60, y2: 43, cx: 52, cy: 38 },
-    { x1: 35, y1: 50, x2: 48, y2: 52, cx: 41, cy: 48 },
-    { x1: 48, y1: 52, x2: 62, y2: 55, cx: 55, cy: 50 },
-  ];
-
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 mb-1">
@@ -1709,161 +1674,75 @@ function TabTBI() {
           <span className="text-xs font-semibold tracking-widest" style={{ color: '#ef4444' }}>CLINICAL REFERENCE</span>
         </div>
         <h2 className="text-xl font-bold mb-0.5" style={{ color: P.white }}>TBI Brain Injury Atlas</h2>
-        <p className="text-xs" style={{ color: P.muted }}>Select a brain region to see how traumatic brain injury presents  -  and why objective NeuroCatch documentation is critical for medical and legal teams.</p>
+        <p className="text-xs" style={{ color: P.muted }}>Tap a brain region to see clinical TBI presentation and why NeuroCatch documentation is critical.</p>
       </div>
 
-      {/* Main layout: brain + region selector */}
-      <div className="flex gap-5 items-start">
-
-        {/* Brain image with clickable region overlays */}
-        <div className="relative rounded-2xl overflow-hidden shrink-0" style={{ width: 420, background: 'transparent' }}>
-          <img
-            src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
-            alt="Brain"
-            style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.0) brightness(0.9) drop-shadow(0 0 16px rgba(239,68,68,0.25))' }}
-            draggable={false}
-          />
-          {/* Neural pathway animation */}
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none"
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-            <defs>
-              <filter id="tbiPathGlow">
-                <feGaussianBlur stdDeviation="0.5" result="b"/>
-                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-            {PATHWAYS.map((p, i) => {
-              const speed = 0.45 + (i % 5) * 0.07;
-              const phase = (t * speed + i * 0.23) % 1;
-              const dashLen = 2.5;
-              const gapLen = 18;
-              const offset = -(phase * (dashLen + gapLen));
-              const baseOpacity = 0.05;
-              const activeOpacity = 0.14 + Math.sin(t * 1.8 + i * 0.4) * 0.05;
-              return (
-                <g key={i} filter="url(#tbiPathGlow)">
-                  <path d={`M ${p.x1} ${p.y1} Q ${p.cx} ${p.cy} ${p.x2} ${p.y2}`}
-                    fill="none" stroke="#f87171" strokeWidth="0.15" opacity={baseOpacity} />
-                  <path d={`M ${p.x1} ${p.y1} Q ${p.cx} ${p.cy} ${p.x2} ${p.y2}`}
-                    fill="none" stroke="#fca5a5" strokeWidth="0.4" opacity={activeOpacity}
-                    strokeDasharray={`${dashLen} ${gapLen}`} strokeDashoffset={offset} />
-                </g>
-              );
-            })}
-          </svg>
-          {/* Clickable region hotspots */}
-          {TBI_REGIONS.map((r) => {
-            const isActive = selected === r.id;
-            const isHov = hovered === r.id;
-            return (
-              <button
-                key={r.id}
-                onClick={() => setSelected(isActive ? null : r.id)}
-                onMouseEnter={() => setHovered(r.id)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  position: 'absolute',
-                  left: r.position.left,
-                  top: r.position.top,
-                  transform: 'translate(-50%, -50%)',
-                  background: isActive ? `${r.color}cc` : isHov ? `${r.color}66` : `${r.color}33`,
-                  border: `1.5px solid ${isActive || isHov ? r.color : r.color + '66'}`,
-                  borderRadius: '50%',
-                  width: isActive ? 28 : 20,
-                  height: isActive ? 28 : 20,
-                  cursor: 'pointer',
-                  boxShadow: isActive ? `0 0 20px ${r.color}80, 0 0 40px ${r.color}40` : isHov ? `0 0 12px ${r.color}60` : 'none',
-                  transition: 'all 0.25s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {isActive && (
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: r.color }} />
-                )}
-              </button>
-            );
-          })}
-          {/* Region labels on hover */}
-          {TBI_REGIONS.map((r) => {
-            const isHov = hovered === r.id || selected === r.id;
-            return isHov ? (
-              <div key={r.id + '-label'} style={{
-                position: 'absolute',
-                left: r.position.left,
-                top: `calc(${r.position.top} - 22px)`,
-                transform: 'translateX(-50%)',
-                background: 'rgba(10,14,28,0.9)',
-                border: `1px solid ${r.color}`,
-                borderRadius: 6,
-                padding: '2px 8px',
-                fontSize: 10,
-                fontWeight: 700,
-                color: r.color,
-                whiteSpace: 'nowrap',
-                pointerEvents: 'none',
-              }}>{r.label}</div>
-            ) : null;
-          })}
-        </div>
-
-        {/* Region selector list */}
-        <div className="flex flex-col gap-2 flex-1">
-          <div className="text-xs font-semibold tracking-widest mb-1" style={{ color: P.muted }}>SELECT BRAIN REGION</div>
-          {TBI_REGIONS.map((r) => {
-            const isActive = selected === r.id;
-            return (
-              <button key={r.id} onClick={() => setSelected(isActive ? null : r.id)}
-                className="text-left rounded-xl border transition-all duration-200 px-4 py-3 w-full"
-                style={{
-                  background: isActive ? `${r.color}18` : P.card,
-                  borderColor: isActive ? r.color : P.border,
-                  boxShadow: isActive ? `0 0 16px ${r.color}30` : 'none',
-                }}>
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : 'none' }} />
-                  <span className="text-sm font-bold" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
-                  {isActive && <span className="ml-auto text-xs" style={{ color: r.color }}>▼ Expanded</span>}
-                </div>
-                <div className="text-xs mt-0.5 ml-4.5" style={{ color: P.muted, fontSize: '0.65rem' }}>{r.anatomy.split(',')[0]}</div>
-              </button>
-            );
-          })}
-        </div>
+      {/* Brain image — full width, no side columns */}
+      <div className="relative rounded-2xl overflow-hidden w-full" style={{ background: 'transparent' }}>
+        <img
+          src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
+          alt="Brain"
+          style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.0) brightness(0.9) drop-shadow(0 0 16px rgba(239,68,68,0.25))' }}
+          draggable={false}
+        />
       </div>
 
-      {/* Detail panel */}
+      {/* Region selector — 2-column grid, tap-friendly */}
+      <div className="grid grid-cols-2 gap-2">
+        {TBI_REGIONS.map((r) => {
+          const isActive = selected === r.id;
+          return (
+            <button key={r.id} onClick={() => setSelected(isActive ? null : r.id)}
+              className="text-left rounded-xl border transition-all duration-200 px-3 py-3 w-full"
+              style={{
+                background: isActive ? `${r.color}18` : P.card,
+                borderColor: isActive ? r.color : P.border,
+                boxShadow: isActive ? `0 0 14px ${r.color}28` : 'none',
+                minHeight: 56,
+              }}>
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: r.color, boxShadow: isActive ? `0 0 8px ${r.color}` : 'none' }} />
+                <span className="text-sm font-bold leading-tight" style={{ color: isActive ? r.color : P.white }}>{r.label}</span>
+              </div>
+              <div className="text-xs mt-1 ml-4" style={{ color: P.muted, fontSize: '0.6rem', lineHeight: 1.3 }}>{r.anatomy.split(',')[0]}</div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Detail panel — full width, stacked columns on mobile */}
       <AnimatePresence mode="wait">
         {selectedRegion && (
           <motion.div key={selectedRegion.id}
-            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-            className="rounded-2xl border p-5"
+            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+            className="rounded-2xl border p-4"
             style={{ background: `${selectedRegion.color}08`, borderColor: `${selectedRegion.color}40` }}>
 
             {/* Region header */}
-            <div className="flex items-start justify-between gap-4 mb-5">
+            <div className="flex items-start justify-between gap-3 mb-4">
               <div>
-                <div className="text-xs font-semibold tracking-widest mb-0.5" style={{ color: selectedRegion.color }}>TRAUMATIC BRAIN INJURY  -  {selectedRegion.label.toUpperCase()}</div>
-                <h3 className="text-2xl font-bold mb-1" style={{ color: P.white }}>{selectedRegion.label}</h3>
-                <div className="text-xs" style={{ color: P.muted }}>{selectedRegion.anatomy}</div>
-                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold" style={{ background: `${selectedRegion.color}20`, color: selectedRegion.color }}>
-                  📊 {selectedRegion.prevalence}
+                <div className="text-xs font-semibold tracking-widest mb-0.5" style={{ color: selectedRegion.color }}>
+                  TBI — {selectedRegion.label.toUpperCase()}
+                </div>
+                <h3 className="text-lg font-bold mb-1" style={{ color: P.white }}>{selectedRegion.label}</h3>
+                <div className="text-xs leading-relaxed" style={{ color: P.muted }}>{selectedRegion.anatomy}</div>
+                <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: `${selectedRegion.color}20`, color: selectedRegion.color }}>
+                  {selectedRegion.prevalence}
                 </div>
               </div>
-              <button onClick={() => setSelected(null)} className="text-xs px-3 py-1.5 rounded-lg shrink-0" style={{ background: P.card2, color: P.muted }}>✕ Close</button>
+              <button onClick={() => setSelected(null)} className="text-xs px-2.5 py-1.5 rounded-lg shrink-0" style={{ background: P.card2, color: P.muted }}>✕</button>
             </div>
 
-            {/* 3-column detail */}
-            <div className="grid grid-cols-3 gap-4">
+            {/* Stacked sections — no side-by-side columns on mobile */}
+            <div className="space-y-3">
               {/* TBI Symptoms */}
-              <div className="rounded-xl p-4" style={{ background: P.card2, borderLeft: `3px solid ${selectedRegion.color}` }}>
-                <div className="text-xs font-semibold mb-3" style={{ color: selectedRegion.color }}>Clinical TBI Presentation</div>
-                <div className="space-y-2">
+              <div className="rounded-xl p-3" style={{ background: P.card2, borderLeft: `3px solid ${selectedRegion.color}` }}>
+                <div className="text-xs font-semibold mb-2" style={{ color: selectedRegion.color }}>Clinical TBI Presentation</div>
+                <div className="space-y-1.5">
                   {selectedRegion.tbiSymptoms.map((s, i) => (
                     <div key={i} className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5" style={{ background: selectedRegion.color }} />
+                      <div className="w-1.5 h-1.5 rounded-full shrink-0 mt-1" style={{ background: selectedRegion.color }} />
                       <span className="text-xs leading-relaxed" style={{ color: P.muted }}>{s}</span>
                     </div>
                   ))}
@@ -1871,22 +1750,22 @@ function TabTBI() {
               </div>
 
               {/* NeuroCatch Value */}
-              <div className="rounded-xl p-4" style={{ background: P.card2 }}>
+              <div className="rounded-xl p-3" style={{ background: P.card2 }}>
                 <div className="text-xs font-semibold mb-2" style={{ color: P.gold }}>NeuroCatch Assessment Value</div>
-                <p className="text-xs leading-relaxed mb-4" style={{ color: P.muted }}>{selectedRegion.neurocatchValue}</p>
-                <div className="rounded-lg p-3" style={{ background: `${P.gold}12`, border: `1px solid ${P.gold}30` }}>
-                  <div className="text-xs font-semibold mb-1" style={{ color: P.gold }}>Documentation Tip</div>
-                  <div className="text-xs" style={{ color: P.muted }}>{selectedRegion.docTip}</div>
+                <p className="text-xs leading-relaxed mb-3" style={{ color: P.muted }}>{selectedRegion.neurocatchValue}</p>
+                <div className="rounded-lg p-2.5" style={{ background: `${P.gold}12`, border: `1px solid ${P.gold}30` }}>
+                  <div className="text-xs font-semibold mb-0.5" style={{ color: P.gold }}>Documentation Tip</div>
+                  <div className="text-xs leading-relaxed" style={{ color: P.muted }}>{selectedRegion.docTip}</div>
                 </div>
               </div>
 
               {/* Legal Value */}
-              <div className="rounded-xl p-4" style={{ background: P.card2 }}>
+              <div className="rounded-xl p-3" style={{ background: P.card2 }}>
                 <div className="text-xs font-semibold mb-2" style={{ color: '#60a5fa' }}>Legal & Settlement Value</div>
-                <p className="text-xs leading-relaxed" style={{ color: P.muted }}>{selectedRegion.legalValue}</p>
-                <div className="mt-4 rounded-lg p-3" style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.2)' }}>
-                  <div className="text-xs font-semibold mb-1" style={{ color: '#60a5fa' }}>Why Objective Data Wins</div>
-                  <div className="text-xs" style={{ color: P.muted }}>ERP biomarkers are physiological measurements  -  they cannot be coached, faked, or dismissed as subjective complaint.</div>
+                <p className="text-xs leading-relaxed mb-3" style={{ color: P.muted }}>{selectedRegion.legalValue}</p>
+                <div className="rounded-lg p-2.5" style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.2)' }}>
+                  <div className="text-xs font-semibold mb-0.5" style={{ color: '#60a5fa' }}>Why Objective Data Wins</div>
+                  <div className="text-xs leading-relaxed" style={{ color: P.muted }}>ERP biomarkers are physiological measurements - they cannot be coached, faked, or dismissed as subjective complaint.</div>
                 </div>
               </div>
             </div>
@@ -1895,18 +1774,16 @@ function TabTBI() {
       </AnimatePresence>
 
       {/* Bottom CTA */}
-      <div className="rounded-2xl border p-5 flex items-center justify-between gap-6" style={{ background: P.card, borderColor: P.border }}>
-        <div>
-          <div className="font-semibold mb-1" style={{ color: P.white }}>Ready to document TBI with objective biomarkers?</div>
-          <div className="text-xs" style={{ color: P.muted }}>NeuroCatch provides FDA-cleared ERP assessment in under 8 minutes  -  delivering objective cognitive data for every brain region above.</div>
-        </div>
-        <div className="flex gap-3 shrink-0">
+      <div className="rounded-2xl border p-4" style={{ background: P.card, borderColor: P.border }}>
+        <div className="font-semibold mb-1 text-sm" style={{ color: P.white }}>Document TBI with objective biomarkers</div>
+        <div className="text-xs mb-3" style={{ color: P.muted }}>NeuroCatch delivers FDA-cleared ERP assessment in under 8 minutes.</div>
+        <div className="flex gap-2">
           <a href="https://neurocatch.com" target="_blank" rel="noopener noreferrer"
-            className="px-4 py-2 rounded-lg text-xs font-semibold" style={{ background: P.gold, color: '#0a0e1c' }}>
+            className="flex-1 text-center px-3 py-2 rounded-lg text-xs font-semibold" style={{ background: P.gold, color: '#0a0e1c' }}>
             Request Demo
           </a>
           <a href="https://neurocatch.com" target="_blank" rel="noopener noreferrer"
-            className="px-4 py-2 rounded-lg text-xs font-semibold border" style={{ background: 'transparent', color: P.white, borderColor: P.border }}>
+            className="flex-1 text-center px-3 py-2 rounded-lg text-xs font-semibold border" style={{ background: 'transparent', color: P.white, borderColor: P.border }}>
             Clinical Evidence
           </a>
         </div>
