@@ -152,6 +152,7 @@ const SLUG_ROUTES: Record<string, string> = {
   "breeze-insurance":            "/breeze-insurance",
   "barrett-financial":           "/barrett-financial",
   "neurocatch":                  "/neurocatch",
+  "intermed-healthtrust":         "/intermed-healthtrust",
 };
 
 // ── Main Page ─────────────────────────────────────────────────────────────────

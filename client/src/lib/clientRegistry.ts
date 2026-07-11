@@ -163,6 +163,27 @@ export const CLIENTS: CampaignClient[] = [
     completionRate: 10.0,
     primaryColor: "#f59e0b",
   },
+  // ── INTERMED / HEALTHTRUST PITCH PORTAL ────────────────────────────────────
+  {
+    id: 40,
+    slug: "intermed-healthtrust",
+    name: "InterMed / Healthtrust",
+    vertical: "Healthcare / Medical Device Distribution",
+    location: "Brentwood, TN",
+    description: "Two-stage enterprise deal: ExactAudience for InterMed direct + Healthtrust GPO network growth partnership",
+    domain: "intermedtn.com",
+    logoDomain: "intermedtn.com",
+    campaign: "InterMed Direct + Healthtrust Network Growth 2026",
+    budget: "$325K\u2013$650K",
+    startDate: "July 2026",
+    status: "active" as ClientStatus,
+    hasDashboard: true,
+    trend: risingTrend(12000),
+    impressionsToDate: 0,
+    reachToDate: 0,
+    completionRate: 0,
+    primaryColor: "#0ea5e9",
+  },
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
   {
     id: 6,
