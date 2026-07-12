@@ -238,7 +238,7 @@ function TabPlayers() {
       id: 'roger', name: 'Roger Biles', title: 'Founder, Managing Partner & CEO', company: 'InterMed Resources TN', color: C.orange, emoji: '👔',
       bio: "Over 20 years in healthcare distribution. Founded SourceMark before building InterMed. During COVID-19, leveraged a 20-year relationship with one of China's largest trading groups to supply 60M+ masks when most distributors were paralyzed.",
       connections: ['Trump Small Business Council member', 'Deep C-suite relationships inside HCA Healthcare', 'Direct access to Healthtrust leadership', '20-year relationship with China\'s largest trading groups', 'Previously founded SourceMark'],
-      strategy: ['Treat him as a door-opener, not just a customer', 'Let him bring up the Healthtrust opportunity — don\'t lead with it', 'His HCA connections mean he can get you in front of Young Fried or Rich Philbrick', 'Ask directly: "Who at Healthtrust runs hospital network development?"', 'His China relationships may open international medical device manufacturer opportunities'],
+      strategy: ['Treat him as a door-opener, not just a customer', 'Let him bring up the Healthtrust opportunity — don\'t lead with it', 'His HCA connections mean he can get you in front of Healthtrust leadership', 'Ask directly: "Who at Healthtrust runs hospital network development?"', 'His China relationships may open international medical device manufacturer opportunities'],
       role: 'Primary decision-maker and door-opener to Healthtrust',
     },
     {
@@ -251,8 +251,8 @@ function TabPlayers() {
     {
       id: 'healthtrust', name: 'Healthtrust Leadership', title: 'Key Contacts for Stage 2', company: 'Healthtrust Performance Group (HCA)', color: C.gold, emoji: '🏛',
       bio: "Healthtrust is owned by HCA Healthcare — the world's largest for-profit hospital operator. These are the people Roger can introduce you to for the Stage 2 network growth conversation.",
-      connections: ['Ed Jones — President & CEO', 'Jocelyn Bradshaw — President, GPO Operations', 'Rich Philbrick — Chief Customer Officer', 'Young Fried — SVP, Business Development & Pharmacy Services', 'Eric Swaim — SVP, Strategic Sourcing'],
-      strategy: ['Young Fried (SVP Business Development) is your primary target for Stage 2', 'Rich Philbrick (Chief Customer Officer) is the secondary target', 'Do NOT cold-approach Healthtrust — let Roger make the introduction', 'Frame the pitch as a network growth engine, not a software subscription', 'The ROI on a single new hospital member justifies the $250K–$500K price'],
+      connections: ['Ed Jones — President & CEO', 'Jocelyn Bradshaw — President, GPO Operations', 'Rich Philbrick — Chief Customer Officer', 'Eric Swaim — SVP, Strategic Sourcing'],
+      strategy: ['Rich Philbrick (Chief Customer Officer) is your primary Stage 2 target', 'Ed Jones (President & CEO) is the ultimate decision-maker', 'Do NOT cold-approach Healthtrust — let Roger make the introduction', 'Frame the pitch as a network growth engine, not a software subscription', 'The ROI on a single new hospital member justifies the $250K–$500K price'],
       role: 'Stage 2 target — ask Roger for the introduction',
     },
   ];
@@ -378,8 +378,8 @@ function TabHealthtrust() {
   const [activeLevel, setActiveLevel] = useState<number | null>(null);
   const levels = [
     { num: 1, title: "Passive — Direct Contract Only", color: C.orange, revenue: "$350K–$500K/yr", desc: "Healthtrust uses ExactAudience internally for business development. No member or supplier recommendation. Revenue stays at $350K–$500K/year.", action: "Minimum viable outcome — acceptable but not the goal." },
-    { num: 2, title: "Endorsed Vendor", color: C.purpleLight, revenue: "$2M–$4M/yr", desc: "Healthtrust includes ExactAudience in their preferred vendor directory and mentions it in member communications. Hospitals and suppliers discover it organically. Drives 2.5–5% adoption.", action: "Ask Roger to facilitate an introduction to Young Fried to discuss this level." },
-    { num: 3, title: "Active Channel Partner", color: C.gold, revenue: "$6M–$12M/yr", desc: "Healthtrust actively recommends ExactAudience to members and suppliers as part of their performance improvement portfolio. Drives 10%+ adoption and unlocks the full upside scenario.", action: "The prize. Requires authorization from Young Fried (SVP Business Development) or Ed Jones (CEO)." },
+    { num: 2, title: "Endorsed Vendor", color: C.purpleLight, revenue: "$2M–$4M/yr", desc: "Healthtrust includes ExactAudience in their preferred vendor directory and mentions it in member communications. Hospitals and suppliers discover it organically. Drives 2.5–5% adoption.", action: "Ask Roger to facilitate an introduction to Healthtrust business development leadership to discuss this level." },
+    { num: 3, title: "Active Channel Partner", color: C.gold, revenue: "$6M–$12M/yr", desc: "Healthtrust actively recommends ExactAudience to members and suppliers as part of their performance improvement portfolio. Drives 10%+ adoption and unlocks the full upside scenario.", action: "The prize. Requires authorization from Healthtrust executive leadership — ask Roger for the right introduction." },
   ];
   return (
     <div className="space-y-5">
@@ -447,7 +447,6 @@ function TabHealthtrust() {
         <SL color={C.orange}>Healthtrust Leadership — Your Targets</SL>
         <div className="space-y-2">
           {[
-            { name: "Young Fried", title: "SVP, Business Development & Pharmacy Services", priority: "PRIMARY", color: C.gold },
             { name: "Rich Philbrick", title: "Chief Customer Officer", priority: "SECONDARY", color: C.orange },
             { name: "Ed Jones", title: "President & CEO", priority: "ULTIMATE", color: C.purpleLight },
             { name: "Jocelyn Bradshaw", title: "President, GPO Operations", priority: "OPERATIONS", color: C.green },
