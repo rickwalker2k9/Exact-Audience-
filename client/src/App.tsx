@@ -18,6 +18,7 @@ import LandRoverDashboard from "./pages/LandRoverDashboard";
 import BarrettDashboard from "./pages/BarrettDashboard";
 import NeuroCatchDashboard from "./pages/NeuroCatchDashboard";
 import InterMedDashboard from "./pages/InterMedDashboard";
+import ImagineAgencyDashboard from "./pages/ImagineAgencyDashboard";
 
 function Router() {
   return (
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/barrett-financial" component={BarrettDashboard} />
       <Route path="/neurocatch" component={NeuroCatchDashboard} />
       <Route path="/intermed-healthtrust" component={InterMedDashboard} />
+      <Route path="/imagine-agency" component={ImagineAgencyDashboard} />
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />
