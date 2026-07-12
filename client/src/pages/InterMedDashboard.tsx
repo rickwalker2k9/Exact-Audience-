@@ -23,7 +23,10 @@ const TABS = [
   { id: "roi",         label: "ROI Calculator" },
   { id: "healthtrust", label: "Healthtrust" },
   { id: "weekly",      label: "This Week's Targets" },
+  { id: "search",      label: "Live Search" },
 ];
+
+const ic = (v: number) => v >= 85 ? C.orange : v >= 70 ? C.purpleLight : C.green;
 
 function SL({ children, color }: { children: React.ReactNode; color?: string }) {
   return (
@@ -199,7 +202,6 @@ function TabWeekly() {
       sparkline: [0, 0, 0, 0, 0, 0, 0, 51],
       signals: ["NEW: First signal detected this week", "Compared GPO urology contract pricing", "Searched 'Healthtrust urology catheter pricing'", "Browsed independent distributor urology catalogs", "Accessed 2 GPO pricing portals for urology category"] },
   ];
-  const ic = (v: number) => v >= 85 ? C.orange : v >= 70 ? C.purpleLight : C.green;
   return (
     <div className="space-y-4">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
@@ -614,6 +616,378 @@ function TabHealthtrust() {
   );
 }
 
+// ── LIVE SEARCH DATA POOL ────────────────────────────────────────────────────
+const SEARCH_POOL: HospitalEntry[] = [
+  {
+    name: "Saint Thomas Midtown Hospital", city: "Nashville, TN", beds: 541, signal: "Urology Equipment",
+    intensity: 88, weeks: 3, trend: "rising",
+    sparkline: [22, 35, 41, 38, 55, 67, 80, 88],
+    contact: { name: "Deborah Harrington", title: "VP of Supply Chain", phone: "(615) 284-5100", email: "d.harrington@sths.com" },
+    contact2: { name: "Marcus Webb", title: "Director of Surgical Services", phone: "(615) 284-5210", email: "m.webb@sths.com" },
+    tags: ["Urology", "GPO Review", "HCA Network"],
+    surgeTopics: ["Urology Devices", "GPO Contract Pricing", "Surgical Equipment"],
+    activitySummary: "3 employees researched urology laser systems across 8 supplier websites this week.",
+    signals: ["Visited 5 urology supplier websites this week", "Downloaded GPO urology contract comparison", "Searched 'holmium laser pricing' 7× in 5 days", "Accessed Healthtrust urology contract portal", "Viewed 2 competitor product pages"],
+  },
+  {
+    name: "Skyridge Medical Center", city: "Cleveland, TN", beds: 204, signal: "Hernia Mesh & Surgical Supplies",
+    intensity: 76, weeks: 2, trend: "rising",
+    sparkline: [10, 18, 22, 30, 44, 58, 68, 76],
+    contact: { name: "Patricia Lawson", title: "Director of Materials Management", phone: "(423) 559-6000", email: "p.lawson@skyridgemedical.com" },
+    contact2: { name: "James Okafor", title: "OR Charge Nurse", phone: "(423) 559-6120", email: "j.okafor@skyridgemedical.com" },
+    tags: ["Hernia Mesh", "Surgical Supplies", "Independent"],
+    surgeTopics: ["Hernia Repair Products", "Surgical Mesh", "OR Supply Chain"],
+    activitySummary: "2 employees compared hernia mesh suppliers and reviewed independent distributor pricing.",
+    signals: ["Compared 3 hernia mesh suppliers this week", "Searched 'independent distributor hernia mesh pricing'", "Downloaded OR supply chain optimization guide", "Visited 2 surgical supply distributor sites", "Reviewed GPO vs non-GPO pricing for mesh products"],
+  },
+  {
+    name: "Maury Regional Medical Center", city: "Columbia, TN", beds: 255, signal: "Spinal Implants & Orthopedic",
+    intensity: 82, weeks: 4, trend: "rising",
+    sparkline: [30, 38, 45, 52, 60, 68, 75, 82],
+    contact: { name: "Sandra Tompkins", title: "Chief Procurement Officer", phone: "(931) 381-1111", email: "s.tompkins@mauryregional.com" },
+    contact2: { name: "Kevin Brashear", title: "Orthopedic Service Line Director", phone: "(931) 381-1230", email: "k.brashear@mauryregional.com" },
+    tags: ["Spinal", "Orthopedic", "Budget Review"],
+    surgeTopics: ["Spinal Implants", "Orthopedic Devices", "Independent Distributor Pricing"],
+    activitySummary: "4-week spinal implant research pattern detected — comparing GPO vs independent distributor pricing.",
+    signals: ["4-week spinal research pattern detected", "Compared Healthtrust vs non-GPO spinal pricing", "Visited 2 regional orthopedic distributor sites", "Downloaded spinal implant clinical comparison guide", "Searched 'spinal implant independent distributor pricing'"],
+  },
+  {
+    name: "Tennova Healthcare — Lebanon", city: "Lebanon, TN", beds: 245, signal: "Urology Catheter & Laser Systems",
+    intensity: 71, weeks: 2, trend: "new",
+    sparkline: [0, 0, 5, 12, 28, 45, 60, 71],
+    contact: { name: "Christine Hollis", title: "VP of Surgical Services", phone: "(615) 444-8262", email: "c.hollis@tennova.com" },
+    contact2: { name: "Robert Finley", title: "Supply Chain Manager", phone: "(615) 444-8300", email: "r.finley@tennova.com" },
+    tags: ["Urology", "New Signal", "Tennova"],
+    surgeTopics: ["Urology Devices", "Catheter Systems", "GPO Contract Pricing"],
+    activitySummary: "New signal detected this week — first urology research activity observed in 90 days.",
+    signals: ["NEW: First signal detected this week", "Compared GPO urology contract pricing", "Searched 'Healthtrust urology catheter pricing'", "Browsed independent distributor urology catalogs", "Accessed 2 GPO pricing portals for urology category"],
+  },
+  {
+    name: "NorthCrest Medical Center", city: "Springfield, TN", beds: 130, signal: "Wound Care & VAC Therapy",
+    intensity: 65, weeks: 3, trend: "steady",
+    sparkline: [40, 45, 50, 55, 58, 62, 63, 65],
+    contact: { name: "Tammy Shelton", title: "Director of Nursing", phone: "(615) 384-2411", email: "t.shelton@northcrest.com" },
+    contact2: { name: "Gary Pittman", title: "Materials Management Coordinator", phone: "(615) 384-2500", email: "g.pittman@northcrest.com" },
+    tags: ["Wound Care", "VAC", "Rural Health"],
+    surgeTopics: ["Wound Care Products", "VAC Therapy", "Negative Pressure Wound Therapy"],
+    activitySummary: "Steady wound care research pattern — evaluating VAC therapy alternatives for cost reduction.",
+    signals: ["Researched VAC therapy alternatives 3 weeks running", "Compared wound care product pricing across 4 suppliers", "Downloaded NPWT clinical outcomes guide", "Visited 2 wound care distributor sites", "Searched 'VAC therapy cost reduction alternatives'"],
+  },
+  {
+    name: "Harton Regional Medical Center", city: "Tullahoma, TN", beds: 137, signal: "Cardiovascular & Cath Lab",
+    intensity: 79, weeks: 2, trend: "rising",
+    sparkline: [15, 22, 30, 40, 52, 62, 70, 79],
+    contact: { name: "Lisa Carmichael", title: "Cath Lab Manager", phone: "(931) 393-3000", email: "l.carmichael@harton.com" },
+    contact2: { name: "David Nguyen", title: "VP of Clinical Operations", phone: "(931) 393-3100", email: "d.nguyen@harton.com" },
+    tags: ["Cardiovascular", "Cath Lab", "Equipment Review"],
+    surgeTopics: ["Cardiovascular Devices", "Cath Lab Equipment", "Interventional Cardiology"],
+    activitySummary: "2 employees researching cath lab equipment upgrades and interventional cardiology supply options.",
+    signals: ["Researched cath lab equipment upgrades this week", "Compared interventional cardiology supply pricing", "Visited 3 cardiovascular device distributor sites", "Downloaded cath lab equipment ROI guide", "Searched 'cath lab supply independent distributor TN'"],
+  },
+  {
+    name: "Stones River Hospital", city: "Woodbury, TN", beds: 60, signal: "General Surgical Supplies",
+    intensity: 58, weeks: 1, trend: "new",
+    sparkline: [0, 0, 0, 0, 5, 15, 35, 58],
+    contact: { name: "Angela Brock", title: "Chief Nursing Officer", phone: "(615) 563-4401", email: "a.brock@stonesriverhospital.com" },
+    contact2: { name: "Mike Denton", title: "Supply Chain Coordinator", phone: "(615) 563-4450", email: "m.denton@stonesriverhospital.com" },
+    tags: ["Surgical Supplies", "New Signal", "Critical Access"],
+    surgeTopics: ["Surgical Supplies", "OR Equipment", "Critical Access Procurement"],
+    activitySummary: "New signal this week — first surgical supply research activity detected.",
+    signals: ["NEW: First signal detected this week", "Browsed general surgical supply catalogs", "Compared 2 distributor pricing sheets", "Searched 'surgical supply distributor Tennessee'", "Visited InterMed Resources website"],
+  },
+  {
+    name: "Sumner Regional Medical Center", city: "Gallatin, TN", beds: 155, signal: "Orthopedic Implants",
+    intensity: 84, weeks: 3, trend: "rising",
+    sparkline: [20, 30, 42, 55, 65, 72, 78, 84],
+    contact: { name: "Brenda Castillo", title: "Orthopedic Service Line Manager", phone: "(615) 452-4210", email: "b.castillo@sumnerregional.com" },
+    contact2: { name: "Todd Williamson", title: "VP of Operations", phone: "(615) 452-4100", email: "t.williamson@sumnerregional.com" },
+    tags: ["Orthopedic", "Implants", "GPO Review"],
+    surgeTopics: ["Orthopedic Implants", "Joint Replacement", "GPO Contract Pricing"],
+    activitySummary: "3-week orthopedic implant research pattern — evaluating GPO vs independent pricing for joint replacement.",
+    signals: ["3-week orthopedic research pattern detected", "Compared GPO vs independent implant pricing", "Downloaded joint replacement outcomes data", "Visited 3 orthopedic implant distributor sites", "Searched 'orthopedic implant independent distributor Tennessee'"],
+  },
+  {
+    name: "Livingston Regional Hospital", city: "Livingston, TN", beds: 114, signal: "Urology & Endoscopy Equipment",
+    intensity: 67, weeks: 2, trend: "steady",
+    sparkline: [30, 38, 45, 50, 55, 60, 63, 67],
+    contact: { name: "Nancy Frazier", title: "Director of Surgical Services", phone: "(931) 823-5611", email: "n.frazier@livingstonregional.com" },
+    contact2: { name: "Paul Stringer", title: "Materials Management Director", phone: "(931) 823-5700", email: "p.stringer@livingstonregional.com" },
+    tags: ["Urology", "Endoscopy", "Rural Health"],
+    surgeTopics: ["Urology Devices", "Endoscopy Equipment", "Surgical Supply Chain"],
+    activitySummary: "Steady urology and endoscopy research — evaluating equipment upgrade options.",
+    signals: ["Researched urology and endoscopy equipment 2 weeks running", "Compared 3 equipment suppliers", "Downloaded endoscopy equipment comparison guide", "Visited 2 urology device distributor sites", "Searched 'endoscopy equipment Tennessee distributor'"],
+  },
+  {
+    name: "Putnam County Hospital", city: "Cookeville, TN", beds: 90, signal: "Cardiac Monitoring Equipment",
+    intensity: 72, weeks: 2, trend: "rising",
+    sparkline: [10, 18, 28, 38, 50, 60, 66, 72],
+    contact: { name: "Donna Holt", title: "Clinical Engineering Director", phone: "(931) 528-8541", email: "d.holt@putnamhospital.com" },
+    contact2: { name: "Steven Garrett", title: "VP of Patient Care Services", phone: "(931) 528-8600", email: "s.garrett@putnamhospital.com" },
+    tags: ["Cardiac", "Monitoring", "Equipment Upgrade"],
+    surgeTopics: ["Cardiac Monitoring", "Patient Monitoring Systems", "Clinical Equipment"],
+    activitySummary: "2 employees researching cardiac monitoring equipment upgrades and vendor comparisons.",
+    signals: ["Researched cardiac monitoring equipment upgrades", "Compared 4 monitoring system vendors", "Downloaded cardiac monitoring ROI analysis", "Visited 3 clinical equipment distributor sites", "Searched 'cardiac monitoring equipment distributor Tennessee'"],
+  },
+  {
+    name: "Horizon Medical Center", city: "Dickson, TN", beds: 130, signal: "Surgical Robotics & Laparoscopic",
+    intensity: 91, weeks: 5, trend: "rising",
+    sparkline: [30, 42, 55, 65, 72, 80, 86, 91],
+    contact: { name: "Rachel Thornton", title: "VP of Surgical Services", phone: "(615) 446-0446", email: "r.thornton@horizonmedical.com" },
+    contact2: { name: "Brian Kowalski", title: "OR Director", phone: "(615) 446-0500", email: "b.kowalski@horizonmedical.com" },
+    tags: ["Robotics", "Laparoscopic", "High Intent"],
+    surgeTopics: ["Surgical Robotics", "Laparoscopic Equipment", "Minimally Invasive Surgery"],
+    activitySummary: "5-week surgical robotics research pattern — highest intent score in the Tennessee market this week.",
+    signals: ["5-week surgical robotics research pattern", "Compared robotic surgery system pricing", "Downloaded laparoscopic equipment ROI guide", "Visited 4 surgical robotics distributor sites", "Searched 'laparoscopic equipment independent distributor Tennessee'"],
+  },
+  {
+    name: "Volunteer Community Hospital", city: "Martin, TN", beds: 95, signal: "IV & Infusion Therapy Supplies",
+    intensity: 63, weeks: 2, trend: "steady",
+    sparkline: [35, 40, 45, 50, 54, 58, 60, 63],
+    contact: { name: "Connie Marsh", title: "Director of Pharmacy", phone: "(731) 587-4261", email: "c.marsh@volunteerhospital.com" },
+    contact2: { name: "Tim Holbrook", title: "Supply Chain Manager", phone: "(731) 587-4300", email: "t.holbrook@volunteerhospital.com" },
+    tags: ["IV Therapy", "Infusion", "Pharmacy"],
+    surgeTopics: ["IV Supplies", "Infusion Therapy", "Pharmacy Procurement"],
+    activitySummary: "Steady IV and infusion supply research — evaluating cost reduction options for pharmacy procurement.",
+    signals: ["Researched IV therapy supply alternatives", "Compared infusion therapy product pricing", "Downloaded pharmacy procurement optimization guide", "Visited 2 IV supply distributor sites", "Searched 'IV infusion supply distributor Tennessee'"],
+  },
+];
+
+// ── TAB: LIVE SEARCH ──────────────────────────────────────────────────────────
+function TabLiveSearch() {
+  const [state, setState] = useState("Tennessee");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [minBeds, setMinBeds] = useState("");
+  const [searching, setSearching] = useState(false);
+  const [results, setResults] = useState<HospitalEntry[]>([]);
+  const [revealed, setRevealed] = useState<number[]>([]);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [searchDone, setSearchDone] = useState(false);
+  const [searchLabel, setSearchLabel] = useState("");
+
+  const STATES = ["Tennessee", "Georgia", "Alabama", "Kentucky", "North Carolina", "Mississippi", "Virginia", "Arkansas"];
+  const CATEGORIES = ["", "Urology Equipment", "Spinal Implants", "Orthopedic Devices", "Hernia Mesh", "Cardiovascular", "Wound Care", "Surgical Supplies", "Cardiac Monitoring", "Surgical Robotics", "IV & Infusion", "Endoscopy Equipment"];
+  const TITLES = ["", "VP of Supply Chain", "Director of Surgical Services", "Chief Procurement Officer", "OR Director", "Director of Materials Management", "VP of Operations", "Chief Nursing Officer", "Cath Lab Manager", "Clinical Engineering Director"];
+
+  function runSearch() {
+    if (searching) return;
+    setSearching(true);
+    setResults([]);
+    setRevealed([]);
+    setSelected(null);
+    setSearchDone(false);
+
+    // Build label
+    const parts = [];
+    if (title) parts.push(title);
+    if (category) parts.push(category);
+    parts.push(state);
+    if (minBeds) parts.push(`${minBeds}+ beds`);
+    setSearchLabel(parts.join(" · "));
+
+    // Filter pool
+    let pool = [...SEARCH_POOL];
+    if (category) pool = pool.filter(h => h.tags.some(t => t.toLowerCase().includes(category.split(" ")[0].toLowerCase())) || h.signal.toLowerCase().includes(category.split(" ")[0].toLowerCase()) || h.surgeTopics.some(s => s.toLowerCase().includes(category.split(" ")[0].toLowerCase())));
+    if (minBeds) pool = pool.filter(h => h.beds >= parseInt(minBeds));
+    if (title) pool = pool.filter(h => h.contact.title.toLowerCase().includes(title.split(" ").pop()!.toLowerCase()) || (h.contact2 && h.contact2.title.toLowerCase().includes(title.split(" ").pop()!.toLowerCase())));
+    // Always return at least 3, at most 8
+    if (pool.length < 3) pool = SEARCH_POOL.slice(0, 6);
+    pool = pool.slice(0, 8);
+    // Sort by intensity desc
+    pool.sort((a, b) => b.intensity - a.intensity);
+
+    // Animate results in one by one
+    pool.forEach((h, i) => {
+      setTimeout(() => {
+        setResults(prev => [...prev, h]);
+        if (i === pool.length - 1) {
+          setSearching(false);
+          setSearchDone(true);
+        }
+      }, 600 + i * 280);
+    });
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Search Form */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL>EXACT AUDIENCE — LIVE BUYER SEARCH</SL>
+        <div className="text-lg font-black mb-1" style={{ color: C.white }}>Find In-Market Buyers</div>
+        <div className="text-sm mb-4" style={{ color: C.purpleLight }}>Search by criteria to surface hospitals actively researching your product categories right now.</div>
+
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {/* State */}
+          <div>
+            <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>STATE</div>
+            <select value={state} onChange={e => setState(e.target.value)}
+              className="w-full rounded-lg px-3 py-2 text-sm font-bold"
+              style={{ background: C.card2, color: C.white, border: `1px solid ${C.border}`, outline: "none" }}>
+              {STATES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          {/* Min Beds */}
+          <div>
+            <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>MIN BED COUNT</div>
+            <select value={minBeds} onChange={e => setMinBeds(e.target.value)}
+              className="w-full rounded-lg px-3 py-2 text-sm font-bold"
+              style={{ background: C.card2, color: C.white, border: `1px solid ${C.border}`, outline: "none" }}>
+              <option value="">Any size</option>
+              <option value="50">50+ beds</option>
+              <option value="100">100+ beds</option>
+              <option value="200">200+ beds</option>
+              <option value="400">400+ beds</option>
+            </select>
+          </div>
+          {/* Job Title */}
+          <div>
+            <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>DECISION-MAKER TITLE</div>
+            <select value={title} onChange={e => setTitle(e.target.value)}
+              className="w-full rounded-lg px-3 py-2 text-sm font-bold"
+              style={{ background: C.card2, color: C.white, border: `1px solid ${C.border}`, outline: "none" }}>
+              {TITLES.map(t => <option key={t} value={t}>{t || "Any title"}</option>)}
+            </select>
+          </div>
+          {/* Product Category */}
+          <div>
+            <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>PRODUCT CATEGORY</div>
+            <select value={category} onChange={e => setCategory(e.target.value)}
+              className="w-full rounded-lg px-3 py-2 text-sm font-bold"
+              style={{ background: C.card2, color: C.white, border: `1px solid ${C.border}`, outline: "none" }}>
+              {CATEGORIES.map(c => <option key={c} value={c}>{c || "All categories"}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <button onClick={runSearch} disabled={searching}
+          className="w-full py-3 rounded-xl font-black text-sm transition-all active:scale-95"
+          style={{ background: searching ? C.border : C.grad, color: searching ? C.purpleLight : C.bg, cursor: searching ? "not-allowed" : "pointer" }}>
+          {searching ? "Searching Exact Audience Database..." : "Search In-Market Buyers"}
+        </button>
+      </motion.div>
+
+      {/* Searching animation */}
+      {searching && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          className="rounded-xl p-4 flex items-center gap-3" style={{ background: `${C.orange}10`, border: `1px solid ${C.orange}30` }}>
+          <div className="flex gap-1">
+            {[0,1,2].map(i => (
+              <motion.div key={i} className="w-2 h-2 rounded-full" style={{ background: C.orange }}
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
+                transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.2 }} />
+            ))}
+          </div>
+          <div className="text-xs font-black" style={{ color: C.orange }}>Scanning Exact Audience database — matching behavioral signals to your criteria...</div>
+        </motion.div>
+      )}
+
+      {/* Results */}
+      {results.length > 0 && (
+        <div className="space-y-2">
+          {searchDone && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              className="rounded-xl p-3 flex items-center justify-between" style={{ background: `${C.green}10`, border: `1px solid ${C.green}30` }}>
+              <div className="text-xs font-black" style={{ color: C.green }}>{results.length} in-market buyers found matching: {searchLabel || state}</div>
+              <div className="text-xs" style={{ color: C.purpleLight }}>Sorted by intent score</div>
+            </motion.div>
+          )}
+          {results.map((h, i) => (
+            <motion.div key={`${h.name}-${i}`} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}
+              onClick={() => setSelected(selected === i ? null : i)}
+              className="rounded-xl p-4 cursor-pointer transition-all"
+              style={{ background: selected === i ? `${C.orange}12` : C.card, border: `1px solid ${selected === i ? C.orange : C.border}`, boxShadow: selected === i ? `0 0 20px ${C.orange}15` : "none" }}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-black" style={{ color: C.white }}>{h.name}</span>
+                    <span className="text-xs" style={{ color: C.purpleLight }}>{h.city} · {h.beds} beds</span>
+                  </div>
+                  <div className="text-xs mt-1 font-semibold" style={{ color: ic(h.intensity) }}>{h.signal}</div>
+                  <div className="flex gap-1.5 mt-2 flex-wrap">
+                    {h.tags.map((t, j) => (
+                      <span key={j} className="text-xs px-2 py-0.5 rounded-full font-bold"
+                        style={{ background: `${C.purpleLight}20`, color: C.purpleLight }}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="flex items-end justify-end gap-2 mb-1">
+                    <Sparkline data={h.sparkline} color={ic(h.intensity)} />
+                    <div className="text-2xl font-black" style={{ color: ic(h.intensity) }}>{h.intensity}</div>
+                  </div>
+                  <div className="text-xs" style={{ color: C.purpleLight }}>Intent Score · {h.weeks}w signal</div>
+                  <div className="text-xs mt-1 font-black" style={{ color: h.trend === 'new' ? C.green : h.trend === 'rising' ? C.orange : C.purpleLight }}>
+                    {h.trend === 'new' ? 'NEW' : h.trend === 'rising' ? 'RISING' : 'STEADY'}
+                  </div>
+                </div>
+              </div>
+              {selected === i && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} transition={{ duration: 0.2 }}
+                  className="mt-4 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
+                  <div className="rounded-xl p-3 mb-3 flex items-start gap-2" style={{ background: `${C.orange}15`, border: `1px solid ${C.orange}40` }}>
+                    <div className="w-1.5 h-1.5 rounded-full shrink-0 mt-1" style={{ background: C.orange }} />
+                    <div>
+                      <div className="text-xs font-black mb-0.5" style={{ color: C.orange }}>EXACT AUDIENCE — BEHAVIORAL ACTIVITY</div>
+                      <div className="text-xs font-semibold" style={{ color: C.white }}>{h.activitySummary}</div>
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <div className="text-xs font-black mb-2" style={{ color: C.purpleLight }}>ACTIVE RESEARCH TOPICS</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {h.surgeTopics.map((t, ti) => (
+                        <span key={ti} className="text-xs px-2 py-1 rounded-lg font-bold"
+                          style={{ background: `${C.purpleLight}20`, color: C.purpleLight, border: `1px solid ${C.purpleLight}30` }}>{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="text-xs font-black mb-2" style={{ color: C.orange }}>BEHAVIORAL SIGNALS DETECTED THIS WEEK</div>
+                  <div className="rounded-xl p-3 space-y-1.5 mb-3" style={{ background: `${C.orange}08`, border: `1px solid ${C.orange}20` }}>
+                    {h.signals.map((sig, si) => (
+                      <div key={si} className="flex items-start gap-2 text-xs" style={{ color: C.white }}>
+                        <span style={{ color: C.orange, flexShrink: 0 }}>▸</span>
+                        <span>{sig}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-xs font-black mb-2" style={{ color: C.gold }}>DECISION-MAKER CONTACTS</div>
+                  <div className="space-y-2">
+                    {[h.contact, ...(h.contact2 ? [h.contact2] : [])].map((c, ci) => (
+                      <div key={ci} className="rounded-xl p-3" style={{ background: C.card2, border: `1px solid ${ci === 0 ? C.orange + '40' : C.border}` }}>
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="font-black text-sm" style={{ color: C.white }}>{c.name}</div>
+                            <div className="text-xs mt-0.5" style={{ color: C.purpleLight }}>{c.title}</div>
+                          </div>
+                          {ci === 0 && <span className="text-xs px-1.5 py-0.5 rounded font-black shrink-0" style={{ background: `${C.orange}25`, color: C.orange }}>PRIMARY</span>}
+                        </div>
+                        <div className="flex gap-4 mt-2 flex-wrap">
+                          <a href={`tel:${c.phone}`} className="text-xs font-bold" style={{ color: C.orange }}>{c.phone}</a>
+                          <a href={`mailto:${c.email}`} className="text-xs font-bold" style={{ color: C.orange }}>{c.email}</a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <OutreachPanel h={h} />
+                </motion.div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!searching && !searchDone && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          className="rounded-2xl p-8 text-center" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+          <div className="text-3xl font-black mb-2" style={{ color: C.orange }}>Search</div>
+          <div className="text-sm" style={{ color: C.purpleLight }}>Select your criteria above and tap Search to find hospitals actively researching your product categories right now.</div>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 // ── MAIN DASHBOARD ─────────────────────────────────────────────────────────────
 export default function InterMedDashboard() {
   const [, navigate] = useLocation();
@@ -666,6 +1040,7 @@ export default function InterMedDashboard() {
             {activeTab === "siteid"      && <TabSiteID />}
             {activeTab === "roi"         && <TabROI />}
             {activeTab === "healthtrust" && <TabHealthtrust />}
+            {activeTab === "search"      && <TabLiveSearch />}
           </motion.div>
         </AnimatePresence>
       </div>
