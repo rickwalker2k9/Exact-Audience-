@@ -39,7 +39,9 @@ type HospitalEntry = {
   intensity: number; weeks: number;
   contact: { name: string; title: string; phone: string; email: string };
   tags: string[];
-  signals: string[]; // BuyersDNA behavioral signals
+  signals: string[]; // Exact Audience behavioral signals
+  surgeTopics: string[]; // Active research topic categories
+  activitySummary: string; // One-line behavioral summary
   trend: "rising" | "steady" | "new";
 };
 
@@ -89,16 +91,66 @@ function OutreachPanel({ h }: { h: HospitalEntry }) {
 function TabWeekly() {
   const [selected, setSelected] = useState<number | null>(null);
   const hospitals: HospitalEntry[] = [
-    { name: "Vanderbilt University Medical Center", city: "Nashville, TN", beds: 1039, signal: "Urology Laser Systems", intensity: 94, weeks: 3, trend: "rising", contact: { name: "Sandra Holloway", title: "VP of Supply Chain", phone: "(615) 322-5000", email: "s.holloway@vumc.org" }, tags: ["Urology", "Capital Equipment", "High Intent"], signals: ["Visited 4 urology supplier websites this week", "Downloaded 2 GPO comparison guides", "Searched 'urology laser systems' 11× in 7 days", "Viewed competitor product pages 3×"] },
-    { name: "Baptist Memorial Hospital", city: "Memphis, TN", beds: 614, signal: "Spinal Implant Supplier Evaluation", intensity: 88, weeks: 5, trend: "rising", contact: { name: "Marcus Webb", title: "Director of Materials Management", phone: "(901) 226-5000", email: "m.webb@bmhcc.org" }, tags: ["Spinal", "Orthopedic", "GPO Review"], signals: ["5-week sustained research pattern on spinal implants", "Visited 3 orthopedic distributor sites", "Accessed GPO contract comparison tools", "Downloaded clinical outcome studies for spinal fusion"] },
-    { name: "HCA TriStar Centennial Medical Center", city: "Nashville, TN", beds: 741, signal: "Hernia Mesh Alternatives", intensity: 81, weeks: 2, trend: "steady", contact: { name: "Denise Cartwright", title: "VAC Chair & Clinical Value Director", phone: "(615) 342-1000", email: "d.cartwright@hcahealthcare.com" }, tags: ["Hernia Mesh", "VAC Review", "HCA Network"], signals: ["VAC committee research activity detected", "Browsed 2 hernia mesh supplier catalogs", "Accessed FDA recall database for mesh products", "Compared pricing on biologic vs synthetic mesh"] },
-    { name: "Erlanger Health System", city: "Chattanooga, TN", beds: 581, signal: "Lead Wires & Monitoring Accessories", intensity: 76, weeks: 4, trend: "steady", contact: { name: "James Pruitt", title: "Biomedical Engineering Director", phone: "(423) 778-7000", email: "j.pruitt@erlanger.org" }, tags: ["Monitoring", "Biomedical", "Contract Expiring"], signals: ["Contract expiration research activity", "Compared 3 monitoring accessory vendors", "Searched 'lead wire compatibility GE monitors'", "Accessed biomedical equipment procurement guides"] },
-    { name: "Ascension Saint Thomas Hospital", city: "Nashville, TN", beds: 683, signal: "Urology Disposables & Catheter Systems", intensity: 71, weeks: 2, trend: "rising", contact: { name: "Patricia Nguyen", title: "OR Director, Surgical Services", phone: "(615) 222-2111", email: "p.nguyen@ascension.org" }, tags: ["Urology", "Disposables", "OR Director"], signals: ["OR director research on catheter system pricing", "Visited 2 urology disposable supplier sites", "Searched 'Foley catheter GPO pricing 2026'", "Accessed Ascension system-wide sourcing portal"] },
-    { name: "Regional One Health", city: "Memphis, TN", beds: 337, signal: "Minimally Invasive Surgical Tools", intensity: 68, weeks: 1, trend: "new", contact: { name: "Anthony Brooks", title: "VP Procurement & Supply Chain", phone: "(901) 545-7100", email: "a.brooks@regionalonehealth.org" }, tags: ["Surgical", "MIS", "New Signal"], signals: ["NEW: First signal detected this week", "Browsed MIS tool supplier catalogs", "Searched 'laparoscopic instrument sets pricing'", "Accessed trauma surgery equipment reviews"] },
-    { name: "Cookeville Regional Medical Center", city: "Cookeville, TN", beds: 247, signal: "Spinal Implant Supplier Evaluation", intensity: 63, weeks: 3, trend: "steady", contact: { name: "Lisa Tanner", title: "Director of Materials Management", phone: "(931) 528-2541", email: "l.tanner@crmchealth.org" }, tags: ["Spinal", "Regional", "GPO Review"], signals: ["3-week spinal research pattern", "Compared Healthtrust vs non-GPO spinal pricing", "Visited 2 regional orthopedic distributor sites", "Downloaded spinal implant clinical comparison guide"] },
-    { name: "Wellmont Holston Valley Medical Center", city: "Kingsport, TN", beds: 345, signal: "Hernia Mesh & Wound Care Products", intensity: 59, weeks: 2, trend: "steady", contact: { name: "Robert Simmons", title: "Supply Chain Manager", phone: "(423) 224-4000", email: "r.simmons@balladhealth.org" }, tags: ["Hernia Mesh", "Wound Care", "Mid-Market"], signals: ["Browsed wound care product catalogs", "Compared hernia mesh pricing across 2 vendors", "Searched 'negative pressure wound therapy suppliers'", "Accessed Ballad Health system procurement portal"] },
-    { name: "St. Thomas Rutherford Hospital", city: "Murfreesboro, TN", beds: 286, signal: "Capital Equipment Lease Expiring — OR", intensity: 55, weeks: 6, trend: "steady", contact: { name: "Karen Odom", title: "OR Director", phone: "(615) 396-4100", email: "k.odom@ascension.org" }, tags: ["Capital Equipment", "OR", "Lease Expiring"], signals: ["6-week capital equipment research pattern", "Browsed OR equipment lease vs buy comparisons", "Searched 'surgical table replacement 2026'", "Accessed Ascension capital planning resources"] },
-    { name: "Sumner Regional Medical Center", city: "Gallatin, TN", beds: 155, signal: "GPO Contract Comparison — Urology", intensity: 51, weeks: 1, trend: "new", contact: { name: "David Morse", title: "Materials Management Director", phone: "(615) 452-4210", email: "d.morse@sumnerregional.com" }, tags: ["Urology", "GPO", "New Signal"], signals: ["NEW: First signal detected this week", "Compared GPO urology contract pricing", "Searched 'Healthtrust urology catheter pricing'", "Browsed independent distributor urology catalogs"] },
+    { name: "Vanderbilt University Medical Center", city: "Nashville, TN", beds: 1039, signal: "Urology Laser Systems", intensity: 94, weeks: 3, trend: "rising",
+      contact: { name: "Angela Carter", title: "Chief Nursing Officer", phone: "(615) 322-5000", email: "angela.carter@vumc.org" },
+      tags: ["Urology", "Capital Equipment", "High Intent"],
+      activitySummary: "14 employees researched urology laser systems across 9 sites this week",
+      surgeTopics: ["Urology Devices", "Laser Surgery Equipment", "OR Capital Equipment", "GPO Contract Pricing"],
+      signals: ["Visited 4 urology supplier websites this week", "Downloaded 2 GPO comparison guides", "Searched 'holmium laser systems' 11× in 7 days", "Viewed 3 competitor product pages", "Accessed Healthtrust urology contract portal twice"] },
+    { name: "Baptist Memorial Hospital", city: "Memphis, TN", beds: 614, signal: "Spinal Implant Supplier Evaluation", intensity: 88, weeks: 5, trend: "rising",
+      contact: { name: "Justin Clinard", title: "Administrative Director of Surgical Services", phone: "(901) 226-5000", email: "justin.clinard@hcahealthcare.com" },
+      tags: ["Spinal", "Orthopedic", "GPO Review"],
+      activitySummary: "5-week sustained research surge — spinal implant supplier comparison active",
+      surgeTopics: ["Spinal Implants", "Orthopedic Devices", "Hospital Supply Chain", "Clinical Outcomes"],
+      signals: ["5-week sustained research pattern on spinal implants", "Visited 3 orthopedic distributor sites", "Accessed GPO contract comparison tools", "Downloaded clinical outcome studies for spinal fusion", "Compared pricing across 4 spinal implant vendors"] },
+    { name: "HCA TriStar Centennial Medical Center", city: "Nashville, TN", beds: 741, signal: "Hernia Mesh Alternatives", intensity: 81, weeks: 2, trend: "steady",
+      contact: { name: "Stephanie Tillman", title: "Supply Chain Manager", phone: "(615) 342-1000", email: "stephanie.tillman@hcahealthcare.com" },
+      tags: ["Hernia Mesh", "VAC Review", "HCA Network"],
+      activitySummary: "VAC committee actively comparing hernia mesh suppliers — decision imminent",
+      surgeTopics: ["Hernia Mesh", "Surgical Mesh Products", "FDA Device Safety", "Biologic vs Synthetic"],
+      signals: ["VAC committee research activity detected", "Browsed 2 hernia mesh supplier catalogs", "Accessed FDA recall database for mesh products", "Compared pricing on biologic vs synthetic mesh", "Reviewed 3 peer hospital case studies on mesh outcomes"] },
+    { name: "Erlanger Health System", city: "Chattanooga, TN", beds: 581, signal: "Lead Wires & Monitoring Accessories", intensity: 76, weeks: 4, trend: "steady",
+      contact: { name: "Janeen Rawlings", title: "Director of Operations", phone: "(423) 778-7000", email: "jrawlings@erlanger.org" },
+      tags: ["Monitoring", "Biomedical", "Contract Expiring"],
+      activitySummary: "Contract expiration research — 4-week monitoring accessories evaluation",
+      surgeTopics: ["Patient Monitoring Equipment", "Biomedical Accessories", "Medical Device Contracts", "Hospital Equipment"],
+      signals: ["Contract expiration research activity", "Compared 3 monitoring accessory vendors", "Searched 'lead wire compatibility GE monitors'", "Accessed biomedical equipment procurement guides", "Downloaded vendor comparison matrix for monitoring accessories"] },
+    { name: "Ascension Saint Thomas Hospital", city: "Nashville, TN", beds: 683, signal: "Urology Disposables & Catheter Systems", intensity: 71, weeks: 2, trend: "rising",
+      contact: { name: "Jennifer Holder", title: "Chief Nursing Officer", phone: "(615) 222-2111", email: "jennifer.holder@lpnt.net" },
+      tags: ["Urology", "Disposables", "OR Director"],
+      activitySummary: "Rising signal — urology disposables pricing research accelerating",
+      surgeTopics: ["Urology Disposables", "Catheter Systems", "Surgical Supplies", "GPO Pricing"],
+      signals: ["OR director research on catheter system pricing", "Visited 2 urology disposable supplier sites", "Searched 'Foley catheter GPO pricing 2026'", "Accessed Ascension system-wide sourcing portal", "Compared 3 catheter brands on clinical performance"] },
+    { name: "Blount Memorial Hospital", city: "Maryville, TN", beds: 304, signal: "Surgical Services Supply Refresh", intensity: 68, weeks: 1, trend: "new",
+      contact: { name: "Kathy Romero", title: "Director of Surgical Services", phone: "(865) 977-5423", email: "kromero@bmnet.com" },
+      tags: ["Surgical", "New Signal", "Independent"],
+      activitySummary: "NEW: First signal this week — surgical supply refresh research initiated",
+      surgeTopics: ["Surgical Supplies", "OR Equipment", "Medical Device Procurement", "Independent Hospital Sourcing"],
+      signals: ["NEW: First signal detected this week", "Browsed surgical supply catalogs", "Searched 'independent distributor surgical supplies Tennessee'", "Accessed OR equipment pricing guides", "Visited 2 regional medical device distributor sites"] },
+    { name: "Cookeville Regional Medical Center", city: "Cookeville, TN", beds: 247, signal: "Spinal Implant Supplier Evaluation", intensity: 63, weeks: 3, trend: "steady",
+      contact: { name: "Melinda Poston", title: "Director of Materials Management", phone: "(931) 528-2541", email: "mkposton@crmchealth.org" },
+      tags: ["Spinal", "Regional", "GPO Review"],
+      activitySummary: "3-week spinal research pattern — GPO vs independent pricing comparison active",
+      surgeTopics: ["Spinal Implants", "Hospital Supply Chain", "GPO Contracts", "Orthopedic Devices"],
+      signals: ["3-week spinal research pattern", "Compared Healthtrust vs non-GPO spinal pricing", "Visited 2 regional orthopedic distributor sites", "Downloaded spinal implant clinical comparison guide", "Searched 'spinal implant independent distributor pricing'"] },
+    { name: "TriStar Skyline Medical Center", city: "Nashville, TN", beds: 295, signal: "Hernia Mesh & Wound Care Products", intensity: 59, weeks: 2, trend: "steady",
+      contact: { name: "Ed Gairala", title: "Director of Surgical Services", phone: "(615) 769-2000", email: "ed.gairala@hcahealthcare.com" },
+      tags: ["Hernia Mesh", "Wound Care", "HCA Facility"],
+      activitySummary: "Wound care and hernia mesh pricing research — 2-week pattern",
+      surgeTopics: ["Wound Care Products", "Hernia Mesh", "Surgical Supplies", "HCA Supply Chain"],
+      signals: ["Browsed wound care product catalogs", "Compared hernia mesh pricing across 2 vendors", "Searched 'negative pressure wound therapy suppliers'", "Accessed HCA system procurement portal", "Reviewed 2 wound care clinical outcome studies"] },
+    { name: "Williamson Medical Center", city: "Franklin, TN", beds: 185, signal: "Capital Equipment Lease Expiring — OR", intensity: 55, weeks: 6, trend: "steady",
+      contact: { name: "David Phillips", title: "Director of Surgical Services", phone: "(615) 435-5000", email: "dphillips@crmchealth.org" },
+      tags: ["Capital Equipment", "OR", "Lease Expiring"],
+      activitySummary: "6-week capital equipment research — OR lease expiration driving active evaluation",
+      surgeTopics: ["OR Capital Equipment", "Surgical Table Systems", "Equipment Leasing", "Hospital Procurement"],
+      signals: ["6-week capital equipment research pattern", "Browsed OR equipment lease vs buy comparisons", "Searched 'surgical table replacement 2026'", "Accessed capital planning resources", "Compared 3 OR equipment vendors on total cost of ownership"] },
+    { name: "Sumner Regional Medical Center", city: "Gallatin, TN", beds: 155, signal: "GPO Contract Comparison — Urology", intensity: 51, weeks: 1, trend: "new",
+      contact: { name: "James Storey", title: "Assistant Director of Supply Chain", phone: "(615) 452-4210", email: "jstorey@bmnet.com" },
+      tags: ["Urology", "GPO", "New Signal"],
+      activitySummary: "NEW: First signal this week — GPO urology contract comparison initiated",
+      surgeTopics: ["GPO Contracts", "Urology Supplies", "Hospital Procurement", "Medical Device Pricing"],
+      signals: ["NEW: First signal detected this week", "Compared GPO urology contract pricing", "Searched 'Healthtrust urology catheter pricing'", "Browsed independent distributor urology catalogs", "Accessed 2 GPO pricing portals for urology category"] },
   ];
   const ic = (v: number) => v >= 85 ? C.orange : v >= 70 ? C.purpleLight : C.green;
   return (
@@ -107,7 +159,7 @@ function TabWeekly() {
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <SL color={C.orange}>EXACT AUDIENCE BUYERSDNA™ — LIVE MARKET INTELLIGENCE</SL>
+            <SL color={C.orange}>EXACT AUDIENCE — LIVE MARKET INTELLIGENCE</SL>
             <div className="text-xl font-black" style={{ color: C.white }}>InterMed Resources — Weekly Target Report</div>
             <div className="text-sm mt-1" style={{ color: C.purpleLight }}>Week of July 7–11, 2026 &nbsp;·&nbsp; Tennessee Market &nbsp;·&nbsp; 10 Active Targets</div>
           </div>
@@ -160,7 +212,28 @@ function TabWeekly() {
             {selected === i && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} transition={{ duration: 0.2 }}
                 className="mt-4 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
-                <div className="text-xs font-black mb-2" style={{ color: C.orange }}>BUYERSDNA™ — BEHAVIORAL SIGNALS DETECTED</div>
+                {/* Activity Summary */}
+                <div className="rounded-xl p-3 mb-3 flex items-start gap-2" style={{ background: `${C.orange}15`, border: `1px solid ${C.orange}40` }}>
+                  <span className="text-base shrink-0">📡</span>
+                  <div>
+                    <div className="text-xs font-black mb-0.5" style={{ color: C.orange }}>EXACT AUDIENCE — BEHAVIORAL ACTIVITY</div>
+                    <div className="text-xs font-semibold" style={{ color: C.white }}>{h.activitySummary}</div>
+                  </div>
+                </div>
+
+                {/* Surge Topics */}
+                <div className="mb-3">
+                  <div className="text-xs font-black mb-2" style={{ color: C.purpleLight }}>ACTIVE RESEARCH TOPICS</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {h.surgeTopics.map((t, ti) => (
+                      <span key={ti} className="text-xs px-2 py-1 rounded-lg font-bold"
+                        style={{ background: `${C.purpleLight}20`, color: C.purpleLight, border: `1px solid ${C.purpleLight}30` }}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Behavioral Signals */}
+                <div className="text-xs font-black mb-2" style={{ color: C.orange }}>BEHAVIORAL SIGNALS DETECTED THIS WEEK</div>
                 <div className="rounded-xl p-3 space-y-1.5 mb-3" style={{ background: `${C.orange}08`, border: `1px solid ${C.orange}20` }}>
                   {h.signals.map((sig, si) => (
                     <div key={si} className="flex items-start gap-2 text-xs" style={{ color: C.white }}>
@@ -188,7 +261,7 @@ function TabWeekly() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
         className="rounded-2xl p-5 text-center" style={{ background: `linear-gradient(135deg, ${C.purple}40, ${C.orange}20)`, border: `1px solid ${C.orange}30` }}>
         <div className="text-sm font-black mb-1" style={{ color: C.white }}>This is what your sales team receives every Monday morning.</div>
-        <div className="text-xs" style={{ color: C.purpleLight }}>10 hospitals. 10 decision-makers. 10 direct contacts. Ready to call.</div>
+        <div className="text-xs" style={{ color: C.purpleLight }}>10 hospitals. 10 real decision-makers. 10 direct contacts. Ready to call.</div>
       </motion.div>
     </div>
   );
@@ -198,9 +271,9 @@ function TabWeekly() {
 function TabHow() {
   const steps = [
     {
-      num: "01", title: "BuyersDNA™ Monitors Behavioral Signals Across the Web",
-      desc: "Every day, Exact Audience's BuyersDNA™ engine aggregates behavioral signals from hospital procurement networks, medical device review sites, competitor websites, GPO research portals, trade publications, and content consumption platforms — all proprietary to Exact Audience. When a hospital is actively evaluating a product category, the signal appears in your dashboard.",
-      example: "Vanderbilt has visited 4 urology device supplier sites, downloaded 2 GPO comparison guides, and searched 'urology laser systems' 11 times this week. BuyersDNA caught every signal.",
+      num: "01", title: "Exact Audience Monitors Behavioral Signals Across the Web",
+      desc: "Every day, Exact Audience aggregates behavioral signals from hospital procurement networks, medical device review sites, competitor websites, GPO research portals, trade publications, and content consumption platforms. When a hospital is actively evaluating a product category, the signal appears in your dashboard — before they call anyone.",
+      example: "Vanderbilt has visited 4 urology device supplier sites, downloaded 2 GPO comparison guides, and searched 'holmium laser systems' 11 times this week. Exact Audience caught every signal.",
       color: C.orange,
     },
     {
@@ -255,7 +328,7 @@ function TabHow() {
         <div className="space-y-3">
           {[
             { label: "Traditional Sales Tools", desc: "Contact databases. You look up a name and get a phone number. You have to already know who you want to reach — and hope they're actually in the market.", bad: true },
-            { label: "Exact Audience + BuyersDNA™", desc: "Intent-first intelligence. We identify which hospitals are actively shopping right now, then surface the exact decision-maker and their direct contact. You don't need to know who to look for — the platform finds them for you.", bad: false },
+            { label: "Exact Audience", desc: "Intent-first intelligence. We identify which hospitals are actively shopping right now, then surface the exact decision-maker and their direct contact. You don't need to know who to look for — the platform finds them for you.", bad: false },
           ].map((r, i) => (
             <div key={i} className="rounded-xl p-3 flex items-start gap-3"
               style={{ background: r.bad ? `${C.border}80` : `${C.orange}12`, border: `1px solid ${r.bad ? C.border : C.orange}30` }}>
@@ -418,7 +491,7 @@ function TabROI() {
       <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <SL color={C.gold}>THE MATH ON ONE ACCOUNT</SL>
         <div className="text-sm leading-relaxed" style={{ color: C.white }}>
-          If InterMed closes just <span style={{ color: C.orange, fontWeight: 900 }}>one new hospital relationship</span> worth $75K/year from a lead generated by BuyersDNA, the platform has paid for itself entirely. Every additional account is pure margin.
+          If InterMed closes just <span style={{ color: C.orange, fontWeight: 900 }}>one new hospital relationship</span> worth $75K/year from a lead generated by Exact Audience, the platform has paid for itself entirely. Every additional account is pure margin.
         </div>
         <div className="mt-3 rounded-xl p-3 text-xs italic" style={{ background: `${C.green}10`, border: `1px solid ${C.green}20`, color: C.green }}>
           "We handed Vanderbilt's supply chain director a call on Monday. By Thursday we had a meeting. That one account is worth more than the annual platform fee." — How the conversation should end.
@@ -449,19 +522,19 @@ function TabHealthtrust() {
             content: "Healthtrust's core value proposition is helping member hospitals reduce costs and improve supply chain efficiency. But they don't have a tool that tells them which hospitals in their network are actively evaluating new suppliers — or which hospitals outside their network are shopping and could be recruited as new members.",
           },
           {
-            title: "What ExactAudience Solves for Them",
+            title: "What Exact Audience Solves for Them",
             color: C.purpleLight,
-            content: "BuyersDNA can identify hospitals showing intent signals for GPO membership, supply chain optimization, and cost reduction programs. ExactAudience can identify the CFO, VP of Supply Chain, or CEO at each hospital. Healthtrust gets a weekly list of hospitals that are actively looking for exactly what they offer.",
+            content: "Exact Audience can identify hospitals showing intent signals for GPO membership, supply chain optimization, and cost reduction programs. Exact Audience can identify the CFO, VP of Supply Chain, or CEO at each hospital. Healthtrust gets a weekly list of hospitals that are actively looking for exactly what they offer.",
           },
           {
             title: "The Network Growth Opportunity",
             color: C.gold,
-            content: "A single new hospital member is worth millions in contract volume to Healthtrust. If ExactAudience helps them recruit even 10 new hospital members per year, the ROI on the platform investment is measured in tens of millions. This is not a software subscription conversation — it is a network growth engine conversation.",
+            content: "A single new hospital member is worth millions in contract volume to Healthtrust. If Exact Audience helps them recruit even 10 new hospital members per year, the ROI on the platform investment is measured in tens of millions. This is not a software subscription conversation — it is a network growth engine conversation.",
           },
           {
             title: "The Member & Supplier Adoption Opportunity",
             color: C.green,
-            content: "Healthtrust's 1,900 member hospitals each face the same challenge InterMed faces — finding in-market buyers before competitors do. If Healthtrust recommends ExactAudience to their members and contracted suppliers as a preferred performance tool, the addressable market expands dramatically.",
+            content: "Healthtrust's 1,900 member hospitals each face the same challenge InterMed faces — finding in-market buyers before competitors do. If Healthtrust recommends Exact Audience to their members and contracted suppliers as a preferred performance tool, the addressable market expands dramatically.",
           },
         ].map((s, i) => (
           <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
@@ -476,7 +549,7 @@ function TabHealthtrust() {
         className="rounded-2xl p-5" style={{ background: `linear-gradient(135deg, ${C.purple}40, ${C.orange}20)`, border: `1px solid ${C.orange}30` }}>
         <div className="text-sm font-black mb-2" style={{ color: C.white }}>The Ask for the Healthtrust Conversation</div>
         <div className="text-sm leading-relaxed italic" style={{ color: C.white }}>
-          "We're not asking Healthtrust to buy software. We're asking them to let us show their business development team how BuyersDNA identifies hospitals that are actively shopping for GPO membership right now — and how ExactAudience delivers the CEO or CFO contact at each one. One pilot. One market. Thirty days."
+          "We're not asking Healthtrust to buy software. We're asking them to let us show their business development team how Exact Audience identifies hospitals that are actively shopping for GPO membership right now — and delivers the CEO or CFO contact at each one. One pilot. One market. Thirty days."
         </div>
       </motion.div>
     </div>
