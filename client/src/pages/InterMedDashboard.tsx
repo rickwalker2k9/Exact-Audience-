@@ -39,6 +39,8 @@ type HospitalEntry = {
   intensity: number; weeks: number;
   contact: { name: string; title: string; phone: string; email: string };
   tags: string[];
+  signals: string[]; // BuyersDNA behavioral signals
+  trend: "rising" | "steady" | "new";
 };
 
 function OutreachPanel({ h }: { h: HospitalEntry }) {
@@ -87,16 +89,16 @@ function OutreachPanel({ h }: { h: HospitalEntry }) {
 function TabWeekly() {
   const [selected, setSelected] = useState<number | null>(null);
   const hospitals: HospitalEntry[] = [
-    { name: "Vanderbilt University Medical Center", city: "Nashville, TN", beds: 1039, signal: "Urology Laser Systems", intensity: 94, weeks: 3, contact: { name: "Sandra Holloway", title: "VP of Supply Chain", phone: "(615) 322-5000", email: "s.holloway@vumc.org" }, tags: ["Urology", "Capital Equipment", "High Intent"] },
-    { name: "Baptist Memorial Hospital", city: "Memphis, TN", beds: 614, signal: "Spinal Implant Supplier Evaluation", intensity: 88, weeks: 5, contact: { name: "Marcus Webb", title: "Director of Materials Management", phone: "(901) 226-5000", email: "m.webb@bmhcc.org" }, tags: ["Spinal", "Orthopedic", "GPO Review"] },
-    { name: "HCA TriStar Centennial Medical Center", city: "Nashville, TN", beds: 741, signal: "Hernia Mesh Alternatives", intensity: 81, weeks: 2, contact: { name: "Denise Cartwright", title: "VAC Chair & Clinical Value Director", phone: "(615) 342-1000", email: "d.cartwright@hcahealthcare.com" }, tags: ["Hernia Mesh", "VAC Review", "HCA Network"] },
-    { name: "Erlanger Health System", city: "Chattanooga, TN", beds: 581, signal: "Lead Wires & Monitoring Accessories", intensity: 76, weeks: 4, contact: { name: "James Pruitt", title: "Biomedical Engineering Director", phone: "(423) 778-7000", email: "j.pruitt@erlanger.org" }, tags: ["Monitoring", "Biomedical", "Contract Expiring"] },
-    { name: "Ascension Saint Thomas Hospital", city: "Nashville, TN", beds: 683, signal: "Urology Disposables & Catheter Systems", intensity: 71, weeks: 2, contact: { name: "Patricia Nguyen", title: "OR Director, Surgical Services", phone: "(615) 222-2111", email: "p.nguyen@ascension.org" }, tags: ["Urology", "Disposables", "OR Director"] },
-    { name: "Regional One Health", city: "Memphis, TN", beds: 337, signal: "Minimally Invasive Surgical Tools", intensity: 68, weeks: 1, contact: { name: "Anthony Brooks", title: "VP Procurement & Supply Chain", phone: "(901) 545-7100", email: "a.brooks@regionalonehealth.org" }, tags: ["Surgical", "MIS", "New Signal"] },
-    { name: "Cookeville Regional Medical Center", city: "Cookeville, TN", beds: 247, signal: "Spinal Implant Supplier Evaluation", intensity: 63, weeks: 3, contact: { name: "Lisa Tanner", title: "Director of Materials Management", phone: "(931) 528-2541", email: "l.tanner@crmchealth.org" }, tags: ["Spinal", "Regional", "GPO Review"] },
-    { name: "Wellmont Holston Valley Medical Center", city: "Kingsport, TN", beds: 345, signal: "Hernia Mesh & Wound Care Products", intensity: 59, weeks: 2, contact: { name: "Robert Simmons", title: "Supply Chain Manager", phone: "(423) 224-4000", email: "r.simmons@balladhealth.org" }, tags: ["Hernia Mesh", "Wound Care", "Mid-Market"] },
-    { name: "St. Thomas Rutherford Hospital", city: "Murfreesboro, TN", beds: 286, signal: "Capital Equipment Lease Expiring — OR", intensity: 55, weeks: 6, contact: { name: "Karen Odom", title: "OR Director", phone: "(615) 396-4100", email: "k.odom@ascension.org" }, tags: ["Capital Equipment", "OR", "Lease Expiring"] },
-    { name: "Sumner Regional Medical Center", city: "Gallatin, TN", beds: 155, signal: "GPO Contract Comparison — Urology", intensity: 51, weeks: 1, contact: { name: "David Morse", title: "Materials Management Director", phone: "(615) 452-4210", email: "d.morse@sumnerregional.com" }, tags: ["Urology", "GPO", "New Signal"] },
+    { name: "Vanderbilt University Medical Center", city: "Nashville, TN", beds: 1039, signal: "Urology Laser Systems", intensity: 94, weeks: 3, trend: "rising", contact: { name: "Sandra Holloway", title: "VP of Supply Chain", phone: "(615) 322-5000", email: "s.holloway@vumc.org" }, tags: ["Urology", "Capital Equipment", "High Intent"], signals: ["Visited 4 urology supplier websites this week", "Downloaded 2 GPO comparison guides", "Searched 'urology laser systems' 11× in 7 days", "Viewed competitor product pages 3×"] },
+    { name: "Baptist Memorial Hospital", city: "Memphis, TN", beds: 614, signal: "Spinal Implant Supplier Evaluation", intensity: 88, weeks: 5, trend: "rising", contact: { name: "Marcus Webb", title: "Director of Materials Management", phone: "(901) 226-5000", email: "m.webb@bmhcc.org" }, tags: ["Spinal", "Orthopedic", "GPO Review"], signals: ["5-week sustained research pattern on spinal implants", "Visited 3 orthopedic distributor sites", "Accessed GPO contract comparison tools", "Downloaded clinical outcome studies for spinal fusion"] },
+    { name: "HCA TriStar Centennial Medical Center", city: "Nashville, TN", beds: 741, signal: "Hernia Mesh Alternatives", intensity: 81, weeks: 2, trend: "steady", contact: { name: "Denise Cartwright", title: "VAC Chair & Clinical Value Director", phone: "(615) 342-1000", email: "d.cartwright@hcahealthcare.com" }, tags: ["Hernia Mesh", "VAC Review", "HCA Network"], signals: ["VAC committee research activity detected", "Browsed 2 hernia mesh supplier catalogs", "Accessed FDA recall database for mesh products", "Compared pricing on biologic vs synthetic mesh"] },
+    { name: "Erlanger Health System", city: "Chattanooga, TN", beds: 581, signal: "Lead Wires & Monitoring Accessories", intensity: 76, weeks: 4, trend: "steady", contact: { name: "James Pruitt", title: "Biomedical Engineering Director", phone: "(423) 778-7000", email: "j.pruitt@erlanger.org" }, tags: ["Monitoring", "Biomedical", "Contract Expiring"], signals: ["Contract expiration research activity", "Compared 3 monitoring accessory vendors", "Searched 'lead wire compatibility GE monitors'", "Accessed biomedical equipment procurement guides"] },
+    { name: "Ascension Saint Thomas Hospital", city: "Nashville, TN", beds: 683, signal: "Urology Disposables & Catheter Systems", intensity: 71, weeks: 2, trend: "rising", contact: { name: "Patricia Nguyen", title: "OR Director, Surgical Services", phone: "(615) 222-2111", email: "p.nguyen@ascension.org" }, tags: ["Urology", "Disposables", "OR Director"], signals: ["OR director research on catheter system pricing", "Visited 2 urology disposable supplier sites", "Searched 'Foley catheter GPO pricing 2026'", "Accessed Ascension system-wide sourcing portal"] },
+    { name: "Regional One Health", city: "Memphis, TN", beds: 337, signal: "Minimally Invasive Surgical Tools", intensity: 68, weeks: 1, trend: "new", contact: { name: "Anthony Brooks", title: "VP Procurement & Supply Chain", phone: "(901) 545-7100", email: "a.brooks@regionalonehealth.org" }, tags: ["Surgical", "MIS", "New Signal"], signals: ["NEW: First signal detected this week", "Browsed MIS tool supplier catalogs", "Searched 'laparoscopic instrument sets pricing'", "Accessed trauma surgery equipment reviews"] },
+    { name: "Cookeville Regional Medical Center", city: "Cookeville, TN", beds: 247, signal: "Spinal Implant Supplier Evaluation", intensity: 63, weeks: 3, trend: "steady", contact: { name: "Lisa Tanner", title: "Director of Materials Management", phone: "(931) 528-2541", email: "l.tanner@crmchealth.org" }, tags: ["Spinal", "Regional", "GPO Review"], signals: ["3-week spinal research pattern", "Compared Healthtrust vs non-GPO spinal pricing", "Visited 2 regional orthopedic distributor sites", "Downloaded spinal implant clinical comparison guide"] },
+    { name: "Wellmont Holston Valley Medical Center", city: "Kingsport, TN", beds: 345, signal: "Hernia Mesh & Wound Care Products", intensity: 59, weeks: 2, trend: "steady", contact: { name: "Robert Simmons", title: "Supply Chain Manager", phone: "(423) 224-4000", email: "r.simmons@balladhealth.org" }, tags: ["Hernia Mesh", "Wound Care", "Mid-Market"], signals: ["Browsed wound care product catalogs", "Compared hernia mesh pricing across 2 vendors", "Searched 'negative pressure wound therapy suppliers'", "Accessed Ballad Health system procurement portal"] },
+    { name: "St. Thomas Rutherford Hospital", city: "Murfreesboro, TN", beds: 286, signal: "Capital Equipment Lease Expiring — OR", intensity: 55, weeks: 6, trend: "steady", contact: { name: "Karen Odom", title: "OR Director", phone: "(615) 396-4100", email: "k.odom@ascension.org" }, tags: ["Capital Equipment", "OR", "Lease Expiring"], signals: ["6-week capital equipment research pattern", "Browsed OR equipment lease vs buy comparisons", "Searched 'surgical table replacement 2026'", "Accessed Ascension capital planning resources"] },
+    { name: "Sumner Regional Medical Center", city: "Gallatin, TN", beds: 155, signal: "GPO Contract Comparison — Urology", intensity: 51, weeks: 1, trend: "new", contact: { name: "David Morse", title: "Materials Management Director", phone: "(615) 452-4210", email: "d.morse@sumnerregional.com" }, tags: ["Urology", "GPO", "New Signal"], signals: ["NEW: First signal detected this week", "Compared GPO urology contract pricing", "Searched 'Healthtrust urology catheter pricing'", "Browsed independent distributor urology catalogs"] },
   ];
   const ic = (v: number) => v >= 85 ? C.orange : v >= 70 ? C.purpleLight : C.green;
   return (
@@ -105,7 +107,7 @@ function TabWeekly() {
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <SL color={C.orange}>BUYERSDNA + EXACTAUDIENCE — LIVE INTELLIGENCE</SL>
+            <SL color={C.orange}>EXACT AUDIENCE BUYERSDNA™ — LIVE MARKET INTELLIGENCE</SL>
             <div className="text-xl font-black" style={{ color: C.white }}>InterMed Resources — Weekly Target Report</div>
             <div className="text-sm mt-1" style={{ color: C.purpleLight }}>Week of July 7–11, 2026 &nbsp;·&nbsp; Tennessee Market &nbsp;·&nbsp; 10 Active Targets</div>
           </div>
@@ -150,11 +152,23 @@ function TabWeekly() {
                 <div className="text-2xl font-black" style={{ color: ic(h.intensity) }}>{h.intensity}</div>
                 <div className="text-xs" style={{ color: C.purpleLight }}>Intent Score</div>
                 <div className="text-xs mt-0.5" style={{ color: C.purpleLight }}>{h.weeks}w signal</div>
+                <div className="text-xs mt-1 font-black" style={{ color: h.trend === 'new' ? C.green : h.trend === 'rising' ? C.orange : C.purpleLight }}>
+                  {h.trend === 'new' ? '🆕 NEW' : h.trend === 'rising' ? '📈 RISING' : '➡ STEADY'}
+                </div>
               </div>
             </div>
             {selected === i && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} transition={{ duration: 0.2 }}
                 className="mt-4 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
+                <div className="text-xs font-black mb-2" style={{ color: C.orange }}>BUYERSDNA™ — BEHAVIORAL SIGNALS DETECTED</div>
+                <div className="rounded-xl p-3 space-y-1.5 mb-3" style={{ background: `${C.orange}08`, border: `1px solid ${C.orange}20` }}>
+                  {h.signals.map((sig, si) => (
+                    <div key={si} className="flex items-start gap-2 text-xs" style={{ color: C.white }}>
+                      <span style={{ color: C.orange, flexShrink: 0 }}>▸</span>
+                      <span>{sig}</span>
+                    </div>
+                  ))}
+                </div>
                 <div className="text-xs font-black mb-2" style={{ color: C.gold }}>DECISION-MAKER CONTACT</div>
                 <div className="rounded-xl p-3 space-y-1" style={{ background: C.card2 }}>
                   <div className="font-black" style={{ color: C.white }}>{h.contact.name}</div>
@@ -184,15 +198,15 @@ function TabWeekly() {
 function TabHow() {
   const steps = [
     {
-      num: "01", title: "BuyersDNA Monitors 127 Data Sources",
-      desc: "Every day, BuyersDNA aggregates behavioral signals from hospital procurement networks, medical device review sites, competitor websites, GPO research portals, trade publications, and content consumption platforms. When a hospital is actively evaluating a product category, the signal appears.",
-      example: "Vanderbilt has visited 4 urology device supplier sites, downloaded 2 GPO comparison guides, and searched 'urology laser systems' 11 times this week.",
+      num: "01", title: "BuyersDNA™ Monitors Behavioral Signals Across the Web",
+      desc: "Every day, Exact Audience's BuyersDNA™ engine aggregates behavioral signals from hospital procurement networks, medical device review sites, competitor websites, GPO research portals, trade publications, and content consumption platforms — all proprietary to Exact Audience. When a hospital is actively evaluating a product category, the signal appears in your dashboard.",
+      example: "Vanderbilt has visited 4 urology device supplier sites, downloaded 2 GPO comparison guides, and searched 'urology laser systems' 11 times this week. BuyersDNA caught every signal.",
       color: C.orange,
     },
     {
-      num: "02", title: "ExactAudience Identifies the Decision-Maker",
-      desc: "Once a hospital shows buying intent, ExactAudience identifies the specific person responsible for that purchase decision — VP of Supply Chain, OR Director, VAC Chair, or Department Head — and delivers their direct phone number and email.",
-      example: "Sandra Holloway, VP of Supply Chain at Vanderbilt. Direct line: (615) 322-5000. Email: s.holloway@vumc.org.",
+      num: "02", title: "Exact Audience Identifies the Decision-Maker",
+      desc: "Once a hospital shows buying intent, Exact Audience identifies the specific person responsible for that purchase decision — VP of Supply Chain, OR Director, VAC Chair, or Department Head — and delivers their direct phone number and email. No guessing. No gatekeepers.",
+      example: "Sandra Holloway, VP of Supply Chain at Vanderbilt. Direct line: (615) 322-5000. Email: s.holloway@vumc.org. Delivered to your inbox Monday morning.",
       color: C.purpleLight,
     },
     {
@@ -202,9 +216,9 @@ function TabHow() {
       color: C.gold,
     },
     {
-      num: "04", title: "SITEID Captures Visitors to IntermedTN.com",
-      desc: "SITEID identifies the companies visiting your website in real time — even if they never fill out a form. When a hospital procurement director visits your site, you know who they are, what pages they viewed, and how long they stayed.",
-      example: "Baptist Memorial Hospital visited your Spinal Products page 3 times this week. Nobody called you. SITEID caught it.",
+      num: "04", title: "Exact Audience Captures Every Anonymous Website Visitor",
+      desc: "Exact Audience's SiteID layer identifies the companies visiting your website in real time — even if they never fill out a form. When a hospital procurement director visits your site, you know who they are, what pages they viewed, and how long they stayed. No form. No call. You still know.",
+      example: "Baptist Memorial Hospital visited your Spinal Products page 3 times this week. Nobody called you. Exact Audience caught it — and handed you Marcus Webb's direct line.",
       color: C.green,
     },
   ];
@@ -212,10 +226,10 @@ function TabHow() {
     <div className="space-y-4">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>THE PLATFORM — THREE TOOLS, ONE WORKFLOW</SL>
+        <SL>HOW EXACT AUDIENCE WORKS — ONE PLATFORM, COMPLETE INTELLIGENCE</SL>
         <div className="text-lg font-black mb-2" style={{ color: C.white }}>Know Who Is Shopping Before They Call Anyone</div>
         <div className="text-sm leading-relaxed" style={{ color: C.white }}>
-          Most medical device distributors wait for the phone to ring. ExactAudience gives InterMed a radar system — you see which hospitals are actively evaluating your product categories right now, who the decision-maker is, and how to reach them directly.
+          Most medical device distributors wait for the phone to ring. Exact Audience gives InterMed a radar system — you see which hospitals are actively evaluating your product categories right now, who the decision-maker is, and how to reach them directly. All intelligence is proprietary to Exact Audience.
         </div>
       </motion.div>
 
@@ -237,11 +251,11 @@ function TabHow() {
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL color={C.gold}>WHAT SETS THIS APART FROM LUSHA OR ZOOMINFO</SL>
+        <SL color={C.gold}>WHAT MAKES EXACT AUDIENCE DIFFERENT</SL>
         <div className="space-y-3">
           {[
-            { label: "Lusha / ZoomInfo", desc: "Contact databases. You look up a name and get a phone number. You have to already know who you want to reach.", bad: true },
-            { label: "ExactAudience + BuyersDNA", desc: "Intent-first. We tell you which hospitals are shopping right now, then attach the decision-maker contact. You don't need to know who to look for — the platform finds them for you.", bad: false },
+            { label: "Traditional Sales Tools", desc: "Contact databases. You look up a name and get a phone number. You have to already know who you want to reach — and hope they're actually in the market.", bad: true },
+            { label: "Exact Audience + BuyersDNA™", desc: "Intent-first intelligence. We identify which hospitals are actively shopping right now, then surface the exact decision-maker and their direct contact. You don't need to know who to look for — the platform finds them for you.", bad: false },
           ].map((r, i) => (
             <div key={i} className="rounded-xl p-3 flex items-start gap-3"
               style={{ background: r.bad ? `${C.border}80` : `${C.orange}12`, border: `1px solid ${r.bad ? C.border : C.orange}30` }}>
@@ -487,7 +501,7 @@ export default function InterMedDashboard() {
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
             <div className="text-2xl font-black" style={{ color: C.orange }}>🏥 InterMed Resources TN</div>
-            <div className="text-xs mt-0.5" style={{ color: C.white }}>Medical Device Distribution · Tennessee · Powered by ExactAudience</div>
+            <div className="text-xs mt-0.5" style={{ color: C.white }}>Medical Device Distribution · Tennessee · Exact Audience Intelligence</div>
           </div>
           <div className="flex items-center gap-1.5 text-xs font-black" style={{ color: C.green }}>
             <div className="w-2 h-2 rounded-full" style={{ background: C.green, animation: "pulse-dot 2s infinite" }} />
