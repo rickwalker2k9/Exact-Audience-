@@ -129,6 +129,7 @@ const TABS = [
   { id: "healthtrust", label: "Healthtrust GPO",  icon: "🌐" },
   { id: "meeting",     label: "Meeting Playbook", icon: "📋" },
   { id: "pricing",     label: "Pricing & ROI",    icon: "💰" },
+  { id: "weekly",      label: "Weekly Report Demo", icon: "📊" },
 ];
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -778,6 +779,181 @@ function TabPricing() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
+// TAB: WEEKLY REPORT DEMO
+// ══════════════════════════════════════════════════════════════════════════════
+function TabWeeklyReport() {
+  const [selected, setSelected] = useState<number | null>(null);
+  const hospitals = [
+    {
+      name: "Vanderbilt University Medical Center",
+      city: "Nashville, TN", beds: 1039, signal: "Urology Laser Systems",
+      intensity: 94, weeks: 3,
+      contact: { name: "Sandra Holloway", title: "VP of Supply Chain", phone: "(615) 322-5000", email: "s.holloway@vumc.org" },
+      tags: ["Urology", "Capital Equipment", "High Intent"],
+    },
+    {
+      name: "Baptist Memorial Hospital",
+      city: "Memphis, TN", beds: 614, signal: "Spinal Implant Supplier Evaluation",
+      intensity: 88, weeks: 5,
+      contact: { name: "Marcus Webb", title: "Director of Materials Management", phone: "(901) 226-5000", email: "m.webb@bmhcc.org" },
+      tags: ["Spinal", "Orthopedic", "GPO Review"],
+    },
+    {
+      name: "HCA TriStar Centennial Medical Center",
+      city: "Nashville, TN", beds: 741, signal: "Hernia Mesh Alternatives",
+      intensity: 81, weeks: 2,
+      contact: { name: "Denise Cartwright", title: "VAC Chair & Clinical Value Director", phone: "(615) 342-1000", email: "d.cartwright@hcahealthcare.com" },
+      tags: ["Hernia Mesh", "VAC Review", "HCA Network"],
+    },
+    {
+      name: "Erlanger Health System",
+      city: "Chattanooga, TN", beds: 581, signal: "Lead Wires & Monitoring Accessories",
+      intensity: 76, weeks: 4,
+      contact: { name: "James Pruitt", title: "Biomedical Engineering Director", phone: "(423) 778-7000", email: "j.pruitt@erlanger.org" },
+      tags: ["Monitoring", "Biomedical", "Contract Expiring"],
+    },
+    {
+      name: "Ascension Saint Thomas Hospital",
+      city: "Nashville, TN", beds: 683, signal: "Urology Disposables & Catheter Systems",
+      intensity: 71, weeks: 2,
+      contact: { name: "Patricia Nguyen", title: "OR Director, Surgical Services", phone: "(615) 222-2111", email: "p.nguyen@ascension.org" },
+      tags: ["Urology", "Disposables", "OR Director"],
+    },
+    {
+      name: "Regional One Health",
+      city: "Memphis, TN", beds: 337, signal: "Minimally Invasive Surgical Tools",
+      intensity: 68, weeks: 1,
+      contact: { name: "Anthony Brooks", title: "VP Procurement & Supply Chain", phone: "(901) 545-7100", email: "a.brooks@regionalonehealth.org" },
+      tags: ["Surgical", "MIS", "New Signal"],
+    },
+    {
+      name: "Cookeville Regional Medical Center",
+      city: "Cookeville, TN", beds: 247, signal: "Spinal Implant Supplier Evaluation",
+      intensity: 63, weeks: 3,
+      contact: { name: "Lisa Tanner", title: "Director of Materials Management", phone: "(931) 528-2541", email: "l.tanner@crmchealth.org" },
+      tags: ["Spinal", "Regional", "GPO Review"],
+    },
+    {
+      name: "Wellmont Holston Valley Medical Center",
+      city: "Kingsport, TN", beds: 345, signal: "Hernia Mesh & Wound Care Products",
+      intensity: 59, weeks: 2,
+      contact: { name: "Robert Simmons", title: "Supply Chain Manager", phone: "(423) 224-4000", email: "r.simmons@ballad health.org" },
+      tags: ["Hernia Mesh", "Wound Care", "Mid-Market"],
+    },
+    {
+      name: "St. Thomas Rutherford Hospital",
+      city: "Murfreesboro, TN", beds: 286, signal: "Capital Equipment Lease Expiring — OR",
+      intensity: 55, weeks: 6,
+      contact: { name: "Karen Odom", title: "OR Director", phone: "(615) 396-4100", email: "k.odom@ascension.org" },
+      tags: ["Capital Equipment", "OR", "Lease Expiring"],
+    },
+    {
+      name: "Sumner Regional Medical Center",
+      city: "Gallatin, TN", beds: 155, signal: "GPO Contract Comparison — Urology",
+      intensity: 51, weeks: 1,
+      contact: { name: "David Morse", title: "Materials Management Director", phone: "(615) 452-4210", email: "d.morse@sumnerregional.com" },
+      tags: ["Urology", "GPO", "New Signal"],
+    },
+  ];
+  const intensityColor = (v: number) => v >= 85 ? C.orange : v >= 70 ? C.purpleLight : C.green;
+  
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <div className="text-xs font-black tracking-widest mb-1" style={{ color: C.orange }}>BUYERSDNA + EXACTAUDIENCE</div>
+            <div className="text-xl font-black" style={{ color: C.white }}>InterMed Resources — Weekly Intelligence Report</div>
+            <div className="text-sm mt-0.5" style={{ color: C.purpleLight }}>Week of July 7–11, 2026 &nbsp;·&nbsp; Tennessee Market &nbsp;·&nbsp; 10 Active Targets</div>
+          </div>
+          <div className="rounded-xl px-4 py-2 text-xs font-black" style={{ background: `${C.orange}20`, color: C.orange, border: `1px solid ${C.orange}40` }}>SAMPLE DELIVERY</div>
+        </div>
+        <div className="mt-4 grid grid-cols-3 gap-3">
+          {[
+            { label: "Hospitals In-Market", value: "10", sub: "This week" },
+            { label: "High Intent (85+)", value: "2", sub: "Immediate outreach" },
+            { label: "Decision-Makers ID'd", value: "10", sub: "Direct contacts" },
+          ].map((s, i) => (
+            <div key={i} className="rounded-xl p-3 text-center" style={{ background: C.card2 }}>
+              <div className="text-2xl font-black" style={{ color: C.orange }}>{s.value}</div>
+              <div className="text-xs font-bold" style={{ color: C.white }}>{s.label}</div>
+              <div className="text-xs" style={{ color: C.purpleLight }}>{s.sub}</div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Hospital List */}
+      <div className="space-y-2">
+        {hospitals.map((h, i) => (
+          <motion.div key={i} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
+            onClick={() => setSelected(selected === i ? null : i)}
+            className="rounded-xl p-4 cursor-pointer transition-all"
+            style={{
+              background: selected === i ? `${C.orange}15` : C.card,
+              border: `1px solid ${selected === i ? C.orange : C.border}`,
+              boxShadow: selected === i ? `0 0 20px ${C.orange}20` : 'none',
+            }}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-black" style={{ color: C.white }}>{h.name}</span>
+                  <span className="text-xs" style={{ color: C.purpleLight }}>{h.city}</span>
+                  <span className="text-xs" style={{ color: C.purpleLight }}>·</span>
+                  <span className="text-xs" style={{ color: C.purpleLight }}>{h.beds} beds</span>
+                </div>
+                <div className="text-xs mt-1 font-semibold" style={{ color: intensityColor(h.intensity) }}>🔥 {h.signal}</div>
+                <div className="flex gap-1.5 mt-2 flex-wrap">
+                  {h.tags.map((t, j) => (
+                    <span key={j} className="text-xs px-2 py-0.5 rounded-full font-bold"
+                      style={{ background: `${C.purpleLight}20`, color: C.purpleLight }}>{t}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="text-2xl font-black" style={{ color: intensityColor(h.intensity) }}>{h.intensity}</div>
+                <div className="text-xs" style={{ color: C.purpleLight }}>Intent Score</div>
+                <div className="text-xs mt-0.5" style={{ color: C.purpleLight }}>{h.weeks}w signal</div>
+              </div>
+            </div>
+            {/* Expanded contact */}
+            {selected === i && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} transition={{ duration: 0.2 }}
+                className="mt-4 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
+                <div className="text-xs font-black mb-2" style={{ color: C.gold }}>DECISION-MAKER CONTACT</div>
+                <div className="rounded-xl p-3 space-y-1" style={{ background: C.card2 }}>
+                  <div className="font-black" style={{ color: C.white }}>{h.contact.name}</div>
+                  <div className="text-xs" style={{ color: C.purpleLight }}>{h.contact.title}</div>
+                  <div className="flex gap-4 mt-2 flex-wrap">
+                    <a href={`tel:${h.contact.phone}`} className="text-xs font-bold" style={{ color: C.orange }}>📞 {h.contact.phone}</a>
+                    <a href={`mailto:${h.contact.email}`} className="text-xs font-bold" style={{ color: C.orange }}>✉️ {h.contact.email}</a>
+                  </div>
+                </div>
+                <div className="mt-3 rounded-xl p-3" style={{ background: `${C.purpleLight}10`, border: `1px solid ${C.purpleLight}30` }}>
+                  <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>SUGGESTED OUTREACH</div>
+                  <div className="text-xs leading-relaxed" style={{ color: C.white }}>
+                    "Hi {h.contact.name.split(' ')[0]}, I noticed {h.name} has been evaluating {h.signal.toLowerCase()} options. InterMed specializes in exactly this category and we work with several regional health systems on cost-effective sourcing. Would a 15-minute call this week make sense?"
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Footer CTA */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+        className="rounded-2xl p-5 text-center" style={{ background: `linear-gradient(135deg, ${C.purple}40, ${C.orange}20)`, border: `1px solid ${C.orange}30` }}>
+        <div className="text-sm font-black mb-1" style={{ color: C.white }}>This is what your sales team receives every Monday morning.</div>
+        <div className="text-xs" style={{ color: C.purpleLight }}>10 hospitals. 10 decision-makers. 10 direct contacts. Ready to call.</div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 // MAIN DASHBOARD
 // ══════════════════════════════════════════════════════════════════════════════
 export default function InterMedDashboard() {
@@ -865,6 +1041,7 @@ export default function InterMedDashboard() {
             {activeTab === 'healthtrust' && <TabHealthtrust />}
             {activeTab === 'meeting'     && <TabMeeting />}
             {activeTab === 'pricing'     && <TabPricing />}
+            {activeTab === 'weekly'      && <TabWeeklyReport />}
           </motion.div>
         </AnimatePresence>
       </div>
