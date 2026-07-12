@@ -1,6 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
+import { AreaChart, Area, BarChart, Bar, RadialBarChart, RadialBar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from "recharts";
+
+// Animated counter hook
+function useCountUp(target: number, duration = 1.2) {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, v => Math.round(v));
+  useEffect(() => {
+    const controls = animate(count, target, { duration, ease: "easeOut" });
+    return controls.stop;
+  }, [target]);
+  return rounded;
+}
 
 // ── Brand colors ──────────────────────────────────────────────────────────────
 const C = {
@@ -27,6 +39,11 @@ const TABS = [
 ];
 
 const ic = (v: number) => v >= 85 ? C.orange : v >= 70 ? C.purpleLight : C.green;
+
+function AnimatedScore({ value, color }: { value: number; color: string }) {
+  const count = useCountUp(value);
+  return <motion.div className="text-2xl font-black" style={{ color }}>{count}</motion.div>;
+}
 
 function SL({ children, color }: { children: React.ReactNode; color?: string }) {
   return (
@@ -252,7 +269,7 @@ function TabWeekly() {
               <div className="text-right shrink-0">
                 <div className="flex items-end justify-end gap-2 mb-1">
                   <Sparkline data={h.sparkline} color={ic(h.intensity)} />
-                  <div className="text-2xl font-black" style={{ color: ic(h.intensity) }}>{h.intensity}</div>
+                  <AnimatedScore value={h.intensity} color={ic(h.intensity)} />
                 </div>
                 <div className="text-xs" style={{ color: C.purpleLight }}>Intent Score · {h.weeks}w signal</div>
                 <div className="text-xs mt-1 font-black" style={{ color: h.trend === 'new' ? C.green : h.trend === 'rising' ? C.orange : C.purpleLight }}>
@@ -281,6 +298,19 @@ function TabWeekly() {
                         style={{ background: `${C.purpleLight}20`, color: C.purpleLight, border: `1px solid ${C.purpleLight}30` }}>{t}</span>
                     ))}
                   </div>
+                </div>
+
+                {/* Weekly signal frequency chart */}
+                <div className="mb-3">
+                  <div className="text-xs font-black mb-2" style={{ color: C.green }}>SIGNAL FREQUENCY — LAST 7 DAYS</div>
+                  <ResponsiveContainer width="100%" height={60}>
+                    <BarChart data={h.sparkline.slice(-7).map((v, idx) => ({ day: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][idx], signals: Math.round(v / 12) }))}
+                      margin={{ top: 0, right: 0, left: -30, bottom: 0 }}>
+                      <XAxis dataKey="day" tick={{ fill: C.purpleLight, fontSize: 9 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={false} axisLine={false} tickLine={false} />
+                      <Bar dataKey="signals" radius={[2,2,0,0]} fill={C.green} fillOpacity={0.7} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
 
                 {/* Behavioral Signals */}
@@ -366,6 +396,52 @@ function TabHow() {
         </div>
       </motion.div>
 
+      {/* Market Activity Chart */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.green}>TENNESSEE MARKET ACTIVITY — LAST 8 WEEKS</SL>
+        <div className="text-sm font-black mb-3" style={{ color: C.white }}>Hospitals Actively Researching Medical Device Categories</div>
+        <ResponsiveContainer width="100%" height={140}>
+          <AreaChart data={[
+            { week: "Wk 1", hospitals: 4 }, { week: "Wk 2", hospitals: 5 }, { week: "Wk 3", hospitals: 6 },
+            { week: "Wk 4", hospitals: 5 }, { week: "Wk 5", hospitals: 7 }, { week: "Wk 6", hospitals: 8 },
+            { week: "Wk 7", hospitals: 9 }, { week: "Wk 8", hospitals: 10 },
+          ]} margin={{ top: 5, right: 5, left: -30, bottom: 0 }}>
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={C.orange} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={C.orange} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis dataKey="week" tick={{ fill: C.purpleLight, fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: C.purpleLight, fontSize: 10 }} axisLine={false} tickLine={false} />
+            <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 11 }} />
+            <Area type="monotone" dataKey="hospitals" stroke={C.orange} strokeWidth={2} fill="url(#areaGrad)" dot={{ fill: C.orange, r: 3 }} activeDot={{ r: 5 }} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </motion.div>
+
+      {/* Category Breakdown */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.purpleLight}>IN-MARKET ACTIVITY BY PRODUCT CATEGORY — THIS WEEK</SL>
+        <ResponsiveContainer width="100%" height={160}>
+          <BarChart layout="vertical" data={[
+            { name: "Urology", value: 4 }, { name: "Spinal / Ortho", value: 3 }, { name: "Cardiovascular", value: 2 },
+            { name: "Surgical Supplies", value: 3 }, { name: "Wound Care", value: 1 }, { name: "Robotics", value: 2 },
+          ]} margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
+            <XAxis type="number" tick={{ fill: C.purpleLight, fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis type="category" dataKey="name" tick={{ fill: C.white, fontSize: 10 }} axisLine={false} tickLine={false} width={90} />
+            <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 11 }} />
+            <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+              {[C.orange, C.purpleLight, C.green, C.gold, C.green, C.orange].map((color, i) => (
+                <Cell key={i} fill={color} fillOpacity={0.8} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </motion.div>
+
       {steps.map((s, i) => (
         <motion.div key={i} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
           className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}`, borderLeft: `4px solid ${s.color}` }}>
@@ -428,6 +504,46 @@ function TabSiteID() {
         <div className="text-lg font-black mb-2" style={{ color: C.white }}>Your Website Is Already Getting Traffic. Now You Know Who.</div>
         <div className="text-sm leading-relaxed" style={{ color: C.white }}>
           Hospital procurement teams research suppliers online before they ever make contact. SITEID identifies the company behind every anonymous visit — so you can follow up before your competitors even know the hospital is looking.
+        </div>
+      </motion.div>
+
+      {/* Signal distribution donut */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.orange}>THIS WEEK — SITE VISITS BY PRODUCT INTEREST</SL>
+        <div className="flex items-center gap-4">
+          <ResponsiveContainer width={120} height={120}>
+            <PieChart>
+              <Pie data={[
+                { name: "Urology", value: 38 }, { name: "Spinal", value: 24 },
+                { name: "Surgical", value: 20 }, { name: "Cardiac", value: 18 },
+              ]} cx="50%" cy="50%" innerRadius={35} outerRadius={55} paddingAngle={3} dataKey="value">
+                {[C.orange, C.purpleLight, C.green, C.gold].map((color, i) => (
+                  <Cell key={i} fill={color} />
+                ))}
+              </Pie>
+              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 11 }} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex-1 space-y-2">
+            {[
+              { label: "Urology Products", pct: 38, color: C.orange },
+              { label: "Spinal / Ortho", pct: 24, color: C.purpleLight },
+              { label: "Surgical Supplies", pct: 20, color: C.green },
+              { label: "Cardiac / Cath Lab", pct: 18, color: C.gold },
+            ].map((d, i) => (
+              <div key={i}>
+                <div className="flex justify-between text-xs mb-0.5">
+                  <span style={{ color: C.white }}>{d.label}</span>
+                  <span style={{ color: d.color }}>{d.pct}%</span>
+                </div>
+                <div className="h-1.5 rounded-full" style={{ background: C.border }}>
+                  <motion.div className="h-full rounded-full" style={{ background: d.color }}
+                    initial={{ width: 0 }} animate={{ width: `${d.pct}%` }} transition={{ delay: 0.3 + i * 0.1, duration: 0.8, ease: "easeOut" }} />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </motion.div>
 
@@ -547,6 +663,32 @@ function TabROI() {
         <div className="text-3xl font-black" style={{ color: C.white }}>{payback} months</div>
         <div className="text-xs mt-1" style={{ color: C.purpleLight }}>to recover the full platform investment</div>
       </div>
+
+      {/* Revenue opportunity chart */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.gold}>REVENUE OPPORTUNITY — TENNESSEE HOSPITAL TIERS</SL>
+        <div className="text-xs mb-3" style={{ color: C.purpleLight }}>Annual revenue potential per account by hospital size</div>
+        <ResponsiveContainer width="100%" height={160}>
+          <BarChart data={[
+            { tier: "Critical Access", revenue: 35000, color: C.green },
+            { tier: "Community", revenue: 75000, color: C.purpleLight },
+            { tier: "Regional", revenue: 140000, color: C.orange },
+            { tier: "Academic", revenue: 280000, color: C.gold },
+          ]} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
+            <XAxis dataKey="tier" tick={{ fill: C.purpleLight, fontSize: 9 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: C.purpleLight, fontSize: 9 }} axisLine={false} tickLine={false}
+              tickFormatter={v => `$${(v/1000).toFixed(0)}K`} />
+            <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 11 }}
+              formatter={(v: number) => [`$${v.toLocaleString()}`, "Annual Revenue"]} />
+            <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>
+              {[C.green, C.purpleLight, C.orange, C.gold].map((color, i) => (
+                <Cell key={i} fill={color} fillOpacity={0.85} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </motion.div>
 
       <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <SL color={C.gold}>THE MATH ON ONE ACCOUNT</SL>
