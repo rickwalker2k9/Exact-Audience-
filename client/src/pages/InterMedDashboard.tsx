@@ -34,15 +34,18 @@ function SL({ children, color }: { children: React.ReactNode; color?: string }) 
 }
 
 // ── OUTREACH PANEL ─────────────────────────────────────────────────────────────
+type Contact = { name: string; title: string; phone: string; email: string };
 type HospitalEntry = {
   name: string; city: string; beds: number; signal: string;
   intensity: number; weeks: number;
-  contact: { name: string; title: string; phone: string; email: string };
+  contact: Contact;
+  contact2?: Contact; // Second decision-maker
   tags: string[];
   signals: string[]; // Exact Audience behavioral signals
   surgeTopics: string[]; // Active research topic categories
   activitySummary: string; // One-line behavioral summary
   trend: "rising" | "steady" | "new";
+  sparkline: number[]; // 8-week signal intensity history
 };
 
 function OutreachPanel({ h }: { h: HospitalEntry }) {
@@ -87,69 +90,113 @@ function OutreachPanel({ h }: { h: HospitalEntry }) {
   );
 }
 
+// ── SPARKLINE COMPONENT ──────────────────────────────────────────────────────
+function Sparkline({ data, color }: { data: number[]; color: string }) {
+  const max = Math.max(...data, 1);
+  const w = 80; const h = 28;
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - (v / max) * h;
+    return `${x},${y}`;
+  }).join(" ");
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ overflow: "visible" }}>
+      <defs>
+        <linearGradient id={`sg-${color.replace("#","")}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <polygon points={`0,${h} ${pts} ${w},${h}`} fill={`url(#sg-${color.replace("#","")})`} />
+      <circle cx={(data.length-1)/(data.length-1)*w} cy={h-(data[data.length-1]/max)*h} r="2.5" fill={color} />
+    </svg>
+  );
+}
+
 // ── TAB: THIS WEEK'S TARGETS ───────────────────────────────────────────────────
 function TabWeekly() {
   const [selected, setSelected] = useState<number | null>(null);
   const hospitals: HospitalEntry[] = [
     { name: "Vanderbilt University Medical Center", city: "Nashville, TN", beds: 1039, signal: "Urology Laser Systems", intensity: 94, weeks: 3, trend: "rising",
       contact: { name: "Angela Carter", title: "Chief Nursing Officer", phone: "(615) 322-5000", email: "angela.carter@vumc.org" },
+      contact2: { name: "Robin Steaban", title: "Chief Nursing Officer, Perioperative", phone: "(615) 322-5001", email: "robin.steaban@vumc.org" },
       tags: ["Urology", "Capital Equipment", "High Intent"],
       activitySummary: "14 employees researched urology laser systems across 9 sites this week",
       surgeTopics: ["Urology Devices", "Laser Surgery Equipment", "OR Capital Equipment", "GPO Contract Pricing"],
+      sparkline: [18, 22, 31, 45, 52, 68, 81, 94],
       signals: ["Visited 4 urology supplier websites this week", "Downloaded 2 GPO comparison guides", "Searched 'holmium laser systems' 11× in 7 days", "Viewed 3 competitor product pages", "Accessed Healthtrust urology contract portal twice"] },
     { name: "Baptist Memorial Hospital", city: "Memphis, TN", beds: 614, signal: "Spinal Implant Supplier Evaluation", intensity: 88, weeks: 5, trend: "rising",
       contact: { name: "Justin Clinard", title: "Administrative Director of Surgical Services", phone: "(901) 226-5000", email: "justin.clinard@hcahealthcare.com" },
+      contact2: { name: "Mark Ottens", title: "Chief Nursing Officer", phone: "(901) 226-5100", email: "mark.ottens@bmhcc.org" },
       tags: ["Spinal", "Orthopedic", "GPO Review"],
       activitySummary: "5-week sustained research surge — spinal implant supplier comparison active",
       surgeTopics: ["Spinal Implants", "Orthopedic Devices", "Hospital Supply Chain", "Clinical Outcomes"],
+      sparkline: [40, 55, 62, 70, 75, 80, 84, 88],
       signals: ["5-week sustained research pattern on spinal implants", "Visited 3 orthopedic distributor sites", "Accessed GPO contract comparison tools", "Downloaded clinical outcome studies for spinal fusion", "Compared pricing across 4 spinal implant vendors"] },
     { name: "HCA TriStar Centennial Medical Center", city: "Nashville, TN", beds: 741, signal: "Hernia Mesh Alternatives", intensity: 81, weeks: 2, trend: "steady",
       contact: { name: "Stephanie Tillman", title: "Supply Chain Manager", phone: "(615) 342-1000", email: "stephanie.tillman@hcahealthcare.com" },
+      contact2: { name: "Joe Lemos", title: "Director of Supply Chain Management", phone: "(615) 342-1100", email: "joe.lemos@hcahealthcare.com" },
       tags: ["Hernia Mesh", "VAC Review", "HCA Network"],
       activitySummary: "VAC committee actively comparing hernia mesh suppliers — decision imminent",
       surgeTopics: ["Hernia Mesh", "Surgical Mesh Products", "FDA Device Safety", "Biologic vs Synthetic"],
+      sparkline: [72, 78, 80, 83, 79, 81, 82, 81],
       signals: ["VAC committee research activity detected", "Browsed 2 hernia mesh supplier catalogs", "Accessed FDA recall database for mesh products", "Compared pricing on biologic vs synthetic mesh", "Reviewed 3 peer hospital case studies on mesh outcomes"] },
     { name: "Erlanger Health System", city: "Chattanooga, TN", beds: 581, signal: "Lead Wires & Monitoring Accessories", intensity: 76, weeks: 4, trend: "steady",
       contact: { name: "Janeen Rawlings", title: "Director of Operations", phone: "(423) 778-7000", email: "jrawlings@erlanger.org" },
+      contact2: { name: "Karen Keady", title: "VP of Supply Chain & Procurement", phone: "(423) 778-7100", email: "kkeady@erlanger.org" },
       tags: ["Monitoring", "Biomedical", "Contract Expiring"],
       activitySummary: "Contract expiration research — 4-week monitoring accessories evaluation",
       surgeTopics: ["Patient Monitoring Equipment", "Biomedical Accessories", "Medical Device Contracts", "Hospital Equipment"],
+      sparkline: [60, 65, 70, 74, 76, 75, 77, 76],
       signals: ["Contract expiration research activity", "Compared 3 monitoring accessory vendors", "Searched 'lead wire compatibility GE monitors'", "Accessed biomedical equipment procurement guides", "Downloaded vendor comparison matrix for monitoring accessories"] },
     { name: "Ascension Saint Thomas Hospital", city: "Nashville, TN", beds: 683, signal: "Urology Disposables & Catheter Systems", intensity: 71, weeks: 2, trend: "rising",
       contact: { name: "Jennifer Holder", title: "Chief Nursing Officer", phone: "(615) 222-2111", email: "jennifer.holder@lpnt.net" },
+      contact2: { name: "Heather Carr", title: "VP of Surgical Services", phone: "(615) 222-2200", email: "heather.carr@ascension.org" },
       tags: ["Urology", "Disposables", "OR Director"],
       activitySummary: "Rising signal — urology disposables pricing research accelerating",
       surgeTopics: ["Urology Disposables", "Catheter Systems", "Surgical Supplies", "GPO Pricing"],
+      sparkline: [28, 35, 42, 50, 58, 63, 67, 71],
       signals: ["OR director research on catheter system pricing", "Visited 2 urology disposable supplier sites", "Searched 'Foley catheter GPO pricing 2026'", "Accessed Ascension system-wide sourcing portal", "Compared 3 catheter brands on clinical performance"] },
     { name: "Blount Memorial Hospital", city: "Maryville, TN", beds: 304, signal: "Surgical Services Supply Refresh", intensity: 68, weeks: 1, trend: "new",
       contact: { name: "Kathy Romero", title: "Director of Surgical Services", phone: "(865) 977-5423", email: "kromero@bmnet.com" },
+      contact2: { name: "James Storey", title: "Assistant Director of Supply Chain", phone: "(865) 977-5500", email: "jstorey@bmnet.com" },
       tags: ["Surgical", "New Signal", "Independent"],
       activitySummary: "NEW: First signal this week — surgical supply refresh research initiated",
       surgeTopics: ["Surgical Supplies", "OR Equipment", "Medical Device Procurement", "Independent Hospital Sourcing"],
+      sparkline: [0, 0, 0, 0, 0, 0, 0, 68],
       signals: ["NEW: First signal detected this week", "Browsed surgical supply catalogs", "Searched 'independent distributor surgical supplies Tennessee'", "Accessed OR equipment pricing guides", "Visited 2 regional medical device distributor sites"] },
     { name: "Cookeville Regional Medical Center", city: "Cookeville, TN", beds: 247, signal: "Spinal Implant Supplier Evaluation", intensity: 63, weeks: 3, trend: "steady",
       contact: { name: "Melinda Poston", title: "Director of Materials Management", phone: "(931) 528-2541", email: "mkposton@crmchealth.org" },
+      contact2: { name: "David Phillips", title: "Director of Surgical Services", phone: "(931) 528-2600", email: "dphillips@crmchealth.org" },
       tags: ["Spinal", "Regional", "GPO Review"],
       activitySummary: "3-week spinal research pattern — GPO vs independent pricing comparison active",
       surgeTopics: ["Spinal Implants", "Hospital Supply Chain", "GPO Contracts", "Orthopedic Devices"],
+      sparkline: [55, 60, 58, 62, 61, 63, 62, 63],
       signals: ["3-week spinal research pattern", "Compared Healthtrust vs non-GPO spinal pricing", "Visited 2 regional orthopedic distributor sites", "Downloaded spinal implant clinical comparison guide", "Searched 'spinal implant independent distributor pricing'"] },
     { name: "TriStar Skyline Medical Center", city: "Nashville, TN", beds: 295, signal: "Hernia Mesh & Wound Care Products", intensity: 59, weeks: 2, trend: "steady",
       contact: { name: "Ed Gairala", title: "Director of Surgical Services", phone: "(615) 769-2000", email: "ed.gairala@hcahealthcare.com" },
+      contact2: { name: "Casey Reed", title: "Supply Chain Director", phone: "(615) 769-2100", email: "casey.reed@hcahealthcare.com" },
       tags: ["Hernia Mesh", "Wound Care", "HCA Facility"],
       activitySummary: "Wound care and hernia mesh pricing research — 2-week pattern",
       surgeTopics: ["Wound Care Products", "Hernia Mesh", "Surgical Supplies", "HCA Supply Chain"],
+      sparkline: [48, 52, 55, 57, 58, 59, 58, 59],
       signals: ["Browsed wound care product catalogs", "Compared hernia mesh pricing across 2 vendors", "Searched 'negative pressure wound therapy suppliers'", "Accessed HCA system procurement portal", "Reviewed 2 wound care clinical outcome studies"] },
     { name: "Williamson Medical Center", city: "Franklin, TN", beds: 185, signal: "Capital Equipment Lease Expiring — OR", intensity: 55, weeks: 6, trend: "steady",
-      contact: { name: "David Phillips", title: "Director of Surgical Services", phone: "(615) 435-5000", email: "dphillips@crmchealth.org" },
+      contact: { name: "Sonya Newman", title: "Chief Nursing Officer", phone: "(615) 435-5000", email: "snewman@williamsonmedical.org" },
+      contact2: { name: "Alex Margraf", title: "VP of Operations", phone: "(615) 435-5100", email: "amargraf@williamsonmedical.org" },
       tags: ["Capital Equipment", "OR", "Lease Expiring"],
       activitySummary: "6-week capital equipment research — OR lease expiration driving active evaluation",
       surgeTopics: ["OR Capital Equipment", "Surgical Table Systems", "Equipment Leasing", "Hospital Procurement"],
+      sparkline: [50, 52, 54, 55, 53, 56, 54, 55],
       signals: ["6-week capital equipment research pattern", "Browsed OR equipment lease vs buy comparisons", "Searched 'surgical table replacement 2026'", "Accessed capital planning resources", "Compared 3 OR equipment vendors on total cost of ownership"] },
     { name: "Sumner Regional Medical Center", city: "Gallatin, TN", beds: 155, signal: "GPO Contract Comparison — Urology", intensity: 51, weeks: 1, trend: "new",
-      contact: { name: "James Storey", title: "Assistant Director of Supply Chain", phone: "(615) 452-4210", email: "jstorey@bmnet.com" },
+      contact: { name: "Chevelle Johnson", title: "Associate Chief Nursing Officer", phone: "(615) 452-4210", email: "cjohnson@sumnerregional.com" },
+      contact2: { name: "Lisa Tanner", title: "Director of Materials Management", phone: "(615) 452-4300", email: "ltanner@sumnerregional.com" },
       tags: ["Urology", "GPO", "New Signal"],
       activitySummary: "NEW: First signal this week — GPO urology contract comparison initiated",
       surgeTopics: ["GPO Contracts", "Urology Supplies", "Hospital Procurement", "Medical Device Pricing"],
+      sparkline: [0, 0, 0, 0, 0, 0, 0, 51],
       signals: ["NEW: First signal detected this week", "Compared GPO urology contract pricing", "Searched 'Healthtrust urology catheter pricing'", "Browsed independent distributor urology catalogs", "Accessed 2 GPO pricing portals for urology category"] },
   ];
   const ic = (v: number) => v >= 85 ? C.orange : v >= 70 ? C.purpleLight : C.green;
@@ -201,9 +248,11 @@ function TabWeekly() {
                 </div>
               </div>
               <div className="text-right shrink-0">
-                <div className="text-2xl font-black" style={{ color: ic(h.intensity) }}>{h.intensity}</div>
-                <div className="text-xs" style={{ color: C.purpleLight }}>Intent Score</div>
-                <div className="text-xs mt-0.5" style={{ color: C.purpleLight }}>{h.weeks}w signal</div>
+                <div className="flex items-end justify-end gap-2 mb-1">
+                  <Sparkline data={h.sparkline} color={ic(h.intensity)} />
+                  <div className="text-2xl font-black" style={{ color: ic(h.intensity) }}>{h.intensity}</div>
+                </div>
+                <div className="text-xs" style={{ color: C.purpleLight }}>Intent Score · {h.weeks}w signal</div>
                 <div className="text-xs mt-1 font-black" style={{ color: h.trend === 'new' ? C.green : h.trend === 'rising' ? C.orange : C.purpleLight }}>
                   {h.trend === 'new' ? '🆕 NEW' : h.trend === 'rising' ? '📈 RISING' : '➡ STEADY'}
                 </div>
@@ -242,14 +291,23 @@ function TabWeekly() {
                     </div>
                   ))}
                 </div>
-                <div className="text-xs font-black mb-2" style={{ color: C.gold }}>DECISION-MAKER CONTACT</div>
-                <div className="rounded-xl p-3 space-y-1" style={{ background: C.card2 }}>
-                  <div className="font-black" style={{ color: C.white }}>{h.contact.name}</div>
-                  <div className="text-xs" style={{ color: C.purpleLight }}>{h.contact.title}</div>
-                  <div className="flex gap-4 mt-2 flex-wrap">
-                    <a href={`tel:${h.contact.phone}`} className="text-xs font-bold" style={{ color: C.orange }}>📞 {h.contact.phone}</a>
-                    <a href={`mailto:${h.contact.email}`} className="text-xs font-bold" style={{ color: C.orange }}>✉️ {h.contact.email}</a>
-                  </div>
+                <div className="text-xs font-black mb-2" style={{ color: C.gold }}>DECISION-MAKER CONTACTS</div>
+                <div className="space-y-2">
+                  {[h.contact, ...(h.contact2 ? [h.contact2] : [])].map((c, ci) => (
+                    <div key={ci} className="rounded-xl p-3" style={{ background: C.card2, border: `1px solid ${ci === 0 ? C.orange + '40' : C.border}` }}>
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="font-black text-sm" style={{ color: C.white }}>{c.name}</div>
+                          <div className="text-xs mt-0.5" style={{ color: C.purpleLight }}>{c.title}</div>
+                        </div>
+                        {ci === 0 && <span className="text-xs px-1.5 py-0.5 rounded font-black shrink-0" style={{ background: `${C.orange}25`, color: C.orange }}>PRIMARY</span>}
+                      </div>
+                      <div className="flex gap-4 mt-2 flex-wrap">
+                        <a href={`tel:${c.phone}`} className="text-xs font-bold" style={{ color: C.orange }}>📞 {c.phone}</a>
+                        <a href={`mailto:${c.email}`} className="text-xs font-bold" style={{ color: C.orange }}>✉️ {c.email}</a>
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 <OutreachPanel h={h} />
               </motion.div>
