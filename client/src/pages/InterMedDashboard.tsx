@@ -781,6 +781,58 @@ function TabPricing() {
 // ══════════════════════════════════════════════════════════════════════════════
 // TAB: WEEKLY REPORT DEMO
 // ══════════════════════════════════════════════════════════════════════════════
+type HospitalEntry = {
+  name: string; city: string; beds: number; signal: string;
+  intensity: number; weeks: number;
+  contact: { name: string; title: string; phone: string; email: string };
+  tags: string[];
+};
+
+function OutreachPanel({ h }: { h: HospitalEntry }) {
+  const [channel, setChannel] = useState<'email' | 'linkedin' | 'mail'>('email');
+  const first = h.contact.name.split(' ')[0];
+  const channels: { id: 'email' | 'linkedin' | 'mail'; label: string; icon: string }[] = [
+    { id: 'email', label: 'Email', icon: '✉️' },
+    { id: 'linkedin', label: 'LinkedIn', icon: '💼' },
+    { id: 'mail', label: 'Direct Mail', icon: '📬' },
+  ];
+  const content = {
+    email: {
+      subject: `${h.signal} — Sourcing Support for ${h.name}`,
+      body: `Hi ${first},\n\nI wanted to reach out because we noticed ${h.name} has been actively evaluating ${h.signal.toLowerCase()} options over the past ${h.weeks} week${h.weeks > 1 ? 's' : ''}.\n\nInterMed Resources specializes in exactly this category — we work with regional health systems across Tennessee to source high-quality products at GPO-competitive pricing, often with faster delivery timelines than national distributors.\n\nWould a 15-minute call this week make sense? I can share what we're seeing other health systems in your region doing right now.\n\nBest,\n[Your Name]\nInterMed Resources TN\n[Phone]`,
+    },
+    linkedin: {
+      subject: 'LinkedIn Connection Request Note',
+      body: `Hi ${first} — I work with InterMed Resources TN, a specialty medical device distributor focused on the Southeast. I noticed ${h.name} has been evaluating ${h.signal.toLowerCase()} recently and thought it might be worth connecting. We've helped several Tennessee health systems find cost-effective sourcing in this category. Happy to share what we're seeing in the market if it's useful.`,
+    },
+    mail: {
+      subject: 'Direct Mail — Personalized Letter',
+      body: `${h.contact.name}\n${h.contact.title}\n${h.name}\n${h.city}\n\nDear ${first},\n\nAs a specialty medical device distributor serving Tennessee health systems for over 20 years, InterMed Resources TN has helped OR directors and supply chain leaders like yourself find reliable, cost-competitive sourcing for ${h.signal.toLowerCase()}.\n\nWe understand the pressure of balancing clinical quality with budget constraints — especially when evaluating new suppliers or coming off a GPO contract.\n\nI'd welcome the opportunity to send you a no-obligation product comparison and pricing overview for your current needs. Simply call or email me directly:\n\n[Your Name] | [Phone] | [Email]\nInterMed Resources TN\n\nWarm regards,\n[Your Name]`,
+    },
+  };
+  const active = content[channel];
+  return (
+    <div className="mt-3 rounded-xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+      <div className="flex" style={{ background: C.card2 }}>
+        {channels.map(ch => (
+          <button key={ch.id} onClick={() => setChannel(ch.id)}
+            className="flex-1 py-2 text-xs font-black transition-all"
+            style={{
+              background: channel === ch.id ? C.orange : 'transparent',
+              color: channel === ch.id ? C.bg : C.purpleLight,
+            }}>
+            {ch.icon} {ch.label}
+          </button>
+        ))}
+      </div>
+      <div className="p-3" style={{ background: `${C.purple}15` }}>
+        <div className="text-xs font-black mb-2" style={{ color: C.gold }}>{'subject' in active ? active.subject : ''}</div>
+        <pre className="text-xs leading-relaxed whitespace-pre-wrap font-sans" style={{ color: C.white }}>{active.body}</pre>
+      </div>
+    </div>
+  );
+}
+
 function TabWeeklyReport() {
   const [selected, setSelected] = useState<number | null>(null);
   const hospitals = [
@@ -931,12 +983,7 @@ function TabWeeklyReport() {
                     <a href={`mailto:${h.contact.email}`} className="text-xs font-bold" style={{ color: C.orange }}>✉️ {h.contact.email}</a>
                   </div>
                 </div>
-                <div className="mt-3 rounded-xl p-3" style={{ background: `${C.purpleLight}10`, border: `1px solid ${C.purpleLight}30` }}>
-                  <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>SUGGESTED OUTREACH</div>
-                  <div className="text-xs leading-relaxed" style={{ color: C.white }}>
-                    "Hi {h.contact.name.split(' ')[0]}, I noticed {h.name} has been evaluating {h.signal.toLowerCase()} options. InterMed specializes in exactly this category and we work with several regional health systems on cost-effective sourcing. Would a 15-minute call this week make sense?"
-                  </div>
-                </div>
+                <OutreachPanel h={h} />
               </motion.div>
             )}
           </motion.div>
