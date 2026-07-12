@@ -360,7 +360,7 @@ function TabHow() {
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <SL>HOW EXACT AUDIENCE WORKS — ONE PLATFORM, COMPLETE INTELLIGENCE</SL>
-        <div className="text-lg font-black mb-2" style={{ color: C.white }}>Know Who Is Shopping Before They Call Anyone</div>
+        <div className="text-lg font-black mb-2" style={{ color: C.white }}>Know Who Is Shopping</div>
         <div className="text-sm leading-relaxed" style={{ color: C.white }}>
           Most medical device distributors wait for the phone to ring. Exact Audience gives InterMed a radar system — you see which hospitals are actively evaluating your product categories right now, who the decision-maker is, and how to reach them directly. All intelligence is proprietary to Exact Audience.
         </div>
