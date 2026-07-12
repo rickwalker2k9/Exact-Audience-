@@ -18,11 +18,11 @@ const C = {
 };
 
 const TABS = [
-  { id: "weekly",    label: "This Week's Targets", icon: "🎯" },
-  { id: "how",       label: "How It Works",        icon: "⚙️" },
-  { id: "siteid",    label: "Who's On Your Site",  icon: "👁️" },
-  { id: "roi",       label: "ROI Calculator",      icon: "📈" },
-  { id: "healthtrust", label: "Healthtrust Opportunity", icon: "🌐" },
+  { id: "how",         label: "How It Works" },
+  { id: "siteid",      label: "Who's On Your Site" },
+  { id: "roi",         label: "ROI Calculator" },
+  { id: "healthtrust", label: "Healthtrust" },
+  { id: "weekly",      label: "This Week's Targets" },
 ];
 
 function SL({ children, color }: { children: React.ReactNode; color?: string }) {
@@ -52,9 +52,9 @@ function OutreachPanel({ h }: { h: HospitalEntry }) {
   const [channel, setChannel] = useState<"email" | "linkedin" | "mail">("email");
   const first = h.contact.name.split(" ")[0];
   const channels = [
-    { id: "email" as const,    label: "Email",       icon: "✉️" },
-    { id: "linkedin" as const, label: "LinkedIn",    icon: "💼" },
-    { id: "mail" as const,     label: "Direct Mail", icon: "📬" },
+    { id: "email" as const,    label: "Email" },
+    { id: "linkedin" as const, label: "LinkedIn" },
+    { id: "mail" as const,     label: "Direct Mail" },
   ];
   const content = {
     email: {
@@ -78,7 +78,7 @@ function OutreachPanel({ h }: { h: HospitalEntry }) {
           <button key={ch.id} onClick={e => { e.stopPropagation(); setChannel(ch.id); }}
             className="flex-1 py-2 text-xs font-black transition-all"
             style={{ background: channel === ch.id ? C.orange : "transparent", color: channel === ch.id ? C.bg : C.purpleLight }}>
-            {ch.icon} {ch.label}
+            {ch.label}
           </button>
         ))}
       </div>
@@ -239,7 +239,7 @@ function TabWeekly() {
                   <span className="text-sm font-black" style={{ color: C.white }}>{h.name}</span>
                   <span className="text-xs" style={{ color: C.purpleLight }}>{h.city} · {h.beds} beds</span>
                 </div>
-                <div className="text-xs mt-1 font-semibold" style={{ color: ic(h.intensity) }}>🔥 {h.signal}</div>
+                <div className="text-xs mt-1 font-semibold" style={{ color: ic(h.intensity) }}>{h.signal}</div>
                 <div className="flex gap-1.5 mt-2 flex-wrap">
                   {h.tags.map((t, j) => (
                     <span key={j} className="text-xs px-2 py-0.5 rounded-full font-bold"
@@ -254,7 +254,7 @@ function TabWeekly() {
                 </div>
                 <div className="text-xs" style={{ color: C.purpleLight }}>Intent Score · {h.weeks}w signal</div>
                 <div className="text-xs mt-1 font-black" style={{ color: h.trend === 'new' ? C.green : h.trend === 'rising' ? C.orange : C.purpleLight }}>
-                  {h.trend === 'new' ? '🆕 NEW' : h.trend === 'rising' ? '📈 RISING' : '➡ STEADY'}
+                  {h.trend === 'new' ? 'NEW' : h.trend === 'rising' ? 'RISING' : 'STEADY'}
                 </div>
               </div>
             </div>
@@ -263,7 +263,7 @@ function TabWeekly() {
                 className="mt-4 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
                 {/* Activity Summary */}
                 <div className="rounded-xl p-3 mb-3 flex items-start gap-2" style={{ background: `${C.orange}15`, border: `1px solid ${C.orange}40` }}>
-                  <span className="text-base shrink-0">📡</span>
+                  <div className="w-1.5 h-1.5 rounded-full shrink-0 mt-1" style={{ background: C.orange }} />
                   <div>
                     <div className="text-xs font-black mb-0.5" style={{ color: C.orange }}>EXACT AUDIENCE — BEHAVIORAL ACTIVITY</div>
                     <div className="text-xs font-semibold" style={{ color: C.white }}>{h.activitySummary}</div>
@@ -303,8 +303,8 @@ function TabWeekly() {
                         {ci === 0 && <span className="text-xs px-1.5 py-0.5 rounded font-black shrink-0" style={{ background: `${C.orange}25`, color: C.orange }}>PRIMARY</span>}
                       </div>
                       <div className="flex gap-4 mt-2 flex-wrap">
-                        <a href={`tel:${c.phone}`} className="text-xs font-bold" style={{ color: C.orange }}>📞 {c.phone}</a>
-                        <a href={`mailto:${c.email}`} className="text-xs font-bold" style={{ color: C.orange }}>✉️ {c.email}</a>
+                        <a href={`tel:${c.phone}`} className="text-xs font-bold" style={{ color: C.orange }}>{c.phone}</a>
+                        <a href={`mailto:${c.email}`} className="text-xs font-bold" style={{ color: C.orange }}>{c.email}</a>
                       </div>
                     </div>
                   ))}
@@ -373,7 +373,7 @@ function TabHow() {
               <div className="font-black mb-2" style={{ color: C.white }}>{s.title}</div>
               <div className="text-sm leading-relaxed mb-3" style={{ color: C.white }}>{s.desc}</div>
               <div className="rounded-xl p-3 text-xs italic leading-relaxed" style={{ background: `${s.color}12`, border: `1px solid ${s.color}30`, color: s.color }}>
-                📍 Example: {s.example}
+                Example: {s.example}
               </div>
             </div>
           </div>
@@ -390,7 +390,7 @@ function TabHow() {
           ].map((r, i) => (
             <div key={i} className="rounded-xl p-3 flex items-start gap-3"
               style={{ background: r.bad ? `${C.border}80` : `${C.orange}12`, border: `1px solid ${r.bad ? C.border : C.orange}30` }}>
-              <div className="text-lg shrink-0">{r.bad ? "📖" : "🎯"}</div>
+              <div className="w-2 h-2 rounded-full mt-1 shrink-0" style={{ background: r.bad ? C.border : C.orange }} />
               <div>
                 <div className="text-xs font-black mb-1" style={{ color: r.bad ? C.purpleLight : C.orange }}>{r.label}</div>
                 <div className="text-xs leading-relaxed" style={{ color: C.white }}>{r.desc}</div>
@@ -467,11 +467,11 @@ function TabSiteID() {
           ].map((r, i) => (
             <div key={i} className="grid grid-cols-2 gap-2">
               <div className="rounded-xl p-3" style={{ background: `${C.border}60` }}>
-                <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>❌ Without SITEID</div>
+                <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>Without SITEID</div>
                 <div className="text-xs leading-relaxed" style={{ color: C.white }}>{r.without}</div>
               </div>
               <div className="rounded-xl p-3" style={{ background: `${C.green}10`, border: `1px solid ${C.green}20` }}>
-                <div className="text-xs font-black mb-1" style={{ color: C.green }}>✅ With SITEID</div>
+                <div className="text-xs font-black mb-1" style={{ color: C.green }}>With SITEID</div>
                 <div className="text-xs leading-relaxed" style={{ color: C.white }}>{r.with}</div>
               </div>
             </div>
@@ -565,34 +565,34 @@ function TabHealthtrust() {
     <div className="space-y-4">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>THE BIGGER PICTURE — HEALTHTRUST PERFORMANCE GROUP</SL>
-        <div className="text-lg font-black mb-2" style={{ color: C.white }}>From One Distributor to 1,900 Hospitals</div>
+        <SL>CONTEXT — HEALTHTRUST PERFORMANCE GROUP</SL>
+        <div className="text-lg font-black mb-2" style={{ color: C.white }}>A Network Worth Understanding</div>
         <div className="text-sm leading-relaxed" style={{ color: C.white }}>
-          Healthtrust Performance Group is the GPO arm of HCA Healthcare — the world's largest for-profit hospital operator. They serve 1,900 member hospitals and 35,000 non-acute care sites. If InterMed can facilitate an introduction to Healthtrust leadership, the opportunity expands from a single distributor relationship to a network-wide platform partnership.
+          Healthtrust Performance Group is the GPO arm of HCA Healthcare, serving 1,900 member hospitals and 35,000 non-acute care sites. As InterMed grows its Tennessee relationships, Healthtrust becomes an increasingly relevant part of the landscape — both as a contracting vehicle and as a potential channel for broader market access.
         </div>
       </motion.div>
 
       <div className="space-y-3">
         {[
           {
-            title: "The Problem Healthtrust Has",
+            title: "What Healthtrust Does",
             color: C.orange,
-            content: "Healthtrust's core value proposition is helping member hospitals reduce costs and improve supply chain efficiency. But they don't have a tool that tells them which hospitals in their network are actively evaluating new suppliers — or which hospitals outside their network are shopping and could be recruited as new members.",
+            content: "Healthtrust's core mission is helping member hospitals reduce costs and improve supply chain efficiency. They negotiate contracts on behalf of 1,900 hospitals — giving suppliers like InterMed access to a pre-qualified, cost-conscious buyer network.",
           },
           {
-            title: "What Exact Audience Solves for Them",
+            title: "Where Intent Data Fits",
             color: C.purpleLight,
-            content: "Exact Audience can identify hospitals showing intent signals for GPO membership, supply chain optimization, and cost reduction programs. Exact Audience can identify the CFO, VP of Supply Chain, or CEO at each hospital. Healthtrust gets a weekly list of hospitals that are actively looking for exactly what they offer.",
+            content: "Healthtrust member hospitals still make their own purchasing decisions. Knowing which of those 1,900 hospitals are actively researching a product category — before a rep calls — is the difference between a warm conversation and a cold one. That's what Exact Audience surfaces.",
           },
           {
-            title: "The Network Growth Opportunity",
+            title: "The Bigger Picture for InterMed",
             color: C.gold,
-            content: "A single new hospital member is worth millions in contract volume to Healthtrust. If Exact Audience helps them recruit even 10 new hospital members per year, the ROI on the platform investment is measured in tens of millions. This is not a software subscription conversation — it is a network growth engine conversation.",
+            content: "As InterMed deepens its Healthtrust relationships, the same intelligence that identifies one hospital's buying signal can be applied across the entire network. The Tennessee market is the proof of concept. The methodology scales.",
           },
           {
-            title: "The Member & Supplier Adoption Opportunity",
+            title: "A Natural Conversation to Have",
             color: C.green,
-            content: "Healthtrust's 1,900 member hospitals each face the same challenge InterMed faces — finding in-market buyers before competitors do. If Healthtrust recommends Exact Audience to their members and contracted suppliers as a preferred performance tool, the addressable market expands dramatically.",
+            content: "If Healthtrust leadership sees the same weekly intelligence InterMed receives — hospitals actively researching their product categories, with decision-maker contacts attached — the conversation about broader adoption happens naturally. No pitch required.",
           },
         ].map((s, i) => (
           <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
@@ -604,10 +604,10 @@ function TabHealthtrust() {
       </div>
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-        className="rounded-2xl p-5" style={{ background: `linear-gradient(135deg, ${C.purple}40, ${C.orange}20)`, border: `1px solid ${C.orange}30` }}>
-        <div className="text-sm font-black mb-2" style={{ color: C.white }}>The Ask for the Healthtrust Conversation</div>
-        <div className="text-sm leading-relaxed italic" style={{ color: C.white }}>
-          "We're not asking Healthtrust to buy software. We're asking them to let us show their business development team how Exact Audience identifies hospitals that are actively shopping for GPO membership right now — and delivers the CEO or CFO contact at each one. One pilot. One market. Thirty days."
+        className="rounded-2xl p-5" style={{ background: `${C.card}`, border: `1px solid ${C.border}` }}>
+        <div className="text-xs font-black tracking-widest mb-2" style={{ color: C.purpleLight }}>WHAT THIS LOOKS LIKE IN PRACTICE</div>
+        <div className="text-sm leading-relaxed" style={{ color: C.white }}>
+          The same weekly report InterMed receives today — hospitals actively researching, decision-makers identified, contacts ready — is the same report that would be valuable to any Healthtrust business development team. The data is already there. The question is who sees it.
         </div>
       </motion.div>
     </div>
@@ -617,7 +617,7 @@ function TabHealthtrust() {
 // ── MAIN DASHBOARD ─────────────────────────────────────────────────────────────
 export default function InterMedDashboard() {
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState("weekly");
+  const [activeTab, setActiveTab] = useState("how");
   return (
     <div className="min-h-screen" style={{ background: C.bg, fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
       <style>{`
@@ -631,7 +631,7 @@ export default function InterMedDashboard() {
         </button>
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <div className="text-2xl font-black" style={{ color: C.orange }}>🏥 InterMed Resources TN</div>
+            <div className="text-2xl font-black" style={{ color: C.orange }}>InterMed Resources TN</div>
             <div className="text-xs mt-0.5" style={{ color: C.white }}>Medical Device Distribution · Tennessee · Exact Audience Intelligence</div>
           </div>
           <div className="flex items-center gap-1.5 text-xs font-black" style={{ color: C.green }}>
@@ -651,7 +651,7 @@ export default function InterMedDashboard() {
                 border: `1px solid ${activeTab === tab.id ? "transparent" : C.border}`,
                 boxShadow: activeTab === tab.id ? `0 0 16px ${C.orange}30` : "none",
               }}>
-              {tab.icon} {tab.label}
+              {tab.label}
             </button>
           ))}
         </div>
