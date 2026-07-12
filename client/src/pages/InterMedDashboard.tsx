@@ -351,6 +351,63 @@ function TabInterMed() {
           </div>
         </motion.div>
       ))}
+      {/* Target Intelligence */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+        className="rounded-2xl p-5 space-y-4" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.purpleLight}>Target Intelligence — What Hospitals Are Searching For</SL>
+        <p className="text-xs leading-relaxed" style={{ color: C.white }}>These are the active buying signals BuyersDNA monitors across 127 data sources. When a hospital administrator searches for any of these, InterMed's sales team gets the alert — with the decision-maker's name and contact.</p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {[
+            { category: "Surgical & Procedural Equipment", signals: ["Laser systems for urology, ENT & dermatology", "Minimally invasive surgical tools", "Capital equipment evaluation (lease expiring)", "New service line launch research"] },
+            { category: "Spinal & Orthopedic Implants", signals: ["Spinal implant supplier evaluation", "Coming off GPO contract — seeking alternatives", "New surgeon joining with specific system preference", "Value analysis committee review triggered"] },
+            { category: "Hernia Mesh & Wound Care", signals: ["Hernia mesh supplier alternatives (recall/price increase)", "VAC evaluation of wound care products", "New surgeon preference driving switch", "Cost reduction initiative on consumables"] },
+            { category: "Urology Supplies & Disposables", signals: ["Catheter system sourcing", "Stone management tool evaluation", "Laser fiber supplier comparison", "Utilization cost overrun review"] },
+            { category: "Lead Wires, Cables & Monitoring", signals: ["OEM-compatible replacement search", "Service contract expiring on capital equipment", "Biomedical cost reduction initiative", "Standardization across facilities"] },
+            { category: "GPO & Vendor Evaluation", signals: ["Competitor distributor site visits", "GPO contract comparison research", "Medical device trade publication activity", "New surgeon hire triggering supply review"] },
+          ].map((cat, i) => (
+            <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 + i * 0.07 }}
+              className="rounded-xl p-3" style={{ background: C.card2, borderLeft: `3px solid ${C.purpleLight}` }}>
+              <div className="text-xs font-black mb-2" style={{ color: C.purpleLight }}>{cat.category}</div>
+              <div className="space-y-1">
+                {cat.signals.map((s, j) => (
+                  <div key={j} className="flex items-start gap-1.5">
+                    <div className="w-1 h-1 rounded-full shrink-0 mt-1.5" style={{ background: C.purpleLight }} />
+                    <span className="text-xs leading-relaxed" style={{ color: C.white }}>{s}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div>
+          <div className="text-xs font-black mb-2" style={{ color: C.gold }}>Decision-Makers BuyersDNA Targets</div>
+          <div className="space-y-1.5">
+            {[
+              { title: "VP of Supply Chain / Materials Management", role: "Final vendor approval and contract execution" },
+              { title: "Value Analysis Committee (VAC) Chair", role: "Clinical and cost evaluation before any new product enters" },
+              { title: "OR Director / Surgical Services Director", role: "Drives capital equipment decisions for the OR" },
+              { title: "Chief of Urology / Department Head", role: "Physician preference driving urology supply choices" },
+              { title: "Biomedical Engineering Director", role: "Approves equipment compatibility and service contracts" },
+              { title: "CFO / VP Finance", role: "Signs off on capital purchases above threshold" },
+            ].map((dm, i) => (
+              <motion.div key={i} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + i * 0.06 }}
+                className="flex items-start justify-between gap-3 rounded-lg p-2.5" style={{ background: C.card2 }}>
+                <span className="text-xs font-black" style={{ color: C.orange }}>{dm.title}</span>
+                <span className="text-xs text-right" style={{ color: C.white, maxWidth: '55%' }}>{dm.role}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl p-3" style={{ background: `${C.orange}10`, border: `1px solid ${C.orange}30` }}>
+          <div className="text-xs font-black mb-1" style={{ color: C.orange }}>The Demo Moment</div>
+          <div className="text-sm font-semibold italic leading-relaxed" style={{ color: C.white }}>
+            "Here are 47 hospitals actively researching urology laser systems right now — and here is the name and direct contact of the supply chain director at each one."
+          </div>
+        </div>
+      </motion.div>
+
       <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <SL color={C.gold}>What to Demo in the Meeting</SL>
         <div className="space-y-3">
