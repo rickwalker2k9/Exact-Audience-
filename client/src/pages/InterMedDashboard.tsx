@@ -704,19 +704,272 @@ function TabROI() {
 }
 
 // ── TAB: HEALTHTRUST OPPORTUNITY ──────────────────────────────────────────────
+// ── Healthtrust Network Map (SVG) ─────────────────────────────────────────────
+function HealthtrustNetworkMap() {
+  const [hoveredSystem, setHoveredSystem] = useState<string | null>(null);
+  const [phase, setPhase] = useState(0); // 0=center, 1=rings, 2=outer
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 400);
+    const t2 = setTimeout(() => setPhase(2), 1000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  const cx = 160, cy = 155;
+  const systems = [
+    { id: "HCA",    label: "HCA",    angle: -90, r: 72,  color: "#f59e0b", members: 186, spend: "$8.2B" },
+    { id: "Tenet",  label: "Tenet",  angle: -18, r: 72,  color: "#a78bfa", members: 65,  spend: "$3.1B" },
+    { id: "CHS",    label: "CHS",    angle:  54, r: 72,  color: "#34d399", members: 84,  spend: "$2.8B" },
+    { id: "CHI",    label: "CHI",    angle: 126, r: 72,  color: "#60a5fa", members: 105, spend: "$4.4B" },
+    { id: "HPG",    label: "HPG",    angle: 198, r: 72,  color: "#f472b6", members: 210, spend: "$6.9B" },
+  ];
+
+  const toXY = (angle: number, radius: number) => ({
+    x: cx + radius * Math.cos((angle * Math.PI) / 180),
+    y: cy + radius * Math.sin((angle * Math.PI) / 180),
+  });
+
+  // Outer hospital dots — 8 per system
+  const outerDots = systems.flatMap(sys =>
+    Array.from({ length: 8 }, (_, i) => {
+      const spread = 28;
+      const baseAngle = sys.angle;
+      const dotAngle = baseAngle - spread + (i * spread * 2) / 7;
+      const pos = toXY(dotAngle, 128);
+      return { ...pos, color: sys.color, sysId: sys.id, idx: i };
+    })
+  );
+
+  return (
+    <div className="relative" style={{ background: C.card2, borderRadius: 16, padding: "12px 8px 8px", border: `1px solid ${C.border}` }}>
+      <SL>HEALTHTRUST NETWORK — LIVE INTELLIGENCE REACH</SL>
+      <div className="flex justify-center">
+        <svg width={320} height={310} viewBox="0 0 320 310" style={{ overflow: "visible" }}>
+          {/* Outer ring lines */}
+          {phase >= 1 && systems.map(sys => {
+            const sPos = toXY(sys.angle, sys.r);
+            return outerDots
+              .filter(d => d.sysId === sys.id)
+              .map((dot, di) => (
+                <motion.line key={`ol-${sys.id}-${di}`}
+                  x1={sPos.x} y1={sPos.y} x2={dot.x} y2={dot.y}
+                  stroke={sys.color} strokeWidth={0.5} strokeOpacity={0.25}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ delay: 0.6 + di * 0.04, duration: 0.4 }}
+                />
+              ));
+          })}
+
+          {/* Center → system lines */}
+          {phase >= 1 && systems.map(sys => {
+            const sPos = toXY(sys.angle, sys.r);
+            return (
+              <motion.line key={`cl-${sys.id}`}
+                x1={cx} y1={cy} x2={sPos.x} y2={sPos.y}
+                stroke={sys.color} strokeWidth={1.5} strokeOpacity={0.5}
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+              />
+            );
+          })}
+
+          {/* Outer hospital dots */}
+          {phase >= 2 && outerDots.map((dot, di) => (
+            <motion.circle key={`dot-${di}`}
+              cx={dot.x} cy={dot.y} r={3.5}
+              fill={dot.color} fillOpacity={0.7}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.05 * di, duration: 0.3 }}
+            />
+          ))}
+
+          {/* System nodes */}
+          {systems.map((sys, si) => {
+            const pos = toXY(sys.angle, sys.r);
+            const isHovered = hoveredSystem === sys.id;
+            return (
+              <g key={sys.id}
+                onMouseEnter={() => setHoveredSystem(sys.id)}
+                onMouseLeave={() => setHoveredSystem(null)}
+                onClick={() => setHoveredSystem(hoveredSystem === sys.id ? null : sys.id)}
+                style={{ cursor: "pointer" }}>
+                {phase >= 1 && (
+                  <>
+                    {isHovered && (
+                      <motion.circle cx={pos.x} cy={pos.y} r={20}
+                        fill={sys.color} fillOpacity={0.15}
+                        initial={{ scale: 0 }} animate={{ scale: 1 }} />
+                    )}
+                    <motion.circle cx={pos.x} cy={pos.y} r={14}
+                      fill={sys.color} fillOpacity={0.2}
+                      stroke={sys.color} strokeWidth={isHovered ? 2 : 1}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.1 + si * 0.08, duration: 0.4 }}
+                    />
+                    <motion.text x={pos.x} y={pos.y + 1} textAnchor="middle" dominantBaseline="middle"
+                      fill={sys.color} fontSize={9} fontWeight={900}
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 + si * 0.08 }}>
+                      {sys.label}
+                    </motion.text>
+                    {/* Tooltip */}
+                    {isHovered && (
+                      <g>
+                        <rect x={pos.x - 44} y={pos.y - 42} width={88} height={34} rx={6}
+                          fill={C.card} stroke={sys.color} strokeWidth={1} strokeOpacity={0.6} />
+                        <text x={pos.x} y={pos.y - 28} textAnchor="middle" fill={sys.color} fontSize={8} fontWeight={900}>
+                          {sys.members} hospitals
+                        </text>
+                        <text x={pos.x} y={pos.y - 17} textAnchor="middle" fill="#94a3b8" fontSize={8}>
+                          {sys.spend} supply spend
+                        </text>
+                      </g>
+                    )}
+                  </>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Center node — pulsing */}
+          <motion.circle cx={cx} cy={cy} r={28}
+            fill="#f59e0b" fillOpacity={0.08}
+            animate={{ r: [28, 34, 28], fillOpacity: [0.08, 0.18, 0.08] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <circle cx={cx} cy={cy} r={22} fill="#1a1505" stroke="#f59e0b" strokeWidth={2} />
+          <text x={cx} y={cy - 4} textAnchor="middle" fill="#f59e0b" fontSize={7} fontWeight={900}>HEALTH</text>
+          <text x={cx} y={cy + 6} textAnchor="middle" fill="#f59e0b" fontSize={7} fontWeight={900}>TRUST</text>
+        </svg>
+      </div>
+      <div className="text-center text-xs mt-1 pb-1" style={{ color: "#64748b" }}>
+        1,900 member hospitals · $39B in annual purchasing volume
+      </div>
+    </div>
+  );
+}
+
+// ── Revenue Funnel ────────────────────────────────────────────────────────────
+function RevenueFunnel() {
+  const stages = [
+    {
+      label: "Healthtrust Direct Contract",
+      sub: "Platform licensing + data delivery",
+      low: "$250K", high: "$500K",
+      color: C.gold,
+      width: 100,
+      delay: 0.1,
+    },
+    {
+      label: "Member Hospital Adoption (5–10%)",
+      sub: "95–190 hospitals × $15K–$30K/yr",
+      low: "$2.85M", high: "$5.7M",
+      color: C.green,
+      width: 72,
+      delay: 0.35,
+    },
+    {
+      label: "Supplier Network Adoption (10–15%)",
+      sub: "300–450 suppliers × $10K–$15K/yr",
+      low: "$3M", high: "$4.5M",
+      color: C.purpleLight,
+      width: 50,
+      delay: 0.6,
+    },
+  ];
+
+  return (
+    <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+      <SL>REVENUE OPPORTUNITY — EXACT AUDIENCE × HEALTHTRUST</SL>
+      <div className="space-y-3">
+        {stages.map((s, i) => (
+          <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: s.delay, duration: 0.5 }}>
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex-1 min-w-0 pr-3">
+                <div className="text-xs font-black" style={{ color: s.color }}>{s.label}</div>
+                <div className="text-xs" style={{ color: "#64748b" }}>{s.sub}</div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="text-sm font-black" style={{ color: s.color }}>{s.low}–{s.high}</div>
+                <div className="text-xs" style={{ color: "#64748b" }}>per year</div>
+              </div>
+            </div>
+            {/* Funnel bar */}
+            <div className="relative h-7 rounded-lg overflow-hidden" style={{ background: C.card2 }}>
+              <motion.div
+                className="absolute left-0 top-0 h-full rounded-lg flex items-center justify-end pr-3"
+                style={{ background: `linear-gradient(90deg, ${s.color}40, ${s.color}90)`, border: `1px solid ${s.color}60` }}
+                initial={{ width: 0 }}
+                animate={{ width: `${s.width}%` }}
+                transition={{ delay: s.delay + 0.2, duration: 0.8, ease: "easeOut" }}
+              >
+                <span className="text-xs font-black" style={{ color: s.color }}>{s.high}</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Total */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0 }}
+        className="mt-5 rounded-xl p-4 text-center"
+        style={{ background: `linear-gradient(135deg, ${C.gold}15, ${C.orange}10)`, border: `1px solid ${C.gold}50` }}>
+        <div className="text-xs font-black tracking-widest mb-1" style={{ color: C.gold }}>TOTAL ADDRESSABLE OPPORTUNITY</div>
+        <div className="text-3xl font-black" style={{ color: C.gold }}>Up to $10.7M / year</div>
+        <div className="text-xs mt-1" style={{ color: "#94a3b8" }}>Conservative estimate based on 5–10% member adoption</div>
+      </motion.div>
+    </div>
+  );
+}
+
 function TabHealthtrust() {
   return (
     <div className="space-y-4">
+
+      {/* ── 1. Animated Stat Wall ─────────────────────────────────────────── */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>CONTEXT — HEALTHTRUST PERFORMANCE GROUP</SL>
-        <div className="text-lg font-black mb-2" style={{ color: C.white }}>A Network Worth Understanding</div>
-        <div className="text-sm leading-relaxed" style={{ color: C.white }}>
-          Healthtrust Performance Group is the GPO arm of HCA Healthcare, serving 1,900 member hospitals and 35,000 non-acute care sites. As InterMed grows its Tennessee relationships, Healthtrust becomes an increasingly relevant part of the landscape — both as a contracting vehicle and as a potential channel for broader market access.
+        <SL>HEALTHTRUST PERFORMANCE GROUP — BY THE NUMBERS</SL>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { label: "Member Hospitals",         target: 1900,  suffix: "",   prefix: "",  color: C.gold },
+            { label: "Annual Purchasing Volume",  target: 39,    suffix: "B",  prefix: "$", color: C.orange },
+            { label: "Care Sites in Network",     target: 26000, suffix: "+",  prefix: "",  color: C.purpleLight },
+            { label: "New Members in 2023",       target: 58,    suffix: "",   prefix: "",  color: C.green },
+          ].map((s, i) => {
+            const count = useCountUp(s.target, 1.8);
+            return (
+              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.12, duration: 0.4 }}
+                className="rounded-xl p-4 text-center relative overflow-hidden"
+                style={{ background: C.card2, border: `1px solid ${s.color}30`, boxShadow: `0 0 20px ${s.color}10` }}>
+                <div className="absolute inset-0 opacity-5 rounded-xl" style={{ background: `radial-gradient(circle at 50% 50%, ${s.color}, transparent 70%)` }} />
+                <motion.div className="text-3xl font-black relative" style={{ color: s.color }}>
+                  {s.prefix}<motion.span>{count}</motion.span>{s.suffix}
+                </motion.div>
+                <div className="text-xs mt-1 font-semibold relative" style={{ color: "#94a3b8" }}>{s.label}</div>
+              </motion.div>
+            );
+          })}
         </div>
       </motion.div>
 
-      <div className="space-y-3">
+      {/* ── 2. Animated Network Map ───────────────────────────────────────── */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+        <HealthtrustNetworkMap />
+      </motion.div>
+
+      {/* ── 3. Revenue Opportunity Funnel ─────────────────────────────────── */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+        <RevenueFunnel />
+      </motion.div>
+
+      {/* ── Supporting context (existing four text blocks) ─────────────────── */}
+      <div className="space-y-3 pt-2">
+        <div className="text-xs font-black tracking-widest" style={{ color: "#475569" }}>SUPPORTING CONTEXT</div>
         {[
           {
             title: "What Healthtrust Does",
@@ -739,16 +992,16 @@ function TabHealthtrust() {
             content: "If Healthtrust leadership sees the same weekly intelligence InterMed receives — hospitals actively researching their product categories, with decision-maker contacts attached — the conversation about broader adoption happens naturally. No pitch required.",
           },
         ].map((s, i) => (
-          <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
-            className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}`, borderLeft: `4px solid ${s.color}` }}>
-            <div className="font-black mb-2" style={{ color: s.color }}>{s.title}</div>
+          <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 + i * 0.08 }}
+            className="rounded-2xl p-4" style={{ background: C.card, border: `1px solid ${C.border}`, borderLeft: `4px solid ${s.color}` }}>
+            <div className="font-black mb-1.5 text-sm" style={{ color: s.color }}>{s.title}</div>
             <div className="text-sm leading-relaxed" style={{ color: C.white }}>{s.content}</div>
           </motion.div>
         ))}
       </div>
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-        className="rounded-2xl p-5" style={{ background: `${C.card}`, border: `1px solid ${C.border}` }}>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <div className="text-xs font-black tracking-widest mb-2" style={{ color: C.purpleLight }}>WHAT THIS LOOKS LIKE IN PRACTICE</div>
         <div className="text-sm leading-relaxed" style={{ color: C.white }}>
           The same weekly report InterMed receives today — hospitals actively researching, decision-makers identified, contacts ready — is the same report that would be valuable to any Healthtrust business development team. The data is already there. The question is who sees it.
