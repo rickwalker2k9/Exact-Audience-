@@ -1157,105 +1157,229 @@ function RealEstateHero() {
   const arrowEndY = FLOOR - hN.wallH - hN.w * 0.36 - 30;
 
   return (
-    <div className="relative w-full overflow-hidden flex items-center justify-center" style={{ height: 230, background: 'transparent' }}>
+    <div className="relative w-full overflow-hidden" style={{ height: 260, background: 'transparent' }}>
       <svg
         viewBox={`0 0 ${SVG_W} ${SVG_H}`}
         width="100%"
         height="100%"
-        style={{ maxHeight: 230, overflow: 'visible' }}
-        aria-label="Wireframe real estate growth"
+        style={{ maxHeight: 260 }}
+        aria-label="Blueprint elevation drawing"
       >
         <defs>
-          {/* Neon glow for house outlines */}
-          <filter id="neonGlow" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <filter id="bpGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          {/* Strong glow for arrow */}
           <filter id="arrowGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feGaussianBlur stdDeviation="4" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          {/* Clip mask — reveals arrow left to right */}
+          {/* Hatch pattern for ground */}
+          <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke={BP_DIM} strokeWidth="0.5" opacity="0.3" />
+          </pattern>
+          {/* Arrow reveal clip */}
           <clipPath id="arrowReveal">
-            <motion.rect
-              x={arrowStartX - 10} y={-20}
-              height={SVG_H + 40}
+            <motion.rect x={arrowStartX - 10} y={0} height={SVG_H}
               initial={{ width: 0 }}
-              animate={{ width: arrowEndX - arrowStartX + 60 }}
-              transition={{ duration: 3.8, ease: [0.4, 0, 0.15, 1], delay: 2.2 }}
+              animate={{ width: arrowEndX - arrowStartX + 80 }}
+              transition={{ duration: 4, ease: [0.4, 0, 0.15, 1], delay: 2.4 }}
             />
           </clipPath>
         </defs>
 
-        {/* Blueprint background grid */}
-        <rect x="0" y="0" width={SVG_W} height={SVG_H} fill={BP_BG} opacity={0.95} rx="6" />
-        {/* Faint grid lines */}
-        {Array.from({length: 14}).map((_, i) => (
-          <line key={`gv${i}`} x1={i * 50} y1={0} x2={i * 50} y2={SVG_H}
-            stroke={BP_DIM} strokeWidth={0.3} opacity={0.12} />
-        ))}
-        {Array.from({length: 6}).map((_, i) => (
-          <line key={`gh${i}`} x1={0} y1={i * 40} x2={SVG_W} y2={i * 40}
-            stroke={BP_DIM} strokeWidth={0.3} opacity={0.12} />
-        ))}
+        {/* ── BLUEPRINT PAPER ── */}
+        <rect x="0" y="0" width={SVG_W} height={SVG_H} fill="#0a1628" rx="4" />
 
-        {/* Floor baseline */}
-        <line x1={startX - 8} y1={FLOOR} x2={SVG_W - startX + 8} y2={FLOOR}
-          stroke={BP_DIM} strokeWidth={1} opacity={0.6} />
-
-        {/* 4 isometric blueprint houses */}
-        {BP_HOUSES.map((h, i) => (
-          <IsoHouse
-            key={i}
-            hx={positions[i]}
-            floor={FLOOR}
-            w={h.w}
-            wallH={h.wallH}
-            depth={h.depth}
-            delay={h.delay}
-          />
+        {/* Fine grid (blueprint paper) */}
+        {Array.from({length: Math.ceil(SVG_W/20)+1}).map((_, i) => (
+          <line key={`gv${i}`} x1={i*20} y1={0} x2={i*20} y2={SVG_H}
+            stroke="#1e3a5f" strokeWidth={0.4} opacity={0.5} />
+        ))}
+        {Array.from({length: Math.ceil(SVG_H/20)+1}).map((_, i) => (
+          <line key={`gh${i}`} x1={0} y1={i*20} x2={SVG_W} y2={i*20}
+            stroke="#1e3a5f" strokeWidth={0.4} opacity={0.5} />
+        ))}
+        {/* Major grid every 100px */}
+        {Array.from({length: Math.ceil(SVG_W/100)+1}).map((_, i) => (
+          <line key={`mgv${i}`} x1={i*100} y1={0} x2={i*100} y2={SVG_H}
+            stroke="#1e4a7a" strokeWidth={0.7} opacity={0.6} />
+        ))}
+        {Array.from({length: Math.ceil(SVG_H/100)+1}).map((_, i) => (
+          <line key={`mgh${i}`} x1={0} y1={i*100} x2={SVG_W} y2={i*100}
+            stroke="#1e4a7a" strokeWidth={0.7} opacity={0.6} />
         ))}
 
-        {/* Arrow — draws left to right via clip, appears after houses */}
-        <g clipPath="url(#arrowReveal)">
-          {/* Outer glow */}
-          <line
-            x1={arrowStartX} y1={arrowStartY}
-            x2={arrowEndX} y2={arrowEndY}
-            stroke="#fbbf24" strokeWidth="10" strokeLinecap="round"
-            filter="url(#arrowGlow)" opacity={0.35}
-          />
-          {/* Core line */}
-          <line
-            x1={arrowStartX} y1={arrowStartY}
-            x2={arrowEndX} y2={arrowEndY}
-            stroke="#fde68a" strokeWidth="3" strokeLinecap="round"
-          />
+        {/* ── BORDER FRAME ── */}
+        <rect x="4" y="4" width={SVG_W-8} height={SVG_H-8}
+          fill="none" stroke={BP_DIM} strokeWidth={1} opacity={0.5} />
+        <rect x="8" y="8" width={SVG_W-16} height={SVG_H-16}
+          fill="none" stroke={BP_DIM} strokeWidth={0.4} opacity={0.3} />
+
+        {/* ── TITLE BLOCK (bottom right) ── */}
+        <rect x={SVG_W - 160} y={SVG_H - 36} width={152} height={28}
+          fill="#0a1628" stroke={BP_DIM} strokeWidth={0.7} opacity={0.9} />
+        <line x1={SVG_W - 160} y1={SVG_H - 22} x2={SVG_W - 8} y2={SVG_H - 22}
+          stroke={BP_DIM} strokeWidth={0.5} opacity={0.6} />
+        <text x={SVG_W - 84} y={SVG_H - 26} textAnchor="middle"
+          fontFamily="'Courier New', Courier, monospace" fontSize={5.5} fill={BP_BRIGHT} opacity={0.9} letterSpacing={0.5}>
+          EXACT AUDIENCE — INVESTOR INTELLIGENCE
+        </text>
+        <text x={SVG_W - 84} y={SVG_H - 14} textAnchor="middle"
+          fontFamily="'Courier New', Courier, monospace" fontSize={4.5} fill={BP_BLUE} opacity={0.7} letterSpacing={0.3}>
+          ELEVATION SERIES A–D  |  SCALE 1:100  |  DWG NO. EA-2024-001
+        </text>
+
+        {/* ── SCALE BAR (bottom left) ── */}
+        <g opacity={0.7}>
+          <line x1={16} y1={SVG_H - 18} x2={76} y2={SVG_H - 18} stroke={BP_DIM} strokeWidth={0.8} />
+          <line x1={16} y1={SVG_H - 21} x2={16} y2={SVG_H - 15} stroke={BP_DIM} strokeWidth={0.8} />
+          <line x1={46} y1={SVG_H - 21} x2={46} y2={SVG_H - 15} stroke={BP_DIM} strokeWidth={0.8} />
+          <line x1={76} y1={SVG_H - 21} x2={76} y2={SVG_H - 15} stroke={BP_DIM} strokeWidth={0.8} />
+          <rect x={16} y={SVG_H - 21} width={30} height={6} fill={BP_DIM} opacity={0.2} />
+          <text x={16} y={SVG_H - 10} fontFamily="'Courier New', monospace" fontSize={4.5} fill={BP_DIM} opacity={0.8}>0</text>
+          <text x={43} y={SVG_H - 10} fontFamily="'Courier New', monospace" fontSize={4.5} fill={BP_DIM} opacity={0.8}>50'</text>
+          <text x={70} y={SVG_H - 10} fontFamily="'Courier New', monospace" fontSize={4.5} fill={BP_DIM} opacity={0.8}>100'</text>
+          <text x={16} y={SVG_H - 26} fontFamily="'Courier New', monospace" fontSize={4} fill={BP_DIM} opacity={0.6}>SCALE</text>
         </g>
 
-        {/* Arrowhead — pops in when arrow finishes */}
-        <motion.g
-          filter="url(#arrowGlow)"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1], delay: 6.1 }}
+        {/* ── NORTH ARROW (top left) ── */}
+        <g transform={`translate(22, 22)`} opacity={0.7}>
+          <circle cx={0} cy={0} r={8} fill="none" stroke={BP_DIM} strokeWidth={0.7} />
+          <polygon points="0,-7 -3,3 0,1 3,3" fill={BP_BRIGHT} opacity={0.9} />
+          <polygon points="0,7 -3,-3 0,-1 3,-3" fill={BP_BG} stroke={BP_DIM} strokeWidth={0.5} />
+          <text x={0} y={-10} textAnchor="middle" fontFamily="'Courier New', monospace" fontSize={5} fill={BP_BRIGHT} opacity={0.9}>N</text>
+        </g>
+
+        {/* ── GROUND HATCH ── */}
+        <rect x={startX - 10} y={FLOOR} width={totalW + 60} height={8}
+          fill="url(#hatch)" opacity={0.6} />
+        {/* Ground line */}
+        <line x1={startX - 10} y1={FLOOR} x2={startX + totalW + 50} y2={FLOOR}
+          stroke={BP_BRIGHT} strokeWidth={1.2} opacity={0.8} />
+        <text x={startX - 10} y={FLOOR + 14} fontFamily="'Courier New', monospace" fontSize={4.5} fill={BP_DIM} opacity={0.7}>F.F.E. = 0'-0"</text>
+
+        {/* ── ELEVATION MARKERS (left side) ── */}
+        {[0.25, 0.5, 0.75, 1.0].map((pct, i) => {
+          const elY = FLOOR - pct * (BP_HOUSES[3].wallH + BP_HOUSES[3].w * 0.36);
+          const ft = Math.round(pct * 28);
+          return (
+            <g key={i} opacity={0.55}>
+              <line x1={startX - 18} y1={elY} x2={startX - 10} y2={elY}
+                stroke={BP_DIM} strokeWidth={0.6} strokeDasharray="2,2" />
+              <text x={startX - 20} y={elY + 1.5} textAnchor="end"
+                fontFamily="'Courier New', monospace" fontSize={4.2} fill={BP_DIM}>
+                {ft}'-0"
+              </text>
+            </g>
+          );
+        })}
+        {/* Vertical elevation line */}
+        <line x1={startX - 14} y1={FLOOR - BP_HOUSES[3].wallH - BP_HOUSES[3].w * 0.36 - 5}
+          x2={startX - 14} y2={FLOOR}
+          stroke={BP_DIM} strokeWidth={0.5} opacity={0.4} />
+
+        {/* ── 4 ISOMETRIC HOUSES ── */}
+        {BP_HOUSES.map((h, i) => (
+          <IsoHouse key={i} hx={positions[i]} floor={FLOOR} w={h.w} wallH={h.wallH} depth={h.depth} delay={h.delay} />
+        ))}
+
+        {/* ── DIMENSION LINES between houses ── */}
+        {BP_HOUSES.map((h, i) => {
+          const cx = positions[i] + h.w / 2;
+          const dimY = FLOOR + 18;
+          const labels = ["UNIT A", "UNIT B", "UNIT C", "UNIT D"];
+          const sqft   = ["1,240 SF", "1,680 SF", "2,150 SF", "2,840 SF"];
+          return (
+            <g key={i} opacity={0.65}>
+              {/* Dim line */}
+              <line x1={positions[i]} y1={dimY} x2={positions[i] + h.w} y2={dimY}
+                stroke={BP_DIM} strokeWidth={0.7} />
+              {/* Tick marks */}
+              <line x1={positions[i]} y1={dimY - 3} x2={positions[i]} y2={dimY + 3}
+                stroke={BP_DIM} strokeWidth={0.7} />
+              <line x1={positions[i] + h.w} y1={dimY - 3} x2={positions[i] + h.w} y2={dimY + 3}
+                stroke={BP_DIM} strokeWidth={0.7} />
+              {/* Unit label */}
+              <text x={cx} y={dimY + 8} textAnchor="middle"
+                fontFamily="'Courier New', monospace" fontSize={4.8} fill={BP_BLUE} letterSpacing={0.5}>
+                {labels[i]}
+              </text>
+              {/* Sq ft */}
+              <text x={cx} y={dimY + 14} textAnchor="middle"
+                fontFamily="'Courier New', monospace" fontSize={4} fill={BP_DIM} opacity={0.8}>
+                {sqft[i]}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* ── SECTION CALLOUT BUBBLES ── */}
+        {BP_HOUSES.map((h, i) => {
+          const cx = positions[i] + h.w * 0.15;
+          const cy = FLOOR - h.wallH * 0.5;
+          return (
+            <motion.g key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              transition={{ delay: h.delay + 0.9 }}>
+              <circle cx={cx} cy={cy} r={5.5} fill={BP_BG} stroke={BP_BLUE} strokeWidth={0.8} opacity={0.85} />
+              <text x={cx} y={cy + 1.8} textAnchor="middle"
+                fontFamily="'Courier New', monospace" fontSize={4.5} fill={BP_BRIGHT} fontWeight="bold">
+                {String.fromCharCode(65 + i)}
+              </text>
+            </motion.g>
+          );
+        })}
+
+        {/* ── CLOUD CALLOUT for tallest house ── */}
+        <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.5 }}>
+          <path d={`M ${positions[3] + BP_HOUSES[3].w * 0.3} ${FLOOR - BP_HOUSES[3].wallH - 10}
+            Q ${positions[3] + BP_HOUSES[3].w * 0.5} ${FLOOR - BP_HOUSES[3].wallH - 22}
+            ${positions[3] + BP_HOUSES[3].w * 0.8} ${FLOOR - BP_HOUSES[3].wallH - 10}`}
+            fill="none" stroke={BP_GOLD} strokeWidth={0.8} strokeDasharray="2,1.5" opacity={0.7} />
+          <text x={positions[3] + BP_HOUSES[3].w * 0.55} y={FLOOR - BP_HOUSES[3].wallH - 24}
+            textAnchor="middle" fontFamily="'Courier New', monospace" fontSize={4.5} fill={BP_GOLD} opacity={0.9}>
+            MAX. HT. 28'-6"
+          </text>
+        </motion.g>
+
+        {/* ── TREND ARROW ── */}
+        <g clipPath="url(#arrowReveal)">
+          {/* Glow */}
+          <line x1={arrowStartX} y1={arrowStartY} x2={arrowEndX} y2={arrowEndY}
+            stroke={BP_GOLD} strokeWidth={8} strokeLinecap="round"
+            filter="url(#arrowGlow)" opacity={0.3} />
+          {/* Core */}
+          <line x1={arrowStartX} y1={arrowStartY} x2={arrowEndX} y2={arrowEndY}
+            stroke={BP_GOLD} strokeWidth={2.5} strokeLinecap="round" opacity={0.95}
+            strokeDasharray="none" />
+        </g>
+
+        {/* Arrowhead */}
+        <motion.g filter="url(#arrowGlow)"
+          initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1], delay: 6.5 }}
           style={{ transformOrigin: `${arrowEndX}px ${arrowEndY}px` }}
         >
           <polygon
-            points={`${arrowEndX},${arrowEndY - 16} ${arrowEndX - 12},${arrowEndY + 5} ${arrowEndX + 12},${arrowEndY + 5}`}
-            fill="#fbbf24" stroke="#fde68a" strokeWidth="1"
+            points={`${arrowEndX},${arrowEndY - 14} ${arrowEndX - 10},${arrowEndY + 4} ${arrowEndX + 10},${arrowEndY + 4}`}
+            fill={BP_GOLD} stroke={BP_BRIGHT} strokeWidth={0.8}
           />
         </motion.g>
-
-        {/* Arrowhead pulse — repeats forever after arrow lands */}
-        <motion.circle
-          cx={arrowEndX} cy={arrowEndY - 6}
-          fill="none" stroke="#fbbf24" strokeWidth="1.5"
-          initial={{ r: 8, opacity: 0 }}
-          animate={{ r: [8, 28], opacity: [0.9, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity, delay: 6.5, ease: 'easeOut' }}
+        {/* Pulse */}
+        <motion.circle cx={arrowEndX} cy={arrowEndY - 5}
+          fill="none" stroke={BP_GOLD} strokeWidth={1.2}
+          initial={{ r: 6, opacity: 0 }}
+          animate={{ r: [6, 24], opacity: [0.9, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, delay: 7, ease: 'easeOut' }}
         />
+
+        {/* ── REVISION CLOUD (top right corner) ── */}
+        <motion.g initial={{ opacity: 0 }} animate={{ opacity: 0.5 }} transition={{ delay: 1 }}>
+          <text x={SVG_W - 12} y={16} textAnchor="end"
+            fontFamily="'Courier New', monospace" fontSize={4.2} fill={BP_DIM} letterSpacing={0.3}>
+            REV: 04  |  DATE: 2024-01-15  |  DRAWN: EA
+          </text>
+        </motion.g>
       </svg>
     </div>
   );
