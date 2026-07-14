@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import mogulBase from "../assets/mogul-base.jpg";
+import mogulBase from "../assets/mogul-base.png";
 import mogulArrow from "../assets/mogul-arrow.png";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
