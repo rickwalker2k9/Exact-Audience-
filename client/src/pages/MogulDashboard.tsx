@@ -930,190 +930,231 @@ const SITE_VISITORS = [
 ];
 
 // ── WIREFRAME NEON HERO ────────────────────────────────────────────────
-// 4 detailed wireframe houses, each taller than the last
-// Each house definition: x-left, floor-y, width, wallH, color, features
-const WIRE_HOUSES = [
-  { label: 'House 1', w: 90,  wallH: 68,  color: '#f97316', delay: 0.1 },
-  { label: 'House 2', w: 100, wallH: 95,  color: '#fb923c', delay: 0.55 },
-  { label: 'House 3', w: 110, wallH: 122, color: '#fbbf24', delay: 1.0 },
-  { label: 'House 4', w: 120, wallH: 152, color: '#fde68a', delay: 1.45 },
+// ── BLUEPRINT ISOMETRIC HOUSES ──────────────────────────────────────────────
+// Isometric projection: x' = x - y*cos60, y' = -z + (x+y)*sin30
+// We use a simplified cabinet oblique: front face flat, side face at 30deg, depth=w*0.35
+const BP_HOUSES = [
+  { w: 72,  wallH: 58,  depth: 22, delay: 0.1  },
+  { w: 88,  wallH: 80,  depth: 26, delay: 0.6  },
+  { w: 104, wallH: 106, depth: 30, delay: 1.1  },
+  { w: 120, wallH: 136, depth: 34, delay: 1.6  },
 ];
+const BP_BLUE  = '#7dd3fc';  // blueprint cyan
+const BP_DIM   = '#38bdf8';  // dimmer lines
+const BP_BRIGHT= '#e0f2fe';  // bright accent lines
+const BP_GOLD  = '#fbbf24';  // arrow gold
+const BP_BG    = '#0c1a2e';  // deep navy blueprint bg
 
-function WireHouse({ hx, floor, w, wallH, color, delay }: {
-  hx: number; floor: number; w: number; wallH: number; color: string; delay: number;
+// Cabinet oblique isometric house
+// Front face is flat; side face projects at 30° with foreshortening
+function IsoHouse({ hx, floor, w, wallH, depth, delay }: {
+  hx: number; floor: number; w: number; wallH: number; depth: number; delay: number;
 }) {
-  const cx = hx + w / 2;
-  const wallTop = floor - wallH;
-  const roofH = w * 0.38;
-  const roofPeak = wallTop - roofH;
-  const sw = 1.8; // stroke width
+  // Oblique offset: side face goes up-right at 30 degrees
+  const ox = depth * Math.cos(Math.PI / 6);  // horizontal offset
+  const oy = depth * Math.sin(Math.PI / 6);  // vertical offset (upward = negative y)
 
-  // Proportional details
-  const doorW = w * 0.18;
-  const doorH = wallH * 0.28;
-  const doorX = cx - doorW / 2;
-  const doorY = floor - doorH;
+  // Front face corners (flat)
+  const fBL = { x: hx,     y: floor };
+  const fBR = { x: hx + w, y: floor };
+  const fTL = { x: hx,     y: floor - wallH };
+  const fTR = { x: hx + w, y: floor - wallH };
 
-  const winW = w * 0.14;
-  const winH = winW * 1.1;
-  // Two windows on upper floor
-  const win1X = cx - w * 0.30;
-  const win2X = cx + w * 0.30 - winW;
-  const winY = wallTop + wallH * 0.22;
+  // Back face corners (offset by oblique)
+  const bBL = { x: fBL.x + ox, y: fBL.y - oy };
+  const bBR = { x: fBR.x + ox, y: fBR.y - oy };
+  const bTL = { x: fTL.x + ox, y: fTL.y - oy };
+  const bTR = { x: fTR.x + ox, y: fTR.y - oy };
 
-  // Garage (only on house 3 & 4 — wider)
-  const hasGarage = w >= 110;
-  const garW = w * 0.28;
-  const garH = wallH * 0.22;
-  const garX = hx + w * 0.06;
-  const garY = floor - garH;
+  // Roof: gable on front & back, ridge runs front-to-back
+  const roofH = w * 0.36;
+  const fPeak = { x: hx + w / 2, y: floor - wallH - roofH };  // front gable peak
+  const bPeak = { x: fPeak.x + ox, y: fPeak.y - oy };          // back gable peak
 
-  // Chimney
-  const chimneyX = cx + w * 0.22;
-  const chimneyW = w * 0.07;
-  const chimneyH = roofH * 0.55;
-  const chimneyTop = roofPeak + roofH * 0.3 - chimneyH;
+  // Chimney (right side of roof)
+  const chW = w * 0.07;
+  const chH = roofH * 0.65;
+  const chX = hx + w * 0.68;
+  const chFrontTop = floor - wallH - roofH * 0.55 - chH;
+  const chBackTop  = { x: chX + ox, y: chFrontTop - oy };
 
-  // Porch (house 2+)
-  const hasPorch = w >= 100;
-  const porchW = w * 0.42;
-  const porchH = wallH * 0.12;
-  const porchX = cx - porchW / 2;
-  const porchY = floor - porchH;
+  // Front door
+  const dW = w * 0.17;
+  const dH = wallH * 0.30;
+  const dX = hx + w / 2 - dW / 2;
+  const dY = floor - dH;
+
+  // Front windows (two)
+  const winW = w * 0.13;
+  const winH = winW * 1.15;
+  const winY = floor - wallH + wallH * 0.22;
+  const win1X = hx + w * 0.14;
+  const win2X = hx + w * 0.62;
+
+  // Side face visible window
+  const sWinW = depth * 0.35;
+  const sWinH = wallH * 0.18;
+  const sWinX = fTR.x + ox * 0.45;
+  const sWinY = floor - wallH * 0.55;
+
+  const sw = 1.6;
+  const pt = (p: {x:number,y:number}) => `${p.x},${p.y}`;
 
   return (
     <motion.g
-      initial={{ scaleY: 0 }}
-      animate={{ scaleY: 1 }}
-      transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1], delay }}
-      style={{ transformOrigin: `${cx}px ${floor}px` }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay }}
     >
-      {/* Glow layer — duplicate strokes blurred */}
-      <g opacity={0.35} filter="url(#neonGlow)">
-        {/* Walls */}
-        <rect x={hx} y={wallTop} width={w} height={wallH} fill="none" stroke={color} strokeWidth={sw * 2.5} />
-        {/* Roof */}
-        <polyline points={`${hx},${wallTop} ${cx},${roofPeak} ${hx + w},${wallTop}`}
-          fill="none" stroke={color} strokeWidth={sw * 2.5} strokeLinejoin="round" />
-      </g>
+      {/* ── BLUEPRINT GRID LINES (faint) on side face ── */}
+      {[0.25, 0.5, 0.75].map((t, i) => (
+        <line key={i}
+          x1={fTR.x + ox * t} y1={fTR.y - oy * t + wallH * 0.5}
+          x2={fBR.x + ox * t} y2={fBR.y - oy * t}
+          stroke={BP_DIM} strokeWidth={0.4} opacity={0.25} strokeDasharray="2,3"
+        />
+      ))}
 
-      {/* Main structure */}
-      {/* Walls */}
-      <rect x={hx} y={wallTop} width={w} height={wallH}
-        fill="none" stroke={color} strokeWidth={sw} opacity={0.9} />
-
-      {/* Roof */}
-      <polyline points={`${hx},${wallTop} ${cx},${roofPeak} ${hx + w},${wallTop}`}
-        fill="none" stroke={color} strokeWidth={sw} strokeLinejoin="round" opacity={0.9} />
-
-      {/* Chimney */}
-      <rect x={chimneyX} y={chimneyTop} width={chimneyW} height={chimneyH}
-        fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.7} />
-      {/* Chimney smoke puffs */}
-      <motion.circle cx={chimneyX + chimneyW / 2} cy={chimneyTop - 4} r={2.5}
-        fill="none" stroke={color} strokeWidth={0.8} opacity={0.4}
-        animate={{ cy: [chimneyTop - 4, chimneyTop - 14], opacity: [0.5, 0], r: [2.5, 5] }}
-        transition={{ duration: 2.2, repeat: Infinity, delay: delay + 1.2, ease: 'easeOut' }}
+      {/* ── SIDE FACE (right) ── */}
+      <polygon
+        points={`${pt(fBR)} ${pt(bBR)} ${pt(bTR)} ${pt(fTR)}`}
+        fill={BP_BG} stroke={BP_DIM} strokeWidth={sw * 0.75} opacity={0.9}
       />
-      <motion.circle cx={chimneyX + chimneyW / 2} cy={chimneyTop - 4} r={2}
-        fill="none" stroke={color} strokeWidth={0.8} opacity={0.3}
-        animate={{ cy: [chimneyTop - 4, chimneyTop - 18], opacity: [0.4, 0], r: [2, 4] }}
-        transition={{ duration: 2.2, repeat: Infinity, delay: delay + 1.8, ease: 'easeOut' }}
+      {/* Side face fill tint */}
+      <polygon
+        points={`${pt(fBR)} ${pt(bBR)} ${pt(bTR)} ${pt(fTR)}`}
+        fill={BP_BLUE} fillOpacity={0.04}
+      />
+      {/* Side window */}
+      <rect x={sWinX} y={sWinY} width={sWinW} height={sWinH}
+        fill={BP_BLUE} fillOpacity={0.12} stroke={BP_DIM} strokeWidth={0.8} opacity={0.7} />
+
+      {/* ── FRONT FACE ── */}
+      <polygon
+        points={`${pt(fBL)} ${pt(fBR)} ${pt(fTR)} ${pt(fTL)}`}
+        fill={BP_BG} stroke={BP_BLUE} strokeWidth={sw} opacity={0.95}
+      />
+      {/* Front face fill tint */}
+      <polygon
+        points={`${pt(fBL)} ${pt(fBR)} ${pt(fTR)} ${pt(fTL)}`}
+        fill={BP_BLUE} fillOpacity={0.06}
       />
 
-      {/* Door */}
-      <rect x={doorX} y={doorY} width={doorW} height={doorH}
-        fill="none" stroke={color} strokeWidth={sw * 0.9} opacity={0.85} />
+      {/* Front door */}
+      <rect x={dX} y={dY} width={dW} height={dH}
+        fill={BP_BLUE} fillOpacity={0.1} stroke={BP_BLUE} strokeWidth={sw * 0.85} opacity={0.9} />
       {/* Door arch */}
-      <path d={`M ${doorX},${doorY} Q ${cx},${doorY - doorW * 0.5} ${doorX + doorW},${doorY}`}
-        fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.7} />
+      <path d={`M ${dX},${dY} Q ${dX + dW/2},${dY - dW * 0.4} ${dX + dW},${dY}`}
+        fill="none" stroke={BP_BRIGHT} strokeWidth={0.8} opacity={0.7} />
       {/* Door knob */}
-      <circle cx={doorX + doorW * 0.8} cy={doorY + doorH * 0.55} r={1.2}
-        fill={color} opacity={0.8} />
+      <circle cx={dX + dW * 0.78} cy={dY + dH * 0.52} r={1.2}
+        fill={BP_BRIGHT} opacity={0.9} />
+      {/* Door center line */}
+      <line x1={dX + dW/2} y1={dY} x2={dX + dW/2} y2={dY + dH}
+        stroke={BP_DIM} strokeWidth={0.5} opacity={0.4} />
 
-      {/* Windows — upper floor */}
-      {/* Left window */}
-      <rect x={win1X} y={winY} width={winW} height={winH}
-        fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.8} />
-      {/* Window panes (cross) */}
-      <line x1={win1X + winW / 2} y1={winY} x2={win1X + winW / 2} y2={winY + winH}
-        stroke={color} strokeWidth={0.7} opacity={0.5} />
-      <line x1={win1X} y1={winY + winH / 2} x2={win1X + winW} y2={winY + winH / 2}
-        stroke={color} strokeWidth={0.7} opacity={0.5} />
-      {/* Window glow */}
-      <rect x={win1X} y={winY} width={winW} height={winH}
-        fill={color} opacity={0.08} />
+      {/* Front windows */}
+      {[win1X, win2X].map((wx, i) => (
+        <g key={i}>
+          <rect x={wx} y={winY} width={winW} height={winH}
+            fill={BP_BLUE} fillOpacity={0.15} stroke={BP_BLUE} strokeWidth={sw * 0.75} opacity={0.9} />
+          {/* Panes */}
+          <line x1={wx + winW/2} y1={winY} x2={wx + winW/2} y2={winY + winH}
+            stroke={BP_DIM} strokeWidth={0.6} opacity={0.5} />
+          <line x1={wx} y1={winY + winH/2} x2={wx + winW} y2={winY + winH/2}
+            stroke={BP_DIM} strokeWidth={0.6} opacity={0.5} />
+          {/* Window glow fill */}
+          <rect x={wx} y={winY} width={winW} height={winH}
+            fill={BP_BRIGHT} fillOpacity={0.04} />
+        </g>
+      ))}
 
-      {/* Right window */}
-      <rect x={win2X} y={winY} width={winW} height={winH}
-        fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.8} />
-      <line x1={win2X + winW / 2} y1={winY} x2={win2X + winW / 2} y2={winY + winH}
-        stroke={color} strokeWidth={0.7} opacity={0.5} />
-      <line x1={win2X} y1={winY + winH / 2} x2={win2X + winW} y2={winY + winH / 2}
-        stroke={color} strokeWidth={0.7} opacity={0.5} />
-      <rect x={win2X} y={winY} width={winW} height={winH}
-        fill={color} opacity={0.08} />
+      {/* ── ROOF ── */}
+      {/* Left roof slope (front) */}
+      <polygon
+        points={`${pt(fTL)} ${pt(fPeak)} ${pt(bPeak)} ${pt(bTL)}`}
+        fill={BP_BG} stroke={BP_DIM} strokeWidth={sw * 0.7} opacity={0.85}
+      />
+      <polygon points={`${pt(fTL)} ${pt(fPeak)} ${pt(bPeak)} ${pt(bTL)}`}
+        fill={BP_BLUE} fillOpacity={0.05} />
+      {/* Right roof slope */}
+      <polygon
+        points={`${pt(fTR)} ${pt(fPeak)} ${pt(bPeak)} ${pt(bTR)}`}
+        fill={BP_BG} stroke={BP_BLUE} strokeWidth={sw * 0.7} opacity={0.85}
+      />
+      <polygon points={`${pt(fTR)} ${pt(fPeak)} ${pt(bPeak)} ${pt(bTR)}`}
+        fill={BP_BLUE} fillOpacity={0.08} />
+      {/* Front gable */}
+      <polygon
+        points={`${pt(fTL)} ${pt(fPeak)} ${pt(fTR)}`}
+        fill={BP_BG} stroke={BP_BLUE} strokeWidth={sw} opacity={0.95}
+      />
+      {/* Ridge line */}
+      <line x1={fPeak.x} y1={fPeak.y} x2={bPeak.x} y2={bPeak.y}
+        stroke={BP_BRIGHT} strokeWidth={sw * 0.9} opacity={0.8} />
 
-      {/* Porch (house 2+) */}
-      {hasPorch && (
-        <>
-          <line x1={porchX} y1={porchY} x2={porchX + porchW} y2={porchY}
-            stroke={color} strokeWidth={sw * 0.8} opacity={0.6} />
-          <line x1={porchX} y1={porchY} x2={porchX} y2={floor}
-            stroke={color} strokeWidth={sw * 0.7} opacity={0.5} />
-          <line x1={porchX + porchW} y1={porchY} x2={porchX + porchW} y2={floor}
-            stroke={color} strokeWidth={sw * 0.7} opacity={0.5} />
-        </>
-      )}
+      {/* ── CHIMNEY ── */}
+      <rect x={chX} y={chFrontTop} width={chW} height={chH}
+        fill={BP_BG} stroke={BP_DIM} strokeWidth={sw * 0.7} opacity={0.8} />
+      {/* Chimney cap */}
+      <line x1={chX - 2} y1={chFrontTop} x2={chX + chW + 2} y2={chFrontTop}
+        stroke={BP_BRIGHT} strokeWidth={1} opacity={0.7} />
+      {/* Smoke puffs */}
+      <motion.circle cx={chX + chW/2} cy={chFrontTop - 3} r={2}
+        fill="none" stroke={BP_DIM} strokeWidth={0.8}
+        animate={{ cy: [chFrontTop-3, chFrontTop-16], opacity: [0.5, 0], r: [2, 5] }}
+        transition={{ duration: 2.5, repeat: Infinity, delay: delay + 1.5, ease: 'easeOut' }}
+      />
+      <motion.circle cx={chX + chW/2} cy={chFrontTop - 3} r={1.5}
+        fill="none" stroke={BP_DIM} strokeWidth={0.7}
+        animate={{ cy: [chFrontTop-3, chFrontTop-22], opacity: [0.4, 0], r: [1.5, 4] }}
+        transition={{ duration: 2.5, repeat: Infinity, delay: delay + 2.1, ease: 'easeOut' }}
+      />
 
-      {/* Garage (house 3+) */}
-      {hasGarage && (
-        <>
-          <rect x={garX} y={garY} width={garW} height={garH}
-            fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.65} />
-          {/* Garage door panels */}
-          <line x1={garX} y1={garY + garH * 0.35} x2={garX + garW} y2={garY + garH * 0.35}
-            stroke={color} strokeWidth={0.7} opacity={0.4} />
-          <line x1={garX} y1={garY + garH * 0.65} x2={garX + garW} y2={garY + garH * 0.65}
-            stroke={color} strokeWidth={0.7} opacity={0.4} />
-        </>
-      )}
+      {/* ── DIMENSION TICK MARKS (blueprint flair) ── */}
+      {/* Width tick */}
+      <line x1={hx} y1={floor + 6} x2={hx + w} y2={floor + 6}
+        stroke={BP_DIM} strokeWidth={0.6} opacity={0.4} />
+      <line x1={hx} y1={floor + 3} x2={hx} y2={floor + 9}
+        stroke={BP_DIM} strokeWidth={0.6} opacity={0.4} />
+      <line x1={hx + w} y1={floor + 3} x2={hx + w} y2={floor + 9}
+        stroke={BP_DIM} strokeWidth={0.6} opacity={0.4} />
 
-      {/* Roof ridge cap */}
-      <circle cx={cx} cy={roofPeak} r={2.5} fill={color} opacity={0.9} />
-      <motion.circle cx={cx} cy={roofPeak} r={2.5}
-        fill="none" stroke={color} strokeWidth={1}
-        animate={{ r: [2.5, 9], opacity: [0.7, 0] }}
-        transition={{ duration: 2, repeat: Infinity, delay: delay + 2.5, ease: 'easeOut' }}
+      {/* ── ROOF PEAK PULSE ── */}
+      <circle cx={fPeak.x} cy={fPeak.y} r={2} fill={BP_BRIGHT} opacity={0.9} />
+      <motion.circle cx={fPeak.x} cy={fPeak.y} r={2}
+        fill="none" stroke={BP_BLUE} strokeWidth={1}
+        animate={{ r: [2, 10], opacity: [0.8, 0] }}
+        transition={{ duration: 1.8, repeat: Infinity, delay: delay + 2.8, ease: 'easeOut' }}
       />
     </motion.g>
   );
 }
 
 function RealEstateHero() {
-  const SVG_W = 620;
-  const SVG_H = 210;
-  const FLOOR = SVG_H - 12;
-  const GAP = 28;
-  const N = WIRE_HOUSES.length;
-  const totalW = WIRE_HOUSES.reduce((s, h) => s + h.w, 0) + GAP * (N - 1);
+  const SVG_W = 680;
+  const SVG_H = 220;
+  const FLOOR = SVG_H - 14;
+  const GAP = 32;
+  const N = BP_HOUSES.length;
+  const totalW = BP_HOUSES.reduce((s, h) => s + h.w + h.depth * Math.cos(Math.PI/6), 0) + GAP * (N - 1);
   const startX = (SVG_W - totalW) / 2;
 
   // Compute x positions
   let xCursor = startX;
-  const positions = WIRE_HOUSES.map(h => {
+  const positions = BP_HOUSES.map(h => {
     const x = xCursor;
-    xCursor += h.w + GAP;
+    xCursor += h.w + h.depth * Math.cos(Math.PI/6) + GAP;
     return x;
   });
 
   // Arrow: from roof peak of house 1 to above roof peak of house 4
-  const h0 = WIRE_HOUSES[0]; const x0 = positions[0];
-  const hN = WIRE_HOUSES[N-1]; const xN = positions[N-1];
-  const arrowStartX = x0 + h0.w / 2;
-  const arrowStartY = FLOOR - h0.wallH - h0.w * 0.38 + 6;
-  const arrowEndX = xN + hN.w / 2 + 30;
-  const arrowEndY = FLOOR - hN.wallH - hN.w * 0.38 - 28;
+  const h0 = BP_HOUSES[0];
+  const hN = BP_HOUSES[N-1];
+  const arrowStartX = positions[0] + h0.w / 2;
+  const arrowStartY = FLOOR - h0.wallH - h0.w * 0.36 + 4;
+  const arrowEndX = positions[N-1] + hN.w / 2 + 26;
+  const arrowEndY = FLOOR - hN.wallH - hN.w * 0.36 - 30;
 
   return (
     <div className="relative w-full overflow-hidden flex items-center justify-center" style={{ height: 230, background: 'transparent' }}>
@@ -1147,19 +1188,31 @@ function RealEstateHero() {
           </clipPath>
         </defs>
 
-        {/* Floor baseline */}
-        <line x1={startX - 8} y1={FLOOR} x2={startX + totalW + 8} y2={FLOOR}
-          stroke="#4a5568" strokeWidth="1" />
+        {/* Blueprint background grid */}
+        <rect x="0" y="0" width={SVG_W} height={SVG_H} fill={BP_BG} opacity={0.95} rx="6" />
+        {/* Faint grid lines */}
+        {Array.from({length: 14}).map((_, i) => (
+          <line key={`gv${i}`} x1={i * 50} y1={0} x2={i * 50} y2={SVG_H}
+            stroke={BP_DIM} strokeWidth={0.3} opacity={0.12} />
+        ))}
+        {Array.from({length: 6}).map((_, i) => (
+          <line key={`gh${i}`} x1={0} y1={i * 40} x2={SVG_W} y2={i * 40}
+            stroke={BP_DIM} strokeWidth={0.3} opacity={0.12} />
+        ))}
 
-        {/* 4 detailed wireframe houses */}
-        {WIRE_HOUSES.map((h, i) => (
-          <WireHouse
+        {/* Floor baseline */}
+        <line x1={startX - 8} y1={FLOOR} x2={SVG_W - startX + 8} y2={FLOOR}
+          stroke={BP_DIM} strokeWidth={1} opacity={0.6} />
+
+        {/* 4 isometric blueprint houses */}
+        {BP_HOUSES.map((h, i) => (
+          <IsoHouse
             key={i}
             hx={positions[i]}
             floor={FLOOR}
             w={h.w}
             wallH={h.wallH}
-            color={h.color}
+            depth={h.depth}
             delay={h.delay}
           />
         ))}
