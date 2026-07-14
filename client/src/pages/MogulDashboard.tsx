@@ -927,7 +927,79 @@ const SITE_VISITORS = [
   },
 ];
 
-// ── ANIMATED CITY SKYLINE ────────────────────────────────────────────────────
+// ── REAL ESTATE HERO GRAPHIC ────────────────────────────────────────────────
+function RealEstateHero() {
+  return (
+    <div className="relative w-full overflow-hidden" style={{ height: 180 }}>
+      {/* Dark overlay to blend image into dashboard bg */}
+      <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${C.bg}10, ${C.bg}60)`, zIndex: 2 }} />
+      {/* Gold tint overlay to match brand colors */}
+      <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${C.gold}08, ${C.teal}06, transparent)`, zIndex: 2 }} />
+      {/* The image — CSS filter to shift blues toward brand teal and boost contrast */}
+      <img
+        src="/manus-storage/REINVESTORNOBG_c960f65e.png"
+        alt="Real estate investor growth"
+        className="absolute inset-0 w-full h-full object-contain object-center"
+        style={{
+          filter: 'hue-rotate(180deg) saturate(1.4) brightness(0.85)',
+          zIndex: 1,
+          mixBlendMode: 'screen',
+        }}
+      />
+      {/* Second pass — original image at low opacity for warmth */}
+      <img
+        src="/manus-storage/REINVESTORNOBG_c960f65e.png"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-contain object-center"
+        style={{ filter: 'brightness(0.6) saturate(1.2)', zIndex: 1, opacity: 0.5 }}
+      />
+      {/* Animated arrow overlay — shoots up on load */}
+      <motion.svg
+        viewBox="0 0 120 120"
+        className="absolute"
+        style={{ right: '8%', bottom: '5%', width: 80, height: 80, zIndex: 3 }}
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
+      >
+        {/* Glow filter */}
+        <defs>
+          <filter id="arrowGlow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        {/* Arrow shaft */}
+        <motion.line x1="20" y1="100" x2="90" y2="20"
+          stroke={C.gold} strokeWidth="10" strokeLinecap="round"
+          filter="url(#arrowGlow)"
+          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+          transition={{ duration: 0.7, ease: 'easeOut', delay: 0.4 }}
+        />
+        {/* Arrowhead */}
+        <motion.polygon
+          points="90,20 68,22 88,42"
+          fill={C.gold}
+          filter="url(#arrowGlow)"
+          initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, delay: 1.0 }}
+          style={{ transformOrigin: '80px 30px' }}
+        />
+        {/* Pulse ring on arrowhead */}
+        <motion.circle cx="90" cy="20" r="8"
+          fill="none" stroke={C.gold} strokeWidth="2"
+          animate={{ r: [8, 22], opacity: [0.8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: 1.1, ease: 'easeOut' }}
+        />
+      </motion.svg>
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-10" style={{ background: `linear-gradient(to top, ${C.card}, transparent)`, zIndex: 4 }} />
+    </div>
+  );
+}
+
+// ── ANIMATED CITY SKYLINE (legacy, replaced) ──────────────────────────────────
 function CitySkyline() {
   const buildings = [
     { x: 0,   w: 28, h: 80,  windows: [[4,10],[4,22],[4,34],[4,46],[14,10],[14,22],[14,34],[14,46]] },
@@ -1120,7 +1192,7 @@ function TabOpportunity() {
       {/* Hero with city skyline */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl overflow-hidden" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <CitySkyline />
+        <RealEstateHero />
         <div className="p-5 pt-3">
           <SL>MOGUL CLUB — CAPITAL FORMATION INTELLIGENCE</SL>
           <div className="text-lg font-black mb-2" style={{ color: C.white }}>
