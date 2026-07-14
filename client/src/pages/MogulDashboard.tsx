@@ -937,7 +937,7 @@ function RealEstateHero() {
       <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${C.gold}08, ${C.teal}06, transparent)`, zIndex: 2 }} />
       {/* The image — CSS filter to shift blues toward brand teal and boost contrast */}
       <img
-        src="/manus-storage/REINVESTORNOBG_c960f65e.png"
+        src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/qZtyfqTzlIZgUZqR.png"
         alt="Real estate investor growth"
         className="absolute inset-0 w-full h-full object-contain object-center"
         style={{
@@ -948,7 +948,7 @@ function RealEstateHero() {
       />
       {/* Second pass — original image at low opacity for warmth */}
       <img
-        src="/manus-storage/REINVESTORNOBG_c960f65e.png"
+        src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/qZtyfqTzlIZgUZqR.png"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 w-full h-full object-contain object-center"
