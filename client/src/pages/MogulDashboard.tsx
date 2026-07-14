@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import reinvestorImg from "../assets/reinvestor.png";
+import reinvestorBase from "../assets/reinvestor-base.png";
+import reinvestorArrow from "../assets/reinvestor-arrow.png";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, LineChart, Line, RadialBarChart, RadialBar, Legend } from "recharts";
@@ -931,62 +933,40 @@ const SITE_VISITORS = [
 // ── REAL ESTATE HERO GRAPHIC ────────────────────────────────────────────────
 function RealEstateHero() {
   return (
-    <div className="relative w-full overflow-hidden" style={{ height: 180 }}>
-      {/* Dark overlay to blend image into dashboard bg */}
-      <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${C.bg}10, ${C.bg}60)`, zIndex: 2 }} />
-      {/* Gold tint overlay to match brand colors */}
-      <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${C.gold}08, ${C.teal}06, transparent)`, zIndex: 2 }} />
-      {/* The image — visible at full opacity, gold-tinted */}
+    <div className="relative w-full overflow-hidden" style={{ height: 200 }}>
+      {/* Layer 1: base image (bars + houses, no arrow) */}
       <img
-        src={reinvestorImg}
+        src={reinvestorBase}
         alt="Real estate investor growth"
         className="absolute inset-0 w-full h-full object-contain object-center"
         style={{
-          filter: 'brightness(0.75) saturate(1.3) sepia(0.25) hue-rotate(5deg)',
+          filter: 'brightness(0.78) saturate(1.2)',
           zIndex: 1,
         }}
       />
-      {/* Animated arrow overlay — shoots up on load */}
-      <motion.svg
-        viewBox="0 0 120 120"
-        className="absolute"
-        style={{ right: '8%', bottom: '5%', width: 80, height: 80, zIndex: 3 }}
-        initial={{ y: 40, opacity: 0 }}
+      {/* Layer 2: arrow — animates upward on load */}
+      <motion.img
+        src={reinvestorArrow}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-contain object-center"
+        style={{
+          filter: 'brightness(1.1) saturate(1.4) drop-shadow(0 0 8px rgba(251,191,36,0.6))',
+          zIndex: 2,
+        }}
+        initial={{ y: 60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
-      >
-        {/* Glow filter */}
-        <defs>
-          <filter id="arrowGlow">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
-        {/* Arrow shaft */}
-        <motion.line x1="20" y1="100" x2="90" y2="20"
-          stroke={C.gold} strokeWidth="10" strokeLinecap="round"
-          filter="url(#arrowGlow)"
-          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-          transition={{ duration: 0.7, ease: 'easeOut', delay: 0.4 }}
-        />
-        {/* Arrowhead */}
-        <motion.polygon
-          points="90,20 68,22 88,42"
-          fill={C.gold}
-          filter="url(#arrowGlow)"
-          initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3, delay: 1.0 }}
-          style={{ transformOrigin: '80px 30px' }}
-        />
-        {/* Pulse ring on arrowhead */}
-        <motion.circle cx="90" cy="20" r="8"
-          fill="none" stroke={C.gold} strokeWidth="2"
-          animate={{ r: [8, 22], opacity: [0.8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, delay: 1.1, ease: 'easeOut' }}
-        />
-      </motion.svg>
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-10" style={{ background: `linear-gradient(to top, ${C.card}, transparent)`, zIndex: 4 }} />
+        transition={{ duration: 1.0, ease: [0.23, 1, 0.32, 1], delay: 0.25 }}
+      />
+      {/* Pulse glow on arrowhead (top-right area) */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{ top: '8%', right: '14%', width: 24, height: 24, background: `radial-gradient(circle, ${C.gold}80, transparent)`, zIndex: 3 }}
+        animate={{ scale: [1, 2.2, 1], opacity: [0.8, 0, 0.8] }}
+        transition={{ duration: 2, repeat: Infinity, delay: 1.2, ease: 'easeOut' }}
+      />
+      {/* Dark overlay — bottom fade into card */}
+      <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${C.card} 100%)`, zIndex: 4 }} />
     </div>
   );
 }
