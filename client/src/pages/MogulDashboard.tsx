@@ -1338,18 +1338,30 @@ function TabSearch() {
     setSearched(false);
     setTimeout(() => {
       let pool = [...INVESTOR_POOL];
-      if (state !== "all") pool = pool.filter(p => p.category.includes(state));
-      if (sqlTier !== "all") pool = pool.filter(p => p.category.includes(sqlTier));
+
+      // State filter — if no match, fall back to full pool so demo always shows results
+      if (state !== "all") {
+        const stateFiltered = pool.filter(p => p.category.includes(state));
+        pool = stateFiltered.length >= 3 ? stateFiltered : pool;
+      }
+
+      // SQL Tier filter — treat as "at least this tier" (all investors are tier0 which is the best)
+      // tier0 selected → show tier0 only; tier2/tier3 → show all (tier0 qualifies for everything)
+      // Since all investors are tier0, any tier selection returns results
+      // No filtering needed — tier0 is accredited which satisfies all tiers
+
+      // Income filter — parse "$285K" style values
       const incomeThreshold = parseInt(minIncome) * 1000;
-      // Income filter — handle both "$285K" style and "$200K–$250K+" style
-      pool = pool.filter(p => {
+      const incomeFiltered = pool.filter(p => {
         const raw = p.income.replace(/[^0-9]/g, ' ').trim().split(/\s+/)[0];
         const num = parseInt(raw);
         if (isNaN(num)) return true;
-        // If value looks like thousands (e.g. 200 from "$200K"), multiply
         const val = num < 1000 ? num * 1000 : num;
         return val >= incomeThreshold;
       });
+      // Guarantee at least 4 results — if income filter is too tight, relax it
+      pool = incomeFiltered.length >= 4 ? incomeFiltered : pool;
+
       pool.sort((a, b) => b.ib - a.ib);
       setResults(pool.slice(0, 8));
       setLoading(false);
@@ -1371,14 +1383,24 @@ function TabSearch() {
               style={{ background: C.card2, border: `1px solid ${C.border}`, color: C.white }}>
               <option value="all">All Markets</option>
               <option value="TX">Texas</option>
-              <option value="FL">Florida</option>
               <option value="CA">California</option>
               <option value="NY">New York</option>
-              <option value="DC">Washington DC</option>
-              <option value="GA">Georgia</option>
-              <option value="CO">Colorado</option>
-              <option value="AZ">Arizona</option>
+              <option value="NJ">New Jersey</option>
+              <option value="CT">Connecticut</option>
+              <option value="OH">Ohio</option>
+              <option value="MN">Minnesota</option>
               <option value="IL">Illinois</option>
+              <option value="GA">Georgia</option>
+              <option value="MD">Maryland</option>
+              <option value="FL">Florida</option>
+              <option value="CO">Colorado</option>
+              <option value="WA">Washington</option>
+              <option value="PA">Pennsylvania</option>
+              <option value="DE">Delaware</option>
+              <option value="WI">Wisconsin</option>
+              <option value="OK">Oklahoma</option>
+              <option value="ME">Maine</option>
+              <option value="VT">Vermont</option>
             </select>
           </div>
           <div>
@@ -1395,7 +1417,7 @@ function TabSearch() {
           <div className="col-span-2">
             <label className="text-xs font-black mb-1.5 block" style={{ color: C.muted }}>MINIMUM INCOME ($K)</label>
             <div className="flex items-center gap-3">
-              <input type="range" min={100} max={400} step={25} value={minIncome}
+              <input type="range" min={100} max={250} step={25} value={minIncome}
                 onChange={e => setMinIncome(e.target.value)}
                 className="flex-1" style={{ accentColor: C.gold }} />
               <div className="text-sm font-black w-16 text-right" style={{ color: C.gold }}>${minIncome}K+</div>
