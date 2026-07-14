@@ -930,33 +930,190 @@ const SITE_VISITORS = [
 ];
 
 // ── WIREFRAME NEON HERO ────────────────────────────────────────────────
-const HOUSE_HEIGHTS = [0.18, 0.28, 0.38, 0.48, 0.56, 0.65, 0.73, 0.82, 0.90, 0.96, 1.0];
+// 4 detailed wireframe houses, each taller than the last
+// Each house definition: x-left, floor-y, width, wallH, color, features
+const WIRE_HOUSES = [
+  { label: 'House 1', w: 90,  wallH: 68,  color: '#f97316', delay: 0.1 },
+  { label: 'House 2', w: 100, wallH: 95,  color: '#fb923c', delay: 0.55 },
+  { label: 'House 3', w: 110, wallH: 122, color: '#fbbf24', delay: 1.0 },
+  { label: 'House 4', w: 120, wallH: 152, color: '#fde68a', delay: 1.45 },
+];
+
+function WireHouse({ hx, floor, w, wallH, color, delay }: {
+  hx: number; floor: number; w: number; wallH: number; color: string; delay: number;
+}) {
+  const cx = hx + w / 2;
+  const wallTop = floor - wallH;
+  const roofH = w * 0.38;
+  const roofPeak = wallTop - roofH;
+  const sw = 1.8; // stroke width
+
+  // Proportional details
+  const doorW = w * 0.18;
+  const doorH = wallH * 0.28;
+  const doorX = cx - doorW / 2;
+  const doorY = floor - doorH;
+
+  const winW = w * 0.14;
+  const winH = winW * 1.1;
+  // Two windows on upper floor
+  const win1X = cx - w * 0.30;
+  const win2X = cx + w * 0.30 - winW;
+  const winY = wallTop + wallH * 0.22;
+
+  // Garage (only on house 3 & 4 — wider)
+  const hasGarage = w >= 110;
+  const garW = w * 0.28;
+  const garH = wallH * 0.22;
+  const garX = hx + w * 0.06;
+  const garY = floor - garH;
+
+  // Chimney
+  const chimneyX = cx + w * 0.22;
+  const chimneyW = w * 0.07;
+  const chimneyH = roofH * 0.55;
+  const chimneyTop = roofPeak + roofH * 0.3 - chimneyH;
+
+  // Porch (house 2+)
+  const hasPorch = w >= 100;
+  const porchW = w * 0.42;
+  const porchH = wallH * 0.12;
+  const porchX = cx - porchW / 2;
+  const porchY = floor - porchH;
+
+  return (
+    <motion.g
+      initial={{ scaleY: 0 }}
+      animate={{ scaleY: 1 }}
+      transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1], delay }}
+      style={{ transformOrigin: `${cx}px ${floor}px` }}
+    >
+      {/* Glow layer — duplicate strokes blurred */}
+      <g opacity={0.35} filter="url(#neonGlow)">
+        {/* Walls */}
+        <rect x={hx} y={wallTop} width={w} height={wallH} fill="none" stroke={color} strokeWidth={sw * 2.5} />
+        {/* Roof */}
+        <polyline points={`${hx},${wallTop} ${cx},${roofPeak} ${hx + w},${wallTop}`}
+          fill="none" stroke={color} strokeWidth={sw * 2.5} strokeLinejoin="round" />
+      </g>
+
+      {/* Main structure */}
+      {/* Walls */}
+      <rect x={hx} y={wallTop} width={w} height={wallH}
+        fill="none" stroke={color} strokeWidth={sw} opacity={0.9} />
+
+      {/* Roof */}
+      <polyline points={`${hx},${wallTop} ${cx},${roofPeak} ${hx + w},${wallTop}`}
+        fill="none" stroke={color} strokeWidth={sw} strokeLinejoin="round" opacity={0.9} />
+
+      {/* Chimney */}
+      <rect x={chimneyX} y={chimneyTop} width={chimneyW} height={chimneyH}
+        fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.7} />
+      {/* Chimney smoke puffs */}
+      <motion.circle cx={chimneyX + chimneyW / 2} cy={chimneyTop - 4} r={2.5}
+        fill="none" stroke={color} strokeWidth={0.8} opacity={0.4}
+        animate={{ cy: [chimneyTop - 4, chimneyTop - 14], opacity: [0.5, 0], r: [2.5, 5] }}
+        transition={{ duration: 2.2, repeat: Infinity, delay: delay + 1.2, ease: 'easeOut' }}
+      />
+      <motion.circle cx={chimneyX + chimneyW / 2} cy={chimneyTop - 4} r={2}
+        fill="none" stroke={color} strokeWidth={0.8} opacity={0.3}
+        animate={{ cy: [chimneyTop - 4, chimneyTop - 18], opacity: [0.4, 0], r: [2, 4] }}
+        transition={{ duration: 2.2, repeat: Infinity, delay: delay + 1.8, ease: 'easeOut' }}
+      />
+
+      {/* Door */}
+      <rect x={doorX} y={doorY} width={doorW} height={doorH}
+        fill="none" stroke={color} strokeWidth={sw * 0.9} opacity={0.85} />
+      {/* Door arch */}
+      <path d={`M ${doorX},${doorY} Q ${cx},${doorY - doorW * 0.5} ${doorX + doorW},${doorY}`}
+        fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.7} />
+      {/* Door knob */}
+      <circle cx={doorX + doorW * 0.8} cy={doorY + doorH * 0.55} r={1.2}
+        fill={color} opacity={0.8} />
+
+      {/* Windows — upper floor */}
+      {/* Left window */}
+      <rect x={win1X} y={winY} width={winW} height={winH}
+        fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.8} />
+      {/* Window panes (cross) */}
+      <line x1={win1X + winW / 2} y1={winY} x2={win1X + winW / 2} y2={winY + winH}
+        stroke={color} strokeWidth={0.7} opacity={0.5} />
+      <line x1={win1X} y1={winY + winH / 2} x2={win1X + winW} y2={winY + winH / 2}
+        stroke={color} strokeWidth={0.7} opacity={0.5} />
+      {/* Window glow */}
+      <rect x={win1X} y={winY} width={winW} height={winH}
+        fill={color} opacity={0.08} />
+
+      {/* Right window */}
+      <rect x={win2X} y={winY} width={winW} height={winH}
+        fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.8} />
+      <line x1={win2X + winW / 2} y1={winY} x2={win2X + winW / 2} y2={winY + winH}
+        stroke={color} strokeWidth={0.7} opacity={0.5} />
+      <line x1={win2X} y1={winY + winH / 2} x2={win2X + winW} y2={winY + winH / 2}
+        stroke={color} strokeWidth={0.7} opacity={0.5} />
+      <rect x={win2X} y={winY} width={winW} height={winH}
+        fill={color} opacity={0.08} />
+
+      {/* Porch (house 2+) */}
+      {hasPorch && (
+        <>
+          <line x1={porchX} y1={porchY} x2={porchX + porchW} y2={porchY}
+            stroke={color} strokeWidth={sw * 0.8} opacity={0.6} />
+          <line x1={porchX} y1={porchY} x2={porchX} y2={floor}
+            stroke={color} strokeWidth={sw * 0.7} opacity={0.5} />
+          <line x1={porchX + porchW} y1={porchY} x2={porchX + porchW} y2={floor}
+            stroke={color} strokeWidth={sw * 0.7} opacity={0.5} />
+        </>
+      )}
+
+      {/* Garage (house 3+) */}
+      {hasGarage && (
+        <>
+          <rect x={garX} y={garY} width={garW} height={garH}
+            fill="none" stroke={color} strokeWidth={sw * 0.8} opacity={0.65} />
+          {/* Garage door panels */}
+          <line x1={garX} y1={garY + garH * 0.35} x2={garX + garW} y2={garY + garH * 0.35}
+            stroke={color} strokeWidth={0.7} opacity={0.4} />
+          <line x1={garX} y1={garY + garH * 0.65} x2={garX + garW} y2={garY + garH * 0.65}
+            stroke={color} strokeWidth={0.7} opacity={0.4} />
+        </>
+      )}
+
+      {/* Roof ridge cap */}
+      <circle cx={cx} cy={roofPeak} r={2.5} fill={color} opacity={0.9} />
+      <motion.circle cx={cx} cy={roofPeak} r={2.5}
+        fill="none" stroke={color} strokeWidth={1}
+        animate={{ r: [2.5, 9], opacity: [0.7, 0] }}
+        transition={{ duration: 2, repeat: Infinity, delay: delay + 2.5, ease: 'easeOut' }}
+      />
+    </motion.g>
+  );
+}
 
 function RealEstateHero() {
-  const SVG_W = 600;
-  const SVG_H = 200;
-  const FLOOR = SVG_H - 14;
-  const SLOT_W = 48;  // width per house slot
-  const MAX_H = 155;  // tallest house height
-  const N = HOUSE_HEIGHTS.length;
-  const TOTAL_W = N * SLOT_W;
-  const START_X = (SVG_W - TOTAL_W) / 2;
+  const SVG_W = 620;
+  const SVG_H = 210;
+  const FLOOR = SVG_H - 12;
+  const GAP = 28;
+  const N = WIRE_HOUSES.length;
+  const totalW = WIRE_HOUSES.reduce((s, h) => s + h.w, 0) + GAP * (N - 1);
+  const startX = (SVG_W - totalW) / 2;
 
-  // Each house: x center, roof peak y, wall base y
-  const houses = HOUSE_HEIGHTS.map((pct, i) => {
-    const cx = START_X + i * SLOT_W + SLOT_W / 2;
-    const wallH = pct * MAX_H;
-    const roofH = SLOT_W * 0.45;
-    const wallTop = FLOOR - wallH;
-    const roofPeak = wallTop - roofH;
-    return { cx, wallH, roofH, wallTop, roofPeak, pct };
+  // Compute x positions
+  let xCursor = startX;
+  const positions = WIRE_HOUSES.map(h => {
+    const x = xCursor;
+    xCursor += h.w + GAP;
+    return x;
   });
 
-  // Arrow: starts at first house roof peak, ends past last house roof peak
-  const arrowStartX = houses[0].cx;
-  const arrowStartY = houses[0].roofPeak + 4;
-  const arrowEndX = houses[N - 1].cx + 28;
-  const arrowEndY = houses[N - 1].roofPeak - 22;
+  // Arrow: from roof peak of house 1 to above roof peak of house 4
+  const h0 = WIRE_HOUSES[0]; const x0 = positions[0];
+  const hN = WIRE_HOUSES[N-1]; const xN = positions[N-1];
+  const arrowStartX = x0 + h0.w / 2;
+  const arrowStartY = FLOOR - h0.wallH - h0.w * 0.38 + 6;
+  const arrowEndX = xN + hN.w / 2 + 30;
+  const arrowEndY = FLOOR - hN.wallH - hN.w * 0.38 - 28;
 
   return (
     <div className="relative w-full overflow-hidden flex items-center justify-center" style={{ height: 230, background: 'transparent' }}>
@@ -991,52 +1148,21 @@ function RealEstateHero() {
         </defs>
 
         {/* Floor baseline */}
-        <line x1={START_X - 8} y1={FLOOR} x2={SVG_W - START_X + 8} y2={FLOOR}
+        <line x1={startX - 8} y1={FLOOR} x2={startX + totalW + 8} y2={FLOOR}
           stroke="#4a5568" strokeWidth="1" />
 
-        {/* Wireframe houses — each grows up from the floor, staggered */}
-        {houses.map((h, i) => {
-          const hw = SLOT_W * 0.72;  // house width
-          const delay = 0.15 + i * 0.13;
-          const strokeCol = i < 4 ? '#f97316' : i < 8 ? '#fb923c' : '#fbbf24';
-          return (
-            <motion.g key={i}
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay }}
-              style={{ transformOrigin: `${h.cx}px ${FLOOR}px` }}
-              filter="url(#neonGlow)"
-            >
-              {/* Walls */}
-              <rect
-                x={h.cx - hw / 2} y={h.wallTop}
-                width={hw} height={h.wallH}
-                fill="none"
-                stroke={strokeCol}
-                strokeWidth="1.5"
-                opacity={0.85}
-              />
-              {/* Roof */}
-              <polyline
-                points={`${h.cx - hw / 2},${h.wallTop} ${h.cx},${h.roofPeak} ${h.cx + hw / 2},${h.wallTop}`}
-                fill="none"
-                stroke={strokeCol}
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-                opacity={0.85}
-              />
-              {/* Door outline */}
-              <rect
-                x={h.cx - 4} y={FLOOR - h.wallH * 0.35}
-                width={8} height={h.wallH * 0.35}
-                fill="none" stroke={strokeCol} strokeWidth="1" opacity={0.5}
-              />
-              {/* Window glow dot */}
-              <circle cx={h.cx} cy={h.wallTop + h.wallH * 0.3} r={2}
-                fill={strokeCol} opacity={0.6} />
-            </motion.g>
-          );
-        })}
+        {/* 4 detailed wireframe houses */}
+        {WIRE_HOUSES.map((h, i) => (
+          <WireHouse
+            key={i}
+            hx={positions[i]}
+            floor={FLOOR}
+            w={h.w}
+            wallH={h.wallH}
+            color={h.color}
+            delay={h.delay}
+          />
+        ))}
 
         {/* Arrow — draws left to right via clip, appears after houses */}
         <g clipPath="url(#arrowReveal)">
