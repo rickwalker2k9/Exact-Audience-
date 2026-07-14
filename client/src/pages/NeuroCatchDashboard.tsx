@@ -1792,16 +1792,332 @@ function TabTBI() {
   );
 }
 
+// ── Conditions & Clinical Pathways Tab ──────────────────────────────────────
+const CONDITION_CATEGORIES = [
+  {
+    label: "Neurological Disorders",
+    icon: Brain,
+    count: 25,
+    conditions: [
+      "Concussion / Mild TBI", "Moderate to Severe TBI", "Subconcussive / Repetitive Head Impacts",
+      "Alzheimer's Disease", "Mild Cognitive Impairment (MCI)", "Vascular Dementia",
+      "Lewy Body Dementia", "Frontotemporal Dementia", "Parkinson's Disease",
+      "Parkinson's Disease Dementia (PDD)", "Multiple Sclerosis", "Epilepsy",
+      "Stroke (Ischemic and Hemorrhagic)", "Post-Stroke Cognitive Impairment",
+      "Chronic Traumatic Encephalopathy (CTE)", "Huntington's Disease",
+      "Amyotrophic Lateral Sclerosis (ALS)", "Cerebral Malaria (Pediatric)",
+      "Hydrocephalus", "Brain Tumors (Cognitive Monitoring)", "Post-Surgical Cognitive Decline",
+      "Anesthesia Awareness / Depth of Sedation", "Disorders of Consciousness (Coma, Vegetative State)",
+      "Normal Pressure Hydrocephalus", "Spinal Cord Injury (Cognitive Effects)"
+    ]
+  },
+  {
+    label: "Psychiatric & Mental Health",
+    icon: HeartPulse,
+    count: 15,
+    conditions: [
+      "Post-Traumatic Stress Disorder (PTSD)", "Major Depressive Disorder", "Bipolar Disorder",
+      "Schizophrenia", "Schizoaffective Disorder", "Generalized Anxiety Disorder",
+      "Obsessive-Compulsive Disorder (OCD)", "Borderline Personality Disorder",
+      "Antisocial Personality Disorder", "Panic Disorder", "Social Anxiety Disorder",
+      "Dissociative Disorders", "Eating Disorders (Anorexia, Bulimia)",
+      "Suicidality / Self-Harm Risk Assessment", "Psychosis (First Episode)"
+    ]
+  },
+  {
+    label: "Substance Use & Addiction",
+    icon: AlertCircle,
+    count: 10,
+    conditions: [
+      "Alcohol Use Disorder", "Opioid Addiction", "Cannabis Use Disorder",
+      "Cocaine / Stimulant Addiction", "Methamphetamine Use Disorder", "Nicotine Dependence",
+      "Polydrug Use", "Gambling Disorder", "Internet / Gaming Addiction",
+      "Withdrawal Monitoring (Alcohol, Opioids)"
+    ]
+  },
+  {
+    label: "Neurodevelopmental & Pediatric",
+    icon: GraduationCap,
+    count: 10,
+    conditions: [
+      "ADHD (Children and Adults)", "Autism Spectrum Disorder (ASD)", "Dyslexia",
+      "Dyscalculia", "Language Processing Disorders", "Developmental Delay",
+      "Fetal Alcohol Spectrum Disorder (FASD)", "Pediatric Brain Injury Recovery",
+      "Premature Birth Cognitive Effects", "Childhood Trauma / Adverse Childhood Experiences (ACEs)"
+    ]
+  },
+  {
+    label: "Occupational & Performance States",
+    icon: Dumbbell,
+    count: 10,
+    conditions: [
+      "Sleep Deprivation", "Chronic Insomnia", "Shift Work Cognitive Impairment",
+      "Jet Lag / Circadian Disruption", "Pilot / Operator Cognitive Fitness",
+      "Military Operational Readiness", "Fatigue Monitoring (Truck Drivers, Surgeons)",
+      "Heat Stress Cognitive Impairment", "High-Altitude Cognitive Impairment",
+      "Medication Side Effect Monitoring (Sedatives, Anticonvulsants)"
+    ]
+  },
+  {
+    label: "Systemic Diseases with Cerebral Effects",
+    icon: Microscope,
+    count: 15,
+    conditions: [
+      "Type 2 Diabetes (Cognitive Decline)", "Hypertension-Related Cognitive Impairment",
+      "Chronic Kidney Disease (Uremic Encephalopathy)", "Liver Disease (Hepatic Encephalopathy)",
+      "HIV-Associated Neurocognitive Disorder (HAND)", "Long COVID / Post-Viral Brain Fog",
+      "Lupus (Neuropsychiatric)", "Thyroid Disorders (Cognitive Effects)",
+      "Chemotherapy-Induced Cognitive Impairment", "Chronic Pain Syndromes",
+      "Fibromyalgia", "Lyme Disease (Neurological)", "Sepsis-Associated Encephalopathy",
+      "Cardiac Surgery Cognitive Decline", "Metabolic Syndrome Cognitive Effects"
+    ]
+  },
+  {
+    label: "Aging & Cognitive Longevity",
+    icon: Clock,
+    count: 5,
+    conditions: [
+      "Normal Cognitive Aging (Benchmarking)", "Subjective Cognitive Decline (Pre-MCI)",
+      "Frailty and Cognitive Reserve", "Polypharmacy Cognitive Effects in Elderly",
+      "Social Isolation Cognitive Decline"
+    ]
+  },
+  {
+    label: "Rehabilitation & Treatment Monitoring",
+    icon: Activity,
+    count: 10,
+    conditions: [
+      "Neuromodulation Response (TMS, tDCS)", "Cognitive Rehabilitation Progress",
+      "Physical Therapy Paired with Brain Training", "Drug Treatment Efficacy (Antidepressants, Antipsychotics)",
+      "Alzheimer's Drug Trial Monitoring (Leqembi, Donanemab)", "Post-ICU Cognitive Impairment",
+      "Traumatic Grief / Complicated Bereavement", "Mindfulness and Meditation Effects on Brain",
+      "Athletic Peak Performance Optimization", "Return-to-Play / Return-to-Work Clearance"
+    ]
+  },
+];
+
+const CLINICAL_PATHWAYS = [
+  {
+    condition: "Alcohol Use Disorder",
+    category: "Substance Use & Addiction",
+    erpFinding: "A significantly reduced P300 amplitude — the brain's attention and memory-updating system is blunted, showing that chronic alcohol use has measurably damaged the brain's ability to process and respond to new information.",
+    clinicalAction: "The doctor uses this data to show the patient the physical, objective damage alcohol is causing to their brain — not just a lecture, but a picture. This is used to motivate and justify entry into a structured detox and rehabilitation program. The ERP is then repeated at 3, 6, and 12 months of sobriety to show the patient that the brain is actually recovering, which is one of the most powerful motivators for sustained abstinence."
+  },
+  {
+    condition: "Bipolar Disorder",
+    category: "Psychiatric & Mental Health",
+    erpFinding: "Irregular P300 patterns that shift between states — during manic episodes, the brain shows hyperactivation; during depressive episodes, it shows blunted responses. This gives an objective physiological signature to what patients often struggle to describe.",
+    clinicalAction: "The psychiatrist uses the data to differentiate bipolar disorder from unipolar depression (which is commonly misdiagnosed), leading to the correct medication class — mood stabilizers like lithium or lamotrigine rather than antidepressants alone, which can trigger mania. The ERP becomes a monitoring tool to track whether the medication is stabilizing the brain's response patterns over time."
+  },
+  {
+    condition: "Chemotherapy-Induced Cognitive Impairment",
+    category: "Systemic Diseases with Cerebral Effects",
+    erpFinding: "Slowed N400 and P300 responses, objectively confirming the cognitive fog, memory lapses, and slow processing speed that cancer patients report during and after chemotherapy — a condition that is frequently dismissed by medical teams.",
+    clinicalAction: "The oncology team uses the data to validate the patient's experience and refer them to a cognitive rehabilitation specialist. The patient is given a structured cognitive training program, and in some cases the chemotherapy regimen is adjusted or spaced differently to reduce cumulative brain impact. Repeat testing tracks recovery of brain function after treatment ends."
+  },
+  {
+    condition: "Type 2 Diabetes (Cognitive Decline)",
+    category: "Systemic Diseases with Cerebral Effects",
+    erpFinding: "Gradually slowing P300 latency over time, reflecting the damage that chronically high blood sugar causes to the brain's small blood vessels and neural pathways — a process that often goes unnoticed until significant decline has occurred.",
+    clinicalAction: "The endocrinologist and primary care doctor use this as a wake-up call to aggressively tighten blood sugar control, because every point of HbA1c reduction measurably slows cognitive decline. The patient is referred to a diabetes educator, nutritionist, and exercise physiologist. The brain data makes the stakes concrete — this is no longer just about avoiding foot problems or kidney disease, it is about protecting the mind."
+  },
+  {
+    condition: "Disorders of Consciousness",
+    category: "Neurological Disorders",
+    erpFinding: "Even in patients who appear unresponsive, residual N100 and P300 responses can be detected, revealing that the brain is still processing auditory information at some level — what researchers call 'covert awareness.'",
+    clinicalAction: "When a family is told a loved one is in a vegetative state with no awareness, an ERP response changes everything. The medical team escalates the level of stimulation and rehabilitation therapy, and in some cases this data has been used to establish a basic communication system with the patient. It also directly informs end-of-life care decisions and legal proceedings around patient rights."
+  },
+  {
+    condition: "Opioid Addiction and Recovery",
+    category: "Substance Use & Addiction",
+    erpFinding: "A reduced P300 amplitude that reflects the damage opioids cause to the brain's reward and attention systems, along with impaired N400 responses showing disrupted cognitive processing — the neurological basis of the 'fog' people in addiction describe.",
+    clinicalAction: "The addiction medicine specialist uses the data to guide medication-assisted treatment (MAT) decisions — specifically whether buprenorphine (Suboxone) or naltrexone is more appropriate based on the degree of cognitive impairment. The ERP is tracked over months of recovery to show the patient their brain is healing, which is a critical motivational tool during the high-relapse early recovery period."
+  },
+  {
+    condition: "Epilepsy",
+    category: "Neurological Disorders",
+    erpFinding: "Abnormal P300 patterns between seizures (interictal period), showing that cognitive function is being impaired not just during seizures but continuously — something patients and families often notice but doctors rarely measure.",
+    clinicalAction: "The neurologist uses this data to justify adjusting anti-epileptic drug (AED) dosages or switching medications, since many AEDs themselves cause cognitive dulling. The goal is to find the medication that best controls seizures while preserving the highest level of cognitive function, and the ERP provides the objective measure to make that trade-off decision."
+  },
+  {
+    condition: "HIV-Associated Neurocognitive Disorder (HAND)",
+    category: "Systemic Diseases with Cerebral Effects",
+    erpFinding: "Slowed P300 and N400 responses in HIV-positive patients, even those who are virally suppressed on antiretroviral therapy — showing that the virus causes ongoing low-level brain inflammation that standard viral load tests do not capture.",
+    clinicalAction: "The infectious disease specialist considers switching the patient to an antiretroviral regimen with better central nervous system penetration. The patient is referred to a neuropsychologist for cognitive rehabilitation, and lifestyle interventions (exercise, sleep, diet) are prescribed specifically to reduce neuroinflammation. The ERP becomes a monitoring tool to ensure the brain is not continuing to decline despite viral suppression."
+  },
+  {
+    condition: "Post-ICU Cognitive Impairment",
+    category: "Rehabilitation & Treatment Monitoring",
+    erpFinding: "Significantly delayed and reduced P300 and N400 responses in patients who have been discharged from the ICU, confirming what is now recognized as 'Post-Intensive Care Syndrome' — a condition where the brain has been damaged by the combination of critical illness, sedation, and immobility.",
+    clinicalAction: "The patient is referred to a dedicated post-ICU recovery clinic where cognitive rehabilitation, physical therapy, and psychological support are integrated. The ERP data justifies disability accommodations and a phased return to work. Family members are educated that the cognitive changes are real, measurable, and in many cases reversible with the right rehabilitation."
+  },
+  {
+    condition: "Frontotemporal Dementia (FTD)",
+    category: "Neurological Disorders",
+    erpFinding: "Severely disrupted N400 responses — the brain's ability to process language and meaning breaks down early, which is the hallmark of FTD and distinguishes it from Alzheimer's disease, which primarily affects memory first.",
+    clinicalAction: "Because FTD is frequently misdiagnosed as a psychiatric disorder (due to personality and behavior changes), the ERP data helps the neurologist arrive at the correct diagnosis faster. This matters enormously because the medications used for Alzheimer's can actually worsen FTD. The correct diagnosis leads to appropriate behavioral management strategies, caregiver education, and genetic counseling since FTD has a strong hereditary component."
+  },
+  {
+    condition: "Childhood Trauma / Adverse Childhood Experiences (ACEs)",
+    category: "Neurodevelopmental & Pediatric",
+    erpFinding: "Altered P300 and N400 responses in children and adolescents who have experienced abuse, neglect, or chronic stress — showing that trauma physically rewires the developing brain's attention and processing systems.",
+    clinicalAction: "The pediatrician or child psychiatrist uses the data to justify early intervention rather than waiting to see if the child 'grows out of it.' The child is referred to trauma-focused cognitive behavioral therapy (TF-CBT), and school accommodations are put in place. The ERP also helps distinguish trauma-related cognitive changes from ADHD or learning disabilities, preventing misdiagnosis and inappropriate medication."
+  },
+  {
+    condition: "Fatigue Monitoring (Surgeons, Pilots, Truck Drivers)",
+    category: "Occupational & Performance States",
+    erpFinding: "Measurable slowing of P300 responses after extended work shifts, objectively proving that the professional's brain is no longer functioning at a safe level — even if they report feeling 'fine' or are unwilling to admit impairment.",
+    clinicalAction: "This is a workplace safety and liability application. The data provides an objective, legally defensible basis for mandatory rest periods, shift limits, and return-to-duty clearances. Hospitals, airlines, and trucking companies use this to protect both the professional and the public. It removes the subjective judgment call ('I'm okay to keep going') and replaces it with a physiological standard."
+  },
+  {
+    condition: "Athletic Peak Performance Optimization",
+    category: "Rehabilitation & Treatment Monitoring",
+    erpFinding: "Baseline ERP profiles that map an athlete's optimal cognitive state — their fastest reaction times, sharpest attention, and most efficient processing — giving coaches and sports scientists an objective measure of when the brain is performing at its peak.",
+    clinicalAction: "The sports performance team uses the data to optimize training schedules, recovery protocols, and competition timing. If an athlete's ERP shows their brain is not at peak before a major competition, the coaching staff adjusts warmup, sleep, and nutrition protocols. Over a season, the data tracks whether training loads are enhancing or degrading cognitive performance — allowing for precision periodization of both physical and mental training."
+  },
+];
+
+function TabConditions() {
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [expandedPathway, setExpandedPathway] = useState<string | null>(null);
+
+  return (
+    <div className="space-y-10">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-bold mb-1" style={{ background: P.gradText, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+          Conditions &amp; Clinical Pathways
+        </h2>
+        <p className="text-sm" style={{ color: P.muted }}>
+          ERP biomarker research covers 100+ documented conditions across 8 clinical domains. The P300 alone has been studied in over 160,000 published papers.
+        </p>
+        <p className="text-xs mt-2 italic" style={{ color: P.muted }}>
+          NeuroCatch is not a standalone diagnostic tool for any specific condition. It is an objective measurement of brain function that flags changes — the clinician then uses that flag to investigate further.
+        </p>
+      </div>
+
+      {/* Stat strip */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { value: "100+", label: "Documented Conditions", sub: "In peer-reviewed research" },
+          { value: "160K+", label: "Published P300 Studies", sub: "Largest ERP biomarker body" },
+          { value: "8", label: "Clinical Domains", sub: "Neurology to performance" },
+          { value: "13", label: "Detailed Pathways", sub: "ERP finding → clinical action" },
+        ].map(s => (
+          <div key={s.label} className="rounded-xl border p-4" style={{ background: P.card, borderColor: P.border }}>
+            <div className="text-2xl font-bold" style={{ background: P.gradText, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{s.value}</div>
+            <div className="text-xs font-semibold mt-0.5" style={{ color: P.white }}>{s.label}</div>
+            <div className="text-xs" style={{ color: P.muted }}>{s.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Category grid */}
+      <div>
+        <h3 className="text-sm font-semibold uppercase tracking-widest mb-4" style={{ color: P.gold }}>Full Conditions Index — 8 Clinical Domains</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {CONDITION_CATEGORIES.map(cat => {
+            const CatIcon = cat.icon;
+            const isOpen = activeCategory === cat.label;
+            return (
+              <div key={cat.label} className="rounded-xl border overflow-hidden" style={{ background: P.card, borderColor: isOpen ? P.gold : P.border }}>
+                <button
+                  onClick={() => setActiveCategory(isOpen ? null : cat.label)}
+                  className="w-full flex items-center justify-between p-4 text-left transition-colors hover:opacity-80"
+                >
+                  <div className="flex items-center gap-3">
+                    <CatIcon size={18} style={{ color: P.gold }} />
+                    <div>
+                      <div className="text-sm font-semibold" style={{ color: P.white }}>{cat.label}</div>
+                      <div className="text-xs" style={{ color: P.muted }}>{cat.count} conditions documented</div>
+                    </div>
+                  </div>
+                  <ChevronRight size={14} style={{ color: P.muted, transform: isOpen ? "rotate(90deg)" : "none", transition: "transform 200ms" }} />
+                </button>
+                {isOpen && (
+                  <div className="px-4 pb-4">
+                    <div className="border-t pt-3" style={{ borderColor: P.border }}>
+                      <div className="flex flex-wrap gap-2">
+                        {cat.conditions.map(c => (
+                          <span key={c} className="text-xs px-2 py-1 rounded-full" style={{ background: P.card2, color: P.muted, border: `1px solid ${P.border}` }}>{c}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 13 Clinical Pathways */}
+      <div>
+        <h3 className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: P.gold }}>13 Detailed Clinical Pathways</h3>
+        <p className="text-xs mb-5" style={{ color: P.muted }}>Each pathway answers two questions: what does the ERP data show, and what does the clinician actually do next.</p>
+        <div className="space-y-3">
+          {CLINICAL_PATHWAYS.map((p, i) => {
+            const isOpen = expandedPathway === p.condition;
+            return (
+              <div key={p.condition} className="rounded-xl border overflow-hidden" style={{ background: P.card, borderColor: isOpen ? P.gold : P.border }}>
+                <button
+                  onClick={() => setExpandedPathway(isOpen ? null : p.condition)}
+                  className="w-full flex items-center justify-between p-4 text-left transition-colors hover:opacity-80"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-bold w-6 text-center" style={{ color: P.gold }}>{String(i + 1).padStart(2, "0")}</span>
+                    <div>
+                      <div className="text-sm font-semibold" style={{ color: P.white }}>{p.condition}</div>
+                      <div className="text-xs" style={{ color: P.muted }}>{p.category}</div>
+                    </div>
+                  </div>
+                  <ChevronRight size={14} style={{ color: P.muted, transform: isOpen ? "rotate(90deg)" : "none", transition: "transform 200ms" }} />
+                </button>
+                {isOpen && (
+                  <div className="px-4 pb-5 space-y-4">
+                    <div className="border-t pt-4" style={{ borderColor: P.border }}>
+                      <div className="rounded-lg p-3 mb-3" style={{ background: P.bg2, border: `1px solid ${P.border}` }}>
+                        <div className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: P.gold }}>ERP Finding</div>
+                        <p className="text-sm leading-relaxed" style={{ color: P.white }}>{p.erpFinding}</p>
+                      </div>
+                      <div className="rounded-lg p-3" style={{ background: "rgba(245,158,11,0.06)", border: `1px solid rgba(245,158,11,0.2)` }}>
+                        <div className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: P.orange }}>Clinical Action</div>
+                        <p className="text-sm leading-relaxed" style={{ color: P.white }}>{p.clinicalAction}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Footer note */}
+      <div className="rounded-xl border p-5" style={{ background: P.card, borderColor: P.border }}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: P.gold }}>The Pattern Across All 100+ Conditions</div>
+        <p className="text-sm leading-relaxed" style={{ color: P.muted }}>
+          Every single one of these follows the same logic: the ERP finds something the patient or clinician already suspected but could not prove. Once it is proven with objective data, the next step becomes clear — the right specialist, the right treatment, the right medication, the right accommodation. The data does not replace the doctor's judgment. It gives the doctor something concrete to act on.
+        </p>
+        <p className="text-xs mt-3" style={{ color: P.muted }}>
+          The platform is essentially a universal early warning system for the brain — the same way a blood panel can flag dozens of different conditions depending on which values are out of range.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Dashboard ────────────────────────────────────────────────────────────
 const TABS = [
-  { id: "brain",     label: "Brain Map",           icon: Brain },
-  { id: "tbi",       label: "TBI Atlas",            icon: Brain },
-  { id: "site",      label: "Site Intelligence",  icon: Activity },
-  { id: "market",    label: "Market Intelligence", icon: BarChart2 },
-  { id: "segments",  label: "B2B Segments",        icon: Users },
-  { id: "keywords",  label: "Search Volume",       icon: Search },
-  { id: "outreach",  label: "Outreach Kit",        icon: Megaphone },
-  { id: "readiness", label: "Readiness",           icon: CheckCircle2 },
+  { id: "brain",      label: "Neural Architecture",              icon: Brain },
+  { id: "tbi",        label: "TBI Protocol",                     icon: Brain },
+  { id: "conditions", label: "Conditions & Clinical Pathways",   icon: Microscope },
+  { id: "site",       label: "Digital Footprint Analysis",       icon: Activity },
+  { id: "market",     label: "Market Signal Intelligence",       icon: BarChart2 },
+  { id: "segments",   label: "Clinical Market Segments",         icon: Users },
+  { id: "keywords",   label: "Keyword Signal Index",             icon: Search },
+  { id: "outreach",   label: "Clinical Outreach Protocol",       icon: Megaphone },
+  { id: "readiness",  label: "Campaign Readiness Assessment",    icon: CheckCircle2 },
 ];
 
 export default function NeuroCatchDashboard() {
@@ -1874,15 +2190,17 @@ export default function NeuroCatchDashboard() {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {activeTab === "site"      && <TabSite />}
-        {activeTab === "market"    && <TabMarket />}
-        {activeTab === "segments"  && <TabSegments />}
-        {activeTab === "keywords"  && <TabKeywords />}
-        {activeTab === "brain"     && <TabBrainMap />}
-        {activeTab === "tbi"       && <TabTBI />}
-        {activeTab === "outreach"  && <TabOutreach />}
-        {activeTab === "readiness" && <TabReadiness />}
+        {activeTab === "site"       && <TabSite />}
+        {activeTab === "market"     && <TabMarket />}
+        {activeTab === "segments"   && <TabSegments />}
+        {activeTab === "keywords"   && <TabKeywords />}
+        {activeTab === "brain"      && <TabBrainMap />}
+        {activeTab === "tbi"        && <TabTBI />}
+        {activeTab === "outreach"   && <TabOutreach />}
+        {activeTab === "readiness"  && <TabReadiness />}
+        {activeTab === "conditions" && <TabConditions />}
       </div>
     </div>
   );
 }
+
