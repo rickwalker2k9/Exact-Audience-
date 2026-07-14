@@ -60,6 +60,19 @@ export const WARBY_DAILY_IMPRESSIONS = [
   { day: "May 27", ctv: 95200, youtube: 24900, display: 16400, meta: 19600, google: 14800, email: 10400, qr: 5800 },
   { day: "May 28", ctv: 102800, youtube: 26900, display: 17700, meta: 21200, google: 15900, email: 11200, qr: 6200 },
   { day: "May 29", ctv: 107400, youtube: 28100, display: 18500, meta: 22100, google: 16600, email: 11700, qr: 6500 },
+  { day: "May 30", ctv: 111800, youtube: 29300, display: 19200, meta: 23000, google: 17300, email: 12100, qr: 6800 },
+  { day: "May 31", ctv: 116400, youtube: 30500, display: 20000, meta: 23900, google: 18000, email: 12600, qr: 7100 },
+  { day: "Jun 1",  ctv: 112200, youtube: 29400, display: 19300, meta: 23100, google: 17400, email: 12200, qr: 6900 },
+  { day: "Jun 2",  ctv: 119800, youtube: 31400, display: 20600, meta: 24700, google: 18600, email: 13000, qr: 7300 },
+  { day: "Jun 7",  ctv: 124600, youtube: 32700, display: 21400, meta: 25700, google: 19300, email: 13500, qr: 7600 },
+  { day: "Jun 14", ctv: 131200, youtube: 34400, display: 22600, meta: 27000, google: 20300, email: 14200, qr: 8000 },
+  { day: "Jun 21", ctv: 138400, youtube: 36300, display: 23800, meta: 28500, google: 21400, email: 15000, qr: 8500 },
+  { day: "Jun 28", ctv: 144800, youtube: 38000, display: 24900, meta: 29800, google: 22400, email: 15700, qr: 8900 },
+  { day: "Jul 5",  ctv: 150200, youtube: 39400, display: 25800, meta: 30900, google: 23200, email: 16200, qr: 9200 },
+  { day: "Jul 7",  ctv: 154600, youtube: 40600, display: 26600, meta: 31800, google: 23900, email: 16700, qr: 9500 },
+  { day: "Jul 10", ctv: 160200, youtube: 42100, display: 27600, meta: 33000, google: 24800, email: 17300, qr: 9900 },
+  { day: "Jul 12", ctv: 157800, youtube: 41400, display: 27100, meta: 32500, google: 24400, email: 17100, qr: 9700 },
+  { day: "Jul 14", ctv: 164400, youtube: 43100, display: 28200, meta: 33800, google: 25400, email: 17700, qr: 10100 },
 ];
 
 export const WARBY_MEDIA_MIX = [
@@ -82,14 +95,14 @@ export const WARBY_SITE_PAGES = [
 ];
 
 export const WARBY_VISITORS = [
-  { first: "Sarah",   last: "Moreno",    city: "Brooklyn",      zip: "11201", income: "$75K–$99K",   networth: "$100K–$249K", credit: "B", job: "UX Designer",       company: "Spotify",               score: 82, mood: "High Intent", vehicle: "Toyota Prius",    time: "2m ago" },
-  { first: "Marcus",  last: "Thornton",  city: "Austin",        zip: "78701", income: "$100K–$149K", networth: "$250K–$499K", credit: "A", job: "Software Engineer", company: "Dell Technologies",      score: 78, mood: "In-Market",   vehicle: "Tesla Model 3",   time: "5m ago" },
-  { first: "Priya",   last: "Kapoor",    city: "San Francisco", zip: "94102", income: "$150K–$199K", networth: "$500K–$749K", credit: "A", job: "Product Manager",   company: "Salesforce",            score: 84, mood: "High Intent", vehicle: "Honda CR-V",      time: "9m ago" },
-  { first: "Jake",    last: "Riordan",   city: "Chicago",       zip: "60601", income: "$60K–$74K",   networth: "$50K–$99K",   credit: "C", job: "Teacher",           company: "Chicago Public Schools", score: 61, mood: "Awareness",   vehicle: "Ford Focus",      time: "14m ago" },
-  { first: "Olivia",  last: "Chen",      city: "Seattle",       zip: "98101", income: "$125K–$149K", networth: "$300K–$499K", credit: "B", job: "Data Analyst",      company: "Amazon",                score: 76, mood: "In-Market",   vehicle: "Subaru Outback",  time: "19m ago" },
-  { first: "Derek",   last: "Lawson",    city: "Denver",        zip: "80202", income: "$85K–$99K",   networth: "$150K–$249K", credit: "B", job: "Marketing Manager", company: "REI",                   score: 69, mood: "Awareness",   vehicle: "Jeep Wrangler",   time: "24m ago" },
-  { first: "Natalie", last: "Fontaine",  city: "Nashville",     zip: "37201", income: "$95K–$124K",  networth: "$200K–$374K", credit: "B", job: "Nurse Practitioner", company: "Vanderbilt Health",     score: 74, mood: "In-Market",   vehicle: "Nissan Rogue",    time: "29m ago" },
-  { first: "Carlos",  last: "Vega",      city: "Miami",         zip: "33101", income: "$65K–$74K",   networth: "$75K–$124K",  credit: "C", job: "Graphic Designer",  company: "Freelance",             score: 58, mood: "Awareness",   vehicle: "Honda Civic",     time: "36m ago" },
+  { first: "Zoe",      last: "Hartwell",   city: "Brooklyn",      zip: "11201", income: "$85K–$109K",  networth: "$120K–$280K", credit: "B", job: "Senior UX Designer",    company: "Spotify",            score: 85, mood: "High Intent", vehicle: "Toyota Prius",   time: "2m ago"  },
+  { first: "Elijah",   last: "Osei",       city: "Austin",        zip: "78701", income: "$110K–$149K", networth: "$260K–$510K", credit: "A", job: "Staff Engineer",        company: "Apple",              score: 81, mood: "In-Market",   vehicle: "Tesla Model Y",  time: "6m ago"  },
+  { first: "Ananya",   last: "Sharma",     city: "San Francisco", zip: "94102", income: "$160K–$199K", networth: "$520K–$780K", credit: "A", job: "Director of Product",   company: "Salesforce",         score: 87, mood: "High Intent", vehicle: "Honda CR-V",     time: "10m ago" },
+  { first: "Liam",     last: "Callahan",   city: "Chicago",       zip: "60601", income: "$65K–$79K",   networth: "$55K–$110K",  credit: "C", job: "High School Teacher",   company: "Chicago Public Schools", score: 62, mood: "Awareness",   vehicle: "Ford Escape",    time: "15m ago" },
+  { first: "Mia",      last: "Tanaka",     city: "Seattle",       zip: "98101", income: "$130K–$154K", networth: "$310K–$520K", credit: "B", job: "Data Scientist",        company: "Amazon",             score: 78, mood: "In-Market",   vehicle: "Subaru Outback", time: "21m ago" },
+  { first: "Jordan",   last: "Whitmore",   city: "Denver",        zip: "80202", income: "$90K–$109K",  networth: "$160K–$265K", credit: "B", job: "Brand Manager",         company: "Patagonia",          score: 71, mood: "Awareness",   vehicle: "Jeep Wrangler",  time: "27m ago" },
+  { first: "Aaliyah",  last: "Brooks",     city: "Nashville",     zip: "37201", income: "$100K–$129K", networth: "$210K–$390K", credit: "B", job: "Nurse Practitioner",    company: "Vanderbilt Health",  score: 76, mood: "In-Market",   vehicle: "Nissan Murano",  time: "33m ago" },
+  { first: "Rafael",   last: "Mendoza",    city: "Miami",         zip: "33101", income: "$70K–$84K",   networth: "$80K–$135K",  credit: "C", job: "Motion Designer",       company: "Freelance",          score: 60, mood: "Awareness",   vehicle: "Honda Civic",    time: "40m ago" },
 ];
 
 export const WARBY_MOODS = [

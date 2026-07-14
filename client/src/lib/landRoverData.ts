@@ -59,6 +59,14 @@ export const LANDROVER_DAILY_IMPRESSIONS = [
   { day: "May 31", ctv: 137200, youtube: 31200, display: 15300, meta: 18400, google: 11700, email: 9100, qr: 9300 },
   { day: "Jul 5",  ctv: 142400, youtube: 32400, display: 15900, meta: 19000, google: 12200, email: 9500, qr: 9700 },
   { day: "Jul 6",  ctv: 146200, youtube: 33200, display: 16300, meta: 19500, google: 12500, email: 9700, qr: 9900 },
+  { day: "Jul 7",  ctv: 150800, youtube: 34300, display: 16800, meta: 20100, google: 12900, email: 10000, qr: 10200 },
+  { day: "Jul 8",  ctv: 154200, youtube: 35100, display: 17200, meta: 20600, google: 13200, email: 10300, qr: 10500 },
+  { day: "Jul 9",  ctv: 148600, youtube: 33800, display: 16600, meta: 19800, google: 12700, email: 9900, qr: 10100 },
+  { day: "Jul 10", ctv: 158400, youtube: 36000, display: 17700, meta: 21200, google: 13600, email: 10600, qr: 10800 },
+  { day: "Jul 11", ctv: 163200, youtube: 37100, display: 18200, meta: 21800, google: 14000, email: 10900, qr: 11200 },
+  { day: "Jul 12", ctv: 156800, youtube: 35600, display: 17500, meta: 20900, google: 13400, email: 10500, qr: 10700 },
+  { day: "Jul 13", ctv: 168400, youtube: 38300, display: 18800, meta: 22500, google: 14400, email: 11200, qr: 11500 },
+  { day: "Jul 14", ctv: 172600, youtube: 39200, display: 19300, meta: 23100, google: 14800, email: 11500, qr: 11800 },
 ];
 
 export const LANDROVER_MEDIA_MIX = [
@@ -127,16 +135,16 @@ export const LANDROVER_MOODS = [
   { label: "Family Premium",     count: 30160, color: "#0ea5e9", desc: "Premium family buyers seeking 3-row luxury SUV with capability" },
 ];
 
-// Visitors refreshed Jun 2, 2026
+// Visitors refreshed Jul 14, 2026
 export const LANDROVER_VISITORS = [
-  { first: "Ethan",     last: "Calloway",   city: "Scottsdale",      zip: "85254", income: "$420K+",  networth: "$2.8M", credit: "A+", job: "Managing Director",     company: "BlackRock",         score: 96, mood: "Luxury Upgraders",  vehicle: "BMW X5",              time: "2m ago"  },
-  { first: "Sophia",   last: "Wentworth",  city: "Paradise Valley", zip: "85253", income: "$540K+",  networth: "$4.6M", credit: "A+", job: "Partner",               company: "DLA Piper",         score: 98, mood: "Status & Prestige", vehicle: "Mercedes GLE 63",     time: "6m ago"  },
-  { first: "Gregory",  last: "Nakamura",   city: "Scottsdale",      zip: "85259", income: "$310K+",  networth: "$1.9M", credit: "A",  job: "Orthopedic Surgeon",    company: "Scottsdale Orthopedics", score: 92, mood: "Adventure Seekers", vehicle: "Audi Q8",         time: "13m ago" },
-  { first: "Claire",   last: "Pemberton",  city: "Fountain Hills",  zip: "85268", income: "$260K+",  networth: "$1.5M", credit: "A",  job: "VP Operations",         company: "Freeport-McMoRan",  score: 87, mood: "Family Premium",    vehicle: "Volvo XC90",          time: "19m ago" },
-  { first: "Trevor",   last: "Blackwood",  city: "Scottsdale",      zip: "85260", income: "$480K+",  networth: "$3.6M", credit: "A+", job: "Founder & CEO",         company: "Blackwood Ventures", score: 95, mood: "Luxury Upgraders", vehicle: "Range Rover Sport",   time: "26m ago" },
-  { first: "Allison",  last: "Drummond",   city: "Cave Creek",      zip: "85331", income: "$295K+",  networth: "$1.7M", credit: "A",  job: "Radiologist",           company: "Banner Health",     score: 84, mood: "Adventure Seekers", vehicle: "Toyota Land Cruiser", time: "33m ago" },
-  { first: "Preston",  last: "Whitfield",  city: "Scottsdale",      zip: "85255", income: "$490K+",  networth: "$4.0M", credit: "A+", job: "Chief Investment Officer", company: "Western Alliance", score: 97, mood: "Status & Prestige", vehicle: "Porsche Cayenne GTS", time: "41m ago" },
-  { first: "Meredith", last: "Gallagher",  city: "Carefree",        zip: "85377", income: "$340K+",  networth: "$2.3M", credit: "A",  job: "Principal Architect",   company: "Gould Evans",       score: 90, mood: "Family Premium",    vehicle: "Jeep Grand Wagoneer", time: "48m ago" },
+  { first: "Harrison",  last: "Voss",        city: "Scottsdale",      zip: "85254", income: "$510K+",  networth: "$3.4M", credit: "A+", job: "Managing Partner",         company: "Voss Capital Group",      score: 97, mood: "Luxury Upgraders",  vehicle: "BMW X5 M",             time: "1m ago"  },
+  { first: "Camille",   last: "Ashford",     city: "Paradise Valley", zip: "85253", income: "$620K+",  networth: "$5.2M", credit: "A+", job: "Chief Legal Officer",      company: "Insight Enterprises",    score: 99, mood: "Status & Prestige", vehicle: "Mercedes GLE 63 AMG",  time: "4m ago"  },
+  { first: "Donovan",   last: "Reyes",       city: "Scottsdale",      zip: "85259", income: "$340K+",  networth: "$2.1M", credit: "A",  job: "Spine Surgeon",            company: "HonorHealth",            score: 93, mood: "Adventure Seekers", vehicle: "Audi Q8",              time: "11m ago" },
+  { first: "Brooke",    last: "Harrington",  city: "Fountain Hills",  zip: "85268", income: "$275K+",  networth: "$1.6M", credit: "A",  job: "VP Finance",               company: "Phelps Dodge",           score: 88, mood: "Family Premium",    vehicle: "Volvo XC90",           time: "18m ago" },
+  { first: "Colton",    last: "Mercer",      city: "Scottsdale",      zip: "85260", income: "$560K+",  networth: "$4.1M", credit: "A+", job: "CEO & Co-Founder",         company: "Mercer Equity Partners", score: 96, mood: "Luxury Upgraders",  vehicle: "Porsche Cayenne Turbo", time: "24m ago" },
+  { first: "Whitney",   last: "Okafor",      city: "Cave Creek",      zip: "85331", income: "$310K+",  networth: "$1.9M", credit: "A",  job: "Interventional Radiologist",company: "Mayo Clinic",            score: 85, mood: "Adventure Seekers", vehicle: "Toyota 4Runner TRD",   time: "31m ago" },
+  { first: "Beckett",   last: "Langford",    city: "Scottsdale",      zip: "85255", income: "$580K+",  networth: "$4.8M", credit: "A+", job: "Chief Investment Officer",  company: "Pinnacle West Capital",  score: 98, mood: "Status & Prestige", vehicle: "Range Rover Autobiography", time: "39m ago" },
+  { first: "Simone",    last: "Beaumont",    city: "Carefree",        zip: "85377", income: "$390K+",  networth: "$2.7M", credit: "A",  job: "Principal Architect",      company: "DWL Architects",         score: 91, mood: "Family Premium",    vehicle: "Jeep Grand Wagoneer",  time: "47m ago" },
 ];
 
 export const LANDROVER_QR = {
