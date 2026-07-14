@@ -19,6 +19,7 @@ import BarrettDashboard from "./pages/BarrettDashboard";
 import NeuroCatchDashboard from "./pages/NeuroCatchDashboard";
 import InterMedDashboard from "./pages/InterMedDashboard";
 import ImagineAgencyDashboard from "./pages/ImagineAgencyDashboard";
+import MogulDashboard from "./pages/MogulDashboard";
 
 function Router() {
   return (
@@ -37,6 +38,7 @@ function Router() {
       <Route path="/neurocatch" component={NeuroCatchDashboard} />
       <Route path="/intermed-healthtrust" component={InterMedDashboard} />
       <Route path="/imagine-agency" component={ImagineAgencyDashboard} />
+      <Route path="/mogul" component={MogulDashboard} />
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />
