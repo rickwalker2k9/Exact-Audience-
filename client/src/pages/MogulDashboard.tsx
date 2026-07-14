@@ -946,7 +946,7 @@ function RealEstateHero() {
         style={{ zIndex: 2 }}
         initial={{ clipPath: 'inset(0 100% 0 0)' }}
         animate={{ clipPath: 'inset(0 0% 0 0)' }}
-        transition={{ duration: 1.4, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
+        transition={{ duration: 3.5, ease: [0.23, 1, 0.32, 1], delay: 0.4 }}
       >
         <img
           src={mogulArrow}
@@ -963,7 +963,7 @@ function RealEstateHero() {
         className="absolute rounded-full"
         style={{ top: '6%', right: '16%', width: 30, height: 30, background: `radial-gradient(circle, ${C.gold}90, transparent)`, zIndex: 3 }}
         animate={{ scale: [1, 2.5, 1], opacity: [0.9, 0, 0.9] }}
-        transition={{ duration: 2, repeat: Infinity, delay: 1.8, ease: 'easeOut' }}
+        transition={{ duration: 2, repeat: Infinity, delay: 4.2, ease: 'easeOut' }}
       />
       {/* Bottom fade into card */}
       <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 50%, ${C.card} 100%)`, zIndex: 4 }} />
