@@ -929,168 +929,154 @@ const SITE_VISITORS = [
   },
 ];
 
-// ── ANIMATED REAL ESTATE HERO ────────────────────────────────────────────────
-// Sequence: bars rise (0–1.6s) → houses pop in (1.6–2.4s) → arrow draws L→R (2.6–6s) → arrowhead pulses forever
-const BARS = [
-  { pct: 0.14 }, { pct: 0.22 }, { pct: 0.30 }, { pct: 0.38 },
-  { pct: 0.46 }, { pct: 0.55 }, { pct: 0.63 }, { pct: 0.71 },
-  { pct: 0.80 }, { pct: 0.90 }, { pct: 1.00 },
-];
+// ── WIREFRAME NEON HERO ────────────────────────────────────────────────
+const HOUSE_HEIGHTS = [0.18, 0.28, 0.38, 0.48, 0.56, 0.65, 0.73, 0.82, 0.90, 0.96, 1.0];
 
 function RealEstateHero() {
-  const SVG_W = 560;
+  const SVG_W = 600;
   const SVG_H = 200;
-  const FLOOR = SVG_H - 10;
-  const BAR_W = 36;
-  const GAP = 12;
-  const MAX_BAR_H = 150;
-  const START_X = 30;
+  const FLOOR = SVG_H - 14;
+  const SLOT_W = 48;  // width per house slot
+  const MAX_H = 155;  // tallest house height
+  const N = HOUSE_HEIGHTS.length;
+  const TOTAL_W = N * SLOT_W;
+  const START_X = (SVG_W - TOTAL_W) / 2;
 
-  // Arrow path: from bottom-left of first bar to top-right of last bar, then arrowhead
-  const arrowStartX = START_X + BAR_W / 2;
-  const arrowStartY = FLOOR - BARS[0].pct * MAX_BAR_H - 22;
-  const arrowEndX = START_X + (BARS.length - 1) * (BAR_W + GAP) + BAR_W / 2 + 30;
-  const arrowEndY = FLOOR - BARS[BARS.length - 1].pct * MAX_BAR_H - 50;
+  // Each house: x center, roof peak y, wall base y
+  const houses = HOUSE_HEIGHTS.map((pct, i) => {
+    const cx = START_X + i * SLOT_W + SLOT_W / 2;
+    const wallH = pct * MAX_H;
+    const roofH = SLOT_W * 0.45;
+    const wallTop = FLOOR - wallH;
+    const roofPeak = wallTop - roofH;
+    return { cx, wallH, roofH, wallTop, roofPeak, pct };
+  });
+
+  // Arrow: starts at first house roof peak, ends past last house roof peak
+  const arrowStartX = houses[0].cx;
+  const arrowStartY = houses[0].roofPeak + 4;
+  const arrowEndX = houses[N - 1].cx + 28;
+  const arrowEndY = houses[N - 1].roofPeak - 22;
 
   return (
-    <div className="relative w-full overflow-hidden flex items-center justify-center" style={{ height: 220, background: 'transparent' }}>
+    <div className="relative w-full overflow-hidden flex items-center justify-center" style={{ height: 230, background: 'transparent' }}>
       <svg
         viewBox={`0 0 ${SVG_W} ${SVG_H}`}
         width="100%"
         height="100%"
-        style={{ maxHeight: 220, overflow: 'visible' }}
-        aria-label="Real estate investor growth chart"
+        style={{ maxHeight: 230, overflow: 'visible' }}
+        aria-label="Wireframe real estate growth"
       >
         <defs>
-          {/* Fire gradient for bars */}
-          <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0%" stopColor="#7c1d00" />
-            <stop offset="50%" stopColor="#e85d00" />
-            <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.9" />
-          </linearGradient>
-          {/* Arrow glow filter */}
-          <filter id="heroGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
+          {/* Neon glow for house outlines */}
+          <filter id="neonGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          {/* Arrowhead glow */}
-          <filter id="headGlow" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
+          {/* Strong glow for arrow */}
+          <filter id="arrowGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          {/* Clip path for arrow draw animation */}
-          <clipPath id="arrowClip">
+          {/* Clip mask — reveals arrow left to right */}
+          <clipPath id="arrowReveal">
             <motion.rect
-              x="0" y="0" height={SVG_H + 40}
+              x={arrowStartX - 10} y={-20}
+              height={SVG_H + 40}
               initial={{ width: 0 }}
-              animate={{ width: SVG_W + 60 }}
-              transition={{ duration: 3.5, ease: [0.4, 0, 0.2, 1], delay: 2.6 }}
+              animate={{ width: arrowEndX - arrowStartX + 60 }}
+              transition={{ duration: 3.8, ease: [0.4, 0, 0.15, 1], delay: 2.2 }}
             />
           </clipPath>
         </defs>
 
-        {/* Bars — each rises from floor with staggered delay */}
-        {BARS.map((bar, i) => {
-          const x = START_X + i * (BAR_W + GAP);
-          const barH = bar.pct * MAX_BAR_H;
-          const delay = i * 0.12;
-          return (
-            <motion.rect
-              key={i}
-              x={x} y={FLOOR}
-              width={BAR_W} height={0}
-              rx={3}
-              fill="url(#barGrad)"
-              initial={{ y: FLOOR, height: 0 }}
-              animate={{ y: FLOOR - barH, height: barH }}
-              transition={{ duration: 0.55, ease: [0.23, 1, 0.32, 1], delay: 0.2 + delay }}
-            />
-          );
-        })}
+        {/* Floor baseline */}
+        <line x1={START_X - 8} y1={FLOOR} x2={SVG_W - START_X + 8} y2={FLOOR}
+          stroke="#4a5568" strokeWidth="1" />
 
-        {/* Houses — pop in on top of each bar after bars finish */}
-        {BARS.map((bar, i) => {
-          const cx = START_X + i * (BAR_W + GAP) + BAR_W / 2;
-          const cy = FLOOR - bar.pct * MAX_BAR_H - 18;
-          const delay = 1.6 + i * 0.07;
-          // House: body rect + roof triangle
+        {/* Wireframe houses — each grows up from the floor, staggered */}
+        {houses.map((h, i) => {
+          const hw = SLOT_W * 0.72;  // house width
+          const delay = 0.15 + i * 0.13;
+          const strokeCol = i < 4 ? '#f97316' : i < 8 ? '#fb923c' : '#fbbf24';
           return (
-            <motion.g
-              key={i}
-              initial={{ opacity: 0, scale: 0, originX: `${cx}px`, originY: `${cy}px` }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1], delay }}
-              style={{ transformOrigin: `${cx}px ${cy}px` }}
+            <motion.g key={i}
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay }}
+              style={{ transformOrigin: `${h.cx}px ${FLOOR}px` }}
+              filter="url(#neonGlow)"
             >
-              {/* House body */}
-              <rect x={cx - 10} y={cy - 8} width={20} height={14} rx={1} fill="#c87941" stroke="#fbbf24" strokeWidth="0.5" />
-              {/* Door */}
-              <rect x={cx - 3} y={cy + 1} width={6} height={5} rx={1} fill="#7c3a10" />
-              {/* Window */}
-              <rect x={cx + 3} y={cy - 5} width={4} height={4} rx={0.5} fill="#fde68a" opacity={0.9} />
-              {/* Roof */}
-              <polygon
-                points={`${cx - 13},${cy - 8} ${cx + 13},${cy - 8} ${cx},${cy - 22}`}
-                fill="#2d3748"
-                stroke="#4a5568"
-                strokeWidth="0.5"
+              {/* Walls */}
+              <rect
+                x={h.cx - hw / 2} y={h.wallTop}
+                width={hw} height={h.wallH}
+                fill="none"
+                stroke={strokeCol}
+                strokeWidth="1.5"
+                opacity={0.85}
               />
-              {/* Window glow */}
-              <rect x={cx + 3} y={cy - 5} width={4} height={4} rx={0.5} fill="#fbbf24" opacity={0.3} />
+              {/* Roof */}
+              <polyline
+                points={`${h.cx - hw / 2},${h.wallTop} ${h.cx},${h.roofPeak} ${h.cx + hw / 2},${h.wallTop}`}
+                fill="none"
+                stroke={strokeCol}
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+                opacity={0.85}
+              />
+              {/* Door outline */}
+              <rect
+                x={h.cx - 4} y={FLOOR - h.wallH * 0.35}
+                width={8} height={h.wallH * 0.35}
+                fill="none" stroke={strokeCol} strokeWidth="1" opacity={0.5}
+              />
+              {/* Window glow dot */}
+              <circle cx={h.cx} cy={h.wallTop + h.wallH * 0.3} r={2}
+                fill={strokeCol} opacity={0.6} />
             </motion.g>
           );
         })}
 
-        {/* Arrow line — draws L→R via clipPath */}
-        <g clipPath="url(#arrowClip)">
-          {/* Glow layer */}
+        {/* Arrow — draws left to right via clip, appears after houses */}
+        <g clipPath="url(#arrowReveal)">
+          {/* Outer glow */}
           <line
             x1={arrowStartX} y1={arrowStartY}
             x2={arrowEndX} y2={arrowEndY}
-            stroke="#fbbf24" strokeWidth="8" strokeLinecap="round"
-            filter="url(#heroGlow)" opacity={0.5}
+            stroke="#fbbf24" strokeWidth="10" strokeLinecap="round"
+            filter="url(#arrowGlow)" opacity={0.35}
           />
-          {/* Main arrow line */}
+          {/* Core line */}
           <line
             x1={arrowStartX} y1={arrowStartY}
             x2={arrowEndX} y2={arrowEndY}
-            stroke="#fde68a" strokeWidth="4" strokeLinecap="round"
+            stroke="#fde68a" strokeWidth="3" strokeLinecap="round"
           />
         </g>
 
-        {/* Arrowhead — appears after arrow finishes drawing */}
+        {/* Arrowhead — pops in when arrow finishes */}
         <motion.g
-          filter="url(#headGlow)"
+          filter="url(#arrowGlow)"
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: 6.1 }}
+          transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1], delay: 6.1 }}
           style={{ transformOrigin: `${arrowEndX}px ${arrowEndY}px` }}
         >
-          {/* Arrowhead triangle pointing upper-right */}
           <polygon
-            points={`
-              ${arrowEndX},${arrowEndY - 18}
-              ${arrowEndX - 14},${arrowEndY + 6}
-              ${arrowEndX + 10},${arrowEndY + 2}
-            `}
-            fill="#fbbf24"
-            stroke="#fff"
-            strokeWidth="1"
+            points={`${arrowEndX},${arrowEndY - 16} ${arrowEndX - 12},${arrowEndY + 5} ${arrowEndX + 12},${arrowEndY + 5}`}
+            fill="#fbbf24" stroke="#fde68a" strokeWidth="1"
           />
         </motion.g>
 
-        {/* Arrowhead pulse ring — repeats after arrowhead appears */}
+        {/* Arrowhead pulse — repeats forever after arrow lands */}
         <motion.circle
-          cx={arrowEndX} cy={arrowEndY}
-          r={10}
-          fill="none" stroke="#fbbf24" strokeWidth="2"
-          initial={{ r: 10, opacity: 0 }}
-          animate={{ r: [10, 30], opacity: [0.8, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, delay: 6.5, ease: 'easeOut' }}
+          cx={arrowEndX} cy={arrowEndY - 6}
+          fill="none" stroke="#fbbf24" strokeWidth="1.5"
+          initial={{ r: 8, opacity: 0 }}
+          animate={{ r: [8, 28], opacity: [0.9, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, delay: 6.5, ease: 'easeOut' }}
         />
-
-        {/* Floor line */}
-        <line x1={START_X - 5} y1={FLOOR} x2={SVG_W - 20} y2={FLOOR} stroke="#4a5568" strokeWidth="1" />
       </svg>
     </div>
   );
