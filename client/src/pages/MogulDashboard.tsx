@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import reinvestorImg from "../assets/reinvestor.png";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, LineChart, Line, RadialBarChart, RadialBar, Legend } from "recharts";
@@ -935,24 +936,15 @@ function RealEstateHero() {
       <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${C.bg}10, ${C.bg}60)`, zIndex: 2 }} />
       {/* Gold tint overlay to match brand colors */}
       <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${C.gold}08, ${C.teal}06, transparent)`, zIndex: 2 }} />
-      {/* The image — CSS filter to shift blues toward brand teal and boost contrast */}
+      {/* The image — visible at full opacity, gold-tinted */}
       <img
-        src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/qZtyfqTzlIZgUZqR.png"
+        src={reinvestorImg}
         alt="Real estate investor growth"
         className="absolute inset-0 w-full h-full object-contain object-center"
         style={{
-          filter: 'hue-rotate(180deg) saturate(1.4) brightness(0.85)',
+          filter: 'brightness(0.75) saturate(1.3) sepia(0.25) hue-rotate(5deg)',
           zIndex: 1,
-          mixBlendMode: 'screen',
         }}
-      />
-      {/* Second pass — original image at low opacity for warmth */}
-      <img
-        src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/qZtyfqTzlIZgUZqR.png"
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-contain object-center"
-        style={{ filter: 'brightness(0.6) saturate(1.2)', zIndex: 1, opacity: 0.5 }}
       />
       {/* Animated arrow overlay — shoots up on load */}
       <motion.svg
