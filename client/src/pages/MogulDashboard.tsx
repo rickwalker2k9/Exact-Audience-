@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, LineChart, Line, RadialBarChart, RadialBar, Legend } from "recharts";
 
 // ── Brand colors ──────────────────────────────────────────────────────────────
 const C = {
@@ -927,6 +927,177 @@ const SITE_VISITORS = [
   },
 ];
 
+// ── ANIMATED CITY SKYLINE ────────────────────────────────────────────────────
+function CitySkyline() {
+  const buildings = [
+    { x: 0,   w: 28, h: 80,  windows: [[4,10],[4,22],[4,34],[4,46],[14,10],[14,22],[14,34],[14,46]] },
+    { x: 32,  w: 20, h: 55,  windows: [[4,8],[4,20],[4,32],[12,8],[12,20],[12,32]] },
+    { x: 56,  w: 36, h: 110, windows: [[4,8],[4,22],[4,36],[4,50],[4,64],[14,8],[14,22],[14,36],[14,50],[14,64],[24,8],[24,22],[24,36],[24,50],[24,64]] },
+    { x: 96,  w: 24, h: 70,  windows: [[4,8],[4,22],[4,36],[14,8],[14,22],[14,36]] },
+    { x: 124, w: 18, h: 45,  windows: [[3,8],[3,20],[10,8],[10,20]] },
+    { x: 146, w: 40, h: 95,  windows: [[4,8],[4,22],[4,36],[4,50],[14,8],[14,22],[14,36],[14,50],[24,8],[24,22],[24,36],[24,50]] },
+    { x: 190, w: 22, h: 60,  windows: [[4,8],[4,22],[4,36],[12,8],[12,22],[12,36]] },
+    { x: 216, w: 30, h: 85,  windows: [[4,8],[4,22],[4,36],[4,50],[14,8],[14,22],[14,36],[14,50]] },
+    { x: 250, w: 16, h: 40,  windows: [[3,8],[3,20],[9,8],[9,20]] },
+    { x: 270, w: 34, h: 100, windows: [[4,8],[4,22],[4,36],[4,50],[4,64],[14,8],[14,22],[14,36],[14,50],[14,64],[24,8],[24,22],[24,36],[24,50],[24,64]] },
+    { x: 308, w: 20, h: 58,  windows: [[4,8],[4,22],[4,36],[12,8],[12,22],[12,36]] },
+    { x: 332, w: 26, h: 75,  windows: [[4,8],[4,22],[4,36],[4,50],[14,8],[14,22],[14,36],[14,50]] },
+  ];
+
+  const [litWindows, setLitWindows] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    // Randomly light up windows to simulate activity
+    const allWindows: string[] = [];
+    buildings.forEach((b, bi) => b.windows.forEach((_, wi) => allWindows.push(`${bi}-${wi}`)));
+    // Start with 40% lit
+    const initial = new Set(allWindows.filter(() => Math.random() > 0.6));
+    setLitWindows(initial);
+    const interval = setInterval(() => {
+      setLitWindows(prev => {
+        const next = new Set(prev);
+        // Toggle 3-5 random windows
+        const count = 3 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < count; i++) {
+          const w = allWindows[Math.floor(Math.random() * allWindows.length)];
+          if (next.has(w)) next.delete(w); else next.add(w);
+        }
+        return next;
+      });
+    }, 800);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="relative w-full overflow-hidden" style={{ height: 130 }}>
+      {/* Glow base */}
+      <div className="absolute bottom-0 left-0 right-0 h-16"
+        style={{ background: `linear-gradient(to top, ${C.gold}15, transparent)` }} />
+      {/* Radar sweep */}
+      <motion.div className="absolute bottom-0 left-1/2 w-full h-full origin-bottom-left"
+        style={{ transformOrigin: '50% 100%', background: `conic-gradient(from -10deg at 50% 100%, ${C.gold}00, ${C.gold}18, ${C.gold}00 30deg)` }}
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'linear' }} />
+      <svg viewBox="0 0 360 120" className="absolute bottom-0 left-0 w-full" preserveAspectRatio="xMidYMax meet">
+        {buildings.map((b, bi) => (
+          <g key={bi}>
+            <rect x={b.x} y={120 - b.h} width={b.w} height={b.h}
+              fill={C.card2} stroke={C.border} strokeWidth="0.5" />
+            {b.windows.map(([wx, wy], wi) => {
+              const key = `${bi}-${wi}`;
+              const lit = litWindows.has(key);
+              return (
+                <rect key={wi} x={b.x + wx} y={120 - b.h + wy} width={5} height={4} rx="0.5"
+                  fill={lit ? C.gold : `${C.muted}20`}
+                  style={{ filter: lit ? `drop-shadow(0 0 2px ${C.gold})` : 'none', transition: 'fill 0.6s ease' }}
+                />
+              );
+            })}
+            {/* Antenna on tall buildings */}
+            {b.h > 90 && (
+              <>
+                <line x1={b.x + b.w/2} y1={120 - b.h} x2={b.x + b.w/2} y2={120 - b.h - 12}
+                  stroke={C.muted} strokeWidth="1" />
+                <motion.circle cx={b.x + b.w/2} cy={120 - b.h - 12} r="2"
+                  fill={C.gold}
+                  animate={{ opacity: [1, 0.2, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity, delay: bi * 0.3 }} />
+              </>
+            )}
+          </g>
+        ))}
+        {/* Ground line */}
+        <line x1="0" y1="119" x2="360" y2="119" stroke={C.border} strokeWidth="1" />
+      </svg>
+      {/* Signal pulse rings from center */}
+      {[0,1,2].map(i => (
+        <motion.div key={i} className="absolute rounded-full"
+          style={{ bottom: 0, left: '50%', translateX: '-50%', border: `1px solid ${C.gold}40`, width: 40, height: 40 }}
+          animate={{ width: [40, 200], height: [40, 200], opacity: [0.6, 0], translateX: ['-50%', '-50%'] }}
+          transition={{ duration: 3, repeat: Infinity, delay: i * 1, ease: 'easeOut' }} />
+      ))}
+    </div>
+  );
+}
+
+// ── ROLLING ACTIVITY TICKER ───────────────────────────────────────────────────
+const TICKER_EVENTS = [
+  { text: "Marcus T. — Dallas, TX — viewed Properties page",        color: C.gold },
+  { text: "Jennifer R. — Miami, FL — VantageScore 762 confirmed",    color: C.teal },
+  { text: "David K. — Chicago, IL — $310K income verified",          color: C.green },
+  { text: "Sarah M. — Austin, TX — SQL Tier 0 qualified",            color: C.gold },
+  { text: "Robert H. — New York, NY — viewed How It Works",          color: C.purpleL },
+  { text: "Lisa C. — Seattle, WA — $285K income verified",           color: C.teal },
+  { text: "James W. — Denver, CO — 3 visits in 24 hours",            color: C.amber },
+  { text: "Patricia L. — Boston, MA — VantageScore 748 confirmed",   color: C.green },
+  { text: "Kevin B. — Atlanta, GA — viewed Investment FAQ",          color: C.gold },
+  { text: "Michelle D. — Phoenix, AZ — SQL Tier 2 qualified",        color: C.purpleL },
+  { text: "Thomas N. — Nashville, TN — $220K income verified",       color: C.teal },
+  { text: "Amanda F. — Portland, OR — viewed Properties page",       color: C.gold },
+];
+
+function ActivityTicker() {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIdx(i => (i + 1) % TICKER_EVENTS.length);
+        setVisible(true);
+      }, 300);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, []);
+
+  const ev = TICKER_EVENTS[idx];
+  return (
+    <div className="flex items-center gap-2 rounded-xl px-3 py-2 overflow-hidden"
+      style={{ background: C.card2, border: `1px solid ${C.border}` }}>
+      <motion.div className="w-1.5 h-1.5 rounded-full shrink-0"
+        style={{ background: C.green }}
+        animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
+        transition={{ duration: 1.2, repeat: Infinity }} />
+      <div className="text-xs font-black shrink-0" style={{ color: C.muted }}>LIVE</div>
+      <div className="h-3 w-px shrink-0" style={{ background: C.border }} />
+      <AnimatePresence mode="wait">
+        {visible && (
+          <motion.div key={idx}
+            initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}
+            transition={{ duration: 0.25 }}
+            className="text-xs truncate" style={{ color: ev.color }}>
+            {ev.text}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ── SIGNAL STRENGTH BAR ───────────────────────────────────────────────────────
+function SignalStrength({ score, color }: { score: number; color: string }) {
+  const bars = 5;
+  const filled = Math.round((score / 100) * bars);
+  return (
+    <div className="flex items-end gap-0.5">
+      {Array.from({ length: bars }, (_, i) => (
+        <motion.div key={i}
+          className="rounded-sm"
+          style={{
+            width: 4,
+            height: 4 + i * 3,
+            background: i < filled ? color : `${color}20`,
+          }}
+          initial={{ scaleY: 0 }}
+          animate={{ scaleY: 1 }}
+          transition={{ delay: i * 0.06, duration: 0.3, ease: 'easeOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
 // ── TAB: OPPORTUNITY ──────────────────────────────────────────────────────────
 function TabOpportunity() {
   const stats = [
@@ -946,15 +1117,19 @@ function TabOpportunity() {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+      {/* Hero with city skyline */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>MOGUL CLUB — CAPITAL FORMATION INTELLIGENCE</SL>
-        <div className="text-lg font-black mb-2" style={{ color: C.white }}>
-          Finding Accredited Investors Before Anyone Else Does
-        </div>
-        <div className="text-sm leading-relaxed" style={{ color: C.white }}>
-          Mogul Club has $90M in assets, 35,000+ users, and properties yielding 15–20% IRR. Their #1 challenge is capital formation at scale — finding real accredited investors who are actively in-market right now, with verified income and financial readiness. That's exactly what Exact Audience delivers.
+        className="rounded-2xl overflow-hidden" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <CitySkyline />
+        <div className="p-5 pt-3">
+          <SL>MOGUL CLUB — CAPITAL FORMATION INTELLIGENCE</SL>
+          <div className="text-lg font-black mb-2" style={{ color: C.white }}>
+            Finding Accredited Investors Before Anyone Else Does
+          </div>
+          <div className="text-sm leading-relaxed mb-3" style={{ color: C.white }}>
+            Mogul Club has $90M in assets, 35,000+ users, and properties yielding 15–20% IRR. Their #1 challenge is capital formation at scale — finding real accredited investors who are actively in-market right now, with verified income and financial readiness. That's exactly what Exact Audience delivers.
+          </div>
+          <ActivityTicker />
         </div>
       </motion.div>
 
@@ -995,6 +1170,45 @@ function TabOpportunity() {
             </div>
           </motion.div>
         ))}
+      </motion.div>
+
+      {/* Tier donut + funnel side by side */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL>LEAD TIER BREAKDOWN — LIVE POOL</SL>
+        <div className="flex items-center gap-4">
+          <div className="shrink-0" style={{ width: 120, height: 120 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={[
+                  { name: "Tier 0", value: 95,  fill: C.gold },
+                  { name: "Tier 2", value: 115, fill: C.teal },
+                  { name: "Tier 3", value: 180, fill: C.purpleL },
+                  { name: "NQL",    value: 610, fill: C.card2 },
+                ]} cx="50%" cy="50%" innerRadius={32} outerRadius={52} dataKey="value" strokeWidth={0}>
+                  {[C.gold, C.teal, C.purpleL, C.card2].map((c, i) => <Cell key={i} fill={c} />)}
+                </Pie>
+                <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 6, fontSize: 10 }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex-1 space-y-2">
+            {[
+              { label: "Tier 0 — Accredited",  value: "95",  pct: "9.5%",  color: C.gold },
+              { label: "Tier 2 — $30K+ Capital", value: "115", pct: "11.5%", color: C.teal },
+              { label: "Tier 3 — $50K+ Capital", value: "180", pct: "18%",   color: C.purpleL },
+              { label: "NQL — Not Qualified",    value: "610", pct: "61%",   color: C.muted },
+            ].map((r, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: r.color }} />
+                  <div className="text-xs" style={{ color: r.color === C.muted ? C.muted : C.white }}>{r.label}</div>
+                </div>
+                <div className="text-xs font-black" style={{ color: r.color }}>{r.value} <span style={{ color: C.muted }}>({r.pct})</span></div>
+              </div>
+            ))}
+          </div>
+        </div>
       </motion.div>
 
       {/* Qualification funnel chart */}
@@ -1224,7 +1438,13 @@ function InvestorCard({ inv, idx }: { inv: Investor; idx: number }) {
               </div>
             )}
           </div>
-          <IbBadge score={inv.ib} />
+          <div className="flex flex-col items-end gap-1.5">
+            <IbBadge score={inv.ib} />
+            <div className="flex items-center gap-1.5">
+              <div className="text-xs" style={{ color: C.muted }}>Intent</div>
+              <SignalStrength score={inv.ib} color={inv.ib >= 90 ? C.gold : inv.ib >= 80 ? C.teal : C.purpleL} />
+            </div>
+          </div>
         </div>
 
         {/* LeadFi financial pre-screen — two-stage load */}
@@ -1371,6 +1591,9 @@ function TabSearch() {
 
   return (
     <div className="space-y-4">
+      {/* Activity ticker */}
+      <ActivityTicker />
+
       {/* Search form */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
@@ -1469,16 +1692,196 @@ function TabSearch() {
 }
 
 // ── TAB: SITE VISITOR ID ──────────────────────────────────────────────────────
+const VISITOR_CHANNELS = [
+  { id: "linkedin",  label: "LinkedIn",    color: C.teal },
+  { id: "email",     label: "Email",       color: C.gold },
+  { id: "coldcall",  label: "Cold Call",   color: C.amber },
+  { id: "directmail",label: "Direct Mail", color: C.purpleL },
+  { id: "sms",       label: "SMS / DM",    color: C.green },
+] as const;
+type VisitorChannel = typeof VISITOR_CHANNELS[number]["id"];
+
+function VisitorOutreach({ v }: { v: typeof SITE_VISITORS[0] }) {
+  const [ch, setCh] = useState<VisitorChannel>("linkedin");
+  const first = v.name.split(" ")[0];
+  const page = v.pagesViewed[0];
+
+  const copy: Record<VisitorChannel, React.ReactNode> = {
+    linkedin: (
+      <div className="space-y-3">
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.teal }}>CONNECTION REQUEST</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            Hi {first} — I noticed you recently explored Mogul Club's {page} section. I work with accredited investors who are actively looking for passive real estate income. Would love to connect and share what we're seeing in the market right now.
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.teal }}>FIRST MESSAGE (after connect)</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            {first}, thanks for connecting! I saw you spent some time on our {page} page — we have a current deal generating 17.4% IRR with a $25K minimum. Fully passive, quarterly distributions. Happy to send the one-pager if you'd like to take a look?
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.teal }}>FOLLOW-UP DM (3 days later)</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            Hey {first} — just wanted to follow up on my last message. The deal I mentioned closes in 2 weeks. No pressure at all — just didn't want you to miss the window if it was something you were considering. Happy to answer any questions.
+          </div>
+        </div>
+      </div>
+    ),
+    email: (
+      <div className="space-y-3">
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.gold }}>EMAIL 1 — SEND DAY 1</div>
+          <div className="rounded-lg p-3 space-y-2" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+            <div className="flex gap-2">
+              <span className="text-xs font-black w-12 shrink-0" style={{ color: C.muted }}>Subject</span>
+              <span className="text-xs font-black" style={{ color: C.gold }}>{first} — you were on Mogul Club's {page} page</span>
+            </div>
+            <div className="h-px" style={{ background: C.border }} />
+            <div className="text-xs leading-relaxed" style={{ color: C.white }}>
+              Hi {first}, I noticed you recently visited Mogul Club and spent time on our {page} section. I wanted to reach out personally — we have a current deal generating 17.4% IRR with a $25K minimum. Fully passive, no property management. Would it be helpful if I sent you the deal sheet?
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.gold }}>EMAIL 2 — SEND DAY 4 (if no reply)</div>
+          <div className="rounded-lg p-3 space-y-2" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+            <div className="flex gap-2">
+              <span className="text-xs font-black w-12 shrink-0" style={{ color: C.muted }}>Subject</span>
+              <span className="text-xs font-black" style={{ color: C.gold }}>Quick follow-up — Mogul Club deal closing soon</span>
+            </div>
+            <div className="h-px" style={{ background: C.border }} />
+            <div className="text-xs leading-relaxed" style={{ color: C.white }}>
+              {first}, just following up on my last email. The Nashville deal I mentioned closes in 10 days. If the timing isn't right, no worries at all — I can add you to our deal alert list so you're notified when the next one opens. Just reply "alerts" and I'll add you.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.gold }}>EMAIL 3 — SEND DAY 10 (last touch)</div>
+          <div className="rounded-lg p-3 space-y-2" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+            <div className="flex gap-2">
+              <span className="text-xs font-black w-12 shrink-0" style={{ color: C.muted }}>Subject</span>
+              <span className="text-xs font-black" style={{ color: C.gold }}>Last chance — Nashville deal closes Friday</span>
+            </div>
+            <div className="h-px" style={{ background: C.border }} />
+            <div className="text-xs leading-relaxed" style={{ color: C.white }}>
+              {first}, this is my last email on this deal — it closes Friday and we're at 80% capacity. If you'd like to review the full prospectus before then, just reply and I'll send it over immediately. Either way, I'll keep you on our list for future deals.
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+    coldcall: (
+      <div className="space-y-3">
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.amber }}>OPENING (first 15 seconds)</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            "Hi, is this {first}? Great — this is [Name] from Mogul Club. I'm reaching out because you recently visited our site and checked out the {page} section — I wanted to make sure you got the information you were looking for. Do you have 2 minutes?"
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.amber }}>IF THEY SAY YES — PITCH</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            "Perfect. We have a current deal — Nashville commercial property — generating 17.4% IRR. Minimum is $25K, fully passive, quarterly distributions. It closes in two weeks. I can email you the one-pager right now while we're on the phone — what's the best email to send it to?"
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.amber }}>IF THEY SAY NOT NOW — SOFT CLOSE</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            "No problem at all — can I send you a quick email with our current deal sheet so you have it when the timing is better? We typically open 2–3 deals per quarter and I'd love to keep you in the loop. What's the best email?"
+          </div>
+        </div>
+        <div className="rounded-lg p-2 text-xs" style={{ background: `${C.amber}10`, border: `1px solid ${C.amber}30`, color: C.amber }}>
+          Phone on file: <span className="font-black">{v.phone}</span>
+        </div>
+      </div>
+    ),
+    directmail: (
+      <div className="space-y-3">
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.purpleL }}>POSTCARD / LETTER HEADLINE</div>
+          <div className="rounded-lg p-3 text-xs font-black text-center" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white, fontSize: 13 }}>
+            {first}, you visited Mogul Club. Here's what you almost missed.
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.purpleL }}>BODY COPY</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            You recently browsed our {page} section. Mogul Club gives accredited investors like you direct access to institutional commercial real estate — 15–20% IRR, $25K minimum, fully managed. No landlord calls. No maintenance. Just quarterly distributions deposited to your account.
+            <br /><br />
+            Our current Nashville deal is open now. Scan the QR code below to see the full prospectus and reserve your position before it closes.
+          </div>
+        </div>
+        <div className="rounded-lg p-2 text-xs" style={{ background: `${C.purpleL}10`, border: `1px solid ${C.purpleL}30`, color: C.purpleL }}>
+          Mail to: <span className="font-black">{v.location}</span> — matched from site visit IP
+        </div>
+      </div>
+    ),
+    sms: (
+      <div className="space-y-3">
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.green }}>SMS — SEND WITHIN 24 HOURS</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            Hi {first}, this is [Name] from Mogul Club — you visited our {page} page recently. We have a Nashville deal at 17.4% IRR closing in 2 weeks, $25K min. Want the one-pager? Reply YES and I'll send it now.
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.green }}>FOLLOW-UP SMS (day 3, if no reply)</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            Hey {first} — just checking in on the Mogul Club deal. Closes Friday. Reply YES for the prospectus or STOP to opt out.
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-black mb-1" style={{ color: C.green }}>INSTAGRAM / FACEBOOK DM</div>
+          <div className="rounded-lg p-3 text-xs leading-relaxed" style={{ background: C.card, border: `1px solid ${C.border}`, color: C.white }}>
+            Hey {first}! Noticed you checked out Mogul Club — we have a Nashville deal open right now at 17.4% IRR, $25K min, fully passive. Happy to send the deal sheet if you're curious 👋
+          </div>
+        </div>
+        <div className="rounded-lg p-2 text-xs" style={{ background: `${C.green}10`, border: `1px solid ${C.green}30`, color: C.green }}>
+          Phone on file: <span className="font-black">{v.phone}</span>
+        </div>
+      </div>
+    ),
+  };
+
+  return (
+    <div className="space-y-3">
+      {/* Channel selector */}
+      <div className="flex gap-1.5 flex-wrap">
+        {VISITOR_CHANNELS.map(c => (
+          <button key={c.id} onClick={() => setCh(c.id)}
+            className="text-xs font-black px-3 py-1.5 rounded-lg transition-all"
+            style={{
+              background: ch === c.id ? `${c.color}25` : C.card2,
+              color: ch === c.id ? c.color : C.muted,
+              border: `1px solid ${ch === c.id ? c.color + '60' : C.border}`,
+            }}>
+            {c.label}
+          </button>
+        ))}
+      </div>
+      {/* Channel content */}
+      <AnimatePresence mode="wait">
+        <motion.div key={ch}
+          initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.15 }}>
+          {copy[ch]}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function VisitorCard({ v, idx }: { v: typeof SITE_VISITORS[0]; idx: number }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
       transition={{ delay: idx * 0.1, duration: 0.4 }}
-      className="rounded-2xl overflow-hidden cursor-pointer"
-      style={{ background: C.card, border: `1px solid ${C.border}` }}
-      onClick={() => setExpanded(!expanded)}>
-      <div className="p-4">
+      className="rounded-2xl overflow-hidden"
+      style={{ background: C.card, border: `1px solid ${C.border}` }}>
+      <div className="p-4 cursor-pointer" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -1499,44 +1902,58 @@ function VisitorCard({ v, idx }: { v: typeof SITE_VISITORS[0]; idx: number }) {
             </span>
           ))}
         </div>
-        <div className="flex gap-4 mt-3">
-          <div className="text-xs" style={{ color: C.muted }}>Time on site: <span className="font-black" style={{ color: C.white }}>{v.timeOnSite}</span></div>
-          <div className="text-xs" style={{ color: C.muted }}>Income: <span className="font-black" style={{ color: C.gold }}>{v.income}</span></div>
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex gap-4">
+            <div className="text-xs" style={{ color: C.muted }}>Time: <span className="font-black" style={{ color: C.white }}>{v.timeOnSite}</span></div>
+            <div className="text-xs" style={{ color: C.muted }}>Income: <span className="font-black" style={{ color: C.gold }}>{v.income}</span></div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="text-xs" style={{ color: C.muted }}>Intent</div>
+            <SignalStrength score={Math.min(95, 60 + v.visits * 8)} color={C.teal} />
+          </div>
         </div>
       </div>
       <AnimatePresence>
         {expanded && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }}
-            className="border-t px-4 pb-4 pt-3 space-y-3" style={{ borderColor: C.border }}>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { label: "VantageScore", value: v.vantage.toString(), color: C.teal },
-                { label: "SQL Tier", value: v.sqlTier, color: C.purpleL },
-              ].map((m, i) => (
-                <div key={i} className="rounded-lg p-2 text-center" style={{ background: C.card2 }}>
-                  <div className="text-sm font-black" style={{ color: m.color }}>{m.value}</div>
-                  <div className="text-xs" style={{ color: C.muted }}>{m.label}</div>
-                </div>
-              ))}
-            </div>
-            <div>
-              <div className="text-xs font-black mb-2" style={{ color: C.teal }}>VERIFIED CONTACT</div>
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <div className="text-xs w-12 font-semibold" style={{ color: C.muted }}>Email</div>
-                  <div className="text-xs font-black" style={{ color: C.white }}>{v.email}</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-xs w-12 font-semibold" style={{ color: C.muted }}>Phone</div>
-                  <div className="text-xs font-black" style={{ color: C.white }}>{v.phone}</div>
+            className="border-t" style={{ borderColor: C.border }}
+            onClick={e => e.stopPropagation()}>
+            <div className="px-4 pb-5 pt-4 space-y-4">
+              {/* Financial summary row */}
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: "VantageScore", value: v.vantage.toString(), color: C.teal },
+                  { label: "Income",       value: v.income,             color: C.gold },
+                  { label: "SQL Tier",     value: v.sqlTier,            color: C.purpleL },
+                ].map((m, i) => (
+                  <div key={i} className="rounded-lg p-2 text-center" style={{ background: C.card2 }}>
+                    <div className="text-sm font-black" style={{ color: m.color }}>{m.value}</div>
+                    <div className="text-xs" style={{ color: C.muted }}>{m.label}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Contact */}
+              <div>
+                <div className="text-xs font-black mb-2 tracking-widest" style={{ color: C.teal }}>VERIFIED CONTACT</div>
+                <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                  {[
+                    { label: "Email", value: v.email },
+                    { label: "Phone", value: v.phone },
+                    { label: "Location", value: v.location },
+                  ].map((r, i) => (
+                    <div key={i} className="flex items-center"
+                      style={{ borderBottom: i < 2 ? `1px solid ${C.border}` : undefined, background: i % 2 === 0 ? C.card2 : C.card }}>
+                      <div className="text-xs font-black px-3 py-2 w-20 shrink-0" style={{ color: C.muted }}>{r.label}</div>
+                      <div className="text-xs font-semibold px-3 py-2 flex-1" style={{ color: C.white }}>{r.value}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-            <div>
-              <div className="text-xs font-black mb-2" style={{ color: C.purpleL }}>SUGGESTED OUTREACH</div>
-              <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.card2, color: C.white, border: `1px solid ${C.border}` }}>
-                Hi {v.name.split(" ")[0]}, I noticed you were checking out our {v.pagesViewed[0]} section on Mogul.club. Thought I'd reach out directly — happy to walk you through our current offerings and answer any questions. What's the best way to connect?
+              {/* Multi-channel outreach */}
+              <div>
+                <div className="text-xs font-black mb-3 tracking-widest" style={{ color: C.purpleL }}>PERSONALIZED OUTREACH — SELECT CHANNEL</div>
+                <VisitorOutreach v={v} />
               </div>
             </div>
           </motion.div>
@@ -1558,9 +1975,10 @@ function TabSiteId() {
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <SL>MOGUL.CLUB — SITE VISITOR IDENTIFICATION</SL>
-        <div className="text-sm leading-relaxed mb-4" style={{ color: C.white }}>
+        <div className="text-sm leading-relaxed mb-3" style={{ color: C.white }}>
           Mogul.club gets real traffic from Forbes, TechCrunch, and Yahoo Finance coverage. Most visitors browse properties and leave without investing. Exact Audience identifies them — turning anonymous traffic into a callable, emailable investor pipeline.
         </div>
+        <ActivityTicker />
         <div className="h-32">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={hourlyData}>
@@ -1597,119 +2015,245 @@ function TabSiteId() {
 }
 
 // ── TAB: ROI CALCULATOR ───────────────────────────────────────────────────────
-function TabRoi() {
-  const [leads, setLeads] = useState(50);
-  const [closeRate, setCloseRate] = useState(4);
-  const [avgInvestment, setAvgInvestment] = useState(10000);
-  const [tier, setTier] = useState("financial");
+// Volume pricing tiers
+function getVolumeTier(n: number): { price: number; label: string; color: string; idx: number } {
+  if (n < 100)  return { price: 150, label: "20–99 leads",    color: C.gold,    idx: 0 };
+  if (n < 500)  return { price: 125, label: "100–499 leads",  color: C.amber,   idx: 1 };
+  if (n < 2000) return { price: 100, label: "500–1,999 leads", color: C.teal,    idx: 2 };
+  if (n < 5000) return { price: 85,  label: "2,000–4,999",    color: C.purpleL, idx: 3 };
+  return              { price: 75,  label: "5,000+",           color: C.green,   idx: 4 };
+}
 
-  const pricePerLead = tier === "intent" ? 30 : tier === "financial" ? 87.5 : tier === "sql2" ? 150 : 250;
-  const serviceCost = leads * pricePerLead;
-  const investors = Math.round(leads * (closeRate / 100));
-  const capitalDeployed = investors * avgInvestment;
-  const roi = serviceCost > 0 ? ((capitalDeployed - serviceCost) / serviceCost * 100).toFixed(0) : "0";
-  const roiMultiple = serviceCost > 0 ? (capitalDeployed / serviceCost).toFixed(1) : "0";
+const PRICE_TIERS_LIST = [
+  { price: 150, label: "20–99",    color: C.gold },
+  { price: 125, label: "100–499",  color: C.amber },
+  { price: 100, label: "500–1,999",color: C.teal },
+  { price: 85,  label: "2k–5k",    color: C.purpleL },
+  { price: 75,  label: "5,000+",   color: C.green },
+];
+
+function TabRoi() {
+  const [leads, setLeads] = useState(20);
+  const [closeRate, setCloseRate] = useState(5);
+  const [avgInvestment, setAvgInvestment] = useState(25000);
+
+  const vt = getVolumeTier(leads);
+  const rawCost = leads * vt.price;
+  const totalCost = Math.max(rawCost, 3000); // $3K floor
+  const newInvestors = Math.round(leads * (closeRate / 100));
+  const capitalRaised = newInvestors * avgInvestment;
+  const roiMultiple = totalCost > 0 ? (capitalRaised / totalCost).toFixed(1) : "0";
+  const costPerInvestor = newInvestors > 0 ? Math.round(totalCost / newInvestors) : 0;
+  const netReturn = capitalRaised - totalCost;
+
+  // Sparkline data — show how price drops as volume increases
+  const sparkData = [20,50,100,250,500,1000,2000,3000,5000].map(n => ({
+    leads: n, price: getVolumeTier(n).price,
+  }));
+
+  // Monthly projection data
+  const monthlyData = Array.from({ length: 6 }, (_, i) => {
+    const monthLeads = leads * (i + 1);
+    const mCost = Math.max(monthLeads * vt.price, 3000);
+    const mInvestors = Math.round(monthLeads * (closeRate / 100));
+    const mCapital = mInvestors * avgInvestment;
+    return { month: `Mo ${i+1}`, cost: mCost, capital: mCapital, investors: mInvestors };
+  });
 
   const barData = [
-    { name: "Service Cost", value: serviceCost, color: C.muted },
-    { name: "Capital Deployed", value: capitalDeployed, color: C.gold },
+    { name: "EA Lead Cost",   value: totalCost,    color: C.muted },
+    { name: "Capital Raised", value: capitalRaised, color: C.gold },
   ];
 
   return (
     <div className="space-y-4">
+      {/* Header card */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>ROI CALCULATOR — MOGUL CLUB INVESTOR PIPELINE</SL>
+        <SL>ROI CALCULATOR — MOGUL CLUB × EXACT AUDIENCE</SL>
+        <div className="text-xs leading-relaxed mb-4" style={{ color: C.white }}>
+          Mogul Club purchases accredited investor leads from Exact Audience. Each lead is verified in-market: active search intent, income $150K+, VantageScore 700+, and $30K+ available capital. Model your return on that lead spend below.
+        </div>
+
+        {/* Volume tier strip */}
+        <div className="mb-4">
+          <div className="text-xs font-black mb-2" style={{ color: C.muted }}>VOLUME PRICING — PRICE DROPS AS YOU SCALE</div>
+          <div className="grid grid-cols-5 gap-1">
+            {PRICE_TIERS_LIST.map((t, i) => (
+              <motion.div key={i}
+                animate={{ scale: i === vt.idx ? 1.05 : 1, opacity: i === vt.idx ? 1 : 0.5 }}
+                transition={{ duration: 0.2 }}
+                className="rounded-lg p-2 text-center"
+                style={{
+                  background: i === vt.idx ? `${t.color}20` : C.card2,
+                  border: `1px solid ${i === vt.idx ? t.color + '70' : C.border}`,
+                  boxShadow: i === vt.idx ? `0 0 12px ${t.color}30` : 'none',
+                }}>
+                <div className="font-black" style={{ color: i === vt.idx ? t.color : C.muted, fontSize: 13 }}>${t.price}</div>
+                <div style={{ color: i === vt.idx ? t.color : `${C.muted}70`, fontSize: 9 }} className="mt-0.5 leading-tight">{t.label}</div>
+                {i === vt.idx && <div style={{ color: t.color, fontSize: 8 }} className="font-black mt-0.5">ACTIVE</div>}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Price curve sparkline */}
+        <div className="mb-4">
+          <div className="text-xs font-black mb-1" style={{ color: C.muted }}>PRICE PER LEAD VS. VOLUME</div>
+          <div className="h-20">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={sparkData}>
+                <XAxis dataKey="leads" tick={{ fill: C.muted, fontSize: 8 }} axisLine={false} tickLine={false} />
+                <YAxis domain={[70, 160]} hide />
+                <Tooltip formatter={(v: number) => `$${v}/lead`}
+                  contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 6, fontSize: 10 }} />
+                <Line type="monotone" dataKey="price" stroke={C.gold} strokeWidth={2} dot={{ fill: C.gold, r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
         <div className="space-y-4">
+          {/* Lead slider */}
           <div>
-            <label className="text-xs font-black mb-1.5 block" style={{ color: C.muted }}>LEAD TYPE</label>
-            <select value={tier} onChange={e => setTier(e.target.value)}
-              className="w-full rounded-xl px-3 py-2.5 text-sm font-semibold"
-              style={{ background: C.card2, border: `1px solid ${C.border}`, color: C.white }}>
-              <option value="intent">Intent-Only Lead ($25–$35/lead)</option>
-              <option value="financial">Financial Readiness Lead ($75–$100/lead)</option>
-              <option value="sql2">SQL Tier 2+ Lead ($125–$175/lead)</option>
-              <option value="sql3">SQL Tier 3 Lead ($200–$300/lead)</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-xs font-black mb-1.5 block" style={{ color: C.muted }}>
-              NUMBER OF LEADS: <span style={{ color: C.gold }}>{leads}</span>
-            </label>
-            <input type="range" min={25} max={500} step={25} value={leads}
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-black" style={{ color: C.muted }}>LEADS PURCHASED</label>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-black" style={{ color: C.gold }}>{leads.toLocaleString()}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full font-black"
+                  style={{ background: `${vt.color}20`, color: vt.color, border: `1px solid ${vt.color}50` }}>
+                  ${vt.price}/lead
+                </span>
+              </div>
+            </div>
+            <input type="range" min={20} max={5000} step={10} value={leads}
               onChange={e => setLeads(parseInt(e.target.value))}
-              className="w-full" style={{ accentColor: C.gold }} />
+              className="w-full" style={{ accentColor: vt.color }} />
+            <div className="flex justify-between text-xs mt-1" style={{ color: `${C.muted}60` }}>
+              <span>20 min</span><span>500</span><span>1,000</span><span>2,500</span><span>5,000</span>
+            </div>
           </div>
-
+          {/* Close rate */}
           <div>
-            <label className="text-xs font-black mb-1.5 block" style={{ color: C.muted }}>
-              CLOSE RATE: <span style={{ color: C.teal }}>{closeRate}%</span>
-            </label>
-            <input type="range" min={1} max={15} step={0.5} value={closeRate}
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-black" style={{ color: C.muted }}>CLOSE RATE</label>
+              <span className="text-sm font-black" style={{ color: C.teal }}>{closeRate}%</span>
+            </div>
+            <input type="range" min={1} max={20} step={0.5} value={closeRate}
               onChange={e => setCloseRate(parseFloat(e.target.value))}
               className="w-full" style={{ accentColor: C.teal }} />
           </div>
-
+          {/* Avg investment */}
           <div>
-            <label className="text-xs font-black mb-1.5 block" style={{ color: C.muted }}>
-              AVG FIRST INVESTMENT: <span style={{ color: C.purpleL }}>${avgInvestment.toLocaleString()}</span>
-            </label>
-            <input type="range" min={1000} max={50000} step={1000} value={avgInvestment}
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-black" style={{ color: C.muted }}>AVG FIRST INVESTMENT (per investor)</label>
+              <span className="text-sm font-black" style={{ color: C.purpleL }}>${avgInvestment.toLocaleString()}</span>
+            </div>
+            <input type="range" min={5000} max={100000} step={5000} value={avgInvestment}
               onChange={e => setAvgInvestment(parseInt(e.target.value))}
               className="w-full" style={{ accentColor: C.purpleL }} />
           </div>
         </div>
       </motion.div>
 
-      {/* Results */}
+      {/* KPI grid */}
       <div className="grid grid-cols-2 gap-3">
         {[
-          { label: "Service Cost", value: `$${serviceCost.toLocaleString()}`, color: C.muted },
-          { label: "New Investors", value: investors.toString(), color: C.teal },
-          { label: "Capital Deployed", value: `$${capitalDeployed.toLocaleString()}`, color: C.gold },
-          { label: "ROI Multiple", value: `${roiMultiple}x`, color: capitalDeployed > serviceCost ? C.green : C.red },
+          { label: "Total EA Cost",         value: `$${totalCost.toLocaleString()}`,     color: C.muted,   sub: leads < 20 ? "$3K minimum" : `$${vt.price}/lead` },
+          { label: "New Investors Closed",   value: newInvestors.toString(),              color: C.teal,    sub: `${closeRate}% close rate` },
+          { label: "Capital Raised",         value: `$${capitalRaised.toLocaleString()}`, color: C.gold,    sub: `${newInvestors} investors` },
+          { label: "ROI Multiple",           value: `${roiMultiple}x`,                   color: capitalRaised > totalCost ? C.green : C.amber, sub: "on lead spend" },
         ].map((m, i) => (
-          <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.05 }}
-            className="rounded-xl p-4 text-center" style={{ background: C.card, border: `1px solid ${m.color}30` }}>
-            <div className="text-2xl font-black" style={{ color: m.color }}>{m.value}</div>
-            <div className="text-xs mt-1" style={{ color: C.muted }}>{m.label}</div>
+          <motion.div key={i} initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.06 }}
+            className="rounded-xl p-4 text-center relative overflow-hidden"
+            style={{ background: C.card, border: `1px solid ${m.color}30` }}>
+            <div className="absolute inset-0 opacity-5" style={{ background: `radial-gradient(circle at 50% 0%, ${m.color}, transparent 70%)` }} />
+            <div className="text-2xl font-black relative" style={{ color: m.color }}>{m.value}</div>
+            <div className="text-xs mt-0.5 font-black relative" style={{ color: C.muted }}>{m.label}</div>
+            <div className="text-xs mt-0.5 relative" style={{ color: `${m.color}80` }}>{m.sub}</div>
           </motion.div>
         ))}
       </div>
 
+      {/* Cost per investor acquired */}
+      {newInvestors > 0 && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+          className="rounded-xl p-4" style={{ background: C.card, border: `1px solid ${C.gold}30` }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-black" style={{ color: C.muted }}>COST TO ACQUIRE ONE INVESTOR</div>
+              <div className="text-3xl font-black mt-1" style={{ color: C.gold }}>${costPerInvestor.toLocaleString()}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-xs font-black" style={{ color: C.muted }}>NET RETURN ABOVE COST</div>
+              <div className="text-xl font-black mt-1" style={{ color: netReturn >= 0 ? C.green : C.amber }}>
+                {netReturn >= 0 ? "+" : ""}{netReturn < 0 ? `-$${Math.abs(netReturn).toLocaleString()}` : `$${netReturn.toLocaleString()}`}
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 text-xs" style={{ color: C.muted }}>
+            Avg first investment ${avgInvestment.toLocaleString()} vs. ${costPerInvestor.toLocaleString()} acquisition cost — {costPerInvestor > 0 ? ((avgInvestment / costPerInvestor - 1) * 100).toFixed(0) : 0}% return on acquisition
+          </div>
+        </motion.div>
+      )}
+
       {/* Bar chart */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>COST VS. CAPITAL DEPLOYED</SL>
-        <div className="h-40">
+        <SL>EA LEAD COST VS. CAPITAL RAISED</SL>
+        <div className="h-44">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} barSize={48}>
+            <BarChart data={barData} barSize={56}>
               <XAxis dataKey="name" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`}
                 contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }} />
-              <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+              <Bar dataKey="value" radius={[8, 8, 0, 0]}>
                 {barData.map((d, i) => <Cell key={i} fill={d.color} />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
-
-        {capitalDeployed > serviceCost && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+        {capitalRaised > totalCost && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
             className="mt-3 p-3 rounded-xl text-center"
             style={{ background: `${C.green}10`, border: `1px solid ${C.green}30` }}>
-            <div className="text-xs font-black" style={{ color: C.green }}>
-              {roiMultiple}x RETURN ON INVESTMENT
+            <div className="text-sm font-black" style={{ color: C.green }}>
+              {roiMultiple}x RETURN — +${netReturn.toLocaleString()} NET ABOVE LEAD COST
             </div>
-            <div className="text-xs mt-0.5" style={{ color: C.muted }}>
-              Before repeat investments, management fees, or carried interest
-            </div>
+            <div className="text-xs mt-0.5" style={{ color: C.muted }}>Before management fees, carried interest, or repeat investments</div>
           </motion.div>
         )}
+      </motion.div>
+
+      {/* 6-month projection */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL>6-MONTH CAPITAL FORMATION PROJECTION</SL>
+        <div className="text-xs mb-3" style={{ color: C.muted }}>Buying {leads} leads/month at ${vt.price}/lead</div>
+        <div className="h-44">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={monthlyData}>
+              <defs>
+                <linearGradient id="capGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={C.gold} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={C.gold} stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="costGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={C.muted} stopOpacity={0.2} />
+                  <stop offset="95%" stopColor={C.muted} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="month" tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} />
+              <YAxis hide />
+              <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`}
+                contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 10 }} />
+              <Area type="monotone" dataKey="cost" stroke={C.muted} strokeWidth={1.5} fill="url(#costGrad)" name="EA Cost" />
+              <Area type="monotone" dataKey="capital" stroke={C.gold} strokeWidth={2} fill="url(#capGrad)" name="Capital Raised" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </motion.div>
     </div>
   );
