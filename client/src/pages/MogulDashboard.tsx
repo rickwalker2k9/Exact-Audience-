@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
@@ -731,8 +732,34 @@ function TabOpportunity() {
 // ── TAB: LIVE INVESTOR SEARCH ─────────────────────────────────────────────────
 type Investor = typeof INVESTOR_POOL[0];
 
+function VantageCountUp({ target, started }: { target: number; started: boolean }) {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, v => Math.round(v));
+  useEffect(() => {
+    if (!started) return;
+    const controls = animate(count, target, { duration: 1.4, ease: "easeOut" });
+    return controls.stop;
+  }, [started, target]);
+  if (!started) return <span>—</span>;
+  return <motion.span>{rounded}</motion.span>;
+}
+
 function InvestorCard({ inv, idx }: { inv: Investor; idx: number }) {
   const [expanded, setExpanded] = useState(false);
+  const [financialLoaded, setFinancialLoaded] = useState(false);
+
+  // Staggered delay per card so they load sequentially in the demo
+  useEffect(() => {
+    setFinancialLoaded(false);
+    const delay = 1400 + idx * 140;
+    const t = setTimeout(() => setFinancialLoaded(true), delay);
+    return () => clearTimeout(t);
+  }, [idx]);
+
+  const dtiNum = parseFloat(inv.dti);
+  const dtiColor = dtiNum <= 30 ? C.green : C.amber;
+  const vantageColor = inv.vantage >= 750 ? C.green : C.teal;
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -758,33 +785,87 @@ function InvestorCard({ inv, idx }: { inv: Investor; idx: number }) {
           <IbBadge score={inv.ib} />
         </div>
 
-        {/* Key metrics row */}
-        <div className="grid grid-cols-3 gap-2 mt-3">
-          {[
-            { label: "Income", value: inv.income, color: C.gold },
-            { label: "VantageScore", value: inv.vantage.toString(), color: inv.vantage >= 750 ? C.green : C.teal },
-            { label: "Available Capital", value: inv.availableCapital, color: C.purpleL },
-          ].map((m, i) => (
-            <div key={i} className="rounded-lg p-2 text-center" style={{ background: C.card2 }}>
-              <div className="text-sm font-black" style={{ color: m.color }}>{m.value}</div>
-              <div className="text-xs" style={{ color: C.muted }}>{m.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* DTI */}
-        <div className="flex items-center gap-2 mt-3">
-          <div className="text-xs" style={{ color: C.muted }}>DTI Ratio:</div>
-          <div className="text-xs font-black" style={{ color: parseFloat(inv.dti) <= 30 ? C.green : C.amber }}>{inv.dti}</div>
-          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: C.card2 }}>
-            <motion.div className="h-full rounded-full"
-              style={{ background: parseFloat(inv.dti) <= 30 ? C.green : C.amber }}
-              initial={{ width: 0 }}
-              animate={{ width: inv.dti }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-            />
-          </div>
-        </div>
+        {/* LeadFi financial pre-screen — two-stage load */}
+        <AnimatePresence mode="wait">
+          {!financialLoaded ? (
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+              {/* Status text */}
+              <div className="flex items-center gap-2 mt-3 mb-2">
+                <motion.div className="w-1.5 h-1.5 rounded-full" style={{ background: C.teal }}
+                  animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity }} />
+                <span className="text-xs" style={{ color: C.teal }}>Pulling financial profile...</span>
+              </div>
+              {/* Shimmer metric cards */}
+              <div className="grid grid-cols-3 gap-2">
+                {[0, 1, 2].map(i => (
+                  <div key={i} className="rounded-lg p-2" style={{ background: C.card2 }}>
+                    <Skeleton className="h-4 w-3/4 mx-auto mb-1.5" style={{ background: `${C.border}` }} />
+                    <Skeleton className="h-2.5 w-1/2 mx-auto" style={{ background: `${C.border}80` }} />
+                  </div>
+                ))}
+              </div>
+              {/* Shimmer DTI bar */}
+              <div className="flex items-center gap-2 mt-3">
+                <Skeleton className="h-2.5 w-16" style={{ background: `${C.border}` }} />
+                <Skeleton className="flex-1 h-1.5 rounded-full" style={{ background: `${C.border}` }} />
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div key="loaded" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}>
+              {/* Confirmed badge */}
+              <div className="flex items-center gap-2 mt-3 mb-2">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <circle cx="5" cy="5" r="5" fill={C.green} fillOpacity="0.25" />
+                  <path d="M3 5l1.5 1.5L7 3.5" stroke={C.green} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-xs" style={{ color: C.green }}>Financial profile confirmed</span>
+              </div>
+              {/* Metric cards */}
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: "Income", color: C.gold, content: (
+                    <motion.div className="text-sm font-black" style={{ color: C.gold }}
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}>
+                      {inv.income}
+                    </motion.div>
+                  )},
+                  { label: "VantageScore", color: vantageColor, content: (
+                    <div className="text-sm font-black" style={{ color: vantageColor }}>
+                      <VantageCountUp target={inv.vantage} started={financialLoaded} />
+                    </div>
+                  )},
+                  { label: "Avail. Capital", color: C.purpleL, content: (
+                    <motion.div className="text-sm font-black" style={{ color: C.purpleL }}
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
+                      {inv.availableCapital}
+                    </motion.div>
+                  )},
+                ].map((m, i) => (
+                  <div key={i} className="rounded-lg p-2 text-center" style={{ background: C.card2 }}>
+                    {m.content}
+                    <div className="text-xs" style={{ color: C.muted }}>{m.label}</div>
+                  </div>
+                ))}
+              </div>
+              {/* DTI */}
+              <div className="flex items-center gap-2 mt-3">
+                <div className="text-xs" style={{ color: C.muted }}>DTI:</div>
+                <motion.div className="text-xs font-black" style={{ color: dtiColor }}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+                  {inv.dti}
+                </motion.div>
+                <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: C.card2 }}>
+                  <motion.div className="h-full rounded-full"
+                    style={{ background: dtiColor }}
+                    initial={{ width: 0 }}
+                    animate={{ width: inv.dti }}
+                    transition={{ delay: 0.25, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <AnimatePresence>
