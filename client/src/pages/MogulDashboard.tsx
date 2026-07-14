@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import reinvestorImg from "../assets/reinvestor.png";
-import reinvestorBase from "../assets/reinvestor-base.png";
-import reinvestorArrow from "../assets/reinvestor-arrow.png";
+import mogulBase from "../assets/mogul-base.jpg";
+import mogulArrow from "../assets/mogul-arrow.png";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, LineChart, Line, RadialBarChart, RadialBar, Legend } from "recharts";
@@ -933,40 +932,41 @@ const SITE_VISITORS = [
 // ── REAL ESTATE HERO GRAPHIC ────────────────────────────────────────────────
 function RealEstateHero() {
   return (
-    <div className="relative w-full overflow-hidden" style={{ height: 200 }}>
-      {/* Layer 1: base image (bars + houses, no arrow) */}
+    <div className="relative w-full overflow-hidden" style={{ height: 220 }}>
+      {/* Layer 1: base — bars, houses, fire (static) */}
       <img
-        src={reinvestorBase}
+        src={mogulBase}
         alt="Real estate investor growth"
         className="absolute inset-0 w-full h-full object-contain object-center"
-        style={{
-          filter: 'brightness(0.78) saturate(1.2)',
-          zIndex: 1,
-        }}
+        style={{ filter: 'brightness(0.82) saturate(1.1)', zIndex: 1 }}
       />
-      {/* Layer 2: arrow — animates upward on load */}
-      <motion.img
-        src={reinvestorArrow}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-contain object-center"
-        style={{
-          filter: 'brightness(1.1) saturate(1.4) drop-shadow(0 0 8px rgba(251,191,36,0.6))',
-          zIndex: 2,
-        }}
-        initial={{ y: 60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1.0, ease: [0.23, 1, 0.32, 1], delay: 0.25 }}
-      />
-      {/* Pulse glow on arrowhead (top-right area) */}
+      {/* Layer 2: arrow — reveals left-to-right via clipPath animation */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ zIndex: 2 }}
+        initial={{ clipPath: 'inset(0 100% 0 0)' }}
+        animate={{ clipPath: 'inset(0 0% 0 0)' }}
+        transition={{ duration: 1.4, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
+      >
+        <img
+          src={mogulArrow}
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-contain object-center"
+          style={{
+            filter: 'brightness(1.15) saturate(1.5) drop-shadow(0 0 10px rgba(251,191,36,0.8))',
+          }}
+        />
+      </motion.div>
+      {/* Pulse glow on arrowhead (top-right) */}
       <motion.div
         className="absolute rounded-full"
-        style={{ top: '8%', right: '14%', width: 24, height: 24, background: `radial-gradient(circle, ${C.gold}80, transparent)`, zIndex: 3 }}
-        animate={{ scale: [1, 2.2, 1], opacity: [0.8, 0, 0.8] }}
-        transition={{ duration: 2, repeat: Infinity, delay: 1.2, ease: 'easeOut' }}
+        style={{ top: '6%', right: '16%', width: 30, height: 30, background: `radial-gradient(circle, ${C.gold}90, transparent)`, zIndex: 3 }}
+        animate={{ scale: [1, 2.5, 1], opacity: [0.9, 0, 0.9] }}
+        transition={{ duration: 2, repeat: Infinity, delay: 1.8, ease: 'easeOut' }}
       />
-      {/* Dark overlay — bottom fade into card */}
-      <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${C.card} 100%)`, zIndex: 4 }} />
+      {/* Bottom fade into card */}
+      <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 50%, ${C.card} 100%)`, zIndex: 4 }} />
     </div>
   );
 }
