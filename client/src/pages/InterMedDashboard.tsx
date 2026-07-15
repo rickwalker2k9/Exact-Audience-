@@ -33,7 +33,6 @@ const TABS = [
   { id: "how",         label: "How It Works" },
   { id: "siteid",      label: "Who's On Your Site" },
   { id: "roi",         label: "ROI Calculator" },
-  { id: "healthtrust", label: "Healthtrust" },
   { id: "weekly",      label: "This Week's Targets" },
   { id: "search",      label: "Live Search" },
 ];
@@ -1434,7 +1433,6 @@ export default function InterMedDashboard() {
             {activeTab === "how"         && <TabHow />}
             {activeTab === "siteid"      && <TabSiteID />}
             {activeTab === "roi"         && <TabROI />}
-            {activeTab === "healthtrust" && <TabHealthtrust />}
             {activeTab === "search"      && <TabLiveSearch />}
           </motion.div>
         </AnimatePresence>
