@@ -184,6 +184,27 @@ export const CLIENTS: CampaignClient[] = [
     completionRate: 0,
     primaryColor: "#0ea5e9",
   },
+  // ── MOGUL CLUB ──────────────────────────────────────────────────────────────
+  {
+    id: 41,
+    slug: "mogul-club",
+    name: "Mogul Club",
+    vertical: "Real Estate Investment",
+    location: "Scottsdale, AZ",
+    description: "Accredited investor acquisition — Live Investor Search, Site Visitor ID, LeadFi financial profiling",
+    domain: "mogul.club",
+    logoDomain: "mogul.club",
+    campaign: "Investor Intelligence 2026",
+    budget: "$120,000",
+    startDate: "Jun 1, 2026",
+    status: "active" as ClientStatus,
+    hasDashboard: true,
+    trend: risingTrend(62000),
+    impressionsToDate: 5840000,
+    reachToDate: 241200,
+    completionRate: 88.4,
+    primaryColor: "#f59e0b",
+  },
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
   {
     id: 6,
