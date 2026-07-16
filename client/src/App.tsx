@@ -37,6 +37,7 @@ function Router() {
       <Route path="/barrett-financial" component={BarrettDashboard} />
       <Route path="/neurocatch" component={NeuroCatchDashboard} />
       <Route path="/intermed-healthtrust" component={InterMedDashboard} />
+      <Route path="/intermed" component={InterMedDashboard} />
       <Route path="/imagine-agency" component={ImagineAgencyDashboard} />
       <Route path="/mogul" component={MogulDashboard} />
 
