@@ -94,12 +94,14 @@ type TargetEntry = {
 };
 
 function OutreachPanel({ t }: { t: TargetEntry }) {
-  const [channel, setChannel] = useState<"email" | "linkedin_conn" | "linkedin_dm" | "mail" | "call" | "sms">("email");
+  const [channel, setChannel] = useState<"email" | "linkedin_conn" | "linkedin_dm" | "linkedin_seq" | "mail" | "call" | "sms">("email");
+  const [copied, setCopied] = useState(false);
   const first = t.contact.name.split(" ")[0];
   const channels = [
     { id: "email" as const,        label: "Email" },
     { id: "linkedin_conn" as const, label: "LI Connect" },
     { id: "linkedin_dm" as const,   label: "LI Message" },
+    { id: "linkedin_seq" as const,  label: "LI Sequence" },
     { id: "mail" as const,          label: "Direct Mail" },
     { id: "call" as const,          label: "Cold Call" },
     { id: "sms" as const,           label: "SMS" },
@@ -185,6 +187,27 @@ CLOSE:
       subject: "SMS",
       body: `${first} — [Name] here. ${t.org} could recover ${fmtSavings}/yr just by routing open shifts to internal staff before going external. 15-min demo? Reply YES and I'll send a link.`,
     },
+    linkedin_seq: {
+      subject: "LinkedIn 3-Message Sequence",
+      body: `── MESSAGE 1 — CONNECTION REQUEST ──
+${first} — I work with nursing operations leaders at regional health systems across ${t.state}. Would love to connect — always good to know the people doing the hard work in healthcare workforce management.
+
+── MESSAGE 2 — SEND 2 DAYS AFTER CONNECTING ──
+${first}, appreciate the connection!
+
+Quick question — how is ${t.org} currently handling shift allocation when a gap opens up? Specifically, how long does it take to get from "open shift" to "filled by internal staff" before it goes to an agency?
+
+Asking because we've been working on something that cuts that window down to seconds and the labor cost impact tends to be significant for systems your size.
+
+Happy to share more if it's relevant.
+
+── MESSAGE 3 — SEND 5 DAYS AFTER MESSAGE 2 (if no reply) ──
+${first} — one stat worth sharing:
+
+A ${t.beds}-bed system running a typical shift mix spends $${(t.beds * 2.2 * 52 * 5100 / 1000000).toFixed(1)}M/yr on shift labor. Beacon cuts the average shift cost from $5,100 to $2,424 by routing every open shift to internal PRN and float pool staff first — automatically, before it ever goes to an agency.
+
+For ${t.org}, that's ${fmtSavings} a year. Worth 15 minutes to see the math for your specific shift mix?`,
+    },
   };
 
   const active = content[channel];
@@ -204,7 +227,19 @@ CLOSE:
         ))}
       </div>
       <div className="p-3" style={{ background: `${C.teal}08` }}>
-        <div className="text-xs font-black mb-2" style={{ color: C.gold }}>{active.subject}</div>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="text-xs font-black" style={{ color: C.gold }}>{active.subject}</div>
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              const text = channel === 'email' ? `Subject: ${active.subject}\n\n${active.body}` : active.body;
+              navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+            }}
+            className="shrink-0 text-xs font-black px-2 py-1 rounded transition-all"
+            style={{ background: copied ? C.teal : `${C.teal}20`, color: copied ? C.bg : C.teal, border: `1px solid ${C.teal}40` }}>
+            {copied ? '✓ Copied' : 'Copy'}
+          </button>
+        </div>
         <pre className="text-xs leading-relaxed whitespace-pre-wrap font-sans" style={{ color: C.white }}>{active.body}</pre>
       </div>
     </div>

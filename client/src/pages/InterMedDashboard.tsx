@@ -69,6 +69,7 @@ type HospitalEntry = {
 
 function OutreachPanel({ h }: { h: HospitalEntry }) {
   const [channel, setChannel] = useState<"email" | "linkedin" | "mail">("email");
+  const [copied, setCopied] = useState(false);
   const first = h.contact.name.split(" ")[0];
   const channels = [
     { id: "email" as const,    label: "Email" },
@@ -102,7 +103,19 @@ function OutreachPanel({ h }: { h: HospitalEntry }) {
         ))}
       </div>
       <div className="p-3" style={{ background: `${C.purple}15` }}>
-        <div className="text-xs font-black mb-2" style={{ color: C.gold }}>{active.subject}</div>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="text-xs font-black" style={{ color: C.gold }}>{active.subject}</div>
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              const text = channel === 'email' ? `Subject: ${active.subject}\n\n${active.body}` : active.body;
+              navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+            }}
+            className="shrink-0 text-xs font-black px-2 py-1 rounded transition-all"
+            style={{ background: copied ? C.orange : `${C.orange}20`, color: copied ? C.bg : C.orange, border: `1px solid ${C.orange}40` }}>
+            {copied ? '✓ Copied' : 'Copy'}
+          </button>
+        </div>
         <pre className="text-xs leading-relaxed whitespace-pre-wrap font-sans" style={{ color: C.white }}>{active.body}</pre>
       </div>
     </div>

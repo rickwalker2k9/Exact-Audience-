@@ -97,7 +97,7 @@ const INVESTOR_POOL = [
     company: "Clearstead Advisory Solutions",
     category: ["OH", "real-estate", "tier0"],
     outreach: {
-      email: { subject: "Dennis — passive income from institutional real estate", body: "Dennis — your background at Clearstead means you already understand capital allocation. The question is whether your idle capital is working as hard as you are. Mogul Club puts it into institutional commercial real estate at 15–20% IRR — fully passive, quarterly distributions, $25K minimum. Happy to send the current deal sheet. Worth 10 minutes?" },
+      email: { subject: "Dennis — your $140K could be generating 17.4% IRR right now", body: "Dennis — your background at Clearstead means you already understand capital allocation. The question is whether your idle capital is working as hard as you are. Mogul Club puts it into institutional commercial real estate at 15–20% IRR — fully passive, quarterly distributions, $25K minimum. Happy to send the current deal sheet. Worth 10 minutes?" },
       linkedin: { connect: "Dennis — I work with accredited investors building passive income through institutional commercial real estate. Would love to connect.", dm: "Dennis, following up on my connection request. We have a current deal in Nashville generating 17.4% IRR — minimum $25K. Happy to send the one-pager if you're curious." },
       directMail: { headline: "Dennis, your capital deserves institutional-grade returns.", body: "You've earned accredited investor status. Mogul Club gives you access to the same commercial real estate deals that family offices and hedge funds invest in — without the $1M minimums. Our current Nashville portfolio is returning 17.4% IRR. Scan the QR code to see the full deal sheet." },
       ads: { segment: "Accredited Investor — Financial Services Executive — Ohio", headline: "Institutional Real Estate. No Landlord Headaches.", body: "15–20% IRR. Fractional ownership. Accredited investors only. See current deals." },
@@ -461,7 +461,7 @@ const INVESTOR_POOL = [
     company: "Genentech",
     category: ["CA", "real-estate", "tier0"],
     outreach: {
-      email: { subject: "Karen — Bay Area real estate income without the management", body: "Hi Karen, as Senior Director at Genentech you're likely looking for passive income that doesn't require your time. Mogul Club offers accredited investors fractional ownership in Bay Area commercial properties at 15–20% IRR — no management, quarterly distributions. Our current South Bay deal is open now." },
+      email: { subject: "Karen — your $210K could be generating 18.9% IRR in the Bay Area", body: "Hi Karen, as Senior Director at Genentech you're likely looking for passive income that doesn't require your time. Mogul Club offers accredited investors fractional ownership in Bay Area commercial properties at 15–20% IRR — no management, quarterly distributions. Our current South Bay deal is open now." },
       linkedin: { connect: "Hi Karen — Senior Director at Genentech, you understand high-value investments. Mogul Club offers accredited investors Bay Area commercial RE at 15–20% IRR. Happy to share.", dm: "Karen, thanks for connecting. We have a South Bay biotech corridor deal at 18.9% IRR, $25K minimum. Happy to send the one-pager if you're curious." },
       directMail: { headline: "Karen, Bay Area commercial real estate — institutional returns.", body: "Mogul Club gives Bay Area accredited investors direct access to commercial real estate deals at 15–20% IRR — no property management, no tenant calls. Our current South Bay biotech corridor deal closes in 3 weeks. Scan to review the full prospectus." },
       ads: { segment: "Accredited Investor — Biotech Executive — Bay Area CA", headline: "Bay Area Real Estate. 15–20% IRR.", body: "Fractional commercial RE. No management. Accredited investors only. Current Bay Area deal open." },
@@ -643,7 +643,7 @@ const INVESTOR_POOL = [
     company: "Air Comfort Inc.",
     category: ["OK", "real-estate", "tier0"],
     outreach: {
-      email: { subject: "Cecil — passive real estate income in Oklahoma", body: "Hi Cecil, as President of Air Comfort you understand what it means to build a business. Mogul Club offers accredited investors like yourself passive income from institutional commercial real estate at 15–20% IRR — no management, quarterly distributions. Our current Tulsa-area deal is open now. Want me to send the details?" },
+      email: { subject: "Cecil — your $115K could be generating 16.3% IRR in Tulsa right now", body: "Hi Cecil, as President of Air Comfort you understand what it means to build a business. Mogul Club offers accredited investors like yourself passive income from institutional commercial real estate at 15–20% IRR — no management, quarterly distributions. Our current Tulsa-area deal is open now. Want me to send the details?" },
       linkedin: { connect: "Hi Cecil — President at Air Comfort, you understand building wealth. Mogul Club offers accredited investors commercial RE at 15–20% IRR in Oklahoma. Happy to share.", dm: "Cecil, thanks for connecting. We have a Tulsa-area commercial deal at 16.3% IRR, $25K minimum. Happy to send the one-pager if you're interested." },
       directMail: { headline: "Cecil, Oklahoma commercial real estate — passive income.", body: "Mogul Club gives Oklahoma accredited investors access to institutional commercial real estate at 15–20% IRR. No tenants, no maintenance. Our current Tulsa-area deal is open now. Scan to review the full prospectus." },
       ads: { segment: "Accredited Investor — Business Owner — Tulsa OK Metro", headline: "Oklahoma Real Estate. Passive Income.", body: "Fractional commercial RE. 15–20% IRR. No management. Accredited investors only." },
@@ -799,7 +799,7 @@ const INVESTOR_POOL = [
     company: "NextHome Empire",
     category: ["NJ", "real-estate", "tier0"],
     outreach: {
-      email: { subject: "Joanne — passive real estate income beyond your brokerage", body: "Hi Joanne, as Managing Director at NextHome Empire you understand real estate better than most. Mogul Club offers accredited investors passive income from institutional commercial properties at 15–20% IRR — no management, no tenant calls. Our current NJ deal is open now. Want me to send the details?" },
+      email: { subject: "Joanne — your $110K could be generating 15.9% IRR in NJ right now", body: "Hi Joanne, as Managing Director at NextHome Empire you understand real estate better than most. Mogul Club offers accredited investors passive income from institutional commercial properties at 15–20% IRR — no management, no tenant calls. Our current NJ deal is open now. Want me to send the details?" },
       linkedin: { connect: "Hi Joanne — MD at NextHome, you know real estate. Mogul Club offers accredited investors institutional commercial RE at 15–20% IRR — passive income without the management.", dm: "Joanne, thanks for connecting. We have a Cranford-area commercial deal at 15.9% IRR, $25K minimum. Happy to send the one-pager if you're curious." },
       directMail: { headline: "Joanne, institutional commercial real estate — passive income.", body: "You know real estate. Mogul Club gives accredited investors access to institutional commercial properties at 15–20% IRR — no tenants, no maintenance, quarterly distributions. Our current NJ deal is open now. Scan to review the full prospectus." },
       ads: { segment: "Accredited Investor — Real Estate Professional — Cranford NJ", headline: "Institutional RE. Passive Income.", body: "Fractional commercial RE. 15–20% IRR. No management. Accredited investors only." },
@@ -2161,6 +2161,7 @@ type VisitorChannel = typeof VISITOR_CHANNELS[number]["id"];
 
 function VisitorOutreach({ v }: { v: typeof SITE_VISITORS[0] }) {
   const [ch, setCh] = useState<VisitorChannel>("linkedin");
+  const [copied, setCopied] = useState(false);
   const first = v.name.split(" ")[0];
   const page = v.pagesViewed[0];
 
@@ -2333,6 +2334,26 @@ function VisitorOutreach({ v }: { v: typeof SITE_VISITORS[0] }) {
           {copy[ch]}
         </motion.div>
       </AnimatePresence>
+      {/* Copy all button */}
+      <button
+        onClick={() => {
+          const el = document.createElement('div');
+          el.innerHTML = '';
+          const allText = Array.from(document.querySelectorAll('.mogul-copy-text')).map(e => (e as HTMLElement).innerText).join('\n\n---\n\n');
+          const channelTexts: Record<string, string> = {
+            linkedin: `CONNECTION REQUEST:\n${first} — I work with accredited investors who are building passive income through institutional commercial real estate. Would love to connect — always good to know people who understand capital allocation.\n\nFIRST MESSAGE:\n${first}, appreciate the connection! Quick question — are you currently allocating any capital to commercial real estate, or is that something you've been considering? We have a deal open right now at 17.4% IRR, $25K minimum, fully passive. Happy to send the one-pager if the timing is right.`,
+            email: `Subject: ${first} — 17.4% IRR. No tenants. No management. $25K minimum.\n\n${first},\n\nMost accredited investors are earning 6–8% in the market while sitting on capital that could be working harder. Mogul Club gives you direct fractional ownership in institutional commercial real estate — not a REIT, not a fund. Your name on the deed.\n\nCurrent deal: Nashville commercial, 17.4% IRR, $25K minimum, quarterly distributions, fully passive.\n\nWant me to send the one-pager? Takes 2 minutes to review.`,
+            sms: `${first} — [Name] here. Mogul Club has a Nashville deal open: 17.4% IRR, $25K min, fully passive. Want the one-pager? Reply YES.`,
+            coldcall: `OPENER: "Hi, is this ${first}? Great — this is [Name] from Mogul Club. I'll be quick — do you have 45 seconds?"\n\nPITCH: "We have a current deal — Nashville commercial property — generating 17.4% IRR. Minimum is $25K, fully passive, quarterly distributions. It closes in two weeks. I can email you the one-pager right now while we're on the phone — what's the best email?"`,
+            directmail: `${first},\n\nMost accredited investors are earning 6–8% in the market while institutional commercial real estate generates 15–20% IRR. Mogul Club gives you direct fractional ownership — not a REIT, not a fund. Your name on the deed.\n\nCurrent Nashville deal: 17.4% IRR. $25K minimum. Fully passive. Quarterly distributions.\n\nScan the QR code to see the full prospectus.`,
+          };
+          const text = channelTexts[ch] || '';
+          navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+        }}
+        className="w-full text-xs font-black py-2 rounded-lg transition-all"
+        style={{ background: copied ? C.teal : `${C.teal}15`, color: copied ? C.bg : C.teal, border: `1px solid ${C.teal}30` }}>
+        {copied ? '✓ Copied to Clipboard' : 'Copy This Message'}
+      </button>
     </div>
   );
 }

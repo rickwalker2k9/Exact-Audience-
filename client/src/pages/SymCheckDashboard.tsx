@@ -95,12 +95,14 @@ type TargetEntry = {
 };
 
 function OutreachPanel({ t }: { t: TargetEntry }) {
-  const [channel, setChannel] = useState<"email" | "linkedin_conn" | "linkedin_dm" | "mail" | "call" | "sms">("email");
+  const [channel, setChannel] = useState<"email" | "linkedin_conn" | "linkedin_dm" | "linkedin_seq" | "mail" | "call" | "sms">("email");
+  const [copied, setCopied] = useState(false);
   const first = t.contact.name.split(" ")[0];
   const channels = [
     { id: "email" as const,        label: "Email" },
     { id: "linkedin_conn" as const, label: "LI Connect" },
     { id: "linkedin_dm" as const,   label: "LI Message" },
+    { id: "linkedin_seq" as const,  label: "LI Sequence" },
     { id: "mail" as const,          label: "Direct Mail" },
     { id: "call" as const,          label: "Cold Call" },
     { id: "sms" as const,           label: "SMS" },
@@ -179,6 +181,27 @@ CLOSE:
       subject: "SMS",
       body: `${first} — [Name] here. Quick one: ${t.org} could recover $${(t.employees * 1746).toLocaleString()}/yr in benefits costs with a 30-sec contactless health scan. No wearables, no apps. Worth 15 min? Reply YES and I'll send a link.`,
     },
+    linkedin_seq: {
+      subject: "LinkedIn 3-Message Sequence",
+      body: `── MESSAGE 1 — CONNECTION REQUEST ──
+${first} — I work with ${roleType} leaders at ${orgType} across ${t.state}. Would love to connect and share what's working right now in workforce wellness. No pitch — just good conversation.
+
+── MESSAGE 2 — SEND 2 DAYS AFTER CONNECTING ──
+${first}, appreciate the connection!
+
+Quick question — how is ${t.org} currently tracking workforce health across your population? Not the participation rates, but actual health status in real time.
+
+We've been working with ${orgType} on something that takes 30 seconds per employee and requires zero hardware. The data it surfaces tends to surprise people.
+
+Happy to share more if it's relevant.
+
+── MESSAGE 3 — SEND 5 DAYS AFTER MESSAGE 2 (if no reply) ──
+${first} — sharing one stat that tends to land with ${roleType} leaders:
+
+$1,746 recovered per participating employee per year — through avoided claims, reduced absenteeism, and lower turnover. At ${t.org}'s size, that's $${(t.employees * 1746).toLocaleString()} annually.
+
+We can show you what that looks like for your specific population in a 15-minute demo. No slides, just live data. Worth it?`,
+    },
   };
 
   const active = content[channel];
@@ -199,7 +222,19 @@ CLOSE:
         ))}
       </div>
       <div className="p-3" style={{ background: `${C.teal}08` }}>
-        <div className="text-xs font-black mb-2" style={{ color: C.gold }}>{active.subject}</div>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="text-xs font-black" style={{ color: C.gold }}>{active.subject}</div>
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              const text = channel === 'email' ? `Subject: ${active.subject}\n\n${active.body}` : active.body;
+              navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+            }}
+            className="shrink-0 text-xs font-black px-2 py-1 rounded transition-all"
+            style={{ background: copied ? C.teal : `${C.teal}20`, color: copied ? C.bg : C.teal, border: `1px solid ${C.teal}40` }}>
+            {copied ? '✓ Copied' : 'Copy'}
+          </button>
+        </div>
         <pre className="text-xs leading-relaxed whitespace-pre-wrap font-sans" style={{ color: C.white }}>{active.body}</pre>
       </div>
     </div>
