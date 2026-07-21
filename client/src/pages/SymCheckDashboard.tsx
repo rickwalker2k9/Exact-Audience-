@@ -278,7 +278,7 @@ const TARGET_POOL: TargetEntry[] = [
 // ── SITE VISITORS ─────────────────────────────────────────────────────────────
 const SITE_VISITORS = [
   {
-    name: "Patricia H.", org: "Vanderbilt UMC", title: "VP Human Resources",
+    name: "Patricia Holloway", org: "Vanderbilt UMC", title: "VP Human Resources",
     city: "Nashville", state: "TN", lastSeen: "4m ago", visits: 6,
     pages: ["Enterprise Wellness", "How It Works", "Pricing"],
     timeOnSite: "9m 14s", tier: "TIER 0 — DECISION MAKER",
@@ -289,7 +289,7 @@ const SITE_VISITORS = [
     outreach: "Hi Patricia — I noticed you were exploring our Enterprise Wellness and Pricing pages on SymCheck.com. Vanderbilt's scale is exactly where our platform shines — 24,000 employees, real-time wellness data, no wearables. Would a 20-minute demo this week make sense?",
   },
   {
-    name: "Jennifer C.", org: "HCA Healthcare", title: "SVP Benefits & Total Rewards",
+    name: "Jennifer Caldwell", org: "HCA Healthcare", title: "SVP Benefits & Total Rewards",
     city: "Nashville", state: "TN", lastSeen: "12m ago", visits: 4,
     pages: ["Platform", "Features", "Applications"],
     timeOnSite: "7m 32s", tier: "TIER 0 — DECISION MAKER",
@@ -300,7 +300,7 @@ const SITE_VISITORS = [
     outreach: "Hi Jennifer — HCA's scale is remarkable and your team was just on our Platform and Features pages. SymCheck can deploy across your entire system — contactless, HIPAA-compliant, real-time. Worth 20 minutes to see what workforce health data looks like at HCA scale?",
   },
   {
-    name: "Angela M.", org: "Nissan North America", title: "Director of Benefits & Wellness",
+    name: "Angela Morrison", org: "Nissan North America", title: "Director of Benefits & Wellness",
     city: "Franklin", state: "TN", lastSeen: "28m ago", visits: 3,
     pages: ["How It Works", "Vitals", "Contact"],
     timeOnSite: "5m 48s", tier: "TIER 1 — BENEFITS BUYER",
@@ -311,7 +311,7 @@ const SITE_VISITORS = [
     outreach: "Hi Angela — I saw you were checking out our Vitals platform on SymCheck.com. For a manufacturing environment like Nissan, contactless wellness screening is a game-changer — no scheduling, no friction, 30 seconds per employee. Happy to show you what it looks like on the plant floor.",
   },
   {
-    name: "David O.", org: "Tennessee Valley Authority", title: "Chief Human Resources Officer",
+    name: "David Okafor", org: "Tennessee Valley Authority", title: "Chief Human Resources Officer",
     city: "Knoxville", state: "TN", lastSeen: "1h ago", visits: 5,
     pages: ["Wellness", "Enterprise", "Pricing"],
     timeOnSite: "11m 05s", tier: "TIER 0 — DECISION MAKER",
@@ -322,7 +322,7 @@ const SITE_VISITORS = [
     outreach: "Hi David — TVA's workforce health initiative is exactly the kind of program SymCheck was built for. I noticed you spent time on our Pricing page — I'd love to walk you through what a TVA deployment would look like and what the ROI looks like at 10,500 employees.",
   },
   {
-    name: "Robert F.", org: "BlueCross BlueShield TN", title: "VP Population Health",
+    name: "Robert Finley", org: "BlueCross BlueShield TN", title: "VP Population Health",
     city: "Chattanooga", state: "TN", lastSeen: "2h ago", visits: 2,
     pages: ["Platform", "Insights"],
     timeOnSite: "4m 22s", tier: "TIER 1 — STRATEGIC PARTNER",
