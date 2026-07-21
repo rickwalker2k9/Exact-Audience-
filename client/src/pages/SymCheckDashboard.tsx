@@ -617,14 +617,30 @@ function TabSiteID() {
 }
 
 // ── TAB: ROI CALCULATOR ───────────────────────────────────────────────────────
+const SCENARIOS = [
+  { label: "Starter", spend: 20000, leads: 133, meetings: 11, deals: 3, avgDeal: 75000, revenue: 225000, roi: 11, color: C.teal },
+  { label: "Growth",  spend: 30000, leads: 200, meetings: 16, deals: 4, avgDeal: 100000, revenue: 400000, roi: 13, color: C.orange },
+  { label: "Scale",   spend: 40000, leads: 267, meetings: 21, deals: 5, avgDeal: 150000, revenue: 750000, roi: 19, color: C.gold },
+];
+
+const MARKET_FACTS = [
+  { stat: "$26.7B",   label: "Contactless biometric market in 2025",                 sub: "Growing 19.4% CAGR — fastest segment in digital health" },
+  { stat: "$16,000",  label: "What US employers spend per employee/yr on benefits",   sub: "A 1,000-person hospital spends $16M/yr — SymCheck is a rounding error" },
+  { stat: "$291",     label: "Annual medical cost savings per screened employee",     sub: "Optum: biometric screening reduces claims by $291/person/yr" },
+  { stat: "$10K+",    label: "What competitors charge just for the SDK",              sub: "Shen.AI $10K/yr; Binah.ai & NuraLogix enterprise-only at $50K+" },
+  { stat: "92%",      label: "HR Directors research wellness vendors anonymously",    sub: "They visit 4–6 vendor sites before ever filling out a form" },
+  { stat: "$140K",    label: "Avg annual contract — regional hospital",              sub: "1,500-bed system at $8/employee/month = $144K/yr. One deal = 7x ROI" },
+];
+
 function TabROI() {
-  const [accounts, setAccounts] = useState(5);
-  const [avgDeal, setAvgDeal] = useState(120000);
+  const [activeScenario, setActiveScenario] = useState(1);
+  const [accounts, setAccounts] = useState(4);
+  const [avgDeal, setAvgDeal] = useState(100000);
+  const sc = SCENARIOS[activeScenario];
   const annualRevenue = accounts * avgDeal;
-  const serviceInvestment = 72000;
+  const serviceInvestment = sc.spend;
   const roi = Math.round(((annualRevenue - serviceInvestment) / serviceInvestment) * 100);
   const payback = (serviceInvestment / (annualRevenue / 12)).toFixed(1);
-
   const projectionData = Array.from({ length: 12 }, (_, m) => ({
     month: `M${m + 1}`,
     revenue: Math.round((annualRevenue / 12) * (m + 1)),
@@ -633,16 +649,63 @@ function TabROI() {
 
   return (
     <div className="space-y-4">
+      {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>ROI CALCULATOR — WHAT DOES ONE NEW CLIENT PAY FOR?</SL>
-        <div className="text-lg font-black mb-2" style={{ color: C.white }}>How Many New Enterprise Accounts Do You Need?</div>
+        <SL>ROI CALCULATOR — THE CASE FOR $20K–$40K</SL>
+        <div className="text-lg font-black mb-2" style={{ color: C.white }}>One New Enterprise Account Pays for the Entire Year</div>
         <div className="text-sm leading-relaxed" style={{ color: C.muted }}>
-          Adjust the sliders to match your average contract value and target account count. The platform pays for itself the moment you close your first new enterprise wellness client.
+          SymCheck's average enterprise contract runs{" "}
+          <span style={{ color: C.orange, fontWeight: 900 }}>$75K–$280K/year</span> depending on org size.
+          Exact Audience identifies the HR Directors, CNOs, and Benefits VPs who are actively researching wellness platforms right now —
+          before they ever fill out a form. You get first-mover advantage on every in-market buyer.
         </div>
       </motion.div>
 
+      {/* Market intelligence cards */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.teal}>MARKET INTELLIGENCE — WHAT MOST PEOPLE DON'T KNOW</SL>
+        <div className="grid grid-cols-2 gap-3">
+          {MARKET_FACTS.map((f, i) => (
+            <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 + i * 0.07 }}
+              className="rounded-xl p-3" style={{ background: C.card2, border: `1px solid ${C.border}` }}>
+              <div className="text-xl font-black" style={{ background: C.grad, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{f.stat}</div>
+              <div className="text-xs font-bold mt-1" style={{ color: C.white }}>{f.label}</div>
+              <div className="text-xs mt-1" style={{ color: C.muted }}>{f.sub}</div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Scenario selector */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.gold}>SELECT YOUR EA INVESTMENT LEVEL</SL>
+        <div className="grid grid-cols-3 gap-3 mt-2">
+          {SCENARIOS.map((s, i) => (
+            <button key={i} onClick={() => { setActiveScenario(i); setAccounts(s.deals); setAvgDeal(s.avgDeal); }}
+              className="rounded-xl p-4 text-left transition-all"
+              style={{ background: activeScenario === i ? `${s.color}18` : C.card2,
+                border: `2px solid ${activeScenario === i ? s.color : C.border}`,
+                cursor: 'pointer' }}>
+              <div className="text-xs font-black mb-1" style={{ color: s.color }}>{s.label.toUpperCase()}</div>
+              <div className="text-2xl font-black" style={{ color: C.white }}>${(s.spend / 1000).toFixed(0)}K</div>
+              <div className="text-xs mt-1" style={{ color: C.muted }}>{s.leads} targeted leads</div>
+              <div className="text-xs" style={{ color: C.muted }}>{s.meetings} meetings · {s.deals} deals</div>
+              <div className="text-sm font-black mt-2" style={{ color: s.color }}>{s.roi}x ROI</div>
+            </button>
+          ))}
+        </div>
+        <div className="mt-3 rounded-xl p-3 text-xs" style={{ background: `${sc.color}10`, border: `1px solid ${sc.color}30`, color: C.muted }}>
+          <span style={{ color: sc.color, fontWeight: 900 }}>{sc.label} plan: </span>
+          {sc.leads} leads delivered → {sc.meetings} meetings booked (8% conversion) → {sc.deals} deals closed (25% close rate) →{" "}
+          <span style={{ color: C.white, fontWeight: 900 }}>${sc.revenue.toLocaleString()} revenue</span> at ${sc.avgDeal.toLocaleString()} avg ACV
+        </div>
+      </div>
+
+            {/* Custom sliders */}
       <div className="rounded-2xl p-5 space-y-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL>CUSTOMIZE YOUR PROJECTION</SL>
         <div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-black" style={{ color: C.white }}>New Enterprise Accounts Closed / Year</span>
