@@ -77,16 +77,16 @@ function OutreachPanel({ h }: { h: HospitalEntry }) {
   ];
   const content = {
     email: {
-      subject: `${h.signal} — Sourcing Support for ${h.name}`,
-      body: `Hi ${first},\n\nI wanted to reach out because we noticed ${h.name} has been actively evaluating ${h.signal.toLowerCase()} options over the past ${h.weeks} week${h.weeks > 1 ? "s" : ""}.\n\nInterMed Resources specializes in exactly this category — we work with regional health systems across Tennessee to source high-quality products at GPO-competitive pricing, often with faster delivery timelines than national distributors.\n\nWould a 15-minute call this week make sense? I can share what we're seeing other health systems in your region doing right now.\n\nBest,\n[Your Name]\nInterMed Resources TN\n[Phone]`,
+      subject: `${h.name} could save 12–18% on ${h.signal.toLowerCase()} — here's how`,
+      body: `${first},\n\nMost Tennessee health systems are overpaying for ${h.signal.toLowerCase()} — not because better pricing doesn't exist, but because the sourcing process defaults to whoever is already on contract.\n\nInterMed Resources TN works with OR directors and supply chain leaders across the region to find GPO-competitive pricing on exactly this category — often with faster delivery timelines than national distributors.\n\nHappy to put together a no-obligation comparison for ${h.name}'s current sourcing. Takes 15 minutes on a call.\n\n[Your Name]\nInterMed Resources TN\n[Phone]`,
     },
     linkedin: {
-      subject: "LinkedIn Connection Request Note",
-      body: `Hi ${first} — I work with InterMed Resources TN, a specialty medical device distributor focused on the Southeast. I noticed ${h.name} has been evaluating ${h.signal.toLowerCase()} recently and thought it might be worth connecting. We've helped several Tennessee health systems find cost-effective sourcing in this category. Happy to share what we're seeing in the market if it's useful.`,
+      subject: "LinkedIn Connection Request",
+      body: `${first} — I work with supply chain and OR leaders at Tennessee health systems. Always good to connect with people doing the hard work in healthcare procurement. Would love to be a resource if anything comes up.`,
     },
     mail: {
-      subject: "Direct Mail — Personalized Letter",
-      body: `${h.contact.name}\n${h.contact.title}\n${h.name}\n${h.city}\n\nDear ${first},\n\nAs a specialty medical device distributor serving Tennessee health systems for over 20 years, InterMed Resources TN has helped OR directors and supply chain leaders like yourself find reliable, cost-competitive sourcing for ${h.signal.toLowerCase()}.\n\nWe understand the pressure of balancing clinical quality with budget constraints — especially when evaluating new suppliers or coming off a GPO contract.\n\nI'd welcome the opportunity to send you a no-obligation product comparison and pricing overview for your current needs. Simply call or email me directly:\n\n[Your Name] | [Phone] | [Email]\nInterMed Resources TN\n\nWarm regards,\n[Your Name]`,
+      subject: `${h.name} is likely overpaying for ${h.signal.toLowerCase()}`,
+      body: `${h.contact.name}\n${h.contact.title}\n${h.name}\n${h.city}\n\n${first},\n\nHealthcare supply chain margins are under pressure — and ${h.signal.toLowerCase()} is one of the categories where Tennessee health systems consistently find savings when they benchmark their current pricing.\n\nInterMed Resources TN has been sourcing for regional health systems for over 20 years. We specialize in finding GPO-competitive pricing with faster lead times than national distributors.\n\nI'd love to send you a no-obligation pricing comparison for your current ${h.signal.toLowerCase()} needs. No commitment required.\n\n[Your Name] | [Phone] | [Email]\nInterMed Resources TN`,
     },
   };
   const active = content[channel];

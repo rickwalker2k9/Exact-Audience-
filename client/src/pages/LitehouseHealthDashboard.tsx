@@ -105,85 +105,85 @@ function OutreachPanel({ t }: { t: TargetEntry }) {
     { id: "sms" as const,           label: "SMS" },
   ];
 
+  const annualSavings = Math.round(t.beds * 2.2 * 52 * (5100 - 2424));
+  const fmtSavings = annualSavings >= 1000000
+    ? `$${(annualSavings / 1000000).toFixed(1)}M`
+    : `$${(annualSavings / 1000).toFixed(0)}K`;
+
   const content = {
     email: {
-      subject: `Workforce Staffing Intelligence — ${t.org}`,
-      body: `Hi ${first},
+      subject: `${t.org} is spending $${(t.beds * 2.2 * 52 * 5100 / 1000000).toFixed(1)}M/yr on shift labor — here's the fix`,
+      body: `${first},
 
-I'm reaching out because our data shows ${t.org} has been actively researching ${t.signal.toLowerCase()} over the past ${t.weeks} week${t.weeks > 1 ? "s" : ""}.
+A ${t.beds}-bed hospital running a typical shift mix spends over $${(t.beds * 2.2 * 52 * 5100 / 1000000).toFixed(1)}M a year on shift labor — and a big portion of that is going to travel nurses at $189K/yr when your own PRN and float pool staff are available.
 
-Litehouse Beacon is the healthcare workforce management platform that cuts shift cost from $5,100 to $2,424 — a 53% reduction — by intelligently routing open shifts to your internal staff before going external. No more over-reliance on $189K/yr travel nurses when your own PRN and float pool nurses are available.
+Beacon fixes that. It routes every open shift to your internal staff first — automatically, in seconds. Average shift cost drops from $5,100 to $2,424. That's ${fmtSavings} back in ${t.org}'s budget every year.
 
-We recently partnered with Advocate Health in Chicago and are expanding across regional health systems in ${t.state}. Given ${t.org}'s size (${t.beds} beds), you're exactly the profile we work best with.
+No rip-and-replace. Works alongside UKG, Symplr, and your existing stack.
 
-Would a 20-minute demo make sense this week? I can show you what your shift cost reduction would look like on day one.
+Worth 15 minutes to see the math for ${t.org} specifically?
 
-Best,
 [Your Name]
-Litehouse Health — Beacon Platform
+Litehouse Health
 [Phone]`,
     },
     linkedin_conn: {
       subject: "LinkedIn Connection Request",
-      body: `Hi ${first} — I work with Litehouse Health, a healthcare workforce platform that's helping CNOs and VPs of Nursing at regional hospitals cut travel nurse dependency by 40–60%. I noticed ${t.org} has been evaluating staffing optimization solutions and thought it might be worth connecting. Happy to share what we're seeing across health systems in ${t.state}.`,
+      body: `${first} — I work with nursing operations leaders at regional health systems across ${t.state}. Would love to connect — always good to know the people doing the hard work in healthcare workforce management.`,
     },
     linkedin_dm: {
-      subject: "LinkedIn Follow-Up Message",
-      body: `Hi ${first}, thanks for connecting!
+      subject: "LinkedIn Follow-Up",
+      body: `${first}, appreciate the connection!
 
-I wanted to follow up — I noticed ${t.org} has been actively researching ${t.signal.toLowerCase()} and I think Litehouse Beacon could be a strong fit.
+Quick question — how is ${t.org} currently handling shift allocation when a gap opens up? Specifically, how long does it take to get from "open shift" to "filled by internal staff" before it goes to an agency?
 
-The core problem we solve: hospitals are spending $5,100+ per shift on a mix of overtime, float pool, and travel nurses because there's no intelligent system routing those shifts to the right resource first. Beacon cuts that to $2,424/shift by automatically broadcasting open shifts to your internal PRN and float pool before ever touching a travel agency.
+Asking because we've been working on something that cuts that window down to seconds and the labor cost impact tends to be significant for systems your size.
 
-For a ${t.beds}-bed system, that's typically $800K–$2M in annual labor savings.
-
-I'd love to show you a live demo — even a 15-minute call would give you a clear picture. Would this week work?
+Happy to share more if it's relevant.
 
 — [Your Name]`,
     },
     mail: {
-      subject: "Direct Mail — Personalized Letter",
+      subject: `${fmtSavings} a year is sitting in ${t.org}'s shift schedule`,
       body: `${t.contact.name}
 ${t.contact.title}
 ${t.org}
 ${t.city}, ${t.state}
 
-Dear ${first},
+${first},
 
-Healthcare labor costs now represent 50–60% of a hospital's total operating budget — and travel nurses are the most expensive line item, averaging $189,758 per year per position.
+Travel nurses cost $189,758 a year per position. Your own PRN nurses cost a fraction of that. The problem isn't the nurses — it's that most hospitals don't have a system that gets to internal staff fast enough before the shift goes external.
 
-Litehouse Beacon is the workforce management platform that changes that math. By intelligently routing open shifts to your internal staff first — full-time, part-time, float pool, and PRN — before ever reaching a travel agency, Beacon cuts average shift cost from $5,100 to $2,424.
+Beacon solves that. Every open shift is automatically broadcast to your internal PRN, float pool, and part-time staff first — in seconds, not hours. Average shift cost drops from $5,100 to $2,424.
 
-For ${t.org}, that translates to meaningful, measurable savings in the first 90 days.
+For ${t.org}, that's ${fmtSavings} a year. In the first 90 days.
 
-I'd welcome the opportunity to walk you through a personalized savings analysis for ${t.org}. Simply reach out:
+I'd love to send you a one-page savings analysis built specifically for a ${t.beds}-bed system. No obligation.
 
 [Your Name] | [Phone] | [Email]
-Litehouse Health — Beacon Platform
-
-Warm regards,
-[Your Name]`,
+Litehouse Health`,
     },
     call: {
-      subject: "Cold Call Script",
-      body: `OPENING:
-"Hi, may I speak with ${t.contact.name}? … Hi ${first}, this is [Name] from Litehouse Health. We make a workforce management platform for hospitals — do you have 90 seconds?"
+      subject: "Call Script",
+      body: `OPENER:
+"Hi ${first}, this is [Name] — I'll be quick. Do you have 45 seconds?"
 
 IF YES:
-"We work with CNOs and VPs of Nursing at regional health systems to cut travel nurse dependency. Our platform, Beacon, automatically routes open shifts to your internal staff first — PRN, float pool, part-time — before ever going external. The average shift cost drops from $5,100 to $2,424. I noticed ${t.org} has been evaluating ${t.signal.toLowerCase()} recently, and I think we might be exactly what you're looking for. Can I send you a 2-minute overview and schedule a quick demo?"
+"${t.org} is spending roughly $${(t.beds * 2.2 * 52 * 5100 / 1000000).toFixed(1)}M a year on shift labor. We help health systems recover a big chunk of that — specifically by making sure open shifts go to your internal PRN and float pool first, automatically, before they ever reach a travel agency. Average shift cost drops from $5,100 to $2,424.
+
+For a ${t.beds}-bed system like ${t.org}, that's typically ${fmtSavings} a year.
+
+Would it be worth 15 minutes to see what that looks like for your specific shift mix?"
 
 OBJECTION — "We already use UKG / Symplr":
-"That's actually perfect — Beacon integrates directly with both. We're not replacing your scheduling system, we're adding the intelligent allocation layer on top that routes shifts to the right resource automatically. Most of our clients were already on UKG or Symplr when they deployed Beacon."
-
-OBJECTION — "We're not evaluating right now":
-"Totally understand. I'll keep it brief — our data shows ${t.org} has been researching staffing optimization recently, so I wanted to make sure you had our information before your next budget cycle. Can I send you a one-page overview?"
+"Perfect — Beacon runs alongside both. We're not replacing your scheduling system, we're adding the allocation layer that routes shifts to the right resource automatically. Most of our clients were already on UKG or Symplr."
 
 CLOSE:
-"I'll send you a short overview right now. What's the best email? And does [day] or [day] work for a 20-minute demo?"`,
+"I'll text you a one-page savings breakdown right now. What's the best number?"`,
     },
     sms: {
-      subject: "SMS — Text Message",
-      body: `Hi ${first}, this is [Name] from Litehouse Health. I noticed ${t.org} has been researching ${t.signal.toLowerCase()}. Our Beacon platform cuts hospital shift cost from $5,100 → $2,424 (53% savings). Worth a 15-min demo? Reply YES and I'll send a link. 🏥`,
+      subject: "SMS",
+      body: `${first} — [Name] here. ${t.org} could recover ${fmtSavings}/yr just by routing open shifts to internal staff before going external. 15-min demo? Reply YES and I'll send a link.`,
     },
   };
 

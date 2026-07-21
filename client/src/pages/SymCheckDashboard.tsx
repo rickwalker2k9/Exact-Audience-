@@ -106,30 +106,78 @@ function OutreachPanel({ t }: { t: TargetEntry }) {
     { id: "sms" as const,           label: "SMS" },
   ];
 
+  const orgType = t.type === "Employer Group" ? "employers" : "health systems";
+  const roleType = t.contact.title.includes("HR") || t.contact.title.includes("Benefits") || t.contact.title.includes("People") ? "HR and benefits" : "clinical and operations";
+
   const content = {
     email: {
-      subject: `Workforce Wellness Intelligence — ${t.org}`,
-      body: `Hi ${first},\n\nI'm reaching out because we've noticed ${t.org} has been actively researching ${t.signal.toLowerCase()} solutions over the past ${t.weeks} week${t.weeks > 1 ? "s" : ""}.\n\nSymCheck is an AI-powered contactless wellness platform that gives HR and benefits teams real-time workforce health insights — no wearables, no apps, just a 30-second scan that measures heart rate, stress, BMI, and more.\n\nWe're working with several ${t.type === "Employer Group" ? "employers" : "health systems"} in ${t.state} right now and thought ${t.org} would be a natural fit given your current evaluation.\n\nWould a 20-minute demo make sense this week? I can show you exactly what your workforce health data would look like on day one.\n\nBest,\n[Your Name]\nSymCheck — Enterprise Wellness\n[Phone]`,
+      subject: `How ${t.org} can cut benefits costs by $1,746 per employee this year`,
+      body: `${first},
+
+Most ${orgType} spend $16,000 per employee on benefits annually — and a huge chunk of that is preventable.
+
+A 30-second contactless scan (no wearables, no apps, no IT lift) gives your team real-time health data on your entire workforce. ${t.org} with ${t.employees.toLocaleString()} employees could recover over $${(t.employees * 1746).toLocaleString()} a year in avoided claims, reduced absenteeism, and lower turnover.
+
+Takes about 20 seconds to add to your existing stack. Happy to show you a live demo — 15 minutes, no slides.
+
+[Your Name]
+SymCheck
+[Phone]`,
     },
     linkedin_conn: {
       subject: "LinkedIn Connection Request",
-      body: `Hi ${first} — I work with SymCheck, an AI-powered contactless wellness platform helping ${t.type === "Employer Group" ? "HR teams" : "health systems"} get real-time workforce health insights without wearables or apps. I noticed ${t.org} has been evaluating wellness solutions and thought it might be worth connecting. Happy to share what we're seeing in the market.`,
+      body: `${first} — I work with ${roleType} leaders at ${orgType} across ${t.state}. Would love to connect and share what's working right now in workforce wellness. No pitch — just good conversation.`,
     },
     linkedin_dm: {
-      subject: "LinkedIn Follow-Up Message",
-      body: `Hi ${first}, thanks for connecting!\n\nI wanted to follow up — I noticed ${t.org} has been actively researching ${t.signal.toLowerCase()} and I think SymCheck could be a strong fit.\n\nWe use contactless rPPG technology to measure wellness metrics in under 60 seconds — no wearables, no apps, fully HIPAA-compliant. The platform gives ${t.contact.title.includes("HR") || t.contact.title.includes("Benefits") ? "HR and benefits teams" : "clinical and operations leaders"} a real-time view of workforce health at scale.\n\nI'd love to show you a live demo — even a 15-minute call would give you a clear picture. Would this week work?\n\n— [Your Name]`,
+      subject: "LinkedIn Follow-Up",
+      body: `${first}, appreciate the connection!
+
+Quick question — how is ${t.org} currently tracking workforce health across your population? Not the participation rates, but actual health status in real time.
+
+We've been working with ${orgType} on something that takes 30 seconds per employee and requires zero hardware. The data it surfaces tends to surprise people.
+
+Happy to share more if it's relevant to what you're working on.
+
+— [Your Name]`,
     },
     mail: {
-      subject: "Direct Mail — Personalized Letter",
-      body: `${t.contact.name}\n${t.contact.title}\n${t.org}\n${t.city}, ${t.state}\n\nDear ${first},\n\nAs workforce wellness becomes a top priority for ${t.type === "Employer Group" ? "employers" : "health systems"} across ${t.state}, SymCheck is helping organizations like ${t.org} get ahead of the curve.\n\nOur contactless wellness platform delivers real-time health insights for your entire workforce — heart rate, stress levels, BMI, and more — in a 30-second scan. No wearables. No apps. No friction.\n\nI'd welcome the opportunity to send you a no-obligation overview of what a SymCheck deployment would look like for ${t.org}. Simply reach out directly:\n\n[Your Name] | [Phone] | [Email]\nSymCheck Enterprise Wellness\n\nWarm regards,\n[Your Name]`,
+      subject: `A smarter way to protect ${t.org}'s bottom line`,
+      body: `${t.contact.name}
+${t.contact.title}
+${t.org}
+${t.city}, ${t.state}
+
+${first},
+
+Labor is your single largest cost. And most of it is invisible until it's already a problem.
+
+SymCheck gives ${orgType} like ${t.org} a real-time view of workforce health — no wearables, no apps, no friction. A 30-second contactless scan per employee. Population dashboards that flag risk before it becomes absenteeism, turnover, or a claim.
+
+At ${t.employees.toLocaleString()} employees, the math is straightforward: $1,746 saved per participating employee per year.
+
+I'd love to send you a one-pager. No obligation.
+
+[Your Name] | [Phone] | [Email]`,
     },
     call: {
-      subject: "Cold Call Script",
-      body: `OPENING:\n"Hi, may I speak with ${t.contact.name}? … Hi ${first}, this is [Name] from SymCheck. We're an AI-powered wellness platform — do you have 90 seconds?"\n\nIF YES:\n"We work with ${t.type === "Employer Group" ? "HR and benefits teams" : "health systems"} to give them real-time workforce health data — contactless, no wearables, 30-second scan. I noticed ${t.org} has been evaluating ${t.signal.toLowerCase()} recently, and I think we might be exactly what you're looking for. Can I send you a 2-minute overview video and schedule a quick demo?"\n\nOBJECTION — "We already have a wellness program":\n"That's great — most of our clients do. SymCheck actually layers on top of existing programs and gives you the data layer that most wellness vendors don't provide. It's the difference between knowing your participation rate and knowing your workforce's actual health status in real time."\n\nCLOSE:\n"I'll send you a short overview right now. What's the best email? And does [day] or [day] work for a 20-minute demo?"`,
+      subject: "Call Script",
+      body: `OPENER:
+"Hi ${first}, this is [Name] — I'll be quick. Do you have 45 seconds?"
+
+IF YES:
+"${t.org} spends roughly $${(t.employees * 16000).toLocaleString()} a year on employee benefits. We help ${orgType} recover a meaningful chunk of that through a 30-second contactless health scan — no wearables, no apps, no IT project. Real-time workforce health data, same day.
+
+Would it be worth 15 minutes to see what the data looks like for an org your size?"
+
+OBJECTION — "We have a wellness program":
+"Most do — and SymCheck layers right on top. The difference is you go from knowing who enrolled to knowing who's actually at risk. That's where the savings live."
+
+CLOSE:
+"I'll text you a 90-second video right now. What's the best number?"`,
     },
     sms: {
-      subject: "SMS — Text Message",
-      body: `Hi ${first}, this is [Name] from SymCheck. I noticed ${t.org} has been researching ${t.signal.toLowerCase()} solutions. We offer contactless AI wellness scans — no apps, no wearables, 30 sec. Worth a quick demo? Reply YES and I'll send a link. 🙏`,
+      subject: "SMS",
+      body: `${first} — [Name] here. Quick one: ${t.org} could recover $${(t.employees * 1746).toLocaleString()}/yr in benefits costs with a 30-sec contactless health scan. No wearables, no apps. Worth 15 min? Reply YES and I'll send a link.`,
     },
   };
 
@@ -286,7 +334,7 @@ const SITE_VISITORS = [
     phone: "(615) 322-5000", email: "p.holloway@vumc.org",
     address: "1211 Medical Center Dr, Nashville, TN 37232",
     linkedin: "linkedin.com/in/patricia-holloway-vumc",
-    outreach: "Hi Patricia — I noticed you were exploring our Enterprise Wellness and Pricing pages on SymCheck.com. Vanderbilt's scale is exactly where our platform shines — 24,000 employees, real-time wellness data, no wearables. Would a 20-minute demo this week make sense?",
+    outreach: "Patricia — Vanderbilt's 24,000 employees represent over $41M in annual benefits spend. A 30-second contactless wellness scan (no wearables, no apps) could recover $1,746 per participating employee per year. Worth 15 minutes to see what the math looks like for VUMC specifically?",
   },
   {
     name: "Jennifer Caldwell", org: "HCA Healthcare", title: "SVP Benefits & Total Rewards",
@@ -297,7 +345,7 @@ const SITE_VISITORS = [
     phone: "(615) 344-9551", email: "j.caldwell@hcahealthcare.com",
     address: "One Park Plaza, Nashville, TN 37203",
     linkedin: "linkedin.com/in/jennifer-caldwell-hca",
-    outreach: "Hi Jennifer — HCA's scale is remarkable and your team was just on our Platform and Features pages. SymCheck can deploy across your entire system — contactless, HIPAA-compliant, real-time. Worth 20 minutes to see what workforce health data looks like at HCA scale?",
+    outreach: "Jennifer — HCA's 300,000+ employees make it one of the largest benefits programs in the country. SymCheck gives your team real-time workforce health data across every facility — contactless, HIPAA-compliant, zero hardware. Happy to show you what population-level health dashboards look like at HCA scale.",
   },
   {
     name: "Angela Morrison", org: "Nissan North America", title: "Director of Benefits & Wellness",
@@ -308,7 +356,7 @@ const SITE_VISITORS = [
     phone: "(615) 725-1000", email: "a.morrison@nissan-usa.com",
     address: "One Nissan Way, Franklin, TN 37067",
     linkedin: "linkedin.com/in/angela-morrison-nissan",
-    outreach: "Hi Angela — I saw you were checking out our Vitals platform on SymCheck.com. For a manufacturing environment like Nissan, contactless wellness screening is a game-changer — no scheduling, no friction, 30 seconds per employee. Happy to show you what it looks like on the plant floor.",
+    outreach: "Angela — Manufacturing environments are where contactless wellness screening makes the biggest difference — no scheduling, no friction, 30 seconds per employee on the plant floor. At Nissan's headcount, the annual savings potential is over $12M. Happy to show you what a Franklin deployment would look like.",
   },
   {
     name: "David Okafor", org: "Tennessee Valley Authority", title: "Chief Human Resources Officer",
@@ -319,7 +367,7 @@ const SITE_VISITORS = [
     phone: "(865) 632-2101", email: "d.okafor@tva.gov",
     address: "400 W Summit Hill Dr, Knoxville, TN 37902",
     linkedin: "linkedin.com/in/david-okafor-tva",
-    outreach: "Hi David — TVA's workforce health initiative is exactly the kind of program SymCheck was built for. I noticed you spent time on our Pricing page — I'd love to walk you through what a TVA deployment would look like and what the ROI looks like at 10,500 employees.",
+    outreach: "David — At 10,500 employees, TVA's annual benefits spend is roughly $168M. SymCheck's contactless wellness platform gives you real-time health data on your entire workforce — no wearables, no apps, 30 seconds per employee. The ROI at TVA's scale is significant. Worth 15 minutes to see the numbers?",
   },
   {
     name: "Robert Finley", org: "BlueCross BlueShield TN", title: "VP Population Health",
@@ -330,7 +378,7 @@ const SITE_VISITORS = [
     phone: "(423) 535-5600", email: "r.finley@bcbst.com",
     address: "801 Pine St, Chattanooga, TN 37402",
     linkedin: "linkedin.com/in/robert-finley-bcbst",
-    outreach: "Hi Robert — A BCBST partnership would be incredibly powerful — imagine offering SymCheck's contactless wellness screening as a member benefit across your entire book. I saw you were on our Insights page. Would a partnership conversation make sense?",
+    outreach: "Robert — Imagine offering contactless biometric wellness screening as a member benefit across BCBST's entire book of business — no hardware, no scheduling, 30 seconds per member. The population health data it generates would be transformative for your risk models. Would a partnership conversation make sense?"
   },
 ];
 

@@ -367,7 +367,7 @@ function TabExactAudience() {
                   <div className="rounded-xl p-3" style={{ background: `${C.purple}10`, border: `1px solid ${C.purple}30` }}>
                     <div className="text-xs font-black mb-1" style={{ color: C.purple }}>SUGGESTED OUTREACH</div>
                     <div className="text-xs" style={{ color: C.white }}>
-                      "Hi {p.name.split(" ")[0]}, I noticed you've been researching {p.intent.split(" ").slice(0, 3).join(" ")} — we help businesses like yours reach buyers exactly like you. Worth a 10-minute call?"
+                      "{p.name.split(" ")[0]} — most companies in your space are spending budget on ads that reach everyone and convert no one. Exact Audience shows you the specific companies already in-market for {p.intent.split(" ").slice(0, 3).join(" ")} — so you reach buyers when they're ready, not before. Worth 10 minutes?"
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -544,7 +544,7 @@ function TabSiteID() {
                   <div className="rounded-xl p-3" style={{ background: `${C.purple}10`, border: `1px solid ${C.purple}30` }}>
                     <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>SUGGESTED OUTREACH</div>
                     <div className="text-xs" style={{ color: C.white }}>
-                      "Hi {v.name.split(" ")[0]}, I saw you spent time on our {v.pages[v.pages.length - 1]} page — happy to walk you through exactly what that looks like for a team like yours at {v.company}."
+                      "{v.name.split(" ")[0]} — {v.company} is exactly the kind of company Exact Audience was built for. We identify the specific buyers in your market who are actively researching solutions like yours — before they ever talk to a competitor. Happy to show you what that pipeline looks like for your category."
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -838,7 +838,7 @@ function TabLiveSearch() {
                       <div className="rounded-xl p-3" style={{ background: `${C.purple}10`, border: `1px solid ${C.purple}30` }}>
                         <div className="text-xs font-black mb-1" style={{ color: C.purpleLight }}>SUGGESTED OUTREACH</div>
                         <div className="text-xs" style={{ color: C.white }}>
-                          "Hi {r.name.split(" ")[0]}, I noticed your team at {r.company} has been evaluating {r.tags[0]} solutions — we work with healthcare organizations across {state} to identify exactly the right buyers for this category. Worth a quick call?"
+                          "{r.name.split(" ")[0]} — healthcare organizations in {state} are leaving significant pipeline on the table by reaching out to the wrong accounts at the wrong time. We identify the specific health systems actively in-market for {r.tags[0]} right now. Worth a quick call to see who's on your list?"
                         </div>
                       </div>
                       <div className="flex gap-2">
