@@ -20,11 +20,11 @@ export const LAMBO_KPI_TARGETS = {
 };
 
 export const LAMBO_LIVE_BASE = {
-  impressions: 5571400,
-  reach: 209800,
-  completions: 4968200,
-  siteVisitors: 237,
-  conversions: 581,
+  impressions: 7284600,
+  reach: 231200,
+  completions: 6498400,
+  siteVisitors: 412,
+  conversions: 728,
   frequency: 2.66,
   completionRate: 89.2,
   avgCpm: 21.48,
@@ -62,6 +62,21 @@ export const LAMBO_DAILY_IMPRESSIONS = [
   { day: "May 29", ctv: 136800, youtube: 31100, display: 15300, meta: 18300, google: 11700, email: 9100, qr: 9300 },
   { day: "Jul 5",  ctv: 141400, youtube: 32200, display: 15800, meta: 18900, google: 12100, email: 9400, qr: 9600 },
   { day: "Jul 6",  ctv: 144800, youtube: 32900, display: 16200, meta: 19400, google: 12400, email: 9600, qr: 9800 },
+  { day: "Jul 7",  ctv: 149200, youtube: 33900, display: 16700, meta: 20000, google: 12800, email: 9900, qr: 10100 },
+  { day: "Jul 8",  ctv: 152800, youtube: 34700, display: 17100, meta: 20500, google: 13100, email: 10200, qr: 10400 },
+  { day: "Jul 9",  ctv: 147200, youtube: 33500, display: 16500, meta: 19700, google: 12600, email: 9800, qr: 10000 },
+  { day: "Jul 10", ctv: 157400, youtube: 35800, display: 17600, meta: 21100, google: 13500, email: 10500, qr: 10700 },
+  { day: "Jul 11", ctv: 162000, youtube: 36800, display: 18100, meta: 21700, google: 13900, email: 10800, qr: 11100 },
+  { day: "Jul 12", ctv: 155600, youtube: 35400, display: 17400, meta: 20800, google: 13300, email: 10400, qr: 10600 },
+  { day: "Jul 13", ctv: 167200, youtube: 38000, display: 18700, meta: 22400, google: 14300, email: 11100, qr: 11400 },
+  { day: "Jul 14", ctv: 171400, youtube: 39000, display: 19200, meta: 23000, google: 14700, email: 11400, qr: 11700 },
+  { day: "Jul 15", ctv: 167000, youtube: 38000, display: 18700, meta: 22400, google: 14400, email: 11200, qr: 11500 },
+  { day: "Jul 16", ctv: 176800, youtube: 40200, display: 19800, meta: 23700, google: 15200, email: 11800, qr: 12100 },
+  { day: "Jul 17", ctv: 182200, youtube: 41400, display: 20400, meta: 24400, google: 15600, email: 12100, qr: 12500 },
+  { day: "Jul 18", ctv: 175000, youtube: 39800, display: 19600, meta: 23500, google: 15000, email: 11700, qr: 12000 },
+  { day: "Jul 19", ctv: 187400, youtube: 42600, display: 21000, meta: 25100, google: 16100, email: 12500, qr: 12900 },
+  { day: "Jul 20", ctv: 192800, youtube: 43900, display: 21600, meta: 25900, google: 16600, email: 12900, qr: 13300 },
+  { day: "Jul 21", ctv: 190200, youtube: 43300, display: 21300, meta: 25600, google: 16400, email: 12700, qr: 13100 },
 ];
 
 // Media Mix — CTV dominant (73%)
@@ -108,9 +123,9 @@ export const LAMBO_QR = {
 
 // SiteID Visitors — refreshed Jun 2, 2026
 export const LAMBO_VISITORS = [
-  { first: "Alexander", last: "Thornton",   city: "Paradise Valley", zip: "85253", income: "$500K+",      networth: "$5M+",        credit: "A", job: "Private Equity Partner",  company: "Saguaro Capital",         score: 97, mood: "High Intent", vehicle: "Ferrari SF90",       time: "1m ago"  },
-  { first: "Natalie",   last: "Ashworth",   city: "Scottsdale",      zip: "85255", income: "$350K–$499K",  networth: "$2M–$5M",     credit: "A", job: "Chief Revenue Officer",   company: "Verizon Business",        score: 93, mood: "High Intent", vehicle: "Bentley Bentayga",   time: "4m ago"  },
-  { first: "Harrison",  last: "Voss",       city: "Scottsdale",      zip: "85259", income: "$250K–$349K",  networth: "$1M–$2M",     credit: "A", job: "Neurosurgeon",            company: "HonorHealth",             score: 91, mood: "High Intent", vehicle: "Porsche Taycan",     time: "8m ago"  },
+  { first: "Remington", last: "Ashby",      city: "Paradise Valley", zip: "85253", income: "$500K+",      networth: "$5M+",        credit: "A", job: "Managing Partner",        company: "Ashby Capital Partners",  score: 98, mood: "High Intent", vehicle: "Ferrari Roma",        time: "1m ago"  },
+  { first: "Serena",    last: "Whitmore",   city: "Scottsdale",      zip: "85255", income: "$380K–$499K",  networth: "$2.4M–$5M",   credit: "A", job: "Chief Commercial Officer", company: "Axon Enterprise",         score: 94, mood: "High Intent", vehicle: "Bentley Bentayga EWB", time: "3m ago"  },
+  { first: "Broderick", last: "Langford",   city: "Scottsdale",      zip: "85259", income: "$270K–$349K",  networth: "$1.2M–$2M",   credit: "A", job: "Neurosurgeon",            company: "Mayo Clinic Arizona",     score: 92, mood: "High Intent", vehicle: "Porsche Panamera",   time: "7m ago"  },
   { first: "Camille",   last: "Fontaine",   city: "Paradise Valley", zip: "85253", income: "$500K+",       networth: "$5M+",        credit: "A", job: "Real Estate Developer",   company: "Pinnacle Realty Group",   score: 95, mood: "High Intent", vehicle: "McLaren 720S",       time: "11m ago" },
   { first: "Brandon",   last: "Okafor",     city: "Scottsdale",      zip: "85254", income: "$200K–$249K",  networth: "$750K–$999K", credit: "B", job: "VP Engineering",          company: "Axon Enterprise",         score: 81, mood: "In-Market",   vehicle: "BMW M8",             time: "17m ago" },
   { first: "Stephanie", last: "Lindqvist",  city: "Tempe",           zip: "85284", income: "$150K–$199K",  networth: "$500K–$749K", credit: "B", job: "Cardiologist",            company: "Mayo Clinic",             score: 74, mood: "In-Market",   vehicle: "Lexus LC500",        time: "23m ago" },

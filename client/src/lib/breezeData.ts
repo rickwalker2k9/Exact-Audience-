@@ -196,6 +196,13 @@ export const BREEZE_JULY_DAILY = [
   { day: "Jul 12", meta: 16400, google: 14400, linkedin: 11000, email: 4700 },
   { day: "Jul 13", meta: 17100, google: 15100, linkedin: 11600, email: 5000 },
   { day: "Jul 14", meta: 17400, google: 15300, linkedin: 11800, email: 5100 },
+  { day: "Jul 15", meta: 18100, google: 15900, linkedin: 12300, email: 5300 },
+  { day: "Jul 16", meta: 18800, google: 16500, linkedin: 12800, email: 5500 },
+  { day: "Jul 17", meta: 19400, google: 17100, linkedin: 13200, email: 5700 },
+  { day: "Jul 18", meta: 18700, google: 16400, linkedin: 12700, email: 5500 },
+  { day: "Jul 19", meta: 20100, google: 17700, linkedin: 13700, email: 5900 },
+  { day: "Jul 20", meta: 20800, google: 18300, linkedin: 14200, email: 6100 },
+  { day: "Jul 21", meta: 20400, google: 18000, linkedin: 13900, email: 6000 },
 ];
 
 // Combined daily impressions for charts (uses July data as the "current month" view)

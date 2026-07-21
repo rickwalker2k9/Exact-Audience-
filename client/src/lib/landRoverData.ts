@@ -15,11 +15,11 @@ export const LANDROVER_CLIENT = {
 };
 
 export const LANDROVER_LIVE_BASE = {
-  impressions: 5219342,
-  reach: 196800,
-  completions: 4562400,
-  siteVisitors: 214,
-  conversions: 521,
+  impressions: 6847200,
+  reach: 218400,
+  completions: 5981600,
+  siteVisitors: 387,
+  conversions: 684,
   frequency: 2.65,
   completionRate: 87.5,
   avgCpm: 20.02,
@@ -67,6 +67,13 @@ export const LANDROVER_DAILY_IMPRESSIONS = [
   { day: "Jul 12", ctv: 156800, youtube: 35600, display: 17500, meta: 20900, google: 13400, email: 10500, qr: 10700 },
   { day: "Jul 13", ctv: 168400, youtube: 38300, display: 18800, meta: 22500, google: 14400, email: 11200, qr: 11500 },
   { day: "Jul 14", ctv: 172600, youtube: 39200, display: 19300, meta: 23100, google: 14800, email: 11500, qr: 11800 },
+  { day: "Jul 15", ctv: 168400, youtube: 38300, display: 18800, meta: 22600, google: 14500, email: 11300, qr: 11600 },
+  { day: "Jul 16", ctv: 178200, youtube: 40500, display: 19900, meta: 23800, google: 15300, email: 11900, qr: 12200 },
+  { day: "Jul 17", ctv: 183600, youtube: 41700, display: 20500, meta: 24500, google: 15700, email: 12200, qr: 12600 },
+  { day: "Jul 18", ctv: 176400, youtube: 40100, display: 19700, meta: 23600, google: 15100, email: 11800, qr: 12100 },
+  { day: "Jul 19", ctv: 188800, youtube: 42900, display: 21100, meta: 25200, google: 16200, email: 12600, qr: 13000 },
+  { day: "Jul 20", ctv: 194200, youtube: 44200, display: 21700, meta: 26000, google: 16700, email: 13000, qr: 13400 },
+  { day: "Jul 21", ctv: 191600, youtube: 43600, display: 21400, meta: 25700, google: 16500, email: 12800, qr: 13200 },
 ];
 
 export const LANDROVER_MEDIA_MIX = [
@@ -135,12 +142,12 @@ export const LANDROVER_MOODS = [
   { label: "Family Premium",     count: 30160, color: "#0ea5e9", desc: "Premium family buyers seeking 3-row luxury SUV with capability" },
 ];
 
-// Visitors refreshed Jul 14, 2026
+// Visitors refreshed Jul 21, 2026
 export const LANDROVER_VISITORS = [
-  { first: "Harrison",  last: "Voss",        city: "Scottsdale",      zip: "85254", income: "$510K+",  networth: "$3.4M", credit: "A+", job: "Managing Partner",         company: "Voss Capital Group",      score: 97, mood: "Luxury Upgraders",  vehicle: "BMW X5 M",             time: "1m ago"  },
-  { first: "Camille",   last: "Ashford",     city: "Paradise Valley", zip: "85253", income: "$620K+",  networth: "$5.2M", credit: "A+", job: "Chief Legal Officer",      company: "Insight Enterprises",    score: 99, mood: "Status & Prestige", vehicle: "Mercedes GLE 63 AMG",  time: "4m ago"  },
-  { first: "Donovan",   last: "Reyes",       city: "Scottsdale",      zip: "85259", income: "$340K+",  networth: "$2.1M", credit: "A",  job: "Spine Surgeon",            company: "HonorHealth",            score: 93, mood: "Adventure Seekers", vehicle: "Audi Q8",              time: "11m ago" },
-  { first: "Brooke",    last: "Harrington",  city: "Fountain Hills",  zip: "85268", income: "$275K+",  networth: "$1.6M", credit: "A",  job: "VP Finance",               company: "Phelps Dodge",           score: 88, mood: "Family Premium",    vehicle: "Volvo XC90",           time: "18m ago" },
+  { first: "Prescott",  last: "Wentworth",   city: "Scottsdale",      zip: "85254", income: "$540K+",  networth: "$3.8M", credit: "A+", job: "Managing Director",        company: "Wentworth Capital Group", score: 98, mood: "Luxury Upgraders",  vehicle: "BMW X7 M60i",          time: "2m ago"  },
+  { first: "Vivienne",  last: "Caldwell",    city: "Paradise Valley", zip: "85253", income: "$680K+",  networth: "$5.9M", credit: "A+", job: "Chief Strategy Officer",   company: "Vanguard Health Systems", score: 99, mood: "Status & Prestige", vehicle: "Porsche Panamera Turbo S", time: "5m ago"  },
+  { first: "Fletcher",  last: "Drummond",    city: "Scottsdale",      zip: "85259", income: "$370K+",  networth: "$2.4M", credit: "A",  job: "Orthopedic Surgeon",       company: "Scottsdale Healthcare",  score: 94, mood: "Adventure Seekers", vehicle: "Audi Q8 e-tron",       time: "9m ago"  },
+  { first: "Sloane",    last: "Whitfield",   city: "Fountain Hills",  zip: "85268", income: "$295K+",  networth: "$1.8M", credit: "A",  job: "VP Operations",            company: "Republic Services",      score: 89, mood: "Family Premium",    vehicle: "Volvo XC90 Recharge",  time: "14m ago" },
   { first: "Colton",    last: "Mercer",      city: "Scottsdale",      zip: "85260", income: "$560K+",  networth: "$4.1M", credit: "A+", job: "CEO & Co-Founder",         company: "Mercer Equity Partners", score: 96, mood: "Luxury Upgraders",  vehicle: "Porsche Cayenne Turbo", time: "24m ago" },
   { first: "Whitney",   last: "Okafor",      city: "Cave Creek",      zip: "85331", income: "$310K+",  networth: "$1.9M", credit: "A",  job: "Interventional Radiologist",company: "Mayo Clinic",            score: 85, mood: "Adventure Seekers", vehicle: "Toyota 4Runner TRD",   time: "31m ago" },
   { first: "Beckett",   last: "Langford",    city: "Scottsdale",      zip: "85255", income: "$580K+",  networth: "$4.8M", credit: "A+", job: "Chief Investment Officer",  company: "Pinnacle West Capital",  score: 98, mood: "Status & Prestige", vehicle: "Range Rover Autobiography", time: "39m ago" },

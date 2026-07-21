@@ -73,6 +73,13 @@ export const WARBY_DAILY_IMPRESSIONS = [
   { day: "Jul 10", ctv: 160200, youtube: 42100, display: 27600, meta: 33000, google: 24800, email: 17300, qr: 9900 },
   { day: "Jul 12", ctv: 157800, youtube: 41400, display: 27100, meta: 32500, google: 24400, email: 17100, qr: 9700 },
   { day: "Jul 14", ctv: 164400, youtube: 43100, display: 28200, meta: 33800, google: 25400, email: 17700, qr: 10100 },
+  { day: "Jul 15", ctv: 160800, youtube: 42200, display: 27600, meta: 33100, google: 24900, email: 17400, qr: 9900 },
+  { day: "Jul 16", ctv: 170200, youtube: 44700, display: 29300, meta: 35100, google: 26400, email: 18400, qr: 10500 },
+  { day: "Jul 17", ctv: 175400, youtube: 46100, display: 30200, meta: 36200, google: 27200, email: 19000, qr: 10800 },
+  { day: "Jul 18", ctv: 168600, youtube: 44300, display: 29000, meta: 34800, google: 26100, email: 18200, qr: 10400 },
+  { day: "Jul 19", ctv: 180400, youtube: 47400, display: 31000, meta: 37200, google: 27900, email: 19500, qr: 11100 },
+  { day: "Jul 20", ctv: 186000, youtube: 48900, display: 32000, meta: 38400, google: 28800, email: 20100, qr: 11500 },
+  { day: "Jul 21", ctv: 183400, youtube: 48200, display: 31500, meta: 37900, google: 28400, email: 19800, qr: 11300 },
 ];
 
 export const WARBY_MEDIA_MIX = [

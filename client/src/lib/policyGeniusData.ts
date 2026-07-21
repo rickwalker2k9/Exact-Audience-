@@ -60,6 +60,14 @@ export const PG_DAILY_IMPRESSIONS = [
   { day: "May 27", youtube: 22800, display: 15700, meta: 16400, google: 18800, email: 13500, qr: 3000 },
   { day: "May 28", youtube: 24700, display: 16900, meta: 17800, google: 20400, email: 14600, qr: 3200 },
   { day: "May 29", youtube: 25800, display: 17700, meta: 18600, google: 21300, email: 15200, qr: 3400 },
+  { day: "Jul 5",  youtube: 27200, display: 18600, meta: 19600, google: 22400, email: 16000, qr: 3600 },
+  { day: "Jul 7",  youtube: 28400, display: 19500, meta: 20500, google: 23500, email: 16700, qr: 3800 },
+  { day: "Jul 10", youtube: 29800, display: 20400, meta: 21500, google: 24600, email: 17500, qr: 4000 },
+  { day: "Jul 12", youtube: 29200, display: 20000, meta: 21100, google: 24100, email: 17200, qr: 3900 },
+  { day: "Jul 14", youtube: 30600, display: 21000, meta: 22100, google: 25300, email: 18000, qr: 4100 },
+  { day: "Jul 16", youtube: 31800, display: 21800, meta: 23000, google: 26300, email: 18700, qr: 4300 },
+  { day: "Jul 18", youtube: 31200, display: 21400, meta: 22600, google: 25900, email: 18400, qr: 4200 },
+  { day: "Jul 21", youtube: 33000, display: 22600, meta: 23900, google: 27400, email: 19500, qr: 4500 },
 ];
 
 export const PG_MEDIA_MIX = [

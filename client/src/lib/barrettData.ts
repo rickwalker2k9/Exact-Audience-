@@ -95,6 +95,14 @@ export const BARRETT_DAILY_IMPRESSIONS = [
   { day: "May 30", youtube: 0, display: 9600, meta: 7500, google: 10800 },
   { day: "Jun 1",  youtube: 0, display: 9700, meta: 7600, google: 10900 },
   { day: "Jun 2",  youtube: 0, display: 9800, meta: 7700, google: 11000 },
+  { day: "Jul 5",  youtube: 0, display: 10400, meta: 8200, google: 11700 },
+  { day: "Jul 7",  youtube: 0, display: 10800, meta: 8500, google: 12100 },
+  { day: "Jul 9",  youtube: 0, display: 11200, meta: 8800, google: 12600 },
+  { day: "Jul 11", youtube: 0, display: 11600, meta: 9100, google: 13000 },
+  { day: "Jul 14", youtube: 0, display: 12100, meta: 9500, google: 13600 },
+  { day: "Jul 16", youtube: 0, display: 12500, meta: 9800, google: 14100 },
+  { day: "Jul 18", youtube: 0, display: 12900, meta: 10100, google: 14500 },
+  { day: "Jul 21", youtube: 0, display: 13400, meta: 10500, google: 15100 },
 ];
 
 // ── MEDIA MIX ─────────────────────────────────────────────────────────────────
@@ -139,13 +147,13 @@ export const BARRETT_MOODS = [
 
 // ── LIVE VISITOR FEED (SiteID-identified visitors on barrettfinancial.com) ────
 export const BARRETT_VISITORS = [
-  { first: "Michael",  last: "Thornton",   city: "Scottsdale",  zip: "85251", income: "$148,000",  networth: "$420,000",  credit: "A+", job: "Software Engineer",    company: "Intel",           score: 94, mood: "Move-Up Buyer",    time: "2m ago" },
-  { first: "Jennifer", last: "Castillo",   city: "Gilbert",     zip: "85296", income: "$112,000",  networth: "$185,000",  credit: "A",  job: "Registered Nurse",    company: "Banner Health",   score: 88, mood: "First-Time Buyer", time: "4m ago" },
-  { first: "David",    last: "Okafor",     city: "Chandler",    zip: "85286", income: "$195,000",  networth: "$680,000",  credit: "A+", job: "VP of Operations",    company: "GoDaddy",         score: 96, mood: "Jumbo Buyer",      time: "7m ago" },
+  { first: "Garrison",  last: "Whitfield",  city: "Scottsdale",  zip: "85251", income: "$162,000",  networth: "$480,000",  credit: "A+", job: "Senior Software Engineer", company: "Intel",        score: 95, mood: "Move-Up Buyer",    time: "1m ago" },
+  { first: "Cassandra", last: "Morales",   city: "Gilbert",     zip: "85296", income: "$118,000",  networth: "$195,000",  credit: "A",  job: "Charge Nurse",        company: "Banner Health",   score: 89, mood: "First-Time Buyer", time: "3m ago" },
+  { first: "Donovan",  last: "Okafor",     city: "Chandler",    zip: "85286", income: "$210,000",  networth: "$740,000",  credit: "A+", job: "VP of Product",       company: "GoDaddy",         score: 97, mood: "Jumbo Buyer",      time: "6m ago" },
   { first: "Sarah",    last: "Wentworth",  city: "Mesa",        zip: "85201", income: "$88,000",   networth: "$142,000",  credit: "B+", job: "Marketing Manager",   company: "Carvana",         score: 79, mood: "First-Time Buyer", time: "11m ago" },
   { first: "Robert",   last: "Nakamura",   city: "Tempe",       zip: "85281", income: "$134,000",  networth: "$310,000",  credit: "A",  job: "Financial Analyst",   company: "Charles Schwab",  score: 91, mood: "Refinance Seeker", time: "14m ago" },
   { first: "Amanda",   last: "Blackwood",  city: "Peoria",      zip: "85345", income: "$76,000",   networth: "$98,000",   credit: "B",  job: "Teacher",             company: "PUSD",            score: 72, mood: "First-Time Buyer", time: "18m ago" },
-  { first: "James",    last: "Harrington", city: "Scottsdale",  zip: "85255", income: "$312,000",  networth: "$1,240,000",credit: "A+", job: "Orthopedic Surgeon",  company: "HonorHealth",     score: 98, mood: "Jumbo Buyer",      time: "22m ago" },
+  { first: "Preston",  last: "Harrington", city: "Scottsdale",  zip: "85255", income: "$328,000",  networth: "$1,380,000",credit: "A+", job: "Orthopedic Surgeon",  company: "Mayo Clinic AZ",  score: 98, mood: "Jumbo Buyer",      time: "19m ago" },
   { first: "Lisa",     last: "Pemberton",  city: "Glendale",    zip: "85301", income: "$94,000",   networth: "$167,000",  credit: "A-", job: "HR Director",         company: "Avnet",           score: 83, mood: "Move-Up Buyer",    time: "27m ago" },
   { first: "Marcus",   last: "Delacroix",  city: "Surprise",    zip: "85374", income: "$68,000",   networth: "$84,000",   credit: "B+", job: "Electrician",         company: "Rosendin",        score: 74, mood: "VA Loan Eligible", time: "31m ago" },
   { first: "Stephanie",last: "Lindqvist",  city: "Chandler",    zip: "85248", income: "$158,000",  networth: "$490,000",  credit: "A+", job: "Product Manager",     company: "Amazon",          score: 93, mood: "Move-Up Buyer",    time: "36m ago" },

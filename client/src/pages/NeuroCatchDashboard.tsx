@@ -1040,12 +1040,26 @@ function BrainVisual({ selected, hovered }: { selected: string | null; hovered: 
     anterior_cingulate: "M 24,31 Q 37,26 44,36 Q 41,46 31,48 Q 21,45 22,37 Z",
   };
 
+  const [floatY, setFloatY] = useState(0);
+  useEffect(() => {
+    let frame: number;
+    let start: number | null = null;
+    const animate = (ts: number) => {
+      if (!start) start = ts;
+      const elapsed = (ts - start) / 1000;
+      setFloatY(Math.sin(elapsed * 0.9) * 5);
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   return (
-    <div className="relative rounded-xl overflow-hidden" style={{ flex: '1 1 0', minWidth: 0, background: 'transparent' }}>
+    <div className="relative rounded-xl overflow-hidden" style={{ background: 'transparent', width: '100%' }}>
       <img
         src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
         alt="Brain"
-        style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.1) brightness(1.0) drop-shadow(0 0 18px rgba(245,158,11,0.35))' }}
+        style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.1) brightness(1.0) drop-shadow(0 0 18px rgba(245,158,11,0.35))', transform: `translateY(${floatY}px)`, transition: 'transform 0.05s linear' }}
         draggable={false}
       />
       <svg viewBox="0 0 100 100" preserveAspectRatio="none"
@@ -1263,8 +1277,10 @@ function TabBrainMap() {
           })}
         </div>
 
-        {/* Brain  -  takes all remaining space */}
-        <BrainVisual selected={selected} hovered={hovered} />
+        {/* Brain  -  constrained size with float animation */}
+        <div style={{ flex: '0 0 220px', width: 220 }}>
+          <BrainVisual selected={selected} hovered={hovered} />
+        </div>
 
         {/* Right 3 cards */}
         <div className="flex flex-col gap-2.5" style={{ flexShrink: 0 }}>
