@@ -226,6 +226,27 @@ export const CLIENTS: CampaignClient[] = [
     completionRate: 91.2,
     primaryColor: "#6EC5EC",
   },
+  // ── LITEHOUSE HEALTH ──────────────────────────────────────────────────────────
+  {
+    id: 43,
+    slug: "litehouse-health",
+    name: "Litehouse Health",
+    vertical: "Healthcare Workforce Management",
+    location: "Spokane, WA",
+    description: "Beacon platform — healthcare WFM SaaS targeting CNOs and VPs of Nursing at regional health systems via Site ID + Exact Audience",
+    domain: "litehousehealth.com",
+    logoDomain: "litehousehealth.com",
+    campaign: "Health System Outreach 2026",
+    budget: "$75,000",
+    startDate: "Jul 14, 2026",
+    status: "active" as ClientStatus,
+    hasDashboard: true,
+    trend: risingTrend(22000),
+    impressionsToDate: 1840000,
+    reachToDate: 78400,
+    completionRate: 89.6,
+    primaryColor: "#00B4D8",
+  },
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
   {
     id: 6,

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import symcheckLogo from "../assets/symcheck-logo.png";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
 import {
@@ -458,8 +459,91 @@ function TabHow() {
         </motion.div>
       ))}
 
+      {/* ── MARKET INTELLIGENCE SECTION ── */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.gold}>MARKET INTELLIGENCE — WHAT MOST PEOPLE DON'T KNOW ABOUT YOUR SPACE</SL>
+        <div className="text-sm font-black mb-4" style={{ color: C.white }}>The numbers that make the business case undeniable</div>
+        <div className="grid grid-cols-2 gap-3">
+          {MARKET_FACTS.map((f, i) => (
+            <motion.div key={i} initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 + i * 0.08 }}
+              className="rounded-xl p-4" style={{ background: C.card2, border: `1px solid ${C.border}` }}>
+              <div className="text-2xl font-black" style={{ background: C.grad, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{f.stat}</div>
+              <div className="text-xs font-bold mt-1" style={{ color: C.white }}>{f.label}</div>
+              <div className="text-xs mt-1 leading-relaxed" style={{ color: C.muted }}>{f.sub}</div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ── WHAT BIOMETRIC SCREENING SAVES ── */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.teal}>WHAT SYMCHECK SAVES A COMPANY IN INSURANCE & HEALTH COSTS</SL>
+        <div className="text-sm font-black mb-1" style={{ color: C.white }}>The ROI case for your buyer — before they even talk to you</div>
+        <div className="text-xs mb-4" style={{ color: C.muted }}>Based on Optum, RAND, and SHRM workforce wellness studies</div>
+        <ResponsiveContainer width="100%" height={180}>
+          <BarChart data={[
+            { category: "Avoided Claims",    savings: 291 },
+            { category: "Reduced Absenteeism", savings: 340 },
+            { category: "Lower Turnover",    savings: 520 },
+            { category: "Productivity Gain", savings: 410 },
+            { category: "Rx Cost Reduction", savings: 185 },
+          ]} margin={{ top: 5, right: 5, left: -10, bottom: 20 }}>
+            <XAxis dataKey="category" tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} angle={-15} textAnchor="end" />
+            <YAxis tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
+            <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 11 }}
+              formatter={(v: number) => [`$${v}/employee/yr`, "Annual Savings"]} />
+            <Bar dataKey="savings" radius={[4, 4, 0, 0]}>
+              {[C.orange, C.gold, C.teal, C.orange, C.tealDim].map((color, i) => (
+                <Cell key={i} fill={color} fillOpacity={0.9} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="mt-3 rounded-xl p-3" style={{ background: `${C.orange}10`, border: `1px solid ${C.orange}25` }}>
+          <div className="text-xs font-black mb-1" style={{ color: C.orange }}>TOTAL SAVINGS PER EMPLOYEE / YEAR</div>
+          <div className="text-3xl font-black" style={{ background: C.grad, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>$1,746</div>
+          <div className="text-xs mt-1" style={{ color: C.muted }}>A 1,000-employee hospital saves <span style={{ color: C.white, fontWeight: 900 }}>$1.74M/year</span> in total workforce health costs when employees participate in a biometric wellness program. SymCheck's annual fee is a fraction of that.</div>
+        </div>
+      </motion.div>
+
+      {/* ── COMPETITOR COMPARISON ── */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.gold}>COMPETITIVE LANDSCAPE — WHY SYMCHECK WINS</SL>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                {["Vendor", "Technology", "Hardware", "HIPAA", "Avg ACV"].map(h => (
+                  <th key={h} className="text-left py-2 pr-3 font-black" style={{ color: C.muted }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { name: "SymCheck",   tech: "rPPG + AI",       hw: "None — any camera", hipaa: "✓", acv: "$75K–$280K",  highlight: true },
+                { name: "Shen.AI",    tech: "rPPG SDK (Software Dev. Kit)", hw: "SDK only",  hipaa: "Partial", acv: "$10K+/yr" },
+                { name: "Binah.ai",   tech: "rPPG",           hw: "SDK only",          hipaa: "Partial", acv: "$50K+ enterprise" },
+                { name: "NuraLogix",  tech: "Transdermal Opt.",hw: "Tablet required",   hipaa: "✓", acv: "$50K+ enterprise" },
+                { name: "Biometrics Co.", tech: "Traditional", hw: "Kiosk $3K–$8K",    hipaa: "✓", acv: "$25K–$60K" },
+              ].map((r, i) => (
+                <tr key={i} style={{ borderBottom: `1px solid ${C.border}40`, background: r.highlight ? `${C.orange}10` : 'transparent' }}>
+                  <td className="py-2 pr-3 font-black" style={{ color: r.highlight ? C.orange : C.white }}>{r.name}{r.highlight ? " ★" : ""}</td>
+                  <td className="py-2 pr-3" style={{ color: C.muted }}>{r.tech}</td>
+                  <td className="py-2 pr-3" style={{ color: r.hw === "None — any camera" ? C.teal : C.muted }}>{r.hw}</td>
+                  <td className="py-2 pr-3" style={{ color: r.hipaa === "✓" ? C.teal : C.muted }}>{r.hipaa}</td>
+                  <td className="py-2" style={{ color: r.highlight ? C.gold : C.muted }}>{r.acv}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+
       {/* Differentiation */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
         <SL color={C.gold}>WHAT MAKES EXACT AUDIENCE DIFFERENT FOR SYMCHECK</SL>
         <div className="space-y-3">
@@ -624,36 +708,50 @@ const SCENARIOS = [
 ];
 
 const MARKET_FACTS = [
-  { stat: "$26.7B",   label: "Contactless biometric market in 2025",                 sub: "Growing 19.4% CAGR — fastest segment in digital health" },
+  { stat: "$26.7B",   label: "Contactless biometric market in 2025",                 sub: "Growing 19.4% CAGR (Compound Annual Growth Rate) — fastest segment in digital health" },
   { stat: "$16,000",  label: "What US employers spend per employee/yr on benefits",   sub: "A 1,000-person hospital spends $16M/yr — SymCheck is a rounding error" },
   { stat: "$291",     label: "Annual medical cost savings per screened employee",     sub: "Optum: biometric screening reduces claims by $291/person/yr" },
-  { stat: "$10K+",    label: "What competitors charge just for the SDK",              sub: "Shen.AI $10K/yr; Binah.ai & NuraLogix enterprise-only at $50K+" },
+  { stat: "$10K+",    label: "What competitors charge just for the SDK (Software Development Kit)", sub: "Shen.AI $10K/yr; Binah.ai & NuraLogix enterprise-only at $50K+" },
   { stat: "92%",      label: "HR Directors research wellness vendors anonymously",    sub: "They visit 4–6 vendor sites before ever filling out a form" },
   { stat: "$140K",    label: "Avg annual contract — regional hospital",              sub: "1,500-bed system at $8/employee/month = $144K/yr. One deal = 7x ROI" },
 ];
 
 function TabROI() {
-  const [activeScenario, setActiveScenario] = useState(1);
-  const [accounts, setAccounts] = useState(4);
+  // Single slider: $20K → $40K in $1K steps
+  const [spend, setSpend] = useState(25000);
   const [avgDeal, setAvgDeal] = useState(100000);
-  const sc = SCENARIOS[activeScenario];
-  const annualRevenue = accounts * avgDeal;
-  const serviceInvestment = sc.spend;
-  const roi = Math.round(((annualRevenue - serviceInvestment) / serviceInvestment) * 100);
-  const payback = (serviceInvestment / (annualRevenue / 12)).toFixed(1);
+
+  // Derived values scale linearly with spend
+  const leads    = Math.round((spend / 20000) * 133);
+  const meetings = Math.round(leads * 0.08);
+  const deals    = Math.round(meetings * 0.25);
+  const annualRevenue = deals * avgDeal;
+  const roi = Math.round(((annualRevenue - spend) / spend) * 100);
+  const payback = (spend / (annualRevenue / 12)).toFixed(1);
+  const roiMultiple = (annualRevenue / spend).toFixed(1);
+
+  // Tier label
+  const tierLabel = spend <= 22000 ? { label: "Starter", color: C.teal } :
+                    spend <= 32000 ? { label: "Growth",  color: C.orange } :
+                                    { label: "Scale",   color: C.gold };
+
+  // Projection data
   const projectionData = Array.from({ length: 12 }, (_, m) => ({
     month: `M${m + 1}`,
     revenue: Math.round((annualRevenue / 12) * (m + 1)),
-    cost: serviceInvestment,
+    cost: spend,
   }));
+
+  // Dummy sc for backward compat
+  const sc = { spend, leads, meetings, deals, avgDeal, color: tierLabel.color };
 
   return (
     <div className="space-y-4">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>ROI CALCULATOR — THE CASE FOR $20K–$40K</SL>
-        <div className="text-lg font-black mb-2" style={{ color: C.white }}>One New Enterprise Account Pays for the Entire Year</div>
+        <SL>ROI CALCULATOR — THE CASE FOR $20K–$40K/MO</SL>
+        <div className="text-lg font-black mb-2" style={{ color: C.white }}>One New Enterprise Account Covers the Monthly Fee Many Times Over</div>
         <div className="text-sm leading-relaxed" style={{ color: C.muted }}>
           SymCheck's average enterprise contract runs{" "}
           <span style={{ color: C.orange, fontWeight: 900 }}>$75K–$280K/year</span> depending on org size.
@@ -678,64 +776,74 @@ function TabROI() {
         </div>
       </motion.div>
 
-      {/* Scenario selector */}
-      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL color={C.gold}>SELECT YOUR EA INVESTMENT LEVEL</SL>
-        <div className="grid grid-cols-3 gap-3 mt-2">
-          {SCENARIOS.map((s, i) => (
-            <button key={i} onClick={() => { setActiveScenario(i); setAccounts(s.deals); setAvgDeal(s.avgDeal); }}
-              className="rounded-xl p-4 text-left transition-all"
-              style={{ background: activeScenario === i ? `${s.color}18` : C.card2,
-                border: `2px solid ${activeScenario === i ? s.color : C.border}`,
-                cursor: 'pointer' }}>
-              <div className="text-xs font-black mb-1" style={{ color: s.color }}>{s.label.toUpperCase()}</div>
-              <div className="text-2xl font-black" style={{ color: C.white }}>${(s.spend / 1000).toFixed(0)}K</div>
-              <div className="text-xs mt-1" style={{ color: C.muted }}>{s.leads} targeted leads</div>
-              <div className="text-xs" style={{ color: C.muted }}>{s.meetings} meetings · {s.deals} deals</div>
-              <div className="text-sm font-black mt-2" style={{ color: s.color }}>{s.roi}x ROI</div>
-            </button>
+      {/* ── MAIN SPEND SLIDER ── */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+        className="rounded-2xl p-5 space-y-5" style={{ background: C.card, border: `2px solid ${tierLabel.color}` }}>
+        <div className="flex items-center justify-between">
+          <SL color={tierLabel.color}>YOUR EXACT AUDIENCE INVESTMENT</SL>
+          <div className="px-3 py-1 rounded-full text-xs font-black" style={{ background: `${tierLabel.color}20`, color: tierLabel.color }}>
+            {tierLabel.label}
+          </div>
+        </div>
+        {/* Big spend display */}
+        <div className="text-center">
+          <div className="text-6xl font-black" style={{ background: C.grad, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            ${(spend / 1000).toFixed(0)}K
+          </div>
+          <div className="text-xs mt-1" style={{ color: C.muted }}>per month · adjust with slider below</div>
+        </div>
+        {/* Slider */}
+        <div>
+          <input type="range" min={20000} max={40000} step={1000} value={spend}
+            onChange={e => setSpend(Number(e.target.value))}
+            className="w-full" style={{ accentColor: tierLabel.color }} />
+          <div className="flex justify-between text-xs mt-1" style={{ color: C.muted }}>
+            <span>$20K/mo — Starter</span><span>$30K/mo — Growth</span><span>$40K/mo — Scale</span>
+          </div>
+        </div>
+        {/* Live metrics row */}
+        <div className="grid grid-cols-4 gap-3">
+          {[
+            { label: "Targeted Leads",   value: leads.toLocaleString(),          color: tierLabel.color },
+            { label: "Meetings Booked",  value: meetings.toLocaleString(),        color: C.teal },
+            { label: "Deals Closed",     value: deals.toLocaleString(),           color: C.orange },
+            { label: "ROI Multiple",     value: `${roiMultiple}x`,               color: C.gold },
+          ].map((m, i) => (
+            <div key={i} className="rounded-xl p-3 text-center" style={{ background: C.card2, border: `1px solid ${C.border}` }}>
+              <div className="text-xl font-black" style={{ color: m.color }}>{m.value}</div>
+              <div className="text-xs mt-0.5" style={{ color: C.muted }}>{m.label}</div>
+            </div>
           ))}
         </div>
-        <div className="mt-3 rounded-xl p-3 text-xs" style={{ background: `${sc.color}10`, border: `1px solid ${sc.color}30`, color: C.muted }}>
-          <span style={{ color: sc.color, fontWeight: 900 }}>{sc.label} plan: </span>
-          {sc.leads} leads delivered → {sc.meetings} meetings booked (8% conversion) → {sc.deals} deals closed (25% close rate) →{" "}
-          <span style={{ color: C.white, fontWeight: 900 }}>${sc.revenue.toLocaleString()} revenue</span> at ${sc.avgDeal.toLocaleString()} avg ACV
+        {/* Summary sentence */}
+        <div className="rounded-xl p-3 text-xs" style={{ background: `${tierLabel.color}10`, border: `1px solid ${tierLabel.color}25`, color: C.muted }}>
+          <span style={{ color: tierLabel.color, fontWeight: 900 }}>${(spend/1000).toFixed(0)}K/mo invested → </span>
+          {leads} targeted leads → {meetings} meetings booked (8% rate) → {deals} deals closed (25% close rate) →{" "}
+          <span style={{ color: C.white, fontWeight: 900 }}>${annualRevenue.toLocaleString()} projected revenue</span> at ${avgDeal.toLocaleString()} avg ACV (Annual Contract Value)
         </div>
-      </div>
+      </motion.div>
 
-            {/* Custom sliders */}
-      <div className="rounded-2xl p-5 space-y-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>CUSTOMIZE YOUR PROJECTION</SL>
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-black" style={{ color: C.white }}>New Enterprise Accounts Closed / Year</span>
-            <span className="text-xl font-black" style={{ color: C.orange }}>{accounts}</span>
-          </div>
-          <input type="range" min={1} max={30} value={accounts} onChange={e => setAccounts(Number(e.target.value))}
-            className="w-full" style={{ accentColor: C.orange }} />
-          <div className="flex justify-between text-xs mt-1" style={{ color: C.muted }}>
-            <span>1</span><span>30</span>
-          </div>
+      {/* ACV slider */}
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL>ADJUST AVERAGE CONTRACT VALUE</SL>
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-black" style={{ color: C.white }}>Avg Annual Contract Value (ACV)</span>
+          <span className="text-2xl font-black" style={{ color: C.orange }}>${avgDeal.toLocaleString()}</span>
         </div>
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-black" style={{ color: C.white }}>Average Annual Contract Value</span>
-            <span className="text-xl font-black" style={{ color: C.orange }}>${avgDeal.toLocaleString()}</span>
-          </div>
-          <input type="range" min={25000} max={500000} step={5000} value={avgDeal} onChange={e => setAvgDeal(Number(e.target.value))}
-            className="w-full" style={{ accentColor: C.orange }} />
-          <div className="flex justify-between text-xs mt-1" style={{ color: C.muted }}>
-            <span>$25K</span><span>$500K</span>
-          </div>
+        <input type="range" min={25000} max={500000} step={5000} value={avgDeal}
+          onChange={e => setAvgDeal(Number(e.target.value))}
+          className="w-full" style={{ accentColor: C.orange }} />
+        <div className="flex justify-between text-xs" style={{ color: C.muted }}>
+          <span>$25K — Clinic</span><span>$140K — Regional Hospital</span><span>$500K — Health System</span>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         {[
-          { label: "Annual Revenue from New Clients", value: `$${annualRevenue.toLocaleString()}`, color: C.teal },
-          { label: "Platform Investment", value: `$${serviceInvestment.toLocaleString()}/yr`, color: C.muted },
-          { label: "Net Return Year 1", value: `$${(annualRevenue - serviceInvestment).toLocaleString()}`, color: C.orange },
-          { label: "ROI", value: `${roi}%`, color: C.gold },
+          { label: "Projected Revenue",  value: `$${annualRevenue.toLocaleString()}`,              color: C.teal },
+          { label: "EA Investment",      value: `$${spend.toLocaleString()}/mo`,                   color: C.muted },
+          { label: "Net Return Year 1",  value: `$${(annualRevenue - spend).toLocaleString()}`,    color: C.orange },
+          { label: "ROI",               value: `${roi}%`,                                          color: C.gold },
         ].map((s, i) => (
           <motion.div key={i} layout className="rounded-xl p-4 text-center" style={{ background: C.card, border: `1px solid ${C.border}` }}>
             <div className="text-2xl font-black" style={{ color: s.color }}>{s.value}</div>
@@ -747,7 +855,7 @@ function TabROI() {
       <div className="rounded-2xl p-4 text-center" style={{ background: `${C.orange}12`, border: `1px solid ${C.orange}30` }}>
         <div className="text-xs font-black mb-1" style={{ color: C.orange }}>PAYBACK PERIOD</div>
         <div className="text-3xl font-black" style={{ color: C.white }}>{payback} months</div>
-        <div className="text-xs mt-1" style={{ color: C.muted }}>to recover the full platform investment</div>
+        <div className="text-xs mt-1" style={{ color: C.muted }}>to recover the full monthly platform investment</div>
       </div>
 
       {/* 12-month projection */}
@@ -1209,10 +1317,8 @@ export default function SymCheckDashboard() {
         </button>
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            {/* SymCheck-style logo text */}
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-2xl font-black" style={{ color: C.teal }}>sym</span>
-              <span className="text-2xl font-black" style={{ color: C.white }}>✓</span>
+            <div className="flex items-center gap-3 mb-0.5">
+              <img src={symcheckLogo} alt="SymCheck" style={{ height: 32, width: 'auto', objectFit: 'contain' }} />
               <span className="text-xs font-black px-2 py-0.5 rounded" style={{ background: C.grad, color: C.bg }}>EXACT AUDIENCE</span>
             </div>
             <div className="text-xs" style={{ color: C.muted }}>AI-Powered Wellness Intelligence · Tennessee Market · Exact Audience + SiteID</div>

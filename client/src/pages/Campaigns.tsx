@@ -155,6 +155,7 @@ const SLUG_ROUTES: Record<string, string> = {
   "intermed-healthtrust":         "/intermed-healthtrust",
   "mogul-club":                    "/mogul",
   "symcheck":                       "/symcheck",
+  "litehouse-health":               "/litehouse",
 };
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
