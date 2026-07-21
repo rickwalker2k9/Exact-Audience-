@@ -1035,7 +1035,7 @@ function TabSearch() {
       pool = pool.filter(t => t.state === abbr || t.state === state);
     }
 
-    if (orgType) pool = pool.filter(t => t.type === orgType || t.tags.some(tag => tag.toLowerCase().includes(orgType.toLowerCase())));
+    if (orgType) pool = pool.filter(t => t.type.toLowerCase().includes(orgType.toLowerCase()) || t.tags.some(tag => tag.toLowerCase().includes(orgType.toLowerCase())));
 
     if (title) {
       const titleLower = title.toLowerCase();
@@ -1207,7 +1207,7 @@ export default function ProdromeDashboard() {
 
       {/* Header */}
       <div className="sticky top-0 z-40 px-4 py-3" style={{ background: `${C.bg}f0`, backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}` }}>
-        <div className="flex items-center justify-between max-w-2xl mx-auto">
+        <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div>
             <div className="font-black text-base" style={{ color: C.white }}>Prodrome Science</div>
             <div className="text-xs" style={{ color: C.muted }}>prodrome.com · Lipid Science · Brain Health</div>
@@ -1222,7 +1222,7 @@ export default function ProdromeDashboard() {
 
       {/* Tab bar */}
       <div className="sticky top-14 z-30 px-4 py-2" style={{ background: `${C.bg}f0`, backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}` }}>
-        <div className="flex gap-1 overflow-x-auto max-w-2xl mx-auto">
+        <div className="flex gap-1 overflow-x-auto max-w-6xl mx-auto">
           {TABS.map(tab => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all shrink-0"
@@ -1239,7 +1239,7 @@ export default function ProdromeDashboard() {
       </div>
 
       {/* Content */}
-      <div className="px-4 py-5 max-w-2xl mx-auto">
+      <div className="px-4 py-5 max-w-6xl mx-auto">
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.2 }}>
