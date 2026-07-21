@@ -22,6 +22,7 @@ import InterMedDashboard from "./pages/InterMedDashboard";
 import ImagineAgencyDashboard from "./pages/ImagineAgencyDashboard";
 import MogulDashboard from "./pages/MogulDashboard";
 import LitehouseHealthDashboard from "./pages/LitehouseHealthDashboard";
+import ProdromeDashboard from "./pages/ProdromeDashboard";
 
 function Router() {
   return (
@@ -44,6 +45,7 @@ function Router() {
       <Route path="/imagine-agency" component={ImagineAgencyDashboard} />
       <Route path="/mogul" component={MogulDashboard} />
       <Route path="/litehouse" component={LitehouseHealthDashboard} />
+      <Route path="/prodrome" component={ProdromeDashboard} />
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />

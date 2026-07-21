@@ -375,6 +375,16 @@ const SITE_VISITORS = [
     name: "Marcus Tillman", org: "HCA Healthcare", title: "VP Benefits Strategy",
     city: "Nashville", state: "TN", lastSeen: "19m ago", visits: 3,
     pages: ["Platform", "Applications", "Competitor Comparison"],
+    competitorAlert: true,
+    competitorNote: "Visited Shen.AI pricing page 22 min ago · Googled 'SymCheck vs Binah.ai' · Viewed NuraLogix enterprise demo page",
+    journeySteps: [
+      { time: "2h 14m ago", page: "Google: 'enterprise wellness screening platforms 2026'", type: "search" },
+      { time: "1h 58m ago", page: "Shen.AI — Enterprise Pricing", type: "competitor" },
+      { time: "1h 31m ago", page: "NuraLogix — Book a Demo", type: "competitor" },
+      { time: "47m ago",    page: "symcheck.com — Platform Overview", type: "site" },
+      { time: "41m ago",    page: "symcheck.com — Applications", type: "site" },
+      { time: "19m ago",    page: "symcheck.com — Competitor Comparison", type: "site" },
+    ],
     timeOnSite: "6m 11s", tier: "TIER 0 — STILL EVALUATING",
     tierColor: C.orange, income: "$320K",
     phone: "(615) 344-9551", email: "m.tillman@hcahealthcare.com",
@@ -397,6 +407,16 @@ const SITE_VISITORS = [
     name: "Gregory Weston", org: "Tennessee Valley Authority", title: "Chief Human Resources Officer",
     city: "Knoxville", state: "TN", lastSeen: "1h 22m ago", visits: 6,
     pages: ["Wellness", "Enterprise", "Pricing", "Biometric Screening Alternatives"],
+    competitorAlert: true,
+    competitorNote: "Googled 'biometric screening alternatives to SymCheck' · Viewed Optum Wellness pricing · Checked Virgin Pulse enterprise demo",
+    journeySteps: [
+      { time: "4h 10m ago", page: "Google: 'biometric wellness screening for government employees'", type: "search" },
+      { time: "3h 52m ago", page: "symcheck.com — Wellness Platform", type: "site" },
+      { time: "3h 20m ago", page: "symcheck.com — Enterprise", type: "site" },
+      { time: "2h 45m ago", page: "Optum Wellness — Employer Solutions Pricing", type: "competitor" },
+      { time: "2h 11m ago", page: "Virgin Pulse — Request Enterprise Demo", type: "competitor" },
+      { time: "1h 22m ago", page: "symcheck.com — Pricing · Biometric Screening Alternatives", type: "site" },
+    ],
     timeOnSite: "13m 44s", tier: "TIER 0 — LAST-MINUTE COMPARISON",
     tierColor: C.orange, income: "$315K",
     phone: "(865) 632-2101", email: "g.weston@tva.gov",
@@ -854,10 +874,18 @@ function TabSiteID() {
               </div>
             </div>
 
-            {/* Tier badge */}
-            <div className="mt-2 inline-block px-2 py-0.5 rounded-full text-xs font-black"
-              style={{ background: `${v.tierColor}20`, color: v.tierColor, border: `1px solid ${v.tierColor}40` }}>
-              {v.tier}
+            {/* Tier badge + competitor alert */}
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <div className="inline-block px-2 py-0.5 rounded-full text-xs font-black"
+                style={{ background: `${v.tierColor}20`, color: v.tierColor, border: `1px solid ${v.tierColor}40` }}>
+                {v.tier}
+              </div>
+              {(v as any).competitorAlert && (
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-black animate-pulse"
+                  style={{ background: "#ef444420", color: "#ef4444", border: "1px solid #ef444440" }}>
+                  <span>⚠</span> COMPETITOR RESEARCH DETECTED
+                </div>
+              )}
             </div>
 
             {/* Pages + time */}
@@ -903,6 +931,34 @@ function TabSiteID() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Competitor alert detail */}
+                  {(v as any).competitorAlert && (
+                    <div className="rounded-xl p-3" style={{ background: "#ef444412", border: "1px solid #ef444430" }}>
+                      <div className="text-xs font-black mb-1" style={{ color: "#ef4444" }}>⚠ COMPETITOR RESEARCH IN PROGRESS</div>
+                      <div className="text-xs" style={{ color: "#fca5a5" }}>{(v as any).competitorNote}</div>
+                    </div>
+                  )}
+
+                  {/* Buyer journey timeline */}
+                  {(v as any).journeySteps && (
+                    <div>
+                      <div className="text-xs font-black mb-2" style={{ color: C.gold }}>ONLINE BUYER JOURNEY</div>
+                      <div className="space-y-1">
+                        {(v as any).journeySteps.map((step: any, si: number) => (
+                          <div key={si} className="flex items-start gap-2 text-xs">
+                            <div className="shrink-0 w-20 text-right" style={{ color: C.muted }}>{step.time}</div>
+                            <div className="shrink-0 w-2 h-2 rounded-full mt-0.5" style={{
+                              background: step.type === "competitor" ? "#ef4444" : step.type === "search" ? C.gold : C.teal
+                            }} />
+                            <div style={{ color: step.type === "competitor" ? "#fca5a5" : step.type === "search" ? C.gold : C.white }}>
+                              {step.type === "competitor" && "🔴 "}{step.type === "search" && "🔍 "}{step.type === "site" && "✓ "}{step.page}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Quick outreach preview */}
                   <div>

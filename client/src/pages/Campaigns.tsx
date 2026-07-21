@@ -156,6 +156,7 @@ const SLUG_ROUTES: Record<string, string> = {
   "mogul-club":                    "/mogul",
   "symcheck":                       "/symcheck",
   "litehouse-health":               "/litehouse",
+  "prodrome":                         "/prodrome",
 };
 
 // ── Main Page ─────────────────────────────────────────────────────────────────

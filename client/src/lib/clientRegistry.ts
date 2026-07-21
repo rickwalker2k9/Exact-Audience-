@@ -247,6 +247,27 @@ export const CLIENTS: CampaignClient[] = [
     completionRate: 89.6,
     primaryColor: "#00B4D8",
   },
+  // ── PRODROME SCIENCE ──────────────────────────────────────────────────────────
+  {
+    id: 44,
+    slug: "prodrome",
+    name: "Prodrome Science",
+    vertical: "Functional Medicine / Brain Health",
+    location: "Victoria, BC (Global)",
+    description: "Plasmalogen science — practitioner acquisition for ProdromeScan™ testing and ProdromeNeuro/Glia supplement protocols via Site ID + Exact Audience",
+    domain: "prodrome.com",
+    logoDomain: "prodrome.com",
+    campaign: "Practitioner Acquisition 2026",
+    budget: "$30,000",
+    startDate: "Jul 21, 2026",
+    status: "active" as ClientStatus,
+    hasDashboard: true,
+    trend: risingTrend(18000),
+    impressionsToDate: 1420000,
+    reachToDate: 62800,
+    completionRate: 88.4,
+    primaryColor: "#10b981",
+  },
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
   {
     id: 6,
