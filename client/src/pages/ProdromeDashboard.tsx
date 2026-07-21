@@ -1299,10 +1299,11 @@ function TabSearch() {
   const TITLES = ["", "Medical Director", "Founder / CEO", "Director of Clinical Operations", "VP Partnerships", "Chief Science Officer", "Director of Research", "VP Clinical Programs", "Chief Wellness Officer", "Dean / Academic Director"];
 
   // Auto-run search on mount
-  useEffect(() => { runSearch(); }, []);
+  useEffect(() => {
+    setTimeout(() => runSearch(), 100);
+  }, []);
 
   function runSearch() {
-    if (searching) return;
     setSearching(true);
     setResults([]);
     setLoadingIdx([]);
@@ -1345,17 +1346,36 @@ function TabSearch() {
 
     if (title) {
       const titleLower = title.toLowerCase();
-      // fuzzy: any word in title filter matches any word in contact title
-      const titleWords = titleLower.split(" ").filter(w => w.length > 3);
+      // Very fuzzy: match any single meaningful word from the filter against any contact title
+      const titleWords = titleLower.split(/[\s\/,&]+/).filter(w => w.length > 3);
       pool = pool.filter(t => {
         const allTitles = [
           t.contact.title.toLowerCase(),
           t.contact2 ? t.contact2.title.toLowerCase() : "",
         ].join(" ");
-        return titleWords.length === 0
-          ? allTitles.includes(titleLower)
-          : titleWords.some(w => allTitles.includes(w));
+        // If no meaningful words, skip filter
+        if (titleWords.length === 0) return true;
+        return titleWords.some(w => allTitles.includes(w));
       });
+      // If title filter wiped everything, ignore it and return unfiltered state results
+      if (pool.length === 0) {
+        let fallback = [...SEARCH_POOL];
+        if (state && state !== "National") {
+          const stateAbbr: Record<string, string> = {
+            "California": "CA", "Texas": "TX", "New York": "NY", "Florida": "FL",
+            "Illinois": "IL", "Ohio": "OH", "Washington": "WA", "Colorado": "CO",
+            "Georgia": "GA", "North Carolina": "NC", "Tennessee": "TN", "Massachusetts": "MA",
+            "Pennsylvania": "PA", "Michigan": "MI", "Virginia": "VA", "Maryland": "MD",
+            "New Jersey": "NJ", "Arizona": "AZ", "Minnesota": "MN", "Indiana": "IN",
+            "Wisconsin": "WI", "Missouri": "MO", "Oregon": "OR", "Nevada": "NV",
+            "Connecticut": "CT", "Utah": "UT", "Oklahoma": "OK", "Kansas": "KS",
+            "Nebraska": "NE", "Iowa": "IA",
+          };
+          const abbr = stateAbbr[state] || state;
+          fallback = fallback.filter(t => t.state === abbr || t.state === state);
+        }
+        pool = fallback.length > 0 ? fallback : [...SEARCH_POOL].slice(0, 8);
+      }
     }
 
     if (pool.length === 0) {
