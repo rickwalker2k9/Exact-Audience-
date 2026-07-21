@@ -1693,15 +1693,22 @@ function TabTBI() {
         <p className="text-xs" style={{ color: P.muted }}>Tap a brain region to see clinical TBI presentation and why NeuroCatch documentation is critical.</p>
       </div>
 
-      {/* Brain image — full width, no side columns */}
-      <div className="relative rounded-2xl overflow-hidden w-full" style={{ background: 'transparent' }}>
-        <img
-          src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
-          alt="Brain"
-          style={{ display: 'block', width: '100%', height: 'auto', filter: 'saturate(1.0) brightness(0.9) drop-shadow(0 0 16px rgba(239,68,68,0.25))' }}
-          draggable={false}
-        />
+      {/* Brain image — compact centered with float animation */}
+      <div className="flex justify-center">
+        <div style={{ width: 180, flexShrink: 0 }}>
+          <img
+            src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663344335759/WcCRppeQmwrDTLId.png"
+            alt="Brain"
+            style={{
+              display: 'block', width: '100%', height: 'auto',
+              filter: 'saturate(1.0) brightness(0.9) drop-shadow(0 0 16px rgba(239,68,68,0.35))',
+              animation: 'brainFloat 3.2s ease-in-out infinite',
+            }}
+            draggable={false}
+          />
+        </div>
       </div>
+      <style>{`@keyframes brainFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-7px)} }`}</style>
 
       {/* Region selector — 2-column grid, tap-friendly */}
       <div className="grid grid-cols-2 gap-2">
