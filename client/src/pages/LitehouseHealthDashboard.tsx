@@ -85,6 +85,7 @@ type TargetEntry = {
   intensity: number; weeks: number;
   contact: Contact;
   contact2?: Contact;
+  contact3?: Contact;
   tags: string[];
   signals: string[];
   surgeTopics: string[];
@@ -254,6 +255,7 @@ const TARGET_POOL: TargetEntry[] = [
     signal: "Healthcare Workforce Optimization Platform", intensity: 96, weeks: 5,
     contact: { name: "Heather Brace", title: "Chief People Officer", phone: "(801) 442-2000", email: "h.brace@imail.org", linkedin: "linkedin.com/in/heather-brace-intermountain", address: "36 S State St", city: "Salt Lake City", state: "UT" },
     contact2: { name: "Dr. Katy Welkie", title: "Chief Nursing Officer", phone: "(801) 442-5100", email: "k.welkie@imail.org" },
+    contact3: { name: "Rob Allen", title: "CFO", phone: "(801) 442-3000", email: "r.allen@imail.org" },
     tags: ["Health System", "26 Hospitals", "Non-Profit", "Mountain West"],
     signals: ["Visited Litehouse Beacon product page 4x", "Researched travel nurse cost reduction strategies", "Downloaded AONL workforce optimization report", "Viewed UKG integration documentation"],
     surgeTopics: ["Travel nurse reduction", "Internal float pool optimization", "Shift cost management"],
@@ -266,6 +268,7 @@ const TARGET_POOL: TargetEntry[] = [
     signal: "Internal PRN Pool Expansion + Beacon Integration", intensity: 93, weeks: 4,
     contact: { name: "Mary Beth Kingston", title: "Chief Nursing Officer", phone: "(704) 355-2000", email: "mb.kingston@advocatehealth.com", linkedin: "linkedin.com/in/marybeth-kingston-advocate", address: "900 S Tryon St", city: "Charlotte", state: "NC" },
     contact2: { name: "James Skogsbergh", title: "Co-CEO", phone: "(704) 355-1000", email: "j.skogsbergh@advocatehealth.com" },
+    contact3: { name: "Dominic Nakis", title: "CFO", phone: "(704) 355-2200", email: "d.nakis@advocatehealth.com" },
     tags: ["Health System", "67 Hospitals", "Existing Litehouse Partner", "Expansion Opportunity"],
     signals: ["Returned to Beacon marketplace page 6x this week", "Researched Beacon UKG integration specs", "Visited Litehouse clinician marketplace page", "Reviewed case study: shift cost reduction"],
     surgeTopics: ["Beacon marketplace expansion", "PRN pool growth", "Float pool automation"],
@@ -290,6 +293,7 @@ const TARGET_POOL: TargetEntry[] = [
     signal: "Travel Nurse Dependency Reduction Initiative", intensity: 88, weeks: 4,
     contact: { name: "Sylvain Trepanier", title: "Chief Nursing Officer", phone: "(425) 525-3355", email: "s.trepanier@providence.org", linkedin: "linkedin.com/in/sylvain-trepanier-providence", address: "1801 Lind Ave SW", city: "Renton", state: "WA" },
     contact2: { name: "Greg Till", title: "Chief People Officer", phone: "(425) 525-3000", email: "g.till@providence.org" },
+    contact3: { name: "Rhonda Medows", title: "CFO", phone: "(425) 525-3100", email: "r.medows@providence.org" },
     tags: ["Health System", "51 Hospitals", "Non-Profit", "Pacific Northwest"],
     signals: ["Visited travel nurse cost calculator page", "Researched internal float pool best practices", "Viewed Beacon scheduling automation features", "Downloaded AONL staffing model templates"],
     surgeTopics: ["Float pool automation", "Travel nurse cost reduction", "Internal PRN development"],
@@ -326,6 +330,7 @@ const TARGET_POOL: TargetEntry[] = [
     signal: "Oracle Integration + Workforce Automation RFI", intensity: 80, weeks: 3,
     contact: { name: "Deb Krmpotic", title: "Chief Nursing Officer", phone: "(602) 747-4000", email: "d.krmpotic@bannerhealth.com", linkedin: "linkedin.com/in/deb-krmpotic-banner", address: "2901 N Central Ave", city: "Phoenix", state: "AZ" },
     contact2: { name: "Jim Roxburgh", title: "Chief Operating Officer", phone: "(602) 747-4100", email: "j.roxburgh@bannerhealth.com" },
+    contact3: { name: "Dennis Dahlen", title: "CFO", phone: "(602) 747-4200", email: "d.dahlen@bannerhealth.com" },
     tags: ["Health System", "30 Hospitals", "Oracle Integration", "Southwest"],
     signals: ["Viewed Beacon Oracle integration documentation", "Researched workforce automation RFI templates", "Visited Litehouse Tableau analytics page", "Searched 'Oracle Beacon integration healthcare'"],
     surgeTopics: ["Oracle integration", "Workforce automation", "Tableau analytics"],
@@ -1113,6 +1118,525 @@ const SEARCH_POOL: TargetEntry[] = [
     activitySummary: "Spectrum Health operations team researching shift allocation automation — Beacon's UKG integration is a direct fit.",
     trend: "steady", sparkline: [35, 42, 50, 56, 61, 65, 68, 71],
   },
+  // ── Oklahoma ──────────────────────────────────────────────────────────────
+  {
+    org: "INTEGRIS Health", type: "Health System",
+    city: "Oklahoma City", state: "OK", beds: 3200,
+    signal: "Travel Nurse Cost Reduction Initiative", intensity: 83, weeks: 4,
+    contact: { name: "Timothy Pehrson", title: "President & CEO", phone: "(405) 951-2000", email: "t.pehrson@integrishealth.com", linkedin: "linkedin.com/in/timothy-pehrson", address: "3300 NW Expressway", city: "Oklahoma City", state: "OK" },
+    contact2: { name: "Sherri Carr", title: "Chief Nursing Officer", phone: "(405) 951-2100", email: "s.carr@integrishealth.com" },
+    tags: ["Health System", "Regional", "South Central"],
+    signals: ["Viewed Beacon travel nurse reduction case study", "Researched internal float pool build", "Compared Litehouse vs ShiftMed pricing"],
+    surgeTopics: ["Travel nurse reduction", "Float pool", "Cost per shift"],
+    activitySummary: "INTEGRIS CNO actively evaluating platforms to cut $4.2M in annual travel nurse spend — Beacon's marketplace model is a direct fit.",
+    trend: "rising", sparkline: [30, 40, 52, 60, 68, 74, 79, 83],
+  },
+  {
+    org: "OU Health", type: "Academic Medical Center",
+    city: "Oklahoma City", state: "OK", beds: 1200,
+    signal: "Workforce Scheduling Platform Evaluation", intensity: 76, weeks: 2,
+    contact: { name: "Chuck Spicer", title: "President & CEO", phone: "(405) 271-4700", email: "c.spicer@ouhealth.com", linkedin: "linkedin.com/in/chuck-spicer-ouhealth", address: "700 NE 13th St", city: "Oklahoma City", state: "OK" },
+    contact2: { name: "Kelli Whittington", title: "Chief Nursing Officer", phone: "(405) 271-5911", email: "k.whittington@ouhealth.com" },
+    tags: ["Academic Medical Center", "Teaching Hospital", "South Central"],
+    signals: ["Researched workforce scheduling platforms", "Viewed Beacon EHR integration page", "Downloaded AONL workforce report"],
+    surgeTopics: ["Scheduling automation", "EHR integration", "Staffing efficiency"],
+    activitySummary: "OU Health operations team evaluating scheduling platforms — Beacon's Epic integration and shift automation are key differentiators.",
+    trend: "new", sparkline: [20, 32, 44, 54, 62, 68, 72, 76],
+  },
+  {
+    org: "Saint Francis Health System", type: "Health System",
+    city: "Tulsa", state: "OK", beds: 1800,
+    signal: "Internal PRN Pool Development", intensity: 69, weeks: 3,
+    contact: { name: "Jake Henry Jr.", title: "President & CEO", phone: "(918) 494-2200", email: "j.henry@saintfrancis.com", linkedin: "linkedin.com/in/jake-henry-saintfrancis", address: "6161 S Yale Ave", city: "Tulsa", state: "OK" },
+    tags: ["Health System", "Regional", "South Central"],
+    signals: ["Viewed Litehouse clinician marketplace", "Researched PRN pool best practices", "Compared Beacon vs Symplr"],
+    surgeTopics: ["PRN pool", "Internal staffing", "Marketplace"],
+    activitySummary: "Saint Francis HR leadership building internal PRN pool to reduce agency dependency — Litehouse marketplace is a direct pipeline.",
+    trend: "steady", sparkline: [38, 45, 52, 57, 61, 64, 67, 69],
+  },
+  // ── Kansas ────────────────────────────────────────────────────────────────
+  {
+    org: "The University of Kansas Health System", type: "Academic Medical Center",
+    city: "Kansas City", state: "KS", beds: 1000,
+    signal: "Staffing Optimization Platform Search", intensity: 78, weeks: 3,
+    contact: { name: "Bob Page", title: "President & CEO", phone: "(913) 588-5000", email: "r.page@kumed.com", linkedin: "linkedin.com/in/bob-page-kumed", address: "4000 Cambridge St", city: "Kansas City", state: "KS" },
+    contact2: { name: "Tammy Peterman", title: "Chief Nursing Officer", phone: "(913) 588-1227", email: "t.peterman@kumed.com" },
+    tags: ["Academic Medical Center", "Teaching Hospital", "Midwest"],
+    signals: ["Researched staffing optimization platforms", "Viewed Beacon float pool features", "Visited Litehouse about page"],
+    surgeTopics: ["Float pool", "Staffing optimization", "Cost reduction"],
+    activitySummary: "KU Health System CNO evaluating workforce platforms — Beacon's academic medical center case studies are resonating.",
+    trend: "rising", sparkline: [28, 38, 50, 58, 65, 70, 74, 78],
+  },
+  // ── Nebraska ──────────────────────────────────────────────────────────────
+  {
+    org: "Nebraska Medicine", type: "Academic Medical Center",
+    city: "Omaha", state: "NE", beds: 900,
+    signal: "Travel Nurse Spend Reduction", intensity: 72, weeks: 2,
+    contact: { name: "James Linder", title: "CEO", phone: "(402) 552-2000", email: "j.linder@nebraskamed.com", linkedin: "linkedin.com/in/james-linder-nebraskamed", address: "987 S 72nd St", city: "Omaha", state: "NE" },
+    tags: ["Academic Medical Center", "Teaching Hospital", "Midwest"],
+    signals: ["Viewed Beacon travel nurse reduction ROI calculator", "Researched EOR staffing models", "Compared Litehouse vs Aya Healthcare"],
+    surgeTopics: ["Travel nurse reduction", "EOR model", "Cost per shift"],
+    activitySummary: "Nebraska Medicine CFO and CNO aligned on reducing $2.8M travel nurse budget — Beacon's EOR model is under active evaluation.",
+    trend: "new", sparkline: [22, 34, 46, 55, 62, 66, 69, 72],
+  },
+  // ── Iowa ──────────────────────────────────────────────────────────────────
+  {
+    org: "UnityPoint Health", type: "Health System",
+    city: "Des Moines", state: "IA", beds: 4200,
+    signal: "Workforce Management Platform Evaluation", intensity: 81, weeks: 4,
+    contact: { name: "Clay Holderman", title: "President & CEO", phone: "(515) 241-6212", email: "c.holderman@unitypoint.org", linkedin: "linkedin.com/in/clay-holderman-unitypoint", address: "1776 West Lakes Pkwy", city: "West Des Moines", state: "IA" },
+    contact2: { name: "Pamela Delagardelle", title: "Chief Nursing Officer", phone: "(515) 241-6000", email: "p.delagardelle@unitypoint.org" },
+    tags: ["Health System", "Regional", "Midwest"],
+    signals: ["Viewed Beacon workforce management overview", "Researched shift allocation automation", "Downloaded Litehouse shift cost calculator"],
+    surgeTopics: ["Workforce management", "Shift automation", "Float pool"],
+    activitySummary: "UnityPoint Health CNO evaluating Beacon for system-wide workforce management across 40+ facilities in Iowa, Illinois, and Wisconsin.",
+    trend: "rising", sparkline: [32, 42, 54, 62, 69, 74, 78, 81],
+  },
+  // ── Texas ─────────────────────────────────────────────────────────────────
+  {
+    org: "Baylor Scott & White Health", type: "Health System",
+    city: "Dallas", state: "TX", beds: 6800,
+    signal: "Enterprise Staffing Platform RFP", intensity: 91, weeks: 5,
+    contact: { name: "Pete McCanna", title: "President & CEO", phone: "(214) 820-0111", email: "p.mccanna@bswhealth.org", linkedin: "linkedin.com/in/pete-mccanna-bsw", address: "2001 Bryan St", city: "Dallas", state: "TX" },
+    contact2: { name: "Nate Spell", title: "Chief Nursing Officer", phone: "(214) 820-3151", email: "n.spell@bswhealth.org" },
+    contact3: { name: "Michael Sanborn", title: "CFO", phone: "(214) 820-0222", email: "m.sanborn@bswhealth.org" },
+    tags: ["Health System", "Large System", "South Central"],
+    signals: ["Issued enterprise staffing platform RFP", "Viewed Beacon enterprise features", "Researched Litehouse marketplace scale", "Compared Beacon vs UKG Workforce Central"],
+    surgeTopics: ["Enterprise staffing", "RFP evaluation", "System-wide deployment"],
+    activitySummary: "BSW Health issued a formal RFP for enterprise staffing platform — Beacon is on the shortlist. Decision expected Q3 2026.",
+    trend: "rising", sparkline: [50, 60, 70, 76, 82, 86, 89, 91],
+  },
+  {
+    org: "Memorial Hermann Health System", type: "Health System",
+    city: "Houston", state: "TX", beds: 5200,
+    signal: "Float Pool Optimization Initiative", intensity: 84, weeks: 3,
+    contact: { name: "David Callender", title: "President & CEO", phone: "(713) 242-2700", email: "d.callender@memorialhermann.org", linkedin: "linkedin.com/in/david-callender-memorialhermann", address: "929 Gessner Rd", city: "Houston", state: "TX" },
+    contact2: { name: "Erin Denholm", title: "Chief Nursing Officer", phone: "(713) 242-2800", email: "e.denholm@memorialhermann.org" },
+    contact3: { name: "Lance Renfrow", title: "CFO", phone: "(713) 242-2900", email: "l.renfrow@memorialhermann.org" },
+    tags: ["Health System", "Large System", "South Central"],
+    signals: ["Viewed Beacon float pool optimization case study", "Researched internal PRN marketplace", "Visited Litehouse clinician onboarding page"],
+    surgeTopics: ["Float pool", "PRN marketplace", "Clinician onboarding"],
+    activitySummary: "Memorial Hermann CNO leading float pool optimization project — Litehouse marketplace is a direct fit for their local W2 clinician pipeline.",
+    trend: "steady", sparkline: [42, 52, 62, 68, 73, 77, 81, 84],
+  },
+  // ── Colorado ──────────────────────────────────────────────────────────────
+  {
+    org: "UCHealth", type: "Health System",
+    city: "Aurora", state: "CO", beds: 3800,
+    signal: "Workforce Technology Stack Modernization", intensity: 77, weeks: 3,
+    contact: { name: "Elizabeth Concordia", title: "President & CEO", phone: "(720) 848-0000", email: "e.concordia@uchealth.org", linkedin: "linkedin.com/in/elizabeth-concordia-uchealth", address: "12605 E 16th Ave", city: "Aurora", state: "CO" },
+    contact2: { name: "Teri Lura", title: "Chief Nursing Officer", phone: "(720) 848-1000", email: "t.lura@uchealth.org" },
+    tags: ["Health System", "Academic", "Mountain West"],
+    signals: ["Researched workforce technology modernization", "Viewed Beacon API integration docs", "Compared Litehouse vs QGenda"],
+    surgeTopics: ["Tech modernization", "API integration", "Scheduling automation"],
+    activitySummary: "UCHealth CIO and CNO co-leading workforce tech modernization — Beacon's API-first architecture is a key differentiator.",
+    trend: "new", sparkline: [25, 36, 48, 57, 63, 68, 73, 77],
+  },
+  // ── Georgia ───────────────────────────────────────────────────────────────
+  {
+    org: "Piedmont Healthcare", type: "Health System",
+    city: "Atlanta", state: "GA", beds: 4500,
+    signal: "Travel Nurse Dependency Reduction", intensity: 86, weeks: 4,
+    contact: { name: "Kevin Brown", title: "President & CEO", phone: "(404) 425-1000", email: "k.brown@piedmont.org", linkedin: "linkedin.com/in/kevin-brown-piedmont", address: "1800 Howell Mill Rd NW", city: "Atlanta", state: "GA" },
+    contact2: { name: "Leslie Donahue", title: "Chief Nursing Officer", phone: "(404) 425-1100", email: "l.donahue@piedmont.org" },
+    tags: ["Health System", "Large System", "Southeast"],
+    signals: ["Viewed Beacon travel nurse reduction ROI", "Researched Litehouse W2 marketplace model", "Downloaded shift cost comparison tool"],
+    surgeTopics: ["Travel nurse reduction", "W2 marketplace", "Shift cost"],
+    activitySummary: "Piedmont Healthcare CNO targeting 40% reduction in travel nurse spend by Q4 2026 — Beacon's marketplace model is under active evaluation.",
+    trend: "rising", sparkline: [38, 50, 62, 70, 76, 80, 83, 86],
+  },
+  // ── Florida ───────────────────────────────────────────────────────────────
+  {
+    org: "AdventHealth", type: "Health System",
+    city: "Altamonte Springs", state: "FL", beds: 8900,
+    signal: "System-Wide Staffing Platform Evaluation", intensity: 88, weeks: 5,
+    contact: { name: "Terry Shaw", title: "President & CEO", phone: "(407) 357-1000", email: "t.shaw@adventhealth.com", linkedin: "linkedin.com/in/terry-shaw-adventhealth", address: "900 Hope Way", city: "Altamonte Springs", state: "FL" },
+    contact2: { name: "Kathleen Vollman", title: "Chief Nursing Officer", phone: "(407) 357-1100", email: "k.vollman@adventhealth.com" },
+    tags: ["Health System", "Large System", "Southeast"],
+    signals: ["Viewed Beacon system-wide deployment case study", "Researched Litehouse marketplace scale", "Compared Beacon vs Symplr workforce"],
+    surgeTopics: ["System-wide deployment", "Marketplace scale", "Workforce management"],
+    activitySummary: "AdventHealth CNO evaluating Beacon for system-wide deployment across 50+ facilities — scale and integration depth are the deciding factors.",
+    trend: "rising", sparkline: [45, 56, 66, 73, 78, 82, 85, 88],
+  },
+  // ── Minnesota ─────────────────────────────────────────────────────────────
+  {
+    org: "Allina Health", type: "Health System",
+    city: "Minneapolis", state: "MN", beds: 3100,
+    signal: "Internal Staffing Marketplace Build", intensity: 75, weeks: 2,
+    contact: { name: "Penny Wheeler", title: "President & CEO", phone: "(612) 262-5000", email: "p.wheeler@allinahealth.org", linkedin: "linkedin.com/in/penny-wheeler-allina", address: "2925 Chicago Ave", city: "Minneapolis", state: "MN" },
+    contact2: { name: "Corrine Haviley", title: "Chief Nursing Officer", phone: "(612) 262-5100", email: "c.haviley@allinahealth.org" },
+    tags: ["Health System", "Regional", "Midwest"],
+    signals: ["Researched internal staffing marketplace models", "Viewed Litehouse EOR model", "Visited Beacon clinician onboarding page"],
+    surgeTopics: ["Internal marketplace", "EOR model", "Clinician onboarding"],
+    activitySummary: "Allina Health CNO building internal staffing marketplace — Litehouse's W2 EOR model is the exact structure they're evaluating.",
+    trend: "new", sparkline: [24, 36, 48, 57, 63, 68, 71, 75],
+  },
+  // ── Indiana ───────────────────────────────────────────────────────────────
+  {
+    org: "Indiana University Health", type: "Health System",
+    city: "Indianapolis", state: "IN", beds: 3600,
+    signal: "Workforce Optimization Platform RFP", intensity: 82, weeks: 4,
+    contact: { name: "Dennis Murphy", title: "President & CEO", phone: "(317) 962-2000", email: "d.murphy@iuhealth.org", linkedin: "linkedin.com/in/dennis-murphy-iuhealth", address: "340 W 10th St", city: "Indianapolis", state: "IN" },
+    contact2: { name: "Sherri Stahl", title: "Chief Nursing Officer", phone: "(317) 962-2100", email: "s.stahl@iuhealth.org" },
+    tags: ["Health System", "Academic", "Midwest"],
+    signals: ["Issued workforce optimization RFP", "Viewed Beacon enterprise deployment guide", "Researched Litehouse marketplace volume"],
+    surgeTopics: ["Workforce optimization", "Enterprise deployment", "Marketplace volume"],
+    activitySummary: "IU Health issued a workforce optimization RFP — Beacon is being evaluated alongside UKG and Symplr. Decision expected Q3 2026.",
+    trend: "rising", sparkline: [36, 48, 58, 66, 72, 76, 79, 82],
+  },
+  // ── Tennessee ─────────────────────────────────────────────────────────────
+  {
+    org: "Vanderbilt University Medical Center", type: "Academic Medical Center",
+    city: "Nashville", state: "TN", beds: 1000,
+    signal: "Internal Float Pool Expansion", intensity: 88, weeks: 4,
+    contact: { name: "C. Wright Pinson", title: "Chief Nursing Officer", phone: "(615) 322-5000", email: "c.pinson@vumc.org", linkedin: "linkedin.com/in/wright-pinson-vumc", address: "1211 Medical Center Dr", city: "Nashville", state: "TN" },
+    contact2: { name: "Cecelia Moore", title: "CFO", phone: "(615) 322-5100", email: "c.moore@vumc.org" },
+    contact3: { name: "Pam Jones", title: "VP of Nursing Operations", phone: "(615) 322-5200", email: "p.jones@vumc.org" },
+    tags: ["Academic Medical Center", "Research", "Mid-South"],
+    signals: ["Viewed Beacon float pool features", "Researched internal PRN development", "Visited Litehouse marketplace page"],
+    surgeTopics: ["Float pool expansion", "PRN development", "Shift cost reduction"],
+    activitySummary: "VUMC nursing leadership evaluating Beacon for float pool expansion across Nashville campus.",
+    trend: "rising", sparkline: [50, 60, 68, 74, 79, 83, 86, 88],
+  },
+  {
+    org: "Erlanger Health System", type: "Health System",
+    city: "Chattanooga", state: "TN", beds: 975,
+    signal: "Travel Nurse Cost Reduction Initiative", intensity: 79, weeks: 3,
+    contact: { name: "Stephanie Duggan", title: "Chief Nursing Officer", phone: "(423) 778-7000", email: "s.duggan@erlanger.org", linkedin: "linkedin.com/in/stephanie-duggan-erlanger", address: "975 E 3rd St", city: "Chattanooga", state: "TN" },
+    contact2: { name: "Kevin Spiegel", title: "CFO", phone: "(423) 778-7100", email: "k.spiegel@erlanger.org" },
+    contact3: { name: "Marcus Doyle", title: "VP of Human Resources", phone: "(423) 778-7200", email: "m.doyle@erlanger.org" },
+    tags: ["Health System", "Regional", "Mid-South"],
+    signals: ["Researched travel nurse alternatives", "Viewed Beacon shift allocation waterfall", "Downloaded AONL staffing benchmarks"],
+    surgeTopics: ["Travel nurse reduction", "Shift allocation", "Internal staffing"],
+    activitySummary: "Erlanger CNO team actively sourcing a travel nurse reduction strategy — Beacon's internal-first model is a direct fit.",
+    trend: "rising", sparkline: [40, 50, 58, 64, 70, 74, 77, 79],
+  },
+  // ── Illinois ──────────────────────────────────────────────────────────────
+  {
+    org: "Northwestern Medicine", type: "Health System",
+    city: "Chicago", state: "IL", beds: 1600,
+    signal: "Workforce Management Platform Evaluation", intensity: 86, weeks: 4,
+    contact: { name: "Cynthia Barnard", title: "Chief Nursing Officer", phone: "(312) 926-2000", email: "c.barnard@nm.org", linkedin: "linkedin.com/in/cynthia-barnard-nm", address: "251 E Huron St", city: "Chicago", state: "IL" },
+    contact2: { name: "James Garofalo", title: "CFO", phone: "(312) 926-2100", email: "j.garofalo@nm.org" },
+    contact3: { name: "Theresa Fitzsimmons", title: "VP of Nursing Operations", phone: "(312) 926-2200", email: "t.fitzsimmons@nm.org" },
+    tags: ["Health System", "Academic", "Midwest"],
+    signals: ["Evaluated workforce management platforms", "Viewed Beacon analytics dashboard", "Researched Litehouse EOR model"],
+    surgeTopics: ["Workforce management", "Analytics", "EOR model"],
+    activitySummary: "Northwestern Medicine nursing ops evaluating Beacon for system-wide workforce management — strong analytics and EOR model interest.",
+    trend: "rising", sparkline: [48, 58, 66, 72, 77, 81, 84, 86],
+  },
+  {
+    org: "Rush University Medical Center", type: "Academic Medical Center",
+    city: "Chicago", state: "IL", beds: 671,
+    signal: "Internal PRN Pool Build", intensity: 77, weeks: 3,
+    contact: { name: "Shafiq Rab", title: "Chief Nursing Officer", phone: "(312) 942-5000", email: "s.rab@rush.edu", linkedin: "linkedin.com/in/shafiq-rab-rush", address: "1620 W Harrison St", city: "Chicago", state: "IL" },
+    contact2: { name: "Chantal Vella", title: "CFO", phone: "(312) 942-5100", email: "c.vella@rush.edu" },
+    contact3: { name: "Karen Dunn Navarra", title: "VP of Nursing Operations", phone: "(312) 942-5200", email: "k.navarra@rush.edu" },
+    tags: ["Academic Medical Center", "Research", "Midwest"],
+    signals: ["Researched internal PRN pool development", "Viewed Beacon marketplace features", "Visited Litehouse clinician onboarding page"],
+    surgeTopics: ["Internal PRN", "Marketplace", "Clinician onboarding"],
+    activitySummary: "Rush University Medical Center building internal PRN pool — Beacon's marketplace and credentialing automation are directly relevant.",
+    trend: "steady", sparkline: [42, 50, 57, 62, 66, 70, 74, 77],
+  },
+  // ── Ohio ──────────────────────────────────────────────────────────────────
+  {
+    org: "Cleveland Clinic", type: "Health System",
+    city: "Cleveland", state: "OH", beds: 1400,
+    signal: "Enterprise Staffing Platform RFI", intensity: 90, weeks: 5,
+    contact: { name: "Kelly Hancock", title: "Chief Nursing Officer", phone: "(216) 444-2200", email: "k.hancock@ccf.org", linkedin: "linkedin.com/in/kelly-hancock-clevelandclinic", address: "9500 Euclid Ave", city: "Cleveland", state: "OH" },
+    contact2: { name: "Steven Glass", title: "CFO", phone: "(216) 444-2300", email: "s.glass@ccf.org" },
+    contact3: { name: "Meredith Foxx", title: "Chief People Officer", phone: "(216) 444-2400", email: "m.foxx@ccf.org" },
+    tags: ["Health System", "Academic", "Midwest", "Fortune 500"],
+    signals: ["Issued enterprise staffing platform RFI", "Viewed Beacon enterprise deployment guide", "Researched Litehouse marketplace scale", "Compared Beacon vs Symplr"],
+    surgeTopics: ["Enterprise staffing", "RFI evaluation", "System-wide deployment"],
+    activitySummary: "Cleveland Clinic issued a formal RFI for enterprise staffing platform — Beacon is on the evaluation list alongside Symplr and UKG.",
+    trend: "rising", sparkline: [55, 63, 70, 76, 81, 85, 88, 90],
+  },
+  {
+    org: "University Hospitals", type: "Health System",
+    city: "Cleveland", state: "OH", beds: 1032,
+    signal: "Float Pool Automation Initiative", intensity: 81, weeks: 3,
+    contact: { name: "Nora Triola", title: "Chief Nursing Officer", phone: "(216) 844-1000", email: "n.triola@uhhospitals.org", linkedin: "linkedin.com/in/nora-triola-uh", address: "11100 Euclid Ave", city: "Cleveland", state: "OH" },
+    contact2: { name: "Paul Hinchey", title: "CFO", phone: "(216) 844-1100", email: "p.hinchey@uhhospitals.org" },
+    contact3: { name: "Gail Lovelace", title: "VP of Nursing Operations", phone: "(216) 844-1200", email: "g.lovelace@uhhospitals.org" },
+    tags: ["Health System", "Academic", "Midwest"],
+    signals: ["Researched float pool automation", "Viewed Beacon scheduling features", "Visited Litehouse marketplace page"],
+    surgeTopics: ["Float pool", "Scheduling automation", "Marketplace"],
+    activitySummary: "University Hospitals CNO team evaluating float pool automation — Beacon's internal-first scheduling model is a strong fit.",
+    trend: "rising", sparkline: [44, 52, 60, 66, 71, 75, 78, 81],
+  },
+  // ── North Carolina ────────────────────────────────────────────────────────
+  {
+    org: "Atrium Health", type: "Health System",
+    city: "Charlotte", state: "NC", beds: 1700,
+    signal: "Travel Nurse Dependency Reduction", intensity: 87, weeks: 4,
+    contact: { name: "Sherri Rausch", title: "Chief Nursing Officer", phone: "(704) 355-2000", email: "s.rausch@atriumhealth.org", linkedin: "linkedin.com/in/sherri-rausch-atrium", address: "1000 Blythe Blvd", city: "Charlotte", state: "NC" },
+    contact2: { name: "Greg Gombar", title: "CFO", phone: "(704) 355-2100", email: "g.gombar@atriumhealth.org" },
+    contact3: { name: "Phyllis Wingate", title: "VP of Nursing Operations", phone: "(704) 355-2200", email: "p.wingate@atriumhealth.org" },
+    tags: ["Health System", "Large System", "Southeast"],
+    signals: ["Researched travel nurse reduction strategies", "Viewed Beacon internal-first allocation", "Downloaded NSI staffing benchmarks"],
+    surgeTopics: ["Travel nurse reduction", "Internal allocation", "Staffing benchmarks"],
+    activitySummary: "Atrium Health CNO team actively reducing travel nurse dependency — Beacon's waterfall allocation model directly addresses their initiative.",
+    trend: "rising", sparkline: [48, 57, 65, 71, 76, 80, 84, 87],
+  },
+  {
+    org: "Duke University Health System", type: "Academic Medical Center",
+    city: "Durham", state: "NC", beds: 957,
+    signal: "Workforce Analytics Platform Search", intensity: 80, weeks: 3,
+    contact: { name: "Mary Ann Fuchs", title: "Chief Nursing Officer", phone: "(919) 684-8111", email: "m.fuchs@duke.edu", linkedin: "linkedin.com/in/maryann-fuchs-duke", address: "2301 Erwin Rd", city: "Durham", state: "NC" },
+    contact2: { name: "Kenneth Morris", title: "CFO", phone: "(919) 684-8200", email: "k.morris@duke.edu" },
+    contact3: { name: "Lisa Pickett", title: "Chief People Officer", phone: "(919) 684-8300", email: "l.pickett@duke.edu" },
+    tags: ["Academic Medical Center", "Research", "Southeast"],
+    signals: ["Researched workforce analytics platforms", "Viewed Beacon Tableau integration", "Visited Litehouse analytics demo page"],
+    surgeTopics: ["Workforce analytics", "Tableau integration", "Data-driven staffing"],
+    activitySummary: "Duke Health nursing leadership evaluating workforce analytics platforms — Beacon's Tableau integration and real-time dashboards are a strong fit.",
+    trend: "steady", sparkline: [44, 52, 59, 65, 69, 73, 77, 80],
+  },
+  // ── Washington ────────────────────────────────────────────────────────────
+  {
+    org: "UW Medicine", type: "Academic Medical Center",
+    city: "Seattle", state: "WA", beds: 1200,
+    signal: "Internal Staffing Platform Evaluation", intensity: 84, weeks: 4,
+    contact: { name: "Liz Concordia", title: "Chief Nursing Officer", phone: "(206) 598-3300", email: "l.concordia@uwmedicine.org", linkedin: "linkedin.com/in/liz-concordia-uw", address: "1959 NE Pacific St", city: "Seattle", state: "WA" },
+    contact2: { name: "Paul Hayes", title: "CFO", phone: "(206) 598-3400", email: "p.hayes@uwmedicine.org" },
+    contact3: { name: "Cindy Hecker", title: "VP of Nursing Operations", phone: "(206) 598-3500", email: "c.hecker@uwmedicine.org" },
+    tags: ["Academic Medical Center", "Research", "Pacific Northwest"],
+    signals: ["Evaluated internal staffing platforms", "Viewed Beacon scheduling automation", "Researched Litehouse marketplace clinicians"],
+    surgeTopics: ["Internal staffing", "Scheduling automation", "Clinician marketplace"],
+    activitySummary: "UW Medicine nursing ops evaluating internal staffing platforms to reduce travel nurse reliance — Beacon's automation and marketplace are directly relevant.",
+    trend: "rising", sparkline: [46, 55, 63, 69, 74, 78, 81, 84],
+  },
+  {
+    org: "MultiCare Health System", type: "Health System",
+    city: "Tacoma", state: "WA", beds: 1500,
+    signal: "Float Pool Optimization + Marketplace", intensity: 76, weeks: 3,
+    contact: { name: "Diane Cecchettini", title: "Chief Nursing Officer", phone: "(253) 403-1000", email: "d.cecchettini@multicare.org", linkedin: "linkedin.com/in/diane-cecchettini-multicare", address: "315 Martin Luther King Jr Way", city: "Tacoma", state: "WA" },
+    contact2: { name: "Brett Callow", title: "CFO", phone: "(253) 403-1100", email: "b.callow@multicare.org" },
+    contact3: { name: "Rhonda Haney", title: "VP of Human Resources", phone: "(253) 403-1200", email: "r.haney@multicare.org" },
+    tags: ["Health System", "Regional", "Pacific Northwest"],
+    signals: ["Researched float pool optimization", "Viewed Beacon marketplace features", "Downloaded AONL staffing templates"],
+    surgeTopics: ["Float pool", "Marketplace", "Staffing templates"],
+    activitySummary: "MultiCare CNO team optimizing float pool and exploring Litehouse marketplace for local W2 clinician sourcing.",
+    trend: "steady", sparkline: [38, 47, 55, 61, 66, 70, 73, 76],
+  },
+  // ── Missouri ──────────────────────────────────────────────────────────────
+  {
+    org: "BJC HealthCare", type: "Health System",
+    city: "St. Louis", state: "MO", beds: 3000,
+    signal: "Enterprise WFM Platform Search", intensity: 85, weeks: 4,
+    contact: { name: "Kimberly Russo", title: "Chief Nursing Officer", phone: "(314) 747-3000", email: "k.russo@bjc.org", linkedin: "linkedin.com/in/kimberly-russo-bjc", address: "4901 Forest Park Ave", city: "St. Louis", state: "MO" },
+    contact2: { name: "Michael Lucido", title: "CFO", phone: "(314) 747-3100", email: "m.lucido@bjc.org" },
+    contact3: { name: "Paula Friedman", title: "VP of Nursing Operations", phone: "(314) 747-3200", email: "p.friedman@bjc.org" },
+    tags: ["Health System", "Academic", "Midwest"],
+    signals: ["Researched enterprise WFM platforms", "Viewed Beacon vs UKG comparison", "Visited Litehouse EOR model page"],
+    surgeTopics: ["Enterprise WFM", "UKG comparison", "EOR model"],
+    activitySummary: "BJC HealthCare nursing leadership evaluating enterprise WFM platforms — Beacon's EOR model and UKG integration are key differentiators.",
+    trend: "rising", sparkline: [46, 55, 63, 69, 74, 78, 82, 85],
+  },
+  {
+    org: "Mercy Health", type: "Health System",
+    city: "Chesterfield", state: "MO", beds: 2500,
+    signal: "Travel Nurse Contract Reduction", intensity: 78, weeks: 3,
+    contact: { name: "Shannon Sock", title: "Chief Nursing Officer", phone: "(314) 579-6100", email: "s.sock@mercy.net", linkedin: "linkedin.com/in/shannon-sock-mercy", address: "14528 S Outer 40 Dr", city: "Chesterfield", state: "MO" },
+    contact2: { name: "Donn Sorensen", title: "CFO", phone: "(314) 579-6200", email: "d.sorensen@mercy.net" },
+    contact3: { name: "Cheryl Matejka", title: "Chief People Officer", phone: "(314) 579-6300", email: "c.matejka@mercy.net" },
+    tags: ["Health System", "Catholic Health", "Midwest"],
+    signals: ["Researched travel nurse contract reduction", "Viewed Beacon internal PRN pool features", "Downloaded HFMA labor cost report"],
+    surgeTopics: ["Travel nurse reduction", "Internal PRN", "Labor cost"],
+    activitySummary: "Mercy Health CNO team reducing travel nurse contracts — Beacon's internal-first allocation and marketplace are the solution.",
+    trend: "steady", sparkline: [40, 49, 56, 62, 67, 71, 75, 78],
+  },
+  // ── Arizona ───────────────────────────────────────────────────────────────
+  {
+    org: "Dignity Health", type: "Health System",
+    city: "Phoenix", state: "AZ", beds: 800,
+    signal: "Workforce Optimization RFI", intensity: 82, weeks: 3,
+    contact: { name: "Laurie Eberst", title: "Chief Nursing Officer", phone: "(602) 406-3000", email: "l.eberst@dignityhealth.org", linkedin: "linkedin.com/in/laurie-eberst-dignity", address: "185 S 14th Ave", city: "Phoenix", state: "AZ" },
+    contact2: { name: "Michael Blaszyk", title: "CFO", phone: "(602) 406-3100", email: "m.blaszyk@dignityhealth.org" },
+    contact3: { name: "Colleen Sweeney", title: "VP of Nursing Operations", phone: "(602) 406-3200", email: "c.sweeney@dignityhealth.org" },
+    tags: ["Health System", "Catholic Health", "Southwest"],
+    signals: ["Issued workforce optimization RFI", "Viewed Beacon scheduling automation", "Researched Litehouse marketplace"],
+    surgeTopics: ["Workforce optimization", "Scheduling automation", "Marketplace"],
+    activitySummary: "Dignity Health nursing ops issued a workforce optimization RFI — Beacon's scheduling automation and marketplace are strong fits.",
+    trend: "rising", sparkline: [42, 52, 60, 66, 71, 75, 79, 82],
+  },
+  // ── Michigan ──────────────────────────────────────────────────────────────
+  {
+    org: "Henry Ford Health", type: "Health System",
+    city: "Detroit", state: "MI", beds: 2400,
+    signal: "Internal Staffing Platform RFP", intensity: 84, weeks: 4,
+    contact: { name: "Veronica Hall", title: "Chief Nursing Officer", phone: "(313) 916-2600", email: "v.hall@hfhs.org", linkedin: "linkedin.com/in/veronica-hall-henryford", address: "2799 W Grand Blvd", city: "Detroit", state: "MI" },
+    contact2: { name: "Robin Damschroder", title: "CFO", phone: "(313) 916-2700", email: "r.damschroder@hfhs.org" },
+    contact3: { name: "Diane Radcliffe", title: "VP of Human Resources", phone: "(313) 916-2800", email: "d.radcliffe@hfhs.org" },
+    tags: ["Health System", "Academic", "Midwest"],
+    signals: ["Issued internal staffing platform RFP", "Viewed Beacon enterprise features", "Researched Litehouse marketplace scale"],
+    surgeTopics: ["Internal staffing", "Enterprise features", "Marketplace scale"],
+    activitySummary: "Henry Ford Health issued a staffing platform RFP — Beacon is being evaluated for system-wide deployment across 5 hospitals.",
+    trend: "rising", sparkline: [46, 55, 63, 69, 74, 78, 81, 84],
+  },
+  {
+    org: "Beaumont Health", type: "Health System",
+    city: "Southfield", state: "MI", beds: 3400,
+    signal: "Travel Nurse Reduction Initiative", intensity: 77, weeks: 3,
+    contact: { name: "Susan Grant", title: "Chief Nursing Officer", phone: "(248) 898-5000", email: "s.grant@beaumont.org", linkedin: "linkedin.com/in/susan-grant-beaumont", address: "26901 Beaumont Blvd", city: "Southfield", state: "MI" },
+    contact2: { name: "John Kerndl", title: "CFO", phone: "(248) 898-5100", email: "j.kerndl@beaumont.org" },
+    contact3: { name: "Carolyn Wilson", title: "Chief People Officer", phone: "(248) 898-5200", email: "c.wilson@beaumont.org" },
+    tags: ["Health System", "Regional", "Midwest"],
+    signals: ["Researched travel nurse reduction", "Viewed Beacon internal PRN features", "Visited Litehouse clinician marketplace"],
+    surgeTopics: ["Travel nurse reduction", "Internal PRN", "Clinician marketplace"],
+    activitySummary: "Beaumont Health CNO team reducing travel nurse reliance — Beacon's internal-first model and marketplace are directly relevant.",
+    trend: "steady", sparkline: [40, 49, 56, 62, 67, 71, 74, 77],
+  },
+  // ── Wisconsin ─────────────────────────────────────────────────────────────
+  {
+    org: "UW Health", type: "Academic Medical Center",
+    city: "Madison", state: "WI", beds: 642,
+    signal: "Workforce Management Platform Evaluation", intensity: 80, weeks: 3,
+    contact: { name: "Polly Noel", title: "Chief Nursing Officer", phone: "(608) 263-6400", email: "p.noel@uwhealth.org", linkedin: "linkedin.com/in/polly-noel-uwhealth", address: "600 Highland Ave", city: "Madison", state: "WI" },
+    contact2: { name: "Alan Kaplan", title: "CFO", phone: "(608) 263-6500", email: "a.kaplan@uwhealth.org" },
+    contact3: { name: "Jeff Poltawsky", title: "VP of Human Resources", phone: "(608) 263-6600", email: "j.poltawsky@uwhealth.org" },
+    tags: ["Academic Medical Center", "Research", "Midwest"],
+    signals: ["Evaluated workforce management platforms", "Viewed Beacon analytics dashboard", "Researched Litehouse EOR model"],
+    surgeTopics: ["Workforce management", "Analytics", "EOR model"],
+    activitySummary: "UW Health nursing leadership evaluating WFM platforms — Beacon's analytics and EOR model are strong differentiators.",
+    trend: "rising", sparkline: [44, 53, 61, 67, 72, 75, 78, 80],
+  },
+  // ── Pennsylvania ──────────────────────────────────────────────────────────
+  {
+    org: "UPMC", type: "Health System",
+    city: "Pittsburgh", state: "PA", beds: 8500,
+    signal: "Enterprise Staffing Platform RFP", intensity: 89, weeks: 5,
+    contact: { name: "Debra Caplan", title: "Chief Nursing Officer", phone: "(412) 647-2345", email: "d.caplan@upmc.edu", linkedin: "linkedin.com/in/debra-caplan-upmc", address: "200 Lothrop St", city: "Pittsburgh", state: "PA" },
+    contact2: { name: "Edward Karlovich", title: "CFO", phone: "(412) 647-2400", email: "e.karlovich@upmc.edu" },
+    contact3: { name: "Tami Minnier", title: "Chief People Officer", phone: "(412) 647-2500", email: "t.minnier@upmc.edu" },
+    tags: ["Health System", "Academic", "Fortune 500", "Northeast"],
+    signals: ["Issued enterprise staffing RFP", "Viewed Beacon enterprise deployment guide", "Researched Litehouse marketplace volume", "Compared Beacon vs Symplr"],
+    surgeTopics: ["Enterprise staffing", "RFP evaluation", "System-wide deployment"],
+    activitySummary: "UPMC issued a formal enterprise staffing RFP — Beacon is on the shortlist. Decision expected Q3 2026.",
+    trend: "rising", sparkline: [52, 61, 69, 75, 80, 84, 87, 89],
+  },
+  {
+    org: "Jefferson Health", type: "Health System",
+    city: "Philadelphia", state: "PA", beds: 3800,
+    signal: "Float Pool Automation Initiative", intensity: 79, weeks: 3,
+    contact: { name: "Judy Sabino", title: "Chief Nursing Officer", phone: "(215) 955-6000", email: "j.sabino@jefferson.edu", linkedin: "linkedin.com/in/judy-sabino-jefferson", address: "111 S 11th St", city: "Philadelphia", state: "PA" },
+    contact2: { name: "Neil Lubarsky", title: "CFO", phone: "(215) 955-6100", email: "n.lubarsky@jefferson.edu" },
+    contact3: { name: "Sheryl Zimmerman", title: "VP of Nursing Operations", phone: "(215) 955-6200", email: "s.zimmerman@jefferson.edu" },
+    tags: ["Health System", "Academic", "Northeast"],
+    signals: ["Researched float pool automation", "Viewed Beacon scheduling features", "Visited Litehouse marketplace page"],
+    surgeTopics: ["Float pool", "Scheduling automation", "Marketplace"],
+    activitySummary: "Jefferson Health CNO team evaluating float pool automation — Beacon's internal-first scheduling model is a strong fit.",
+    trend: "steady", sparkline: [42, 51, 58, 64, 68, 72, 76, 79],
+  },
+  // ── Virginia ──────────────────────────────────────────────────────────────
+  {
+    org: "Inova Health System", type: "Health System",
+    city: "Falls Church", state: "VA", beds: 1700,
+    signal: "Travel Nurse Cost Reduction", intensity: 83, weeks: 4,
+    contact: { name: "Moreen Donahue", title: "Chief Nursing Officer", phone: "(703) 776-3332", email: "m.donahue@inova.org", linkedin: "linkedin.com/in/moreen-donahue-inova", address: "8110 Gatehouse Rd", city: "Falls Church", state: "VA" },
+    contact2: { name: "Kathleen Sheridan", title: "CFO", phone: "(703) 776-3400", email: "k.sheridan@inova.org" },
+    contact3: { name: "Traci Recupero", title: "VP of Nursing Operations", phone: "(703) 776-3500", email: "t.recupero@inova.org" },
+    tags: ["Health System", "Regional", "Mid-Atlantic"],
+    signals: ["Researched travel nurse cost reduction", "Viewed Beacon internal-first allocation", "Downloaded AONL staffing benchmarks"],
+    surgeTopics: ["Travel nurse reduction", "Internal allocation", "Staffing benchmarks"],
+    activitySummary: "Inova Health CNO team reducing travel nurse dependency — Beacon's waterfall allocation model is a direct fit.",
+    trend: "rising", sparkline: [44, 53, 61, 67, 72, 76, 80, 83],
+  },
+  {
+    org: "VCU Health", type: "Academic Medical Center",
+    city: "Richmond", state: "VA", beds: 865,
+    signal: "Workforce Analytics Platform Search", intensity: 75, weeks: 3,
+    contact: { name: "Cheryl Hicks", title: "Chief Nursing Officer", phone: "(804) 828-9000", email: "c.hicks@vcuhealth.org", linkedin: "linkedin.com/in/cheryl-hicks-vcuhealth", address: "1250 E Marshall St", city: "Richmond", state: "VA" },
+    contact2: { name: "Melinda Hancock", title: "CFO", phone: "(804) 828-9100", email: "m.hancock@vcuhealth.org" },
+    contact3: { name: "Lori Sherrill", title: "VP of Human Resources", phone: "(804) 828-9200", email: "l.sherrill@vcuhealth.org" },
+    tags: ["Academic Medical Center", "Research", "Mid-Atlantic"],
+    signals: ["Researched workforce analytics platforms", "Viewed Beacon Tableau integration", "Visited Litehouse analytics demo page"],
+    surgeTopics: ["Workforce analytics", "Tableau integration", "Data-driven staffing"],
+    activitySummary: "VCU Health nursing leadership evaluating workforce analytics platforms — Beacon's Tableau integration is a key differentiator.",
+    trend: "steady", sparkline: [38, 47, 54, 60, 65, 69, 72, 75],
+  },
+  // ── South Carolina ────────────────────────────────────────────────────────
+  {
+    org: "MUSC Health", type: "Academic Medical Center",
+    city: "Charleston", state: "SC", beds: 750,
+    signal: "Internal PRN Pool Development", intensity: 78, weeks: 3,
+    contact: { name: "Marilyn Schaffner", title: "Chief Nursing Officer", phone: "(843) 792-2300", email: "m.schaffner@musc.edu", linkedin: "linkedin.com/in/marilyn-schaffner-musc", address: "169 Ashley Ave", city: "Charleston", state: "SC" },
+    contact2: { name: "Patrick Cawley", title: "CFO", phone: "(843) 792-2400", email: "p.cawley@musc.edu" },
+    contact3: { name: "Kimberly Schmitt", title: "VP of Nursing Operations", phone: "(843) 792-2500", email: "k.schmitt@musc.edu" },
+    tags: ["Academic Medical Center", "Research", "Southeast"],
+    signals: ["Researched internal PRN pool development", "Viewed Beacon marketplace features", "Visited Litehouse clinician onboarding"],
+    surgeTopics: ["Internal PRN", "Marketplace", "Clinician onboarding"],
+    activitySummary: "MUSC Health nursing leadership building internal PRN pool — Beacon's marketplace and credentialing automation are directly relevant.",
+    trend: "rising", sparkline: [40, 49, 57, 63, 68, 72, 75, 78],
+  },
+  // ── New York ──────────────────────────────────────────────────────────────
+  {
+    org: "NYU Langone Health", type: "Academic Medical Center",
+    city: "New York", state: "NY", beds: 1069,
+    signal: "Enterprise Workforce Management Evaluation", intensity: 87, weeks: 4,
+    contact: { name: "Kimberly Glassman", title: "Chief Nursing Officer", phone: "(212) 263-7300", email: "k.glassman@nyulangone.org", linkedin: "linkedin.com/in/kimberly-glassman-nyu", address: "550 First Ave", city: "New York", state: "NY" },
+    contact2: { name: "Vicki Match Suna", title: "CFO", phone: "(212) 263-7400", email: "v.suna@nyulangone.org" },
+    contact3: { name: "Diane Adams", title: "Chief People Officer", phone: "(212) 263-7500", email: "d.adams@nyulangone.org" },
+    tags: ["Academic Medical Center", "Research", "Northeast"],
+    signals: ["Evaluated enterprise WFM platforms", "Viewed Beacon analytics dashboard", "Researched Litehouse EOR model"],
+    surgeTopics: ["Enterprise WFM", "Analytics", "EOR model"],
+    activitySummary: "NYU Langone nursing leadership evaluating enterprise WFM platforms — Beacon's analytics and EOR model are strong differentiators.",
+    trend: "rising", sparkline: [50, 59, 67, 73, 78, 82, 85, 87],
+  },
+  {
+    org: "Northwell Health", type: "Health System",
+    city: "New Hyde Park", state: "NY", beds: 4200,
+    signal: "Travel Nurse Reduction + Internal Staffing Build", intensity: 83, weeks: 4,
+    contact: { name: "Kerri Scanlon", title: "Chief Nursing Officer", phone: "(516) 465-8100", email: "k.scanlon@northwell.edu", linkedin: "linkedin.com/in/kerri-scanlon-northwell", address: "2000 Marcus Ave", city: "New Hyde Park", state: "NY" },
+    contact2: { name: "Michele Cusack", title: "CFO", phone: "(516) 465-8200", email: "m.cusack@northwell.edu" },
+    contact3: { name: "Maxine Carrington", title: "Chief People Officer", phone: "(516) 465-8300", email: "m.carrington@northwell.edu" },
+    tags: ["Health System", "Large System", "Northeast"],
+    signals: ["Researched travel nurse reduction strategies", "Viewed Beacon internal-first allocation", "Downloaded NSI staffing benchmarks"],
+    surgeTopics: ["Travel nurse reduction", "Internal allocation", "Staffing benchmarks"],
+    activitySummary: "Northwell Health CNO team building internal staffing strategy to reduce travel nurse reliance — Beacon's waterfall model is a direct fit.",
+    trend: "rising", sparkline: [46, 55, 63, 69, 74, 78, 81, 83],
+  },
+  // ── California ────────────────────────────────────────────────────────────
+  {
+    org: "Cedars-Sinai Medical Center", type: "Academic Medical Center",
+    city: "Los Angeles", state: "CA", beds: 886,
+    signal: "Workforce Analytics + Float Pool Optimization", intensity: 85, weeks: 4,
+    contact: { name: "Linda Burnes Bolton", title: "Chief Nursing Officer", phone: "(310) 423-5000", email: "l.bolton@cshs.org", linkedin: "linkedin.com/in/linda-burnes-bolton-cedars", address: "8700 Beverly Blvd", city: "Los Angeles", state: "CA" },
+    contact2: { name: "Edward Prunchunas", title: "CFO", phone: "(310) 423-5100", email: "e.prunchunas@cshs.org" },
+    contact3: { name: "Jeanne Flores", title: "VP of Nursing Operations", phone: "(310) 423-5200", email: "j.flores@cshs.org" },
+    tags: ["Academic Medical Center", "Research", "West Coast"],
+    signals: ["Researched workforce analytics platforms", "Viewed Beacon Tableau integration", "Visited Litehouse float pool optimization page"],
+    surgeTopics: ["Workforce analytics", "Float pool optimization", "Tableau integration"],
+    activitySummary: "Cedars-Sinai nursing leadership evaluating analytics platforms for float pool optimization — Beacon's Tableau integration is a key differentiator.",
+    trend: "rising", sparkline: [48, 57, 65, 71, 76, 80, 83, 85],
+  },
+  {
+    org: "Sutter Health", type: "Health System",
+    city: "Sacramento", state: "CA", beds: 5000,
+    signal: "Travel Nurse Dependency Reduction", intensity: 80, weeks: 3,
+    contact: { name: "Cynthia Plouché", title: "Chief Nursing Officer", phone: "(916) 733-8800", email: "c.plouche@sutterhealth.org", linkedin: "linkedin.com/in/cynthia-plouche-sutter", address: "2200 River Plaza Dr", city: "Sacramento", state: "CA" },
+    contact2: { name: "Jim Conforti", title: "CFO", phone: "(916) 733-8900", email: "j.conforti@sutterhealth.org" },
+    contact3: { name: "Sarah Krevans", title: "Chief People Officer", phone: "(916) 733-9000", email: "s.krevans@sutterhealth.org" },
+    tags: ["Health System", "Large System", "West Coast"],
+    signals: ["Researched travel nurse reduction", "Viewed Beacon internal PRN features", "Downloaded AONL staffing benchmarks"],
+    surgeTopics: ["Travel nurse reduction", "Internal PRN", "Staffing benchmarks"],
+    activitySummary: "Sutter Health CNO team reducing travel nurse reliance — Beacon's internal-first model and marketplace are directly relevant.",
+    trend: "steady", sparkline: [42, 51, 58, 64, 68, 72, 76, 80],
+  },
+  // ── Massachusetts ─────────────────────────────────────────────────────────
+  {
+    org: "Mass General Brigham", type: "Health System",
+    city: "Somerville", state: "MA", beds: 6000,
+    signal: "Enterprise WFM Platform RFP", intensity: 88, weeks: 5,
+    contact: { name: "Gaurdia Banister", title: "Chief Nursing Officer", phone: "(617) 726-2000", email: "g.banister@mgh.harvard.edu", linkedin: "linkedin.com/in/gaurdia-banister-mgh", address: "399 Revolution Dr", city: "Somerville", state: "MA" },
+    contact2: { name: "Peter Markell", title: "CFO", phone: "(617) 726-2100", email: "p.markell@mgh.harvard.edu" },
+    contact3: { name: "Rosemary Sheehan", title: "Chief People Officer", phone: "(617) 726-2200", email: "r.sheehan@mgh.harvard.edu" },
+    tags: ["Health System", "Academic", "Fortune 500", "Northeast"],
+    signals: ["Issued enterprise WFM platform RFP", "Viewed Beacon enterprise deployment guide", "Researched Litehouse marketplace volume", "Compared Beacon vs Symplr"],
+    surgeTopics: ["Enterprise WFM", "RFP evaluation", "System-wide deployment"],
+    activitySummary: "Mass General Brigham issued a formal enterprise WFM RFP — Beacon is on the shortlist alongside Symplr and UKG.",
+    trend: "rising", sparkline: [52, 61, 69, 75, 80, 84, 86, 88],
+  },
 ];
 
 function TabLiveSearch() {
@@ -1128,9 +1652,9 @@ function TabLiveSearch() {
   const [loadingIdx, setLoadingIdx] = useState<number[]>([]);
   const [loadedIdx, setLoadedIdx] = useState<number[]>([]);
 
-  const STATES = ["National", "Tennessee", "Illinois", "Ohio", "North Carolina", "Washington", "Missouri", "Arizona", "Utah", "Pennsylvania", "Michigan", "South Dakota", "Texas", "Colorado"];
+  const STATES = ["National", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
   const ORG_TYPES = ["", "Health System", "Hospital", "Academic Medical Center", "Regional Hospital"];
-  const TITLES = ["", "Chief Nursing Officer", "VP of Nursing Operations", "Chief People Officer", "CFO", "VP of Human Resources", "Director of Workforce Management"];
+  const TITLES = ["", "Chief Nursing Officer", "CFO", "VP of Nursing Operations", "Chief People Officer", "VP of Human Resources", "President & CEO", "Director of Workforce Management"];
   const BED_SIZES = ["", "500", "1000", "2000", "5000", "10000"];
 
   function runSearch() {
@@ -1150,10 +1674,43 @@ function TabLiveSearch() {
     setSearchLabel(parts.join(" · "));
 
     let pool = [...SEARCH_POOL];
+    // ── State filter MUST apply first — never show wrong-state results ──
+    if (state && state !== "National") {
+      const stateAbbr: Record<string, string> = {
+        "Tennessee": "TN", "Illinois": "IL", "Ohio": "OH", "North Carolina": "NC",
+        "Washington": "WA", "Missouri": "MO", "Arizona": "AZ", "Utah": "UT",
+        "Pennsylvania": "PA", "Michigan": "MI", "South Dakota": "SD", "Texas": "TX",
+        "Colorado": "CO", "Wisconsin": "WI", "Minnesota": "MN", "Indiana": "IN",
+        "Georgia": "GA", "Florida": "FL", "California": "CA", "New York": "NY",
+        "Oklahoma": "OK", "Kansas": "KS", "Nebraska": "NE", "Iowa": "IA",
+        "Arkansas": "AR", "Louisiana": "LA", "Mississippi": "MS", "Alabama": "AL",
+        "Kentucky": "KY", "Virginia": "VA", "Maryland": "MD", "New Jersey": "NJ",
+        "Massachusetts": "MA", "Connecticut": "CT", "Oregon": "OR", "Nevada": "NV",
+        "Idaho": "ID", "Montana": "MT", "Wyoming": "WY", "New Mexico": "NM",
+        "North Dakota": "ND", "South Carolina": "SC", "West Virginia": "WV",
+        "Delaware": "DE", "Rhode Island": "RI", "Vermont": "VT", "New Hampshire": "NH",
+        "Maine": "ME", "Hawaii": "HI", "Alaska": "AK",
+      };
+      const abbr = stateAbbr[state] || state;
+      pool = pool.filter(t => t.state === abbr || t.state === state);
+    }
     if (orgType) pool = pool.filter(t => t.type === orgType || t.tags.some(tag => tag.toLowerCase().includes(orgType.toLowerCase())));
     if (minBeds) pool = pool.filter(t => t.beds >= parseInt(minBeds));
-    if (title) pool = pool.filter(t => t.contact.title.toLowerCase().includes(title.split(" ").pop()!.toLowerCase()) || (t.contact2 && t.contact2.title.toLowerCase().includes(title.split(" ").pop()!.toLowerCase())));
-    if (pool.length < 3) pool = SEARCH_POOL.slice(0, 6);
+    if (title) {
+      const titleLower = title.toLowerCase();
+      pool = pool.filter(t =>
+        t.contact.title.toLowerCase().includes(titleLower) ||
+        (t.contact2 && t.contact2.title.toLowerCase().includes(titleLower)) ||
+        (t.contact3 && t.contact3.title.toLowerCase().includes(titleLower))
+      );
+    }
+    // If no results found for this state, show a "no results" message instead of wrong-state fallback
+    if (pool.length === 0) {
+      setSearching(false);
+      setSearchDone(true);
+      setSearchLabel(parts.join(" · ") + " — No matches found");
+      return;
+    }
     pool = pool.slice(0, 8);
     pool.sort((a, b) => b.intensity - a.intensity);
 

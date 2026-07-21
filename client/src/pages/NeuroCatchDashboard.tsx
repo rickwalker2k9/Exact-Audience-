@@ -1278,7 +1278,8 @@ function TabBrainMap() {
         </div>
 
         {/* Brain  -  constrained size with float animation */}
-        <div style={{ flex: '0 0 220px', width: 220 }}>
+        <div style={{ flex: '0 0 140px', width: 140, animation: 'brainFloat 3.2s ease-in-out infinite' }}>
+          <style>{`@keyframes brainFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-6px)} }`}</style>
           <BrainVisual selected={selected} hovered={hovered} />
         </div>
 
