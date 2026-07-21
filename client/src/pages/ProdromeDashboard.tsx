@@ -442,10 +442,10 @@ const marketData = [
 const MARKET_FACTS = [
   { stat: "$13.8B",  label: "Brain health supplement market (2024)", sub: "Growing to $23.5B by 2030 — 9.3% CAGR" },
   { stat: "200K+",   label: "Functional medicine practitioners in North America", sub: "Each with 200–500 active patients — massive distribution network" },
+  { stat: "47M",     label: "Women 40–60 in the U.S. with brain fog & cognitive symptoms", sub: "#1 B2C buyer — work-from-home, health-conscious, already searching" },
+  { stat: "68%",     label: "of Prodrome's direct consumer buyers are women", sub: "Higher LTV, longer retention, family multiplier effect" },
   { stat: "80%",     label: "Reduction in dementia risk with high plasmalogen levels", sub: "Published in Journal of Lipid Research — independently replicated" },
-  { stat: "30+",     label: "Years of peer-reviewed plasmalogen research", sub: "Dr. Goodenowe's work replicated in Japan, Europe, and North America" },
-  { stat: "$44B",    label: "Global anti-aging supplement market", sub: "Prodrome sits at the intersection of brain health + longevity" },
-  { stat: "3.5%/yr", label: "Rate of plasmalogen decline after age 40", sub: "Every patient over 40 is a candidate for ProdromeScan™ testing" },
+  { stat: "3.5%/yr", label: "Rate of plasmalogen decline after age 40", sub: "Every woman over 40 is a candidate — brain fog is the symptom" },
 ];
 
 // ── TAB: HOW IT WORKS ─────────────────────────────────────────────────────────
@@ -645,10 +645,51 @@ function TabHow() {
         </div>
       </div>
 
+      {/* B2C Segment Card */}
+      <div className="rounded-2xl p-5" style={{ background: `linear-gradient(135deg, #1a0a2e 0%, #0d1a2e 100%)`, border: `1px solid ${C.purple}40` }}>
+        <SL color={C.purple}>B2C AUDIENCE — THE HIDDEN GROWTH ENGINE</SL>
+        <div className="text-sm font-black mb-3" style={{ color: C.white }}>Women 40–60 · Work-From-Home · Proactively Managing Brain Health</div>
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {[
+            { v: "47M", l: "Women 40–60 in the U.S.", sub: "Primary B2C buyer segment" },
+            { v: "68%", l: "of direct buyers are women", sub: "Per Prodrome's own data" },
+            { v: "$127", l: "Avg monthly spend", sub: "PlasmalogenN3 + ProdromeGlia" },
+            { v: "3.2x", l: "Higher LTV vs male buyers", sub: "More consistent, longer retention" },
+          ].map((s, i) => (
+            <div key={i} className="rounded-xl p-3" style={{ background: `${C.purple}15`, border: `1px solid ${C.purple}25` }}>
+              <div className="text-xl font-black" style={{ color: C.purple }}>{s.v}</div>
+              <div className="text-xs font-black mt-0.5" style={{ color: C.white }}>{s.l}</div>
+              <div className="text-xs" style={{ color: C.muted }}>{s.sub}</div>
+            </div>
+          ))}
+        </div>
+        <div className="text-xs font-black mb-2" style={{ color: C.purple }}>WHO SHE IS</div>
+        <div className="space-y-2">
+          {[
+            { icon: "🏠", title: "Works from home, age 40–60", desc: "Noticing brain fog, word-finding issues, fatigue. Already spending on supplements. Googling 'brain fog menopause' and 'best supplements for memory over 50'." },
+            { icon: "📱", title: "Health-conscious early adopter", desc: "Follows functional medicine influencers. Trusts science-backed products. Will pay a premium if the mechanism is explained clearly." },
+            { icon: "👨‍👩‍👧", title: "Family health decision-maker", desc: "Buys for herself first, then her husband, then aging parents. One converted B2C customer can become 3–4 orders per household." },
+            { icon: "🔍", title: "Active researcher", desc: "Reads the blog, watches the Dr. Goodenowe videos, looks up the clinical studies. High-intent traffic from organic search and YouTube." },
+          ].map((s, i) => (
+            <div key={i} className="flex gap-3 rounded-xl p-3" style={{ background: `${C.purple}08`, border: `1px solid ${C.purple}15` }}>
+              <div className="text-lg shrink-0">{s.icon}</div>
+              <div>
+                <div className="text-xs font-black mb-0.5" style={{ color: C.purple }}>{s.title}</div>
+                <div className="text-xs" style={{ color: C.muted }}>{s.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 rounded-xl p-3" style={{ background: `${C.purple}12`, border: `1px solid ${C.purple}30` }}>
+          <div className="text-xs font-black mb-1" style={{ color: C.purple }}>EA ANGLE FOR B2C</div>
+          <div className="text-xs" style={{ color: C.muted }}>Exact Audience identifies women 40–60 who are actively searching for brain health supplements, visiting prodrome.com, and reading the Dr. Goodenowe content — but leaving without purchasing. SiteID shows you exactly who they are and where they live. Retargeting + direct mail to this segment converts at 4–6x the rate of cold traffic.</div>
+        </div>
+      </div>
+
       {/* EA pitch */}
       <div className="rounded-2xl p-5" style={{ background: `linear-gradient(135deg, ${C.card} 0%, #0a2218 100%)`, border: `1px solid ${C.green}30` }}>
         <SL color={C.green}>WHY EXACT AUDIENCE FOR PRODROME</SL>
-        <div className="text-sm font-black mb-3" style={{ color: C.white }}>The practitioner acquisition problem — solved.</div>
+        <div className="text-sm font-black mb-3" style={{ color: C.white }}>Two audiences. One platform. Practitioner B2B + Consumer B2C — both solved.</div>
         <div className="space-y-3">
           {[
             { icon: "🔍", title: "200,000 practitioners, 1 platform", desc: "Exact Audience identifies which functional medicine practitioners, integrative MDs, and neurologists are actively researching plasmalogen science right now — before they register with a competitor." },
@@ -662,6 +703,99 @@ function TabHow() {
                 <div className="text-xs" style={{ color: C.muted }}>{s.desc}</div>
               </div>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Who Else Can We Reach */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
+        <SL color={C.gold}>WHO ELSE CAN EXACT AUDIENCE REACH FOR PRODROME</SL>
+        <div className="text-sm font-black mb-1" style={{ color: C.white }}>8 Addressable Audiences Beyond the Obvious</div>
+        <div className="text-xs mb-4" style={{ color: C.muted }}>Each segment is actively searchable, identifiable by intent, and reachable with personalized outreach through Exact Audience.</div>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            {
+              icon: "👩‍💼",
+              color: C.purple,
+              segment: "Women 40–60 · Work-From-Home",
+              market: "47M in the U.S.",
+              signal: "Googling 'brain fog menopause', 'memory supplements over 50', 'plasmalogen'",
+              eaAngle: "SiteID identifies cart abandoners on prodrome.com. Direct mail + retargeting converts at 4–6x cold traffic.",
+            },
+            {
+              icon: "🧐",
+              color: C.green,
+              segment: "Functional Medicine Practitioners",
+              market: "200K+ in North America",
+              signal: "Researching advanced lipid testing, visiting partners.prodrome.com, attending IFM conferences",
+              eaAngle: "Intent-first B2B outreach to practitioners evaluating plasmalogen protocols this week.",
+            },
+            {
+              icon: "🧓",
+              color: C.teal,
+              segment: "Alzheimer's & Dementia Caregivers",
+              market: "11M+ family caregivers in the U.S.",
+              signal: "Searching 'supplements to slow Alzheimer's', 'plasmalogen Alzheimer's research', 'Dr. Goodenowe'",
+              eaAngle: "High-urgency buyers. Identify caregivers visiting the Alzheimer's content pages and follow up with direct mail.",
+            },
+            {
+              icon: "⚡",
+              color: C.gold,
+              segment: "Biohackers & Longevity Enthusiasts",
+              market: "$28.6B longevity supplement market (2025)",
+              signal: "Following Dave Asprey, Andrew Huberman, Peter Attia. Searching 'best nootropics 2026', 'plasmalogen biohacking'",
+              eaAngle: "High-spend early adopters. Identify by content consumption patterns and supplement purchase intent signals.",
+            },
+            {
+              icon: "🏥",
+              color: C.green,
+              segment: "Neurologists & Neurology Practices",
+              market: "16,000+ neurologists in the U.S.",
+              signal: "Reviewing lipid biomarker research, attending AAN conferences, evaluating Parkinson's/MS protocols",
+              eaAngle: "High-value B2B. One neurology practice ordering ProdromeScan for 50 patients = $1,500+/mo recurring.",
+            },
+            {
+              icon: "👶",
+              color: C.purple,
+              segment: "Autism Families & Specialists",
+              market: "1 in 36 children diagnosed with ASD in the U.S.",
+              signal: "Searching 'plasmalogen autism', 'Dr. Goodenowe autism', 'cellular membrane health children'",
+              eaAngle: "Dr. Goodenowe's Autism Health Collaboration is a specific program. Identify families and pediatric specialists researching it.",
+            },
+            {
+              icon: "🏢",
+              color: C.teal,
+              segment: "Corporate Wellness Programs",
+              market: "$8.4B corporate wellness market, brain health fastest-growing segment",
+              signal: "HR Directors and Benefits Managers researching cognitive performance programs for remote workforces",
+              eaAngle: "B2B enterprise angle. One corporate wellness contract = 500–5,000 employees on monthly protocol.",
+            },
+            {
+              icon: "🏃",
+              color: C.gold,
+              segment: "Anti-Aging & Longevity Clinics",
+              market: "$44B global anti-aging market",
+              signal: "Clinics adding cellular health testing to longevity panels. Searching 'plasmalogen testing for longevity clinics'",
+              eaAngle: "Fastest-growing practitioner segment. Identify longevity clinics that have viewed ProdromeScan pricing but haven't registered.",
+            },
+          ].map((seg, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+              className="rounded-xl p-4" style={{ background: C.card2, border: `1px solid ${seg.color}25` }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">{seg.icon}</span>
+                <div>
+                  <div className="text-xs font-black" style={{ color: seg.color }}>{seg.segment}</div>
+                  <div className="text-xs" style={{ color: C.muted }}>{seg.market}</div>
+                </div>
+              </div>
+              <div className="text-xs mb-2" style={{ color: C.muted }}>
+                <span className="font-black" style={{ color: C.white }}>Signal: </span>{seg.signal}
+              </div>
+              <div className="rounded-lg p-2 text-xs" style={{ background: `${seg.color}10`, border: `1px solid ${seg.color}20`, color: seg.color }}>
+                <span className="font-black">EA Angle: </span>
+                <span style={{ color: C.white }}>{seg.eaAngle}</span>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
