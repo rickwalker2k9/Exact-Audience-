@@ -799,6 +799,97 @@ function TabHow() {
           ))}
         </div>
       </div>
+
+      {/* Symptom-Aware Targeting */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.teal}30` }}>
+        <SL color={C.teal}>SYMPTOM-AWARE TARGETING — THE BIGGEST UNTAPPED AUDIENCE</SL>
+        <div className="text-sm font-black mb-1" style={{ color: C.white }}>Problem-Aware. Solution-Unaware. Ready to Buy — They Just Don't Know It Yet.</div>
+        <div className="text-xs mb-4" style={{ color: C.muted }}>These people are actively searching their symptoms right now. They have no idea plasmalogen exists. Exact Audience identifies them by search behavior, matches to household data, and delivers their name and address — so Prodrome reaches them before they give up and accept their symptoms as normal.</div>
+
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {[
+            {
+              icon: "🧠",
+              color: C.purple,
+              category: "Brain Fog & Cognitive Decline",
+              keywords: ["why do I feel foggy all the time", "can't think clearly anymore", "brain fog after 50", "memory getting worse in my 40s", "word finding problems", "mental clarity supplements"],
+              volume: "2.4M monthly searches",
+            },
+            {
+              icon: "😴",
+              color: C.teal,
+              category: "Fatigue & Energy Loss",
+              keywords: ["chronic fatigue no diagnosis", "tired all the time despite sleeping", "why am I so exhausted", "energy drops after 40", "adrenal fatigue supplements"],
+              volume: "3.1M monthly searches",
+            },
+            {
+              icon: "🧓",
+              color: C.gold,
+              category: "Neurological & Alzheimer's Prevention",
+              keywords: ["early Alzheimer's symptoms", "how to prevent dementia naturally", "Parkinson's prevention supplements", "how to slow Alzheimer's progression", "supplements for dementia patients"],
+              volume: "1.8M monthly searches",
+            },
+            {
+              icon: "👩",
+              color: C.purple,
+              category: "Menopause & Hormonal Brain Fog",
+              keywords: ["brain fog menopause", "memory loss perimenopause", "cognitive decline menopause", "menopause brain supplements", "hormone brain connection"],
+              volume: "890K monthly searches",
+            },
+            {
+              icon: "👶",
+              color: C.green,
+              category: "Autism & Child Development",
+              keywords: ["supplements for autism brain", "cellular membrane autism", "autism natural treatment", "improve focus autism child", "ASD supplements that work"],
+              volume: "420K monthly searches",
+            },
+            {
+              icon: "⚡",
+              color: C.teal,
+              category: "Longevity & Anti-Aging Brain",
+              keywords: ["how to keep brain sharp after 60", "anti-aging brain supplements", "cognitive decline prevention", "longevity brain health", "best supplements for aging brain"],
+              volume: "1.2M monthly searches",
+            },
+          ].map((cat, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
+              className="rounded-xl p-4" style={{ background: C.card2, border: `1px solid ${cat.color}25` }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">{cat.icon}</span>
+                <div>
+                  <div className="text-xs font-black" style={{ color: cat.color }}>{cat.category}</div>
+                  <div className="text-xs font-black" style={{ color: C.muted }}>{cat.volume}</div>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {cat.keywords.map((kw, j) => (
+                  <span key={j} className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${cat.color}12`, border: `1px solid ${cat.color}25`, color: cat.color }}>"{kw}"</span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="rounded-xl p-4" style={{ background: `${C.teal}10`, border: `1px solid ${C.teal}30` }}>
+          <div className="text-xs font-black mb-2" style={{ color: C.teal }}>HOW EXACT AUDIENCE REACHES THEM</div>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { step: "1", title: "Intent Signal Detected", desc: "Someone in Phoenix searches 'brain fog after 50 supplements' — EA captures the intent signal in real time" },
+              { step: "2", title: "Identity Matched", desc: "The search is matched to a household record — name, address, age, income, purchase history" },
+              { step: "3", title: "Prodrome Reaches Them", desc: "Personalized direct mail, retargeting ad, or email arrives before they find a competitor or give up" },
+            ].map((s, i) => (
+              <div key={i} className="rounded-lg p-3" style={{ background: C.card }}>
+                <div className="text-xl font-black mb-1" style={{ color: C.teal }}>{s.step}</div>
+                <div className="text-xs font-black mb-0.5" style={{ color: C.white }}>{s.title}</div>
+                <div className="text-xs" style={{ color: C.muted }}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 text-xs" style={{ color: C.muted }}>
+            <span className="font-black" style={{ color: C.white }}>The key insight: </span>
+            These people are spending money on supplements right now — just the wrong ones. They are buying generic brain fog pills from Amazon because they do not know plasmalogen exists. Exact Audience puts Prodrome in front of them at the exact moment they are searching for answers.
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
