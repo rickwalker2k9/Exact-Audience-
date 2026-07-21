@@ -154,6 +154,7 @@ const SLUG_ROUTES: Record<string, string> = {
   "neurocatch":                  "/neurocatch",
   "intermed-healthtrust":         "/intermed-healthtrust",
   "mogul-club":                    "/mogul",
+  "symcheck":                       "/symcheck",
 };
 
 // ── Main Page ─────────────────────────────────────────────────────────────────

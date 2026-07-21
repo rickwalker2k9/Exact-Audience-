@@ -17,6 +17,7 @@ import BreezeDashboard from "./pages/BreezeDashboard";
 import LandRoverDashboard from "./pages/LandRoverDashboard";
 import BarrettDashboard from "./pages/BarrettDashboard";
 import NeuroCatchDashboard from "./pages/NeuroCatchDashboard";
+import SymCheckDashboard from "@/pages/SymCheckDashboard";
 import InterMedDashboard from "./pages/InterMedDashboard";
 import ImagineAgencyDashboard from "./pages/ImagineAgencyDashboard";
 import MogulDashboard from "./pages/MogulDashboard";
@@ -37,7 +38,8 @@ function Router() {
       <Route path="/barrett-financial" component={BarrettDashboard} />
       <Route path="/neurocatch" component={NeuroCatchDashboard} />
       <Route path="/intermed-healthtrust" component={InterMedDashboard} />
-      <Route path="/intermed" component={InterMedDashboard} />
+      <Route path="/symcheck" component={SymCheckDashboard} />
+        <Route path="/intermed" component={InterMedDashboard} />
       <Route path="/imagine-agency" component={ImagineAgencyDashboard} />
       <Route path="/mogul" component={MogulDashboard} />
 

@@ -205,6 +205,27 @@ export const CLIENTS: CampaignClient[] = [
     completionRate: 88.4,
     primaryColor: "#f59e0b",
   },
+  // u2500u2500 SYMCHECK u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500u2500
+  {
+    id: 42,
+    slug: "symcheck",
+    name: "SymCheck",
+    vertical: "Health & Wellness Technology",
+    location: "Nashville, TN",
+    description: "AI-powered contactless wellness screening u2014 B2B hospital & employer acquisition via Site ID + Exact Audience",
+    domain: "symcheck.com",
+    logoDomain: "symcheck.com",
+    campaign: "Hospital & Employer Outreach 2026",
+    budget: "$85,000",
+    startDate: "Jul 14, 2026",
+    status: "active" as ClientStatus,
+    hasDashboard: true,
+    trend: risingTrend(28000),
+    impressionsToDate: 2140000,
+    reachToDate: 94800,
+    completionRate: 91.2,
+    primaryColor: "#6EC5EC",
+  },
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
   {
     id: 6,
