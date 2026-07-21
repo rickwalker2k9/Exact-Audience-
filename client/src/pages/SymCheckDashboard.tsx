@@ -451,7 +451,7 @@ function TabHow() {
       <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: "easeOut" }}
         className="rounded-2xl overflow-hidden" style={{ border: `2px solid ${C.orange}40`, boxShadow: `0 0 40px ${C.orange}20` }}>
         <img
-          src="/manus-storage/symcheck-hero_e671d49a.png"
+          src="/manus-storage/symcheck-hero_bb35132c.png"
           alt="SymCheck — Any device. 50 biomarkers in 60 seconds. Save $1,746 per employee per year."
           className="w-full block"
           style={{ display: "block", maxHeight: 420, objectFit: "cover", objectPosition: "center" }}
@@ -466,7 +466,7 @@ function TabHow() {
         <div className="px-5 pt-5 pb-3">
           <div className="flex items-center justify-between mb-1">
             <div className="text-xs font-black tracking-widest" style={{ color: C.orange }}>THE SYMCHECK FAMILY — 4 PRODUCTS, ONE PLATFORM</div>
-            <div className="text-xs" style={{ color: C.muted }}>Built by SiriusIQ</div>
+            <div className="text-xs" style={{ color: C.white }}>Built by SiriusIQ</div>
           </div>
         </div>
 
@@ -480,8 +480,8 @@ function TabHow() {
                 <motion.div layoutId="productTabUnderline" className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: p.color }} />
               )}
               <div className="text-lg mb-0.5" style={{ color: activeProduct === i ? p.color : C.muted }}>{p.icon}</div>
-              <div className="text-xs font-black" style={{ color: activeProduct === i ? p.color : C.muted }}>{p.label}</div>
-              <div className="text-xs mt-0.5 px-1.5 py-0.5 rounded-full inline-block" style={{ background: activeProduct === i ? `${p.color}25` : `${C.border}80`, color: activeProduct === i ? p.color : C.muted, fontSize: 9 }}>{p.badge}</div>
+              <div className="text-xs font-black" style={{ color: activeProduct === i ? p.color : C.white }}>{p.label}</div>
+              <div className="text-xs mt-0.5 px-1.5 py-0.5 rounded-full inline-block" style={{ background: activeProduct === i ? `${p.color}25` : `${C.border}80`, color: activeProduct === i ? p.color : C.white, fontSize: 9 }}>{p.badge}</div>
             </button>
           ))}
         </div>
@@ -495,7 +495,7 @@ function TabHow() {
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
                 <div className="font-black text-base" style={{ color: prod.color }}>SymCheck {prod.label}</div>
-                <div className="text-xs mt-0.5" style={{ color: C.muted }}>{prod.url} · {prod.tagline}</div>
+                <div className="text-xs mt-0.5" style={{ color: C.white }}>{prod.url} · {prod.tagline}</div>
               </div>
               <div className="px-2 py-0.5 rounded-full text-xs font-black shrink-0" style={{ background: `${prod.color}20`, color: prod.color, border: `1px solid ${prod.color}40` }}>{prod.badge}</div>
             </div>
@@ -505,7 +505,7 @@ function TabHow() {
               {prod.stats.map((s, i) => (
                 <div key={i} className="rounded-xl p-2 text-center" style={{ background: `${prod.color}10`, border: `1px solid ${prod.color}25` }}>
                   <div className="text-base font-black" style={{ color: prod.color }}>{s.value}</div>
-                  <div className="text-xs mt-0.5" style={{ color: C.muted }}>{s.label}</div>
+                  <div className="text-xs mt-0.5" style={{ color: C.white }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -534,7 +534,7 @@ function TabHow() {
           ].map((s, i) => (
             <div key={i} className="py-4 text-center" style={{ borderRight: i < 2 ? `1px solid ${C.border}` : "none" }}>
               <AnimatedScore value={s.value} color={s.color} />
-              <div className="text-xs mt-1" style={{ color: C.muted }}>{s.label}</div>
+              <div className="text-xs mt-1" style={{ color: C.white }}>{s.label}</div>
             </div>
           ))}
         </div>
