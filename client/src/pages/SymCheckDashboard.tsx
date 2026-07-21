@@ -380,6 +380,17 @@ function TabHow() {
 
   return (
     <div className="space-y-4">
+      {/* ── HERO IMAGE BANNER ── */}
+      <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: "easeOut" }}
+        className="rounded-2xl overflow-hidden" style={{ border: `2px solid ${C.orange}40`, boxShadow: `0 0 40px ${C.orange}20` }}>
+        <img
+          src="/manus-storage/symcheck-hero_e671d49a.png"
+          alt="SymCheck — Any device. 50 biomarkers in 60 seconds. Save $1,746 per employee per year."
+          className="w-full block"
+          style={{ display: "block", maxHeight: 420, objectFit: "cover", objectPosition: "center" }}
+        />
+      </motion.div>
+
       {/* ── THE SYMCHECK FAMILY ── */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `2px solid ${C.orange}` }}>
