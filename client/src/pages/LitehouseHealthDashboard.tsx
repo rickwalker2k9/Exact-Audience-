@@ -714,25 +714,34 @@ function TabSiteID() {
 
 // ── TAB: ROI CALCULATOR ───────────────────────────────────────────────────────
 function TabROI() {
-  const [spend, setSpend] = useState(25000);
+  // Monthly fee: $8K–$12K over 90-day pilot
+  const [monthlyFee, setMonthlyFee] = useState(10000);
   const [avgDeal, setAvgDeal] = useState(200000);
 
-  const leads    = Math.round((spend / 20000) * 120);
-  const meetings = Math.round(leads * 0.09);
-  const deals    = Math.round(meetings * 0.28);
-  const annualRevenue = deals * avgDeal;
-  const roi = Math.round(((annualRevenue - spend) / spend) * 100);
-  const roiMultiple = (annualRevenue / spend).toFixed(1);
-  const payback = (spend / (annualRevenue / 12)).toFixed(1);
+  const pilotCost = monthlyFee * 3; // 90 days = 3 months
+  const annualCost = monthlyFee * 12;
 
-  const tierLabel = spend <= 22000 ? { label: "Starter", color: C.teal } :
-                    spend <= 32000 ? { label: "Growth",  color: C.orange } :
-                                    { label: "Scale",   color: C.gold };
+  // Conservative: healthcare sales cycle is long — model 90-day pilot pipeline
+  // Pilot generates ~40–80 identified health systems, 3–6 demos, 0–1 closes in 90 days
+  // But 1 close at $200K = full ROI in year 1
+  const leadsPerMonth  = Math.round((monthlyFee / 8000) * 28);  // ~28–42 identified/mo
+  const pilotLeads     = leadsPerMonth * 3;
+  const pilotDemos     = Math.round(pilotLeads * 0.08);          // 8% demo rate (healthcare B2B)
+  const pilotDeals     = Math.round(pilotDemos * 0.22);          // 22% close rate
+  const pilotRevenue   = pilotDeals * avgDeal;
+  const pilotROI       = pilotCost > 0 ? ((pilotRevenue - pilotCost) / pilotCost * 100).toFixed(0) : "0";
+  const annualRevenue  = Math.round((pilotDeals / 3) * 12 * avgDeal); // annualized run rate
+  const roiMultiple    = annualCost > 0 ? (annualRevenue / annualCost).toFixed(1) : "0";
+  const payback        = annualRevenue > 0 ? (annualCost / (annualRevenue / 12)).toFixed(1) : "—";
 
-  const projectionData = Array.from({ length: 12 }, (_, m) => ({
-    month: `M${m + 1}`,
-    revenue: Math.round((annualRevenue / 12) * (m + 1)),
-    cost: spend,
+  const tierLabel = monthlyFee <= 9000  ? { label: "Pilot — Conservative", color: C.teal } :
+                    monthlyFee <= 10500 ? { label: "Pilot — Recommended",  color: C.orange } :
+                                         { label: "Pilot — Accelerated",   color: C.gold };
+
+  const projectionData = Array.from({ length: 3 }, (_, m) => ({
+    month: `Month ${m + 1}`,
+    pipeline: Math.round(leadsPerMonth * (m + 1) * avgDeal * 0.08 * 0.22),
+    cost: monthlyFee * (m + 1),
   }));
 
   const MARKET_FACTS = [
@@ -747,26 +756,38 @@ function TabROI() {
   return (
     <div className="space-y-4">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL>ROI CALCULATOR — THE CASE FOR $20K–$40K</SL>
-        <div className="text-lg font-black mb-2" style={{ color: C.white }}>One New Hospital Relationship Pays for the Entire Year</div>
+        className="rounded-2xl p-5" style={{ background: C.card, border: `2px solid ${C.teal}` }}>
+        <SL color={C.teal}>90-DAY PILOT — PROVE IT BEFORE YOU SCALE IT</SL>
+        <div className="text-lg font-black mb-1" style={{ color: C.white }}>Start at $8K–$12K/Month. One Health System Pays for the Year.</div>
         <div className="text-sm leading-relaxed mb-4" style={{ color: C.muted }}>
-          Litehouse Beacon's average contract at a regional health system runs{" "}
-          <span style={{ color: C.gold, fontWeight: 900 }}>$150K–$400K/year</span>. A single new hospital relationship from an Exact Audience campaign returns 7–10x the investment.
+          Healthcare B2B has long sales cycles — 6 to 18 months from first touch to signed contract. The right move is a{" "}
+          <span style={{ color: C.teal, fontWeight: 900 }}>90-day pilot</span> that proves pipeline before scaling spend.
+          SiteID delivers value in week one — you see exactly which CNOs are on your site before a single deal closes.
         </div>
 
-        {/* Spend slider */}
+        {/* 90-day pilot callout */}
+        <div className="rounded-xl p-3 mb-4" style={{ background: `${C.teal}12`, border: `1px solid ${C.teal}30` }}>
+          <div className="text-xs font-black mb-1" style={{ color: C.teal }}>WHY 90 DAYS FIRST</div>
+          <div className="text-xs leading-relaxed" style={{ color: C.white }}>
+            90 days is enough to: (1) identify 80–120 health systems actively evaluating WFM platforms, (2) surface 6–10 CNO/VP Nursing direct contacts, (3) book 3–6 demos, and (4) get 1–2 deals into late-stage pipeline. One Beacon deal at $200K pays for <span style={{ color: C.gold, fontWeight: 900 }}>20 months</span> of the pilot fee.
+          </div>
+        </div>
+
+        {/* Monthly fee slider */}
         <div className="mb-4">
           <div className="flex justify-between text-xs mb-1">
-            <span style={{ color: C.muted }}>EA INVESTMENT</span>
-            <span className="font-black" style={{ color: tierLabel.color }}>{tierLabel.label} — ${spend.toLocaleString()}</span>
+            <span style={{ color: C.muted }}>MONTHLY PILOT FEE</span>
+            <span className="font-black" style={{ color: tierLabel.color }}>{tierLabel.label} — ${monthlyFee.toLocaleString()}/mo</span>
           </div>
-          <input type="range" min={20000} max={40000} step={1000} value={spend}
-            onChange={e => setSpend(Number(e.target.value))}
+          <input type="range" min={8000} max={12000} step={500} value={monthlyFee}
+            onChange={e => setMonthlyFee(Number(e.target.value))}
             className="w-full h-2 rounded-full appearance-none cursor-pointer"
-            style={{ background: `linear-gradient(to right, ${C.orange} 0%, ${C.gold} ${((spend - 20000) / 20000) * 100}%, ${C.border} ${((spend - 20000) / 20000) * 100}%)` }} />
+            style={{ background: `linear-gradient(to right, ${C.teal} 0%, ${C.orange} ${((monthlyFee - 8000) / 4000) * 100}%, ${C.border} ${((monthlyFee - 8000) / 4000) * 100}%)` }} />
           <div className="flex justify-between text-xs mt-1" style={{ color: C.muted }}>
-            <span>$20K</span><span>$40K</span>
+            <span>$8K/mo</span><span>$12K/mo</span>
+          </div>
+          <div className="text-xs mt-1 text-center font-black" style={{ color: C.muted }}>
+            90-day pilot total: <span style={{ color: C.white }}>${pilotCost.toLocaleString()}</span>
           </div>
         </div>
 
@@ -785,12 +806,13 @@ function TabROI() {
           </div>
         </div>
 
-        {/* KPI grid */}
+        {/* 90-day KPI grid */}
+        <div className="text-xs font-black mb-2" style={{ color: C.muted }}>90-DAY PILOT RESULTS</div>
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: "Identified Leads", value: leads, color: C.teal },
-            { label: "Demos Booked", value: meetings, color: C.orange },
-            { label: "New Deals", value: deals, color: C.gold },
+            { label: "Health Systems Identified", value: pilotLeads, color: C.teal },
+            { label: "Demos Booked", value: pilotDemos, color: C.orange },
+            { label: "Deals in Pipeline", value: pilotDeals, color: C.gold },
           ].map((k, i) => (
             <div key={i} className="rounded-xl p-3 text-center" style={{ background: C.card2, border: `1px solid ${C.border}` }}>
               <div className="text-2xl font-black" style={{ color: k.color }}>{k.value}</div>
@@ -806,13 +828,13 @@ function TabROI() {
               <div className="text-xl font-black" style={{ background: C.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 ${(annualRevenue / 1000).toFixed(0)}K
               </div>
-              <div className="text-xs" style={{ color: C.muted }}>New ARR</div>
+              <div className="text-xs" style={{ color: C.muted }}>Annualized ARR</div>
             </div>
             <div>
               <div className="text-xl font-black" style={{ background: C.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 {roiMultiple}x
               </div>
-              <div className="text-xs" style={{ color: C.muted }}>ROI Multiple</div>
+              <div className="text-xs" style={{ color: C.muted }}>Annual ROI Multiple</div>
             </div>
             <div>
               <div className="text-xl font-black" style={{ background: C.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
@@ -827,7 +849,8 @@ function TabROI() {
       {/* Projection chart */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
         className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <SL color={C.teal}>12-MONTH REVENUE PROJECTION</SL>
+        <SL color={C.teal}>90-DAY PILOT — PIPELINE BUILD TRAJECTORY</SL>
+        <div className="text-xs mb-3" style={{ color: C.muted }}>Pipeline value building vs. cumulative pilot cost over 3 months</div>
         <ResponsiveContainer width="100%" height={160}>
           <AreaChart data={projectionData} margin={{ top: 5, right: 5, bottom: 0, left: 0 }}>
             <defs>
@@ -841,8 +864,8 @@ function TabROI() {
               tickFormatter={v => `$${(v / 1000).toFixed(0)}K`} />
             <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, color: C.white, fontSize: 11 }}
               formatter={(v: number) => [`$${v.toLocaleString()}`, ""]} />
-            <Area type="monotone" dataKey="revenue" stroke={C.orange} strokeWidth={2} fill="url(#lhRevGrad)" name="Cumulative Revenue" />
-            <Line type="monotone" dataKey="cost" stroke={C.tealDim} strokeWidth={1.5} strokeDasharray="4 3" dot={false} name="EA Investment" />
+            <Area type="monotone" dataKey="pipeline" stroke={C.orange} strokeWidth={2} fill="url(#lhRevGrad)" name="Pipeline Value" />
+            <Line type="monotone" dataKey="cost" stroke={C.tealDim} strokeWidth={1.5} strokeDasharray="4 3" dot={false} name="Pilot Cost" />
           </AreaChart>
         </ResponsiveContainer>
       </motion.div>
