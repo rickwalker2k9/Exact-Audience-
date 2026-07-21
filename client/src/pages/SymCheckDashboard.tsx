@@ -339,6 +339,73 @@ const SEARCH_POOL = TARGET_POOL;
 
 // ── TAB: HOW IT WORKS ─────────────────────────────────────────────────────────
 function TabHow() {
+  const [activeProduct, setActiveProduct] = useState(0);
+
+  const PRODUCTS = [
+    {
+      id: "platform",
+      label: "SymCheck™",
+      badge: "PaaS",
+      tagline: "The flagship platform hub",
+      url: "symcheck.com",
+      color: C.orange,
+      icon: "⬡",
+      chips: ["White Label", "API + SDK", "HIPAA-Ready", "SOC 2", "BAA", "Blockchain Consent"],
+      stats: [
+        { label: "Deploy Modes", value: "5+" },
+        { label: "Integrations", value: "300+" },
+        { label: "Org Types", value: "Any" },
+      ],
+    },
+    {
+      id: "wellness",
+      label: "Wellness™",
+      badge: "ORG",
+      tagline: "Enterprise HR & workforce wellness",
+      url: "wellness.symcheck.com",
+      color: C.teal,
+      icon: "◈",
+      chips: ["~50 Biomarkers", "60-Sec Scan", "No Wearables", "Pop. Dashboards", "AI Nudges", "BYOD"],
+      stats: [
+        { label: "Biomarkers", value: "~50" },
+        { label: "Scan Time", value: "60s" },
+        { label: "Hardware", value: "None" },
+      ],
+    },
+    {
+      id: "vitals",
+      label: "Vitals™",
+      badge: "R&D",
+      tagline: "Advanced clinical biomarkers",
+      url: "vitals.symcheck.com",
+      color: C.gold,
+      icon: "◉",
+      chips: ["4 of 5 Vital Signs", "50+ Biomarkers", "4 Risk Scores", "HL7/FHIR", "Gait Analysis", "300+ Wearables"],
+      stats: [
+        { label: "Vital Signs", value: "4/5" },
+        { label: "Risk Scores", value: "4" },
+        { label: "Status", value: "R&D" },
+      ],
+    },
+    {
+      id: "app",
+      label: "App™",
+      badge: "B2C",
+      tagline: "Consumer daily wellness tracking",
+      url: "symcheck.app",
+      color: C.tealDim,
+      icon: "◎",
+      chips: ["App Store", "Google Play", "Daily Tracking", "Personal Trends", "Lifestyle Patterns", "Consumer Brand"],
+      stats: [
+        { label: "Platforms", value: "iOS + Android" },
+        { label: "Use Case", value: "Daily" },
+        { label: "Audience", value: "B2C" },
+      ],
+    },
+  ];
+
+  const prod = PRODUCTS[activeProduct];
+
   const steps = [
     {
       num: "01", title: "Exact Audience Monitors Behavioral Signals Across the Web",
@@ -391,121 +458,81 @@ function TabHow() {
         />
       </motion.div>
 
-      {/* ── THE SYMCHECK FAMILY ── */}
+      {/* ── THE SYMCHECK FAMILY — COMPACT VISUAL TABS ── */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl p-5" style={{ background: C.card, border: `2px solid ${C.orange}` }}>
-        <SL color={C.orange}>THE SYMCHECK FAMILY — 4 PRODUCTS, ONE PLATFORM</SL>
-        <div className="text-lg font-black mb-1" style={{ color: C.white }}>AI-Powered Health &amp; Wellness Insights — Built by SiriusIQ</div>
-        <div className="text-sm mb-4" style={{ color: C.muted }}>Health insights that help people understand themselves and share that understanding with the people who care for them. One technology — four ways to deploy it.</div>
+        className="rounded-2xl overflow-hidden" style={{ background: C.card, border: `2px solid ${C.orange}40` }}>
 
-        {/* FOR ORGANIZATIONS */}
-        <div className="text-xs font-black tracking-widest mb-2" style={{ color: C.muted }}>FOR ORGANIZATIONS</div>
-        <div className="space-y-3 mb-4">
-          {/* 1. SymCheck (overview) */}
-          <div className="rounded-xl p-4" style={{ background: C.card2, border: `1px solid ${C.orange}40` }}>
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <div>
-                <div className="font-black text-sm" style={{ color: C.orange }}>SymCheck™ — Product Overview</div>
-                <div className="text-xs mt-0.5" style={{ color: C.muted }}>symcheck.com · The flagship platform hub</div>
-              </div>
-              <div className="px-2 py-0.5 rounded-full text-xs font-black shrink-0" style={{ background: `${C.orange}20`, color: C.orange }}>PaaS</div>
-            </div>
-            <div className="text-xs leading-relaxed mb-2" style={{ color: C.white }}>The master platform overview — a configurable Platform as a Service (PaaS) for enterprise healthcare, life-sciences, and connected-device organizations. Delivers branded wellness insights, user onboarding, device integrations, analytics, and reporting at scale. Supports white-label deployment, complex org structures, wearable integrations, and offline-ready capture.</div>
-            <div className="flex flex-wrap gap-1">
-              {["White Label","API + SDK Access","HIPAA-Ready","SOC 2 Type 1","BAA Available","Blockchain Consent"].map(t => (
-                <span key={t} className="px-2 py-0.5 rounded-full text-xs" style={{ background: `${C.orange}15`, color: C.orange }}>{t}</span>
-            ))}
-            </div>
-          </div>
-
-          {/* 2. SymCheck Wellness (org) */}
-          <div className="rounded-xl p-4" style={{ background: C.card2, border: `1px solid ${C.teal}40` }}>
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <div>
-                <div className="font-black text-sm" style={{ color: C.teal }}>SymCheck Wellness™ — Wellness Platform</div>
-                <div className="text-xs mt-0.5" style={{ color: C.muted }}>wellness.symcheck.com · For HR, Benefits &amp; Workforce teams</div>
-              </div>
-              <div className="px-2 py-0.5 rounded-full text-xs font-black shrink-0" style={{ background: `${C.teal}20`, color: C.teal }}>ORG</div>
-            </div>
-            <div className="text-xs leading-relaxed mb-2" style={{ color: C.white }}>Enterprise workforce wellness at scale. Contactless wellness assessments in under 60 seconds — no wearables, no hardware. Measures heart rate, breathing rate, and nearly 50 biomarkers via rPPG (remote photoplethysmography — reading blood flow changes in facial skin color). Delivers population-level dashboards, wellness scoring, behavioral surveys, AI-driven nudges, and engagement programs. Designed for HR Directors, Benefits VPs, and Chief People Officers.</div>
-            <div className="grid grid-cols-2 gap-2 mb-2">
-              {[
-                { label: "Wellness Indicators", desc: "HR, breathing rate via rPPG" },
-                { label: "Biomarker Analysis", desc: "~50 biomarkers per scan" },
-                { label: "Wellness Scoring", desc: "Vitals + surveys + history" },
-                { label: "Enterprise Dashboards", desc: "Population-level analytics" },
-                { label: "Surveys &amp; Engagement", desc: "Built-in wellness agents" },
-                { label: "Trending &amp; Insights", desc: "AI-driven pattern tracking" },
-              ].map((f, i) => (
-                <div key={i} className="rounded-lg p-2" style={{ background: `${C.teal}08`, border: `1px solid ${C.teal}20` }}>
-                  <div className="text-xs font-black" style={{ color: C.teal }}>{f.label}</div>
-                  <div className="text-xs" style={{ color: C.muted }}>{f.desc}</div>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {["Worker Safety","Pre-Shift Checks","Community Wellness","BYOD Deployment","Offline-Ready"].map(t => (
-                <span key={t} className="px-2 py-0.5 rounded-full text-xs" style={{ background: `${C.teal}15`, color: C.teal }}>{t}</span>
-            ))}
-            </div>
-          </div>
-
-          {/* 3. SymCheck Vitals (org) */}
-          <div className="rounded-xl p-4" style={{ background: C.card2, border: `1px solid ${C.gold}40` }}>
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <div>
-                <div className="font-black text-sm" style={{ color: C.gold }}>SymCheck Vitals™ — Vitals Platform</div>
-                <div className="text-xs mt-0.5" style={{ color: C.muted }}>vitals.symcheck.com · Deeper biomarker capabilities — under research</div>
-              </div>
-              <div className="px-2 py-0.5 rounded-full text-xs font-black shrink-0" style={{ background: `${C.gold}20`, color: C.gold }}>R&amp;D</div>
-            </div>
-            <div className="text-xs leading-relaxed mb-2" style={{ color: C.white }}>The advanced clinical tier — expanded vital and biomarker capabilities beyond wellness indicators. Measures 4 of 5 core vital signs (heart rate, breathing, blood pressure, SpO₂ oxygen saturation) and 50+ biomarkers including HRV (Heart Rate Variability), stress, biological age, blood glucose, hemoglobin, VO₂ Max, and inflammation index. Includes cardiovascular risk, metabolic risk, hypertension risk, and ASCVD risk scores. Supports HL7/FHIR health data interchange, gait analysis, and 300+ wearable integrations. <span style={{color: C.gold, fontWeight: 900}}>Currently under active research — not yet marketed as clinical features.</span></div>
-            <div className="grid grid-cols-2 gap-2 mb-2">
-              {[
-                { label: "4 of 5 Vital Signs", desc: "HR, breathing, BP, SpO₂" },
-                { label: "50+ Biomarkers", desc: "HRV, stress, bio age, glucose" },
-                { label: "4 Risk Scores", desc: "CV, metabolic, HTN, ASCVD" },
-                { label: "HL7 / FHIR", desc: "Health system interoperability" },
-                { label: "Gait Analysis", desc: "Fall risk &amp; mobility tracking" },
-                { label: "300+ Wearables", desc: "Device &amp; sensor integrations" },
-              ].map((f, i) => (
-                <div key={i} className="rounded-lg p-2" style={{ background: `${C.gold}08`, border: `1px solid ${C.gold}20` }}>
-                  <div className="text-xs font-black" style={{ color: C.gold }}>{f.label}</div>
-                  <div className="text-xs" style={{ color: C.muted }}>{f.desc}</div>
-                </div>
-              ))}
-            </div>
-            <div className="text-xs italic p-2 rounded-lg" style={{ background: `${C.gold}10`, border: `1px solid ${C.gold}25`, color: C.gold }}>Under research: features not yet available as marketed clinical capabilities. Regulatory status and availability vary by market.</div>
+        {/* Header */}
+        <div className="px-5 pt-5 pb-3">
+          <div className="flex items-center justify-between mb-1">
+            <div className="text-xs font-black tracking-widest" style={{ color: C.orange }}>THE SYMCHECK FAMILY — 4 PRODUCTS, ONE PLATFORM</div>
+            <div className="text-xs" style={{ color: C.muted }}>Built by SiriusIQ</div>
           </div>
         </div>
 
-        {/* FOR INDIVIDUALS */}
-        <div className="text-xs font-black tracking-widest mb-2" style={{ color: C.muted }}>FOR INDIVIDUALS</div>
-        {/* 4. SymCheck Wellness App */}
-        <div className="rounded-xl p-4" style={{ background: C.card2, border: `1px solid ${C.tealDim}50` }}>
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <div>
-              <div className="font-black text-sm" style={{ color: C.tealDim }}>SymCheck Wellness App™ — Consumer App</div>
-              <div className="text-xs mt-0.5" style={{ color: C.muted }}>symcheck.app · App Store &amp; Google Play</div>
-            </div>
-            <div className="px-2 py-0.5 rounded-full text-xs font-black shrink-0" style={{ background: `${C.tealDim}20`, color: C.tealDim }}>B2C</div>
-          </div>
-          <div className="text-xs leading-relaxed mb-2" style={{ color: C.white }}>The consumer-facing app for daily personal wellness tracking. Adults use it to notice lifestyle trends and personal wellness patterns over time — same contactless rPPG scan technology, delivered as a daily wellness habit. Available on the App Store and Google Play. Creates a direct-to-consumer data flywheel that complements the enterprise platform and builds brand awareness with future HR decision-makers.</div>
-          <div className="flex flex-wrap gap-1">
-            {["App Store","Google Play","Daily Wellness Tracking","Personal Trends","Lifestyle Patterns","Consumer Brand"].map(t => (
-              <span key={t} className="px-2 py-0.5 rounded-full text-xs" style={{ background: `${C.tealDim}15`, color: C.tealDim }}>{t}</span>
+        {/* Product tab strip */}
+        <div className="grid grid-cols-4 gap-0" style={{ borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
+          {PRODUCTS.map((p, i) => (
+            <button key={p.id} onClick={() => setActiveProduct(i)}
+              className="py-3 px-2 text-center transition-all relative"
+              style={{ background: activeProduct === i ? `${p.color}18` : "transparent", borderRight: i < 3 ? `1px solid ${C.border}` : "none" }}>
+              {activeProduct === i && (
+                <motion.div layoutId="productTabUnderline" className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: p.color }} />
+              )}
+              <div className="text-lg mb-0.5" style={{ color: activeProduct === i ? p.color : C.muted }}>{p.icon}</div>
+              <div className="text-xs font-black" style={{ color: activeProduct === i ? p.color : C.muted }}>{p.label}</div>
+              <div className="text-xs mt-0.5 px-1.5 py-0.5 rounded-full inline-block" style={{ background: activeProduct === i ? `${p.color}25` : `${C.border}80`, color: activeProduct === i ? p.color : C.muted, fontSize: 9 }}>{p.badge}</div>
+            </button>
           ))}
-          </div>
         </div>
 
-        {/* Stat row */}
-        <div className="grid grid-cols-3 gap-3 mt-4">
+        {/* Active product detail */}
+        <AnimatePresence mode="wait">
+          <motion.div key={prod.id}
+            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+            className="p-5">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div>
+                <div className="font-black text-base" style={{ color: prod.color }}>SymCheck {prod.label}</div>
+                <div className="text-xs mt-0.5" style={{ color: C.muted }}>{prod.url} · {prod.tagline}</div>
+              </div>
+              <div className="px-2 py-0.5 rounded-full text-xs font-black shrink-0" style={{ background: `${prod.color}20`, color: prod.color, border: `1px solid ${prod.color}40` }}>{prod.badge}</div>
+            </div>
+
+            {/* 3 stat chips */}
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {prod.stats.map((s, i) => (
+                <div key={i} className="rounded-xl p-2 text-center" style={{ background: `${prod.color}10`, border: `1px solid ${prod.color}25` }}>
+                  <div className="text-base font-black" style={{ color: prod.color }}>{s.value}</div>
+                  <div className="text-xs mt-0.5" style={{ color: C.muted }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Feature chips */}
+            <div className="flex flex-wrap gap-1.5">
+              {prod.chips.map(chip => (
+                <span key={chip} className="px-2 py-0.5 rounded-full text-xs font-black" style={{ background: `${prod.color}15`, color: prod.color, border: `1px solid ${prod.color}25` }}>{chip}</span>
+              ))}
+            </div>
+
+            {prod.id === "vitals" && (
+              <div className="mt-3 text-xs italic px-3 py-2 rounded-lg" style={{ background: `${C.gold}10`, border: `1px solid ${C.gold}25`, color: C.gold }}>
+                Under active research — not yet marketed as clinical features.
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Animated KPI strip */}
+        <div className="grid grid-cols-3 gap-0" style={{ borderTop: `1px solid ${C.border}` }}>
           {[
             { label: "Orgs In-Market This Week", value: 22, color: C.orange },
             { label: "Decision-Makers Identified", value: 38, color: C.teal },
             { label: "Avg Intent Score", value: 81, color: C.gold },
           ].map((s, i) => (
-            <div key={i} className="rounded-xl p-3 text-center" style={{ background: C.card2, border: `1px solid ${C.border}` }}>
+            <div key={i} className="py-4 text-center" style={{ borderRight: i < 2 ? `1px solid ${C.border}` : "none" }}>
               <AnimatedScore value={s.value} color={s.color} />
               <div className="text-xs mt-1" style={{ color: C.muted }}>{s.label}</div>
             </div>
