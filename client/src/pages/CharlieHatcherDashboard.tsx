@@ -1,8 +1,8 @@
 /**
  * CharlieHatcherDashboard.tsx
  * Charlie Hatcher for Congress — TN-CD5 Republican Primary 2026
- * EA Intelligence Portal — B2C Voter Targeting & $56,109 Spend Recommendation
- * Tabs: Race Overview | Persuadable Voters | $56,109 Spend Plan | Voter Profiles | Path to Win
+ * EA Intelligence Portal — B2C Voter Targeting & 3-Tier Spend Recommendation
+ * Tabs: Race Overview | Persuadable Voters | Spend Plan | Voter Profiles | Path to Win
  */
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
@@ -81,33 +81,82 @@ const VOTER_SEGMENTS = [
   { segment: "Soft Trump / Persuadable R", pct: 12, count: 5000, intent: 65, desc: "Voters who supported Trump in 2020 and 2024 but are open to a local candidate with a strong service record.", color: "#bfdbfe" },
 ];
 
-const SPEND_PLAN = [
+// ── 3-Tier Spend Plans ────────────────────────────────────────────────────────
+const SPEND_TIERS = [
   {
-    channel: "Connected TV (CTV)",
-    budget: 28417,
-    pct: 50.6,
-    reach: "~85,000 unique households",
-    frequency: "10–15x per voter",
-    desc: "30-second spots on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. Targets registered Republican primary voters by household in all 14 new counties. Highest recall medium — reaches voters where they actually watch.",
-    color: "#1a56db",
+    id: "full",
+    label: "Full Saturation",
+    tagline: "Win without needing anything else to go right.",
+    total: 69417,
+    recommended: false,
+    remaining: 144583,
+    narrative: "At $69,417, you are not running a campaign — you are running an air war that Ogles simply cannot answer. Every persuadable Republican primary voter in all 14 new counties will see Hatcher's face and hear his name on their TV, their phone, and their radio before they go to bed. Soft Trump voters who have never heard of Andy Ogles will know Charlie Hatcher. The ground game becomes a victory lap, not a lifeline. This is the number that makes August 7 a foregone conclusion.",
+    groundGame: "Volunteer canvassing is a bonus, not a requirement. The ads carry the full load. Use your field team for Election Day turnout only.",
+    organicSocial: "Amplification only — share the ads, post event photos, let the paid media do the persuasion work.",
+    channels: [
+      { channel: "Connected TV (CTV)", budget: 34800, pct: 50.1, reach: "~105,000 households", frequency: "12–18x", color: "#1a56db",
+        desc: "Bought by ZIP code and county across all 14 new counties — every household in Hatcher's new district sees his 30-second spot on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. No voter file required: geographic saturation means no persuadable household goes untouched. Highest-recall medium in the mix." },
+      { channel: "Digital Video & Social", budget: 24617, pct: 35.5, reach: "~165,000 unique voters", frequency: "10–15x", color: "#3b82f6",
+        desc: "Facebook/Instagram video ads matched to the Republican primary voter file — these are named, identified voters, not just zip code residents. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. At this budget, every moveable voter gets hit 10–15 times across the 21-day sprint." },
+      { channel: "Programmatic Display & Audio", budget: 10000, pct: 14.4, reach: "~115,000 unique devices", frequency: "14–20x", color: "#93c5fd",
+        desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Reinforces CTV and social at the highest frequency tier — voters who see the CTV spot at night hear the audio spot during their morning commute. Maximum message repetition for minimum incremental cost." },
+    ],
+    metrics: { uniqueVoters: "~72,000", frequency: "12–18x", impressions: "~4.1M", costPerVoter: "$0.96", groundGameRequired: "Minimal" },
+    projections: [
+      { scenario: "Conservative", votersReached: 65000, conversion: 14, newVotes: 9100, hatcherTotal: "37,100", highlight: false },
+      { scenario: "Expected", votersReached: 72000, conversion: 18, newVotes: 12960, hatcherTotal: "40,960", highlight: true },
+      { scenario: "Strong", votersReached: 72000, conversion: 22, newVotes: 15840, hatcherTotal: "43,840", highlight: false },
+    ],
   },
   {
-    channel: "Digital Video & Social",
-    budget: 18692,
-    pct: 33.3,
-    reach: "~130,000 unique voters",
-    frequency: "8–12x per voter",
-    desc: "Facebook/Instagram video ads targeting Republican primary voters 35+ in the 14 new counties. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. Precise voter-file matching.",
-    color: "#3b82f6",
+    id: "precision",
+    label: "Precision Strike",
+    tagline: "Reaches every genuinely moveable voter 8–14 times.",
+    total: 56109,
+    recommended: true,
+    remaining: 157891,
+    narrative: "$56,109 is the number that moves the moveable. It is not the number that wins on autopilot — it is the number that wins if the campaign executes. Every persuadable Republican primary voter in the 14 new counties will be reached 8–14 times across CTV, digital, and programmatic. Ogles has $15,000 net of debt. He cannot respond. What this budget does not do is saturate soft Trump voters at the frequency needed to fully flip them — that gap gets closed by a competent ground game in Madison, Gibson, and Dyer counties. If the campaign can knock 3,000 doors in those three counties, this budget wins.",
+    groundGame: "Active and essential in the three toss-up counties. Door-knocking in Madison (Jackson), Gibson (Trenton), and Dyer (Dyersburg) closes the gap that the ad budget leaves open.",
+    organicSocial: "Weekly posts reinforcing ad themes. Facebook community groups in each county. Hatcher should be posting 3x per week minimum — event photos, endorsements, ag commissioner throwbacks.",
+    channels: [
+      { channel: "Connected TV (CTV)", budget: 28417, pct: 50.6, reach: "~85,000 households", frequency: "10–15x", color: "#1a56db",
+        desc: "Bought by ZIP code and county across all 14 new counties — every household in Hatcher's new district gets covered. 30-second spots on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. Geographic targeting means no wasted impressions outside the district. CTV is the highest-recall medium and the anchor of the entire plan." },
+      { channel: "Digital Video & Social", budget: 18692, pct: 33.3, reach: "~130,000 unique voters", frequency: "8–12x", color: "#3b82f6",
+        desc: "Facebook/Instagram video ads matched to the Republican primary voter file — named, identified persuadable voters, not just geographic residents. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. Voter-file matching means every dollar reaches a real Republican primary voter, not a random household member." },
+      { channel: "Programmatic Display & Audio", budget: 9000, pct: 16.0, reach: "~95,000 unique devices", frequency: "12–18x", color: "#93c5fd",
+        desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Reinforces CTV and social messaging throughout the day — voters who see the CTV spot at night hear the audio spot during their morning commute. The highest-frequency channel in the plan for the lowest incremental cost." },
+    ],
+    metrics: { uniqueVoters: "~58,000", frequency: "8–14x", impressions: "~3.1M", costPerVoter: "$0.97", groundGameRequired: "Active" },
+    projections: [
+      { scenario: "Conservative", votersReached: 52000, conversion: 13, newVotes: 6760, hatcherTotal: "34,760", highlight: false },
+      { scenario: "Expected", votersReached: 58000, conversion: 17, newVotes: 9860, hatcherTotal: "37,860", highlight: true },
+      { scenario: "Strong", votersReached: 58000, conversion: 21, newVotes: 12180, hatcherTotal: "40,180", highlight: false },
+    ],
   },
   {
-    channel: "Programmatic Display & Audio",
-    budget: 9000,
-    pct: 16.0,
-    reach: "~95,000 unique devices",
-    frequency: "12–18x per voter",
-    desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Reaches persuadable voters on mobile and desktop throughout the day — reinforces CTV and social messaging for maximum frequency.",
-    color: "#93c5fd",
+    id: "lean",
+    label: "Lean Budget",
+    tagline: "Gets the core message out. Needs ground game to close.",
+    total: 41284,
+    recommended: false,
+    remaining: 172716,
+    narrative: "$41,284 is a viable floor — not a comfortable one. It reaches high-propensity persuadables and Hatcher's natural base at sufficient frequency, but it will not touch soft Trump voters in Madison and Gibson counties at the repetition needed to move them without help. This budget works if the campaign runs a serious ground game and uses organic social media as a genuine persuasion tool, not just a posting schedule. If Hatcher can put 50 volunteers in the field and post 4–5 times per week with real content, this budget is enough to win. If the ground game is weak, it is not.",
+    groundGame: "Essential. Without active canvassing in all five toss-up and competitive counties, this budget alone will not close the gap. Plan for 3,000+ door knocks in Madison, Gibson, Dyer, Haywood, and Hardeman.",
+    organicSocial: "Must function as a real persuasion channel, not just amplification. 4–5 posts per week minimum. Facebook Live events with Hatcher in each county. Volunteer-generated content. Endorsement videos from local figures. This is not optional at this budget level.",
+    channels: [
+      { channel: "Connected TV (CTV)", budget: 21200, pct: 51.4, reach: "~62,000 households", frequency: "8–10x", color: "#1a56db",
+        desc: "Bought by ZIP code and county — covers the highest-priority ZIP codes in the 14 new counties. At this budget, not every ZIP gets full saturation; the plan concentrates on the 8 counties with the highest persuadable density. 30-second spots on Hulu, Peacock, and local news streaming. Geographic targeting keeps every dollar inside the district." },
+      { channel: "Digital Video & Social", budget: 13584, pct: 32.9, reach: "~90,000 unique voters", frequency: "6–8x", color: "#3b82f6",
+        desc: "Facebook/Instagram video ads matched to the Republican primary voter file. At 6–8x frequency, this is enough to establish name recognition but not enough to fully move soft persuadables on its own. The organic social strategy must reinforce these ads — every paid impression should be backed by an organic post the same week." },
+      { channel: "Programmatic Display & Audio", budget: 6500, pct: 15.7, reach: "~72,000 unique devices", frequency: "8–12x", color: "#93c5fd",
+        desc: "IP-targeted display ads and Spotify/Pandora audio matched to the voter file. Reinforces CTV and social at a reduced frequency. At this budget level, audio is particularly valuable — it reaches voters during commutes and work hours when CTV cannot, extending the effective reach of the plan without significant added cost." },
+    ],
+    metrics: { uniqueVoters: "~42,000", frequency: "6–10x", impressions: "~2.2M", costPerVoter: "$0.98", groundGameRequired: "Essential" },
+    projections: [
+      { scenario: "Conservative", votersReached: 38000, conversion: 11, newVotes: 4180, hatcherTotal: "32,180", highlight: false },
+      { scenario: "Expected", votersReached: 42000, conversion: 15, newVotes: 6300, hatcherTotal: "34,300", highlight: true },
+      { scenario: "Strong (w/ ground game)", votersReached: 42000, conversion: 20, newVotes: 8400, hatcherTotal: "36,400", highlight: false },
+    ],
   },
 ];
 
@@ -241,7 +290,7 @@ const TOTAL_NEEDED = PATH_TO_WIN.reduce((s, c) => s + c.needed, 0);
 const TABS = [
   { id: "overview",   label: "Race Overview" },
   { id: "voters",     label: "Persuadable Voters" },
-  { id: "spend",      label: "$56,109 Spend Plan" },
+  { id: "spend",      label: "Spend Plan & Strategy" },
   { id: "profiles",   label: "Voter Profiles" },
   { id: "path",       label: "Path to Win" },
 ];
@@ -503,95 +552,322 @@ function TabVoters({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
-// ── TAB: $56,109 Spend Plan ──────────────────────────────────────────────────────
+// ── TAB: Spend Plan & Strategy ───────────────────────────────────────────────
+const TIER_COLORS = ["#22c55e", "#3b82f6", "#f59e0b"] as const;
+
+const UGC_SCRIPTS = [
+  {
+    persona: "The Farmer",
+    icon: "🌾",
+    line: "I'm voting for Charlie Hatcher because he's been in my barn. He knows what it costs to run a farm — the diesel, the fertilizer, the land prices. He's not a politician. He's one of us.",
+    hook: "Farm Strong. Farm Tough. Farm Smart.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Veteran",
+    icon: "🎖️",
+    line: "I'm voting for Charlie because he doesn't talk about doing things. He does them. 21 years of public service. Eight businesses built from scratch. That's what we need in Washington — a worker, not a show horse.",
+    hook: "Less talk. More work.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Rural Mom",
+    icon: "🏡",
+    line: "I'm voting for Charlie Hatcher because I want my kids to have a future here — in this county, on this land. Charlie passed the Farmland Preservation Act. He showed up before he needed our vote.",
+    hook: "He showed up before he needed your vote.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Small Business Owner",
+    icon: "🔧",
+    line: "I built my business from scratch, just like Charlie did — eight times. When input costs went up 300% at his dairy, he didn't quit. That's who I want fighting for Tennessee in Washington.",
+    hook: "Built from scratch. Eight times.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Young Farmer",
+    icon: "🚜",
+    line: "My family has farmed this land for four generations. Charlie Hatcher's family has farmed theirs for ten. He knows what it means to protect that. I'm voting for someone who gets it.",
+    hook: "Ten generations of Tennessee roots.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Church Member",
+    icon: "✝️",
+    line: "Charlie's a Christian family man who raised two kids on the farm and built a legacy of service. He's not out there saying hateful things. He's out there doing the work. That's who I want representing Tennessee.",
+    hook: "Character built on the farm.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Co-op Member",
+    icon: "🤝",
+    line: "Charlie Hatcher came to our co-op three times when he was Ag Commissioner. He didn't have to. He just showed up and listened. That's not a politician — that's a neighbor. I'm voting for my neighbor.",
+    hook: "He showed up. He listened. He delivered.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Retired Farmer",
+    icon: "👴",
+    line: "I've seen a lot of politicians come through here. Charlie's different. He's a farmer first. He knows that food security is national security. And he's the only one in this race who actually means it.",
+    hook: "Food security is national security.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Dairy Customer",
+    icon: "🥛",
+    line: "I've been buying Hatcher Family Dairy milk for years. Six generations of this family on the same land. You want to know who Charlie Hatcher is? Walk into that dairy store. That's who he is.",
+    hook: "Six generations. One family. One farm.",
+    cta: "Hire a Farmer. Vote Charlie Hatcher.",
+  },
+  {
+    persona: "The Neighbor",
+    icon: "🇺🇸",
+    line: "You want something hard done right? Hire a farmer. I'm hiring Charlie Hatcher for Congress on August 6th.",
+    hook: "You want something hard done right?",
+    cta: "Hire a Farmer. Vote Charlie Hatcher — August 6.",
+  },
+];
+
 function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
-  const pieData = SPEND_PLAN.map(s => ({ name: s.channel, value: s.budget, fill: s.color }));
+  const [selectedTier, setSelectedTier] = useState(1); // default to Precision Strike
+  const tier = SPEND_TIERS[selectedTier];
+  const tierColor = TIER_COLORS[selectedTier];
+  const pieData = tier.channels.map((s: any) => ({ name: s.channel, value: s.budget, fill: s.color }));
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Spend Summary Banner */}
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+      {/* Header */}
       <div style={{ background: "linear-gradient(135deg,#0d1a2e,#0a1628)", border: `1px solid ${C.accent}40`, borderRadius: 14, padding: "20px 24px" }}>
-        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>Exact Audience Recommended Spend · 21-Day Sprint</div>
-        <div style={{ fontSize: mobile ? 22 : 28, fontWeight: 900, color: C.white, marginBottom: 8 }}>$56,109 Precision Voter Targeting Plan</div>
-        <div style={{ fontSize: 13, color: "#cbd5e1", maxWidth: 600, lineHeight: 1.6 }}>
-          Reach every persuadable Republican primary voter in the 14 new counties at least 6–12 times before August 7. The goal is not broad awareness — it is surgical repetition to the ~58,000 voters who are genuinely moveable. Ogles cannot match this spend. That is the window.
+        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 6 }}>Exact Audience · Three Investment Levels · August 6 Primary</div>
+        <div style={{ fontSize: mobile ? 18 : 24, fontWeight: 900, color: C.white, marginBottom: 8 }}>"You want something hard done right? Hire a farmer."</div>
+        <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.6, maxWidth: 640 }}>
+          Charlie Hatcher is a 10th-generation farmer, veterinarian, and 7-year Ag Commissioner running against an incumbent with $15,000 cash and an open federal investigation. The window is open. The only question is how wide you want to open it. Below are three investment levels — three different outcomes.
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12, marginTop: 20 }}>
-          <KpiCard label="Total Recommended Spend" value="$56,109" sub="21-day sprint to August 7" color={C.accent} C={C} />
-          <KpiCard label="Unique Voters Reached" value="~58,000" sub="Unduplicated cross-channel reach" color={C.green} C={C} />
-          <KpiCard label="Avg. Touchpoints/Voter" value="8–14x" sub="Enough to move persuadables" color={C.gold} C={C} />
-          <KpiCard label="Hatcher Cash Available" value="$214K" sub="$157,891 remaining after spend" color={C.accent2} C={C} />
-        </div>
-      </div>
-
-      {/* Channel Breakdown */}
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
-          <SectionLabel C={C}>Budget Allocation by Channel</SectionLabel>
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={3} dataKey="value">
-                {pieData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
-              </Pie>
-              <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8 }} formatter={(v: number) => `$${v.toLocaleString()}` } />
-            </PieChart>
-          </ResponsiveContainer>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
-            {SPEND_PLAN.map((s, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: C.white }}>{s.channel}</span>
-                </div>
-                <span style={{ fontSize: 13, fontWeight: 700, color: s.color }}>${s.budget.toLocaleString()}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
-          <SectionLabel C={C}>Why $56,109 Moves the Needle</SectionLabel>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {[
-              { label: "Ogles' net available cash", value: "$15,000", color: C.red, note: "Cannot run a meaningful paid media campaign in the final 3 weeks" },
-              { label: "Hatcher after $56,109 spend", value: "$157,891", color: C.green, note: "Still has reserve for GOTV and unexpected needs" },
-              { label: "Persuadable voters reached", value: "~58,000", color: C.accent2, note: "Unduplicated cross-channel reach across all 14 new counties, touched 8–14 times" },
-              { label: "Trump endorsement reach", value: "Limited", color: C.gold, note: "In a low-salience primary, endorsement only matters if voters know about it. Hatcher's job is to win the information race first." },
-            ].map((item, i) => (
-              <div key={i} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>{item.label}</span>
-                  <span style={{ fontSize: 16, fontWeight: 800, color: item.color }}>{item.value}</span>
-                </div>
-                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.5 }}>{item.note}</div>
-              </div>
-            ))}
-          </div>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 10, marginTop: 16 }}>
+          <KpiCard label="Ogles Net Cash" value="$15,000" sub="After $70K in debt — cannot respond" color={C.red} C={C} />
+          <KpiCard label="Hatcher Cash on Hand" value="$214K" sub="Largest war chest in the race" color={C.green} C={C} />
+          <KpiCard label="New Voters in District" value="83%" sub="Never voted in this congressional race" color={C.gold} C={C} />
+          <KpiCard label="Days to August 6" value="14" sub="Early voting open now through Aug 1" color={C.accent2} C={C} />
         </div>
       </div>
 
-      {/* Channel Detail Cards */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <SectionLabel C={C}>Channel-by-Channel Breakdown</SectionLabel>
-        {SPEND_PLAN.map((s, i) => (
-          <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderLeft: `4px solid ${s.color}`, borderRadius: 12, padding: 18 }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: C.white, marginBottom: 4 }}>{s.channel}</div>
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 11, color: C.muted }}>Reach: <span style={{ color: C.white, fontWeight: 600 }}>{s.reach}</span></span>
-                  <span style={{ fontSize: 11, color: C.muted }}>Frequency: <span style={{ color: C.white, fontWeight: 600 }}>{s.frequency}</span></span>
-                </div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Budget</div>
-                <div style={{ fontSize: 22, fontWeight: 900, color: s.color }}>${s.budget.toLocaleString()}</div>
-                <div style={{ fontSize: 11, color: C.muted }}>{s.pct}% of total</div>
-              </div>
-            </div>
-            <div style={{ fontSize: 13, color: "#cbd5e1", lineHeight: 1.6 }}>{s.desc}</div>
-          </div>
+      {/* Tier Selector */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+        {SPEND_TIERS.map((t, i) => (
+          <button key={t.id} onClick={() => setSelectedTier(i)} style={{
+            background: selectedTier === i ? `${TIER_COLORS[i]}15` : C.card,
+            border: `2px solid ${selectedTier === i ? TIER_COLORS[i] : C.border}`,
+            borderRadius: 12, padding: mobile ? "12px 10px" : "16px 14px", cursor: "pointer", textAlign: "left" as const,
+            transition: "all 0.2s",
+          }}>
+            {t.recommended && <div style={{ fontSize: 9, fontWeight: 700, color: TIER_COLORS[i], textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 4 }}>★ Recommended</div>}
+            <div style={{ fontSize: mobile ? 16 : 22, fontWeight: 900, color: TIER_COLORS[i] }}>${(t.total / 1000).toFixed(0)}K</div>
+            <div style={{ fontSize: 11, color: C.white, fontWeight: 700, marginTop: 2 }}>{t.label}</div>
+            <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 4, lineHeight: 1.4 }}>{t.tagline}</div>
+          </button>
         ))}
       </div>
+
+      {/* Selected Tier Detail */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderTop: `3px solid ${tierColor}`, borderRadius: 12, padding: 20 }}>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: mobile ? 18 : 22, fontWeight: 900, color: tierColor }}>${tier.total.toLocaleString()} — {tier.label}</div>
+          <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4, lineHeight: 1.6 }}>{tier.narrative}</div>
+        </div>
+
+        {/* Budget Pie + Breakdown */}
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 20 }}>
+          <div>
+            <SectionLabel C={C}>Budget by Channel</SectionLabel>
+            <ResponsiveContainer width="100%" height={180}>
+              <PieChart>
+                <Pie data={pieData} cx="50%" cy="50%" innerRadius={45} outerRadius={75} paddingAngle={3} dataKey="value">
+                  {pieData.map((_: any, i: number) => <Cell key={i} fill={pieData[i].fill} />)}
+                </Pie>
+                <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8 }} formatter={(v: number) => `$${v.toLocaleString()}`} />
+              </PieChart>
+            </ResponsiveContainer>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {tier.channels.map((s: any) => (
+                <div key={s.channel} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: 11, color: C.white }}>{s.channel}</span>
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: s.color }}>${s.budget.toLocaleString()}</span>
+                </div>
+              ))}
+              <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${C.border}`, paddingTop: 8, marginTop: 4 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: C.white }}>Total</span>
+                <span style={{ fontSize: 14, fontWeight: 900, color: tierColor }}>${tier.total.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <SectionLabel C={C}>What This Delivers</SectionLabel>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {[
+                { label: "Unique Voters Reached", value: tier.metrics.uniqueVoters },
+                { label: "Avg Frequency", value: tier.metrics.frequency },
+                { label: "Total Impressions", value: tier.metrics.impressions },
+                { label: "Cost Per Voter", value: tier.metrics.costPerVoter },
+                { label: "Ground Game Required", value: tier.metrics.groundGameRequired },
+              ].map(m => (
+                <div key={m.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: C.bg3, borderRadius: 8, padding: "8px 12px", borderLeft: `3px solid ${tierColor}` }}>
+                  <span style={{ fontSize: 11, color: "#94a3b8" }}>{m.label}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{m.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Channel Cards */}
+        <SectionLabel C={C}>Channel-by-Channel Breakdown</SectionLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+          {tier.channels.map((s: any) => (
+            <div key={s.channel} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderLeft: `4px solid ${s.color}`, borderRadius: 10, padding: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" as const, gap: 8, marginBottom: 8 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: C.white }}>{s.channel}</div>
+                  <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>Reach: <span style={{ color: C.white }}>{s.reach}</span> · Freq: <span style={{ color: C.white }}>{s.frequency}</span></div>
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: s.color }}>${s.budget.toLocaleString()}</div>
+              </div>
+              <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>{s.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Vote Projections */}
+        <SectionLabel C={C}>Vote Projection Scenarios</SectionLabel>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3,1fr)", gap: 10, marginBottom: 20 }}>
+          {tier.projections.map((p: any) => (
+            <div key={p.scenario} style={{
+              background: p.highlight ? `${tierColor}12` : C.bg3,
+              border: `1px solid ${p.highlight ? tierColor + "50" : C.border}`,
+              borderRadius: 10, padding: 14,
+            }}>
+              {p.highlight && <div style={{ fontSize: 9, fontWeight: 700, color: tierColor, textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>Most Likely</div>}
+              <div style={{ fontSize: 12, fontWeight: 700, color: C.white, marginBottom: 10 }}>{p.scenario}</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                {[
+                  ["Voters Reached", p.votersReached.toLocaleString()],
+                  ["Conversion Rate", `${p.conversion}%`],
+                  ["New Votes for Hatcher", p.newVotes.toLocaleString()],
+                  ["Projected Hatcher Total", p.hatcherTotal],
+                ].map(([lbl, val]) => (
+                  <div key={lbl} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 10, color: "#94a3b8" }}>{lbl}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: C.white }}>{val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Ground Game + Organic Social */}
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+          <div style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: tierColor, textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 8 }}>Ground Game</div>
+            <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>{tier.groundGame}</div>
+          </div>
+          <div style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: tierColor, textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 8 }}>Organic Social</div>
+            <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.6 }}>{tier.organicSocial}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Side-by-Side Comparison */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+        <SectionLabel C={C}>Side-by-Side Comparison</SectionLabel>
+        <div style={{ overflowX: "auto" as const }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 11 }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "left" as const, padding: "8px 12px", color: "#64748b", fontWeight: 600, borderBottom: `1px solid ${C.border}` }}>Metric</th>
+                {SPEND_TIERS.map((t, i) => (
+                  <th key={t.id} style={{ textAlign: "center" as const, padding: "8px 12px", color: TIER_COLORS[i], fontWeight: 700, borderBottom: `1px solid ${C.border}` }}>
+                    ${(t.total / 1000).toFixed(0)}K {t.recommended ? "★" : ""}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {([
+                ["Unique Voters", "uniqueVoters"],
+                ["Avg Frequency", "frequency"],
+                ["Total Impressions", "impressions"],
+                ["Cost Per Voter", "costPerVoter"],
+                ["Ground Game", "groundGameRequired"],
+              ] as [string, string][]).map(([label, key]) => (
+                <tr key={key} style={{ borderBottom: `1px solid ${C.border}` }}>
+                  <td style={{ padding: "8px 12px", color: C.white }}>{label}</td>
+                  {SPEND_TIERS.map((t, i) => (
+                    <td key={t.id} style={{ padding: "8px 12px", textAlign: "center" as const, color: TIER_COLORS[i], fontWeight: 600 }}>
+                      {(t.metrics as any)[key]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* UGC Video Strategy */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+        <div style={{ marginBottom: 16 }}>
+          <SectionLabel C={C}>UGC Video Strategy — "I'm Voting for Charlie Because..."</SectionLabel>
+          <div style={{ background: `${C.accent}10`, border: `1px solid ${C.accent}30`, borderRadius: 10, padding: "14px 18px", marginBottom: 16 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: C.white, marginBottom: 6 }}>What Exact Audience Produces: 100 Authentic Voter Voices</div>
+            <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.7 }}>
+              Across the 14 new counties, we identify and film 100 real Republican primary voters — farmers, veterans, small business owners, church members, co-op members — each delivering a 15–30 second authentic testimonial in their own words. These are not actors. They are Charlie's actual neighbors. Each video is cut for Facebook, Instagram Reels, and TikTok. At $0.01–$0.03 per view on Meta, 100 videos at 50,000 views each = 5 million authentic impressions for roughly $50,000–$150,000 in additional paid amplification. The organic reach from real people sharing real testimonials is free. This is the channel that makes the paid media stick.
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4,1fr)", gap: 10, marginBottom: 16 }}>
+            {[
+              { label: "Videos Produced", value: "100", sub: "15–30 sec each", color: C.accent },
+              { label: "Persona Types", value: "10", sub: "Farmer to veteran to neighbor", color: C.green },
+              { label: "Platforms", value: "3", sub: "Facebook · Instagram · TikTok", color: C.gold },
+              { label: "Est. Organic Reach", value: "500K+", sub: "Shares + native reach", color: C.accent2 },
+            ].map(m => (
+              <div key={m.label} style={{ background: C.bg3, borderRadius: 10, padding: "12px 14px", borderTop: `3px solid ${m.color}` }}>
+                <div style={{ fontSize: 20, fontWeight: 900, color: m.color }}>{m.value}</div>
+                <div style={{ fontSize: 10, color: C.white, fontWeight: 600, marginTop: 2 }}>{m.label}</div>
+                <div style={{ fontSize: 9, color: "#64748b", marginTop: 2 }}>{m.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <SectionLabel C={C}>Sample Scripts — 10 Voter Personas</SectionLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {UGC_SCRIPTS.map((s, i) => (
+            <div key={i} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 18 }}>{s.icon}</span>
+                <span style={{ fontSize: 12, fontWeight: 800, color: C.white }}>{s.persona}</span>
+                <span style={{ fontSize: 10, color: C.accent2, fontStyle: "italic", marginLeft: "auto" }}>Hook: "{s.hook}"</span>
+              </div>
+              <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.7, marginBottom: 8, fontStyle: "italic" }}>"...{s.line}"</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.accent, textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>CTA: {s.cta}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ background: `${C.green}10`, border: `1px solid ${C.green}30`, borderRadius: 10, padding: 14, marginTop: 16 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 6 }}>Why This Works for Hatcher Specifically</div>
+          <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.7 }}>
+            Charlie Hatcher's entire brand is authenticity — "less talk, more work," a 200-year family farm, a daughter who runs the vet clinic, a son who runs the dairy. His voters are not persuaded by polished political ads. They are persuaded by their neighbors. The comment on his most-liked Facebook post says it all: <em>"Charlie does what he says he will do, and is honest — two sentences we all too rarely associate with anyone in the political arena. We do associate these terms with farmers."</em> UGC videos are not a supplement to the paid media plan. At this stage of the race, with 14 days left, they are the most credible persuasion tool available.
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
