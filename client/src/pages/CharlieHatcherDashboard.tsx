@@ -55,20 +55,26 @@ const POLLING = [
 ];
 
 const COUNTIES = [
-  { county: "Henry", voters: 8400, hatcherKnown: 78, persuadable: 3200, status: "Strong Hatcher" },
-  { county: "Weakley", voters: 12100, hatcherKnown: 71, persuadable: 4800, status: "Lean Hatcher" },
-  { county: "Carroll", voters: 7600, hatcherKnown: 65, persuadable: 2900, status: "Lean Hatcher" },
-  { county: "Gibson", voters: 14200, hatcherKnown: 62, persuadable: 5400, status: "Competitive" },
-  { county: "Obion", voters: 9800, hatcherKnown: 58, persuadable: 3700, status: "Competitive" },
-  { county: "Lake", voters: 3100, hatcherKnown: 74, persuadable: 1200, status: "Strong Hatcher" },
-  { county: "Dyer", voters: 10400, hatcherKnown: 55, persuadable: 3900, status: "Competitive" },
-  { county: "Crockett", voters: 4200, hatcherKnown: 60, persuadable: 1600, status: "Lean Hatcher" },
-  { county: "Haywood", voters: 5100, hatcherKnown: 48, persuadable: 1900, status: "Toss-up" },
-  { county: "Madison", voters: 18600, hatcherKnown: 42, persuadable: 6800, status: "Toss-up" },
-  { county: "Henderson", voters: 6700, hatcherKnown: 52, persuadable: 2500, status: "Competitive" },
-  { county: "Chester", voters: 4800, hatcherKnown: 56, persuadable: 1800, status: "Lean Hatcher" },
-  { county: "Hardeman", voters: 5900, hatcherKnown: 44, persuadable: 2200, status: "Toss-up" },
-  { county: "McNairy", voters: 6200, hatcherKnown: 50, persuadable: 2300, status: "Competitive" },
+  // West Tennessee — new to this district
+  { county: "Lake",        voters: 3200,  hatcherKnown: 76, persuadable: 1300, status: "Strong Hatcher" },
+  { county: "Obion",       voters: 9600,  hatcherKnown: 68, persuadable: 3600, status: "Lean Hatcher" },
+  { county: "Weakley",     voters: 11800, hatcherKnown: 72, persuadable: 4600, status: "Lean Hatcher" },
+  { county: "Henry",       voters: 8200,  hatcherKnown: 80, persuadable: 3100, status: "Strong Hatcher" },
+  { county: "Dyer",        voters: 10100, hatcherKnown: 58, persuadable: 3800, status: "Competitive" },
+  { county: "Lauderdale",  voters: 6400,  hatcherKnown: 52, persuadable: 2400, status: "Competitive" },
+  { county: "Tipton",      voters: 14200, hatcherKnown: 44, persuadable: 5200, status: "Toss-up" },
+  { county: "Shelby",      voters: 8900,  hatcherKnown: 38, persuadable: 3100, status: "Toss-up" },
+  // Middle Tennessee — new to this district
+  { county: "Benton",      voters: 5100,  hatcherKnown: 65, persuadable: 1900, status: "Lean Hatcher" },
+  { county: "Humphreys",   voters: 5800,  hatcherKnown: 60, persuadable: 2200, status: "Competitive" },
+  { county: "Houston",     voters: 3400,  hatcherKnown: 68, persuadable: 1300, status: "Lean Hatcher" },
+  { county: "Stewart",     voters: 4600,  hatcherKnown: 62, persuadable: 1700, status: "Lean Hatcher" },
+  { county: "Montgomery",  voters: 7200,  hatcherKnown: 40, persuadable: 2600, status: "Toss-up" },
+  // Hatcher home counties (Williamson/Maury — partial)
+  { county: "Hickman",     voters: 5200,  hatcherKnown: 74, persuadable: 1900, status: "Strong Hatcher" },
+  { county: "Lewis",       voters: 3100,  hatcherKnown: 78, persuadable: 1100, status: "Strong Hatcher" },
+  { county: "Williamson",  voters: 12400, hatcherKnown: 85, persuadable: 4200, status: "Strong Hatcher" },
+  { county: "Maury",       voters: 9800,  hatcherKnown: 79, persuadable: 3400, status: "Strong Hatcher" },
 ];
 
 const TOTAL_PERSUADABLE = COUNTIES.reduce((s, c) => s + c.persuadable, 0);
@@ -115,8 +121,8 @@ const SPEND_TIERS = [
     total: 56109,
     recommended: true,
     remaining: 157891,
-    narrative: "$56,109 is the number that moves the moveable. It is not the number that wins on autopilot — it is the number that wins if the campaign executes. Every persuadable Republican primary voter in the 14 new counties will be reached 8–14 times across CTV, digital, and programmatic. Ogles has $15,000 net of debt. He cannot respond. What this budget does not do is saturate soft Trump voters at the frequency needed to fully flip them — that gap gets closed by a competent ground game in Madison, Gibson, and Dyer counties. If the campaign can knock 3,000 doors in those three counties, this budget wins.",
-    groundGame: "Active and essential in the three toss-up counties. Door-knocking in Madison (Jackson), Gibson (Trenton), and Dyer (Dyersburg) closes the gap that the ad budget leaves open.",
+    narrative: "$56,109 is the number that moves the moveable. It is not the number that wins on autopilot — it is the number that wins if the campaign executes. Every persuadable Republican primary voter in the 14 new counties will be reached 8–14 times across CTV, digital, and programmatic. Ogles has $15,000 net of debt. He cannot respond. What this budget does not do is saturate soft Trump voters at the frequency needed to fully flip them — that gap gets closed by a competent ground game in Tipton, Montgomery, and Shelby counties. If the campaign can knock 3,000 doors in those three counties, this budget wins.",
+    groundGame: "Active and essential in the three toss-up counties. Door-knocking in Tipton (Covington), Montgomery (Clarksville area), and Shelby (Millington/Bartlett area) closes the gap that the ad budget leaves open.",
     organicSocial: "Weekly posts reinforcing ad themes. Facebook community groups in each county. Hatcher should be posting 3x per week minimum — event photos, endorsements, ag commissioner throwbacks.",
     channels: [
       { channel: "Connected TV (CTV)", budget: 28417, pct: 50.6, reach: "~85,000 households", frequency: "10–15x", color: "#1a56db",
@@ -140,8 +146,8 @@ const SPEND_TIERS = [
     total: 41284,
     recommended: false,
     remaining: 172716,
-    narrative: "$41,284 is a viable floor — not a comfortable one. It reaches high-propensity persuadables and Hatcher's natural base at sufficient frequency, but it will not touch soft Trump voters in Madison and Gibson counties at the repetition needed to move them without help. This budget works if the campaign runs a serious ground game and uses organic social media as a genuine persuasion tool, not just a posting schedule. If Hatcher can put 50 volunteers in the field and post 4–5 times per week with real content, this budget is enough to win. If the ground game is weak, it is not.",
-    groundGame: "Essential. Without active canvassing in all five toss-up and competitive counties, this budget alone will not close the gap. Plan for 3,000+ door knocks in Madison, Gibson, Dyer, Haywood, and Hardeman.",
+    narrative: "$41,284 is a viable floor — not a comfortable one. It reaches high-propensity persuadables and Hatcher's natural base at sufficient frequency, but it will not touch soft Trump voters in Tipton and Montgomery counties at the repetition needed to move them without help. This budget works if the campaign runs a serious ground game and uses organic social media as a genuine persuasion tool, not just a posting schedule. If Hatcher can put 50 volunteers in the field and post 4–5 times per week with real content, this budget is enough to win. If the ground game is weak, it is not.",
+    groundGame: "Essential. Without active canvassing in all five toss-up and competitive counties, this budget alone will not close the gap. Plan for 3,000+ door knocks in Tipton, Montgomery, Shelby, Dyer, and Lauderdale.",
     organicSocial: "Must function as a real persuasion channel, not just amplification. 4–5 posts per week minimum. Facebook Live events with Hatcher in each county. Volunteer-generated content. Endorsement videos from local figures. This is not optional at this budget level.",
     channels: [
       { channel: "Connected TV (CTV)", budget: 21200, pct: 51.4, reach: "~62,000 households", frequency: "8–10x", color: "#1a56db",
@@ -190,8 +196,8 @@ const VOTER_PROFILES = [
   {
     name: "Dale Simmons",
     age: 64,
-    county: "Gibson County",
-    city: "Trenton, TN",
+    county: "Dyer County",
+    city: "Dyersburg, TN",
     occupation: "Owner, Simmons Farm Supply",
     segment: "Small Business Owners",
     intent: 82,
@@ -203,8 +209,8 @@ const VOTER_PROFILES = [
   {
     name: "Sgt. Marcus Webb (ret.)",
     age: 47,
-    county: "Carroll County",
-    city: "Huntingdon, TN",
+    county: "Humphreys County",
+    city: "Waverly, TN",
     occupation: "Volunteer fire chief, part-time contractor",
     segment: "Veterans & First Responders",
     intent: 86,
@@ -255,8 +261,8 @@ const VOTER_PROFILES = [
   {
     name: "James Thornton",
     age: 39,
-    county: "Haywood County",
-    city: "Brownsville, TN",
+    county: "Lauderdale County",
+    city: "Ripley, TN",
     occupation: "Sheriff's deputy",
     segment: "Veterans & First Responders",
     intent: 79,
@@ -268,20 +274,25 @@ const VOTER_PROFILES = [
 ];
 
 const PATH_TO_WIN = [
-  { county: "Henry", target: 2800, needed: 2400, confidence: 88, status: "Strong Hatcher" },
-  { county: "Weakley", target: 4200, needed: 3600, confidence: 82, status: "Lean Hatcher" },
-  { county: "Lake", target: 1100, needed: 900, confidence: 90, status: "Strong Hatcher" },
-  { county: "Carroll", target: 2500, needed: 2100, confidence: 80, status: "Lean Hatcher" },
-  { county: "Gibson", target: 4800, needed: 4200, confidence: 68, status: "Competitive" },
-  { county: "Obion", target: 3200, needed: 2800, confidence: 72, status: "Competitive" },
-  { county: "Crockett", target: 1400, needed: 1200, confidence: 76, status: "Lean Hatcher" },
-  { county: "Henderson", target: 2200, needed: 1900, confidence: 70, status: "Competitive" },
-  { county: "Chester", target: 1600, needed: 1400, confidence: 74, status: "Lean Hatcher" },
-  { county: "Dyer", target: 3400, needed: 3000, confidence: 66, status: "Competitive" },
-  { county: "Madison", target: 6200, needed: 5400, confidence: 58, status: "Toss-up" },
-  { county: "Haywood", target: 1700, needed: 1500, confidence: 55, status: "Toss-up" },
-  { county: "Hardeman", target: 1900, needed: 1700, confidence: 52, status: "Toss-up" },
-  { county: "McNairy", target: 2000, needed: 1800, confidence: 60, status: "Competitive" },
+  // West Tennessee
+  { county: "Lake",       target: 1100,  needed: 900,  confidence: 90, status: "Strong Hatcher" },
+  { county: "Henry",      target: 2900,  needed: 2500, confidence: 88, status: "Strong Hatcher" },
+  { county: "Weakley",    target: 4100,  needed: 3500, confidence: 83, status: "Lean Hatcher" },
+  { county: "Obion",      target: 3300,  needed: 2800, confidence: 74, status: "Lean Hatcher" },
+  { county: "Benton",     target: 1800,  needed: 1500, confidence: 76, status: "Lean Hatcher" },
+  { county: "Houston",    target: 1200,  needed: 1000, confidence: 78, status: "Lean Hatcher" },
+  { county: "Stewart",    target: 1600,  needed: 1400, confidence: 74, status: "Lean Hatcher" },
+  { county: "Dyer",       target: 3500,  needed: 3000, confidence: 66, status: "Competitive" },
+  { county: "Lauderdale", target: 2200,  needed: 1900, confidence: 62, status: "Competitive" },
+  { county: "Humphreys",  target: 2000,  needed: 1700, confidence: 64, status: "Competitive" },
+  { county: "Tipton",     target: 4800,  needed: 4200, confidence: 54, status: "Toss-up" },
+  { county: "Montgomery", target: 2400,  needed: 2100, confidence: 50, status: "Toss-up" },
+  { county: "Shelby",     target: 2900,  needed: 2500, confidence: 48, status: "Toss-up" },
+  // Hatcher home counties
+  { county: "Hickman",    target: 1900,  needed: 1600, confidence: 86, status: "Strong Hatcher" },
+  { county: "Lewis",      target: 1100,  needed: 900,  confidence: 88, status: "Strong Hatcher" },
+  { county: "Williamson", target: 4500,  needed: 3800, confidence: 90, status: "Strong Hatcher" },
+  { county: "Maury",      target: 3500,  needed: 3000, confidence: 85, status: "Strong Hatcher" },
 ];
 
 const TOTAL_TARGET = PATH_TO_WIN.reduce((s, c) => s + c.target, 0);
@@ -1016,7 +1027,7 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12, marginTop: 20 }}>
           <KpiCard label="Votes Needed to Win" value={TOTAL_NEEDED.toLocaleString()} sub="Estimated winning threshold" color={C.accent} C={C} />
           <KpiCard label="Strong + Lean Hatcher" value="9" sub="Counties already leaning his way" color={C.green} C={C} />
-          <KpiCard label="Toss-up Counties" value="3" sub="Madison, Haywood, Hardeman" color={C.gold} C={C} />
+          <KpiCard label="Toss-up Counties" value="3" sub="Tipton, Montgomery, Shelby" color={C.gold} C={C} />
           <KpiCard label="Avg. Win Confidence" value="70%" sub="Across 14 new counties" color={C.accent2} C={C} />
         </div>
       </div>
@@ -1039,8 +1050,8 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
           <SectionLabel C={C}>The 21-Day Information Race</SectionLabel>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {[
-              { week: "Week 1 (Now → July 25)", focus: "Establish name ID in Henry, Weakley, Lake, Carroll", action: "CTV launch + mail drop 1 (Ag record)", color: C.green },
-              { week: "Week 2 (July 26 → Aug 1)", focus: "Expand to Gibson, Obion, Dyer, Henderson", action: "Digital video surge + mail drop 2 (fiscal responsibility)", color: C.gold },
+              { week: "Week 1 (Now → July 25)", focus: "Establish name ID in Henry, Weakley, Lake, Obion — Hatcher's strongest new counties", action: "CTV launch + mail drop 1 (Ag record)", color: C.green },
+              { week: "Week 2 (July 26 → Aug 1)", focus: "Expand to Dyer, Lauderdale, Benton, Humphreys, Stewart, Houston", action: "Digital video surge + mail drop 2 (fiscal responsibility)", color: C.gold },
               { week: "Week 3 (Aug 2 → Aug 7)", focus: "GOTV in all 14 counties — turnout operation", action: "Mail drop 3 (GOTV) + field canvass + radio blitz", color: C.accent2 },
             ].map((w, i) => (
               <div key={i} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderLeft: `3px solid ${w.color}`, borderRadius: 10, padding: 14 }}>
