@@ -165,14 +165,14 @@ const SPEND_TIERS = [
     groundGame: "Volunteer canvassing is a bonus, not a requirement. The ads carry the full load. Use your field team for Election Day turnout only.",
     organicSocial: "Amplification only — share the ads, post event photos, let the paid media do the persuasion work.",
     channels: [
-      { channel: "Connected TV (CTV)", budget: 48900, pct: 70.4, reach: "~115,000 households", frequency: "14–20x", color: "#1a56db",
+      { channel: "Connected TV (CTV)", budget: 48900, pct: 70.4, reach: "115,000 households", frequency: "14–20x", color: "#1a56db",
         desc: "Bought by ZIP code and county across all 14 new counties — every household in Hatcher's new district sees his 30-second spot on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. No voter file required: geographic saturation means no persuadable household goes untouched. At this budget CTV is the dominant channel and the full air war." },
-      { channel: "Digital Video & Social", budget: 13617, pct: 19.6, reach: "~145,000 unique voters", frequency: "10–14x", color: "#3b82f6",
+      { channel: "Digital Video & Social", budget: 13617, pct: 19.6, reach: "145,000 unique voters", frequency: "10–14x", color: "#3b82f6",
         desc: "Facebook/Instagram video ads matched to the Republican primary voter file — named, identified voters, not just zip code residents. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. Reinforces CTV with voter-file precision." },
-      { channel: "Programmatic Display & Audio", budget: 6900, pct: 9.9, reach: "~105,000 unique devices", frequency: "12–16x", color: "#93c5fd",
+      { channel: "Programmatic Display & Audio", budget: 6900, pct: 9.9, reach: "105,000 unique devices", frequency: "12–16x", color: "#93c5fd",
         desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Extends the CTV message into commute hours and mobile browsing — voters who see the TV spot at night hear the audio spot the next morning. Highest frequency per dollar of any channel in the plan." },
     ],
-    metrics: { uniqueVoters: "~72,000", frequency: "12–18x", impressions: "~4.1M", costPerVoter: "$0.96", groundGameRequired: "Minimal" },
+    metrics: { uniqueVoters: "72,000", frequency: "12–18x", impressions: "4.1M", costPerVoter: "$0.96", groundGameRequired: "Minimal" },
     projections: [
       { scenario: "Conservative", votersReached: 65000, conversion: 14, newVotes: 9100, hatcherTotal: "37,100", highlight: false },
       { scenario: "Expected", votersReached: 72000, conversion: 18, newVotes: 12960, hatcherTotal: "40,960", highlight: true },
@@ -190,14 +190,14 @@ const SPEND_TIERS = [
     groundGame: "Active and essential in the three toss-up counties. Door-knocking in Tipton (Covington), Montgomery (Clarksville area), and Shelby (Millington/Bartlett area) closes the gap that the ad budget leaves open.",
     organicSocial: "Weekly posts reinforcing ad themes. Facebook community groups in each county. Hatcher should be posting 3x per week minimum — event photos, endorsements, ag commissioner throwbacks.",
     channels: [
-      { channel: "Connected TV (CTV)", budget: 39400, pct: 70.2, reach: "~92,000 households", frequency: "11–16x", color: "#1a56db",
+      { channel: "Connected TV (CTV)", budget: 39400, pct: 70.2, reach: "92,000 households", frequency: "11–16x", color: "#1a56db",
         desc: "Bought by ZIP code and county across all 14 new counties — every household in Hatcher's new district gets covered. 30-second spots on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. Geographic targeting means no wasted impressions outside the district. CTV is the highest-recall medium and the anchor of the entire plan." },
-      { channel: "Digital Video & Social", budget: 11209, pct: 20.0, reach: "~110,000 unique voters", frequency: "8–11x", color: "#3b82f6",
+      { channel: "Digital Video & Social", budget: 11209, pct: 20.0, reach: "110,000 unique voters", frequency: "8–11x", color: "#3b82f6",
         desc: "Facebook/Instagram video ads matched to the Republican primary voter file — named, identified persuadable voters, not just geographic residents. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. Voter-file matching means every dollar reaches a real Republican primary voter, not a random household member." },
-      { channel: "Programmatic Display & Audio", budget: 5500, pct: 9.8, reach: "~82,000 unique devices", frequency: "10–14x", color: "#93c5fd",
+      { channel: "Programmatic Display & Audio", budget: 5500, pct: 9.8, reach: "82,000 unique devices", frequency: "10–14x", color: "#93c5fd",
         desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Extends the CTV message into commute hours and mobile browsing — voters who see the TV spot at night hear the audio spot the next morning. Highest frequency per dollar of any channel in the plan." },
     ],
-    metrics: { uniqueVoters: "~58,000", frequency: "8–14x", impressions: "~3.1M", costPerVoter: "$0.97", groundGameRequired: "Active" },
+    metrics: { uniqueVoters: "58,000", frequency: "8–14x", impressions: "3.1M", costPerVoter: "$0.97", groundGameRequired: "Active" },
     projections: [
       { scenario: "Conservative", votersReached: 52000, conversion: 13, newVotes: 6760, hatcherTotal: "34,760", highlight: false },
       { scenario: "Expected", votersReached: 58000, conversion: 17, newVotes: 9860, hatcherTotal: "37,860", highlight: true },
@@ -215,14 +215,14 @@ const SPEND_TIERS = [
     groundGame: "Essential. Without active canvassing in all five toss-up and competitive counties, this budget alone will not close the gap. Plan for 3,000+ door knocks in Tipton, Montgomery, Shelby, Dyer, and Lauderdale.",
     organicSocial: "Must function as a real persuasion channel, not just amplification. 4–5 posts per week minimum. Facebook Live events with Hatcher in each county. Volunteer-generated content. Endorsement videos from local figures. This is not optional at this budget level.",
     channels: [
-      { channel: "Connected TV (CTV)", budget: 28900, pct: 70.0, reach: "~68,000 households", frequency: "9–13x", color: "#1a56db",
+      { channel: "Connected TV (CTV)", budget: 28900, pct: 70.0, reach: "68,000 households", frequency: "9–13x", color: "#1a56db",
         desc: "Bought by ZIP code and county — concentrates on the highest-priority ZIP codes across the 14 new counties. Not every ZIP gets full saturation at this budget, but every county gets presence. 30-second spots on Hulu, Peacock, and local news streaming. Geographic targeting keeps every dollar inside the district." },
-      { channel: "Digital Video & Social", budget: 8284, pct: 20.1, reach: "~75,000 unique voters", frequency: "6–8x", color: "#3b82f6",
+      { channel: "Digital Video & Social", budget: 8284, pct: 20.1, reach: "75,000 unique voters", frequency: "6–8x", color: "#3b82f6",
         desc: "Facebook/Instagram video ads matched to the Republican primary voter file. At 6–8x frequency this establishes name recognition but needs organic social reinforcement to fully move soft persuadables. Every paid impression should be backed by an organic post the same week." },
-      { channel: "Programmatic Display & Audio", budget: 4100, pct: 9.9, reach: "~58,000 unique devices", frequency: "7–10x", color: "#93c5fd",
+      { channel: "Programmatic Display & Audio", budget: 4100, pct: 9.9, reach: "58,000 unique devices", frequency: "7–10x", color: "#93c5fd",
         desc: "IP-targeted display ads and Spotify/Pandora audio matched to the voter file. Reaches voters during commutes and work hours when CTV cannot, extending effective reach without significant added cost. Most efficient channel per dollar at this budget level." },
     ],
-    metrics: { uniqueVoters: "~42,000", frequency: "6–10x", impressions: "~2.2M", costPerVoter: "$0.98", groundGameRequired: "Essential" },
+    metrics: { uniqueVoters: "42,000", frequency: "6–10x", impressions: "2.2M", costPerVoter: "$0.98", groundGameRequired: "Essential" },
     projections: [
       { scenario: "Conservative", votersReached: 38000, conversion: 11, newVotes: 4180, hatcherTotal: "32,180", highlight: false },
       { scenario: "Expected", votersReached: 42000, conversion: 15, newVotes: 6300, hatcherTotal: "34,300", highlight: true },
@@ -1115,7 +1115,7 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
       <div style={{ background: "linear-gradient(135deg,#0d1a2e,#0a1628)", border: `1px solid ${C.accent}40`, borderRadius: 14, padding: "20px 24px" }}>
         <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>Exact Audience Win Scenario Model</div>
         <div style={{ fontSize: mobile ? 18 : 22, fontWeight: 900, color: C.white, marginBottom: 8 }}>
-          Hatcher needs ~{TOTAL_NEEDED.toLocaleString()} votes across 14 counties to win
+          Hatcher needs {TOTAL_NEEDED.toLocaleString()} votes across 14 counties to win
         </div>
         <div style={{ fontSize: 13, color: "#cbd5e1", maxWidth: 580, lineHeight: 1.6 }}>
           The pitch: "Eighty-three percent of the voters in this district were in a different district three months ago. This is not a re-election race — it is effectively an open seat race in 14 new counties, and Charlie Hatcher is the only candidate who has spent seven years building relationships there."
