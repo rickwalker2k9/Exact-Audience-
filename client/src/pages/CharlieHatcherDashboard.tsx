@@ -240,7 +240,7 @@ const VOTER_PROFILES = [
     occupation: "Row crop farmer, 340 acres",
     segment: "Rural Republican, Ag-Adjacent",
     intent: 94,
-    channels: ["CTV", "Direct Mail", "Radio"],
+    channels: ["CTV", "Digital Video", "Radio"],
     issues: ["Farm bill funding", "Rural broadband", "Ag commissioner continuity"],
     note: "Attended Hatcher's county fair booth in 2022. Farm bureau member. High-value target.",
     status: "Persuadable → Lean Hatcher",
@@ -253,7 +253,7 @@ const VOTER_PROFILES = [
     occupation: "Elementary school principal",
     segment: "Suburban Women 40–65",
     intent: 78,
-    channels: ["Facebook/Instagram", "CTV", "Direct Mail"],
+    channels: ["Facebook/Instagram", "CTV", "Programmatic"],
     issues: ["Education funding", "Local accountability", "Rural infrastructure"],
     note: "Republican primary voter since 2010. No strong Ogles affinity. Responds to competence messaging.",
     status: "Toss-up → Persuadable",
@@ -266,7 +266,7 @@ const VOTER_PROFILES = [
     occupation: "Owner, Simmons Farm Supply",
     segment: "Small Business Owners",
     intent: 82,
-    channels: ["Radio", "Direct Mail", "Facebook"],
+    channels: ["Radio", "Digital Video", "Facebook"],
     issues: ["Small business regulation", "Agricultural supply chain", "Local jobs"],
     note: "Hatcher visited his store twice during ag commissioner tenure. Strong name recognition.",
     status: "Lean Hatcher",
@@ -279,7 +279,7 @@ const VOTER_PROFILES = [
     occupation: "Volunteer fire chief, part-time contractor",
     segment: "Veterans & First Responders",
     intent: 86,
-    channels: ["CTV", "Programmatic", "Direct Mail"],
+    channels: ["CTV", "Programmatic", "Digital Video"],
     issues: ["Veterans services", "Rural emergency response", "Character & service"],
     note: "Army veteran, 2 tours. Responds to service record over endorsements. High persuadability.",
     status: "Lean Hatcher",
@@ -305,7 +305,7 @@ const VOTER_PROFILES = [
     occupation: "Co-op grain elevator manager",
     segment: "Rural Republican, Ag-Adjacent",
     intent: 89,
-    channels: ["Radio", "Direct Mail", "CTV"],
+    channels: ["Radio", "Programmatic", "CTV"],
     issues: ["Commodity prices", "Farm credit access", "Rural economic development"],
     note: "Knows Hatcher personally from co-op visits. Will vote Hatcher if reminded of the relationship.",
     status: "Lean Hatcher → Strong",
@@ -318,7 +318,7 @@ const VOTER_PROFILES = [
     occupation: "Insurance agency owner",
     segment: "Small Business Owners",
     intent: 74,
-    channels: ["Facebook", "Direct Mail", "Radio"],
+    channels: ["Facebook", "Digital Video", "Radio"],
     issues: ["Small business taxes", "Healthcare costs", "Local economic growth"],
     note: "Chamber of commerce member. Responds to business competence messaging over national politics.",
     status: "Competitive → Lean Hatcher",
@@ -369,6 +369,8 @@ const TABS = [
   { id: "spend",      label: "Spend Plan & Strategy" },
   { id: "profiles",   label: "Voter Profiles" },
   { id: "path",       label: "Path to Win" },
+  { id: "intel",      label: "District Intelligence" },
+  { id: "oppo",       label: "Opposition Research" },
 ];
 
 // ── Shared Components ─────────────────────────────────────────────────────────
@@ -500,7 +502,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
             <div style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
               <div style={{ fontSize: 12, color: C.gold, fontWeight: 700, marginBottom: 6 }}>⚡ Why This Matters</div>
               <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
-                Early voting has started. The campaign that can afford digital ads, mail, and field operations in the final 3 weeks has a structural advantage. Hatcher has that money. Ogles does not — unless the Freedom Caucus Fund spends outside money.
+                Early voting has started. The campaign that can afford digital ads and field operations in the final 3 weeks has a structural advantage. Hatcher has that money. Ogles does not — unless the Freedom Caucus Fund spends outside money.
               </div>
             </div>
           </div>
@@ -557,7 +559,7 @@ function TabVoters({ mobile, C }: { mobile: boolean; C: C }) {
           <KpiCard label="Total Persuadable" value={TOTAL_PERSUADABLE.toLocaleString()} sub="Across 14 new counties" color={C.accent} C={C} />
           <KpiCard label="High-Intent Targets" value="18,400" sub="Intent score 80+" color={C.green} C={C} />
           <KpiCard label="Ag-Adjacent Voters" value="14,200" sub="Hatcher has direct relationships" color={C.gold} C={C} />
-          <KpiCard label="Reachable in 21 Days" value="41,800" sub="Via CTV + digital + mail" color={C.accent2} C={C} />
+          <KpiCard label="Reachable in 21 Days" value="41,800" sub="Via CTV + digital + programmatic" color={C.accent2} C={C} />
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
           <ResponsiveContainer width="100%" height={220}>
@@ -1146,9 +1148,9 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
           <SectionLabel C={C}>The 21-Day Information Race</SectionLabel>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {[
-              { week: "Week 1 (Now → July 25)", focus: "Establish name ID in Henry, Weakley, Lake, Obion — Hatcher's strongest new counties", action: "CTV launch + mail drop 1 (Ag record)", color: C.green },
-              { week: "Week 2 (July 26 → Aug 1)", focus: "Expand to Dyer, Lauderdale, Benton, Humphreys, Stewart, Houston", action: "Digital video surge + mail drop 2 (fiscal responsibility)", color: C.gold },
-              { week: "Week 3 (Aug 2 → Aug 7)", focus: "GOTV in all 14 counties — turnout operation", action: "Mail drop 3 (GOTV) + field canvass + radio blitz", color: C.accent2 },
+              { week: "Week 1 (Now → July 25)", focus: "Establish name ID in Henry, Weakley, Lake, Obion — Hatcher's strongest new counties", action: "CTV launch + digital video (Ag record)", color: C.green },
+              { week: "Week 2 (July 26 → Aug 1)", focus: "Expand to Dyer, Lauderdale, Benton, Humphreys, Stewart, Houston", action: "Digital video surge + programmatic display (fiscal responsibility)", color: C.gold },
+              { week: "Week 3 (Aug 2 → Aug 7)", focus: "GOTV in all 14 counties — turnout operation", action: "CTV GOTV push + programmatic retargeting + radio blitz", color: C.accent2 },
             ].map((w, i) => (
               <div key={i} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderLeft: `3px solid ${w.color}`, borderRadius: 10, padding: 14 }}>
                 <div style={{ fontSize: 11, color: w.color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>{w.week}</div>
