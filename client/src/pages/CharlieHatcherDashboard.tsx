@@ -1,8 +1,8 @@
 /**
  * CharlieHatcherDashboard.tsx
  * Charlie Hatcher for Congress — TN-CD5 Republican Primary 2026
- * EA Intelligence Portal — B2C Voter Targeting & $80K Spend Recommendation
- * Tabs: Race Overview | Persuadable Voters | $80K Spend Plan | Voter Profiles | Path to Win
+ * EA Intelligence Portal — B2C Voter Targeting & $56,109 Spend Recommendation
+ * Tabs: Race Overview | Persuadable Voters | $56,109 Spend Plan | Voter Profiles | Path to Win
  */
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
@@ -84,8 +84,8 @@ const VOTER_SEGMENTS = [
 const SPEND_PLAN = [
   {
     channel: "Connected TV (CTV)",
-    budget: 24000,
-    pct: 30,
+    budget: 17842,
+    pct: 31.8,
     reach: "38,000 households",
     frequency: "8–12x per voter",
     desc: "30-second spots on Hulu, Peacock, Paramount+, and local news streaming. Targets registered Republican primary voters by household in all 14 new counties. Highest recall medium.",
@@ -93,7 +93,7 @@ const SPEND_PLAN = [
   },
   {
     channel: "Digital Video & Social",
-    budget: 18000,
+    budget: 12650,
     pct: 22.5,
     reach: "52,000 unique voters",
     frequency: "6–9x per voter",
@@ -102,7 +102,7 @@ const SPEND_PLAN = [
   },
   {
     channel: "Direct Mail",
-    budget: 16000,
+    budget: 11217,
     pct: 20,
     reach: "28,000 households",
     frequency: "3 mail pieces",
@@ -111,7 +111,7 @@ const SPEND_PLAN = [
   },
   {
     channel: "Programmatic Display & Audio",
-    budget: 10000,
+    budget: 7300,
     pct: 12.5,
     reach: "45,000 unique devices",
     frequency: "10–15x per voter",
@@ -120,7 +120,7 @@ const SPEND_PLAN = [
   },
   {
     channel: "Field Operations & GOTV",
-    budget: 8000,
+    budget: 5600,
     pct: 10,
     reach: "12,000 doors",
     frequency: "1–2 contacts",
@@ -129,7 +129,7 @@ const SPEND_PLAN = [
   },
   {
     channel: "Radio & Podcast",
-    budget: 4000,
+    budget: 1500,
     pct: 5,
     reach: "60,000 listeners",
     frequency: "4–6x per voter",
@@ -268,7 +268,7 @@ const TOTAL_NEEDED = PATH_TO_WIN.reduce((s, c) => s + c.needed, 0);
 const TABS = [
   { id: "overview",   label: "Race Overview" },
   { id: "voters",     label: "Persuadable Voters" },
-  { id: "spend",      label: "$80K Spend Plan" },
+  { id: "spend",      label: "$56,109 Spend Plan" },
   { id: "profiles",   label: "Voter Profiles" },
   { id: "path",       label: "Path to Win" },
 ];
@@ -399,7 +399,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         <SectionLabel C={C}>The Redistricting Advantage — Why This Is an Open Seat Race</SectionLabel>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
           {[
-            { icon: "🗺️", title: "14 New Counties", desc: "Redistricting removed Ogles' home counties (Maury, Marshall, Lewis, eastern Williamson) and added 14 rural counties where Ogles has zero infrastructure." },
+            { icon: "🗺️", title: "14 New Counties", desc: "Redistricting removed Davidson and Wilson counties and added 14 rural West Tennessee counties stretching from western Williamson County northwest to the Kentucky border and south to Memphis and added 14 rural counties where Ogles has zero infrastructure." },
             { icon: "🌾", title: "Hatcher's Home Turf", desc: "Charlie Hatcher spent 7 years as Agriculture Commissioner traveling these exact counties — attending county fairs, meeting farm bureaus, working with local ag commissioners." },
             { icon: "🗳️", title: "83% New Voters", desc: "Eighty-three percent of voters in this district were in a different district 3 months ago. This is not a re-election race — it is effectively an open seat in 14 new counties." },
           ].map((item, i) => (
@@ -530,7 +530,7 @@ function TabVoters({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
-// ── TAB: $80K Spend Plan ──────────────────────────────────────────────────────
+// ── TAB: $56,109 Spend Plan ──────────────────────────────────────────────────────
 function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
   const pieData = SPEND_PLAN.map(s => ({ name: s.channel, value: s.budget, fill: s.color }));
   return (
@@ -538,15 +538,15 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
       {/* Spend Summary Banner */}
       <div style={{ background: "linear-gradient(135deg,#0d1a2e,#0a1628)", border: `1px solid ${C.accent}40`, borderRadius: 14, padding: "20px 24px" }}>
         <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>Exact Audience Recommended Spend · 21-Day Sprint</div>
-        <div style={{ fontSize: mobile ? 22 : 28, fontWeight: 900, color: C.white, marginBottom: 8 }}>$80,000 Precision Voter Targeting Plan</div>
+        <div style={{ fontSize: mobile ? 22 : 28, fontWeight: 900, color: C.white, marginBottom: 8 }}>$56,109 Precision Voter Targeting Plan</div>
         <div style={{ fontSize: 13, color: "#cbd5e1", maxWidth: 600, lineHeight: 1.6 }}>
-          Reach every persuadable Republican primary voter in the 14 new counties at least 6–12 times before August 7. The goal is not broad awareness — it is surgical repetition to the ~42,000 voters who are genuinely moveable. Ogles cannot match this spend. That is the window.
+          Reach every persuadable Republican primary voter in the 14 new counties at least 6–12 times before August 7. The goal is not broad awareness — it is surgical repetition to the ~41,300 voters who are genuinely moveable. Ogles cannot match this spend. That is the window.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12, marginTop: 20 }}>
-          <KpiCard label="Total Recommended Spend" value="$80,000" sub="21-day sprint to August 7" color={C.accent} C={C} />
-          <KpiCard label="Unique Voters Reached" value="42,000+" sub="Across all channels combined" color={C.green} C={C} />
+          <KpiCard label="Total Recommended Spend" value="$56,109" sub="21-day sprint to August 7" color={C.accent} C={C} />
+          <KpiCard label="Unique Voters Reached" value="41,300+" sub="Across all channels combined" color={C.green} C={C} />
           <KpiCard label="Avg. Touchpoints/Voter" value="8–14x" sub="Enough to move persuadables" color={C.gold} C={C} />
-          <KpiCard label="Hatcher Cash Available" value="$214K" sub="$134K remaining after spend" color={C.accent2} C={C} />
+          <KpiCard label="Hatcher Cash Available" value="$214K" sub="$157,891 remaining after spend" color={C.accent2} C={C} />
         </div>
       </div>
 
@@ -576,12 +576,12 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         </div>
 
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
-          <SectionLabel C={C}>Why $80K Moves the Needle</SectionLabel>
+          <SectionLabel C={C}>Why $56,109 Moves the Needle</SectionLabel>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {[
               { label: "Ogles' net available cash", value: "$15,000", color: C.red, note: "Cannot run a meaningful paid media campaign in the final 3 weeks" },
-              { label: "Hatcher after $80K spend", value: "$134,000", color: C.green, note: "Still has reserve for GOTV and unexpected needs" },
-              { label: "Persuadable voters reached", value: "42,000+", color: C.accent2, note: "Every moveable voter in the 14 new counties touched 8–14 times" },
+              { label: "Hatcher after $56,109 spend", value: "$157,891", color: C.green, note: "Still has reserve for GOTV and unexpected needs" },
+              { label: "Persuadable voters reached", value: "41,300+", color: C.accent2, note: "Every moveable voter in the 14 new counties touched 8–14 times" },
               { label: "Trump endorsement reach", value: "Limited", color: C.gold, note: "In a low-salience primary, endorsement only matters if voters know about it. Hatcher's job is to win the information race first." },
             ].map((item, i) => (
               <div key={i} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
@@ -788,14 +788,14 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 12 }}>The Exact Audience Offer to Charlie Hatcher</div>
         <blockquote style={{ margin: 0, padding: "16px 20px", background: C.card, border: `1px solid ${C.border}`, borderLeft: `4px solid ${C.accent}`, borderRadius: 10 }}>
           <p style={{ fontSize: 14, color: C.white, lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
-            "You have 21 days and $214,000. The 14 new counties are the ballgame. We can tell you, by precinct, which Republican primary voters in those counties already know your name from your time as Agriculture Commissioner, which ones are persuadable with one or two more contacts, and which ones are Ogles voters you should not waste money on. That is the difference between spending your $214,000 efficiently and spending it blind. We can have that map to you in 48 hours."
+            "You have 21 days and $214,000. The 14 new counties are the ballgame. We can tell you, by precinct, which Republican primary voters in those counties already know your name from your time as Agriculture Commissioner, which ones are persuadable with one or two more contacts, and which ones are Ogles voters you should not waste money on. That is the difference between spending your $56,109 efficiently and spending it blind. We can have that map to you in 48 hours."
           </p>
         </blockquote>
         <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
           {[
             { label: "Delivery Time", value: "48 hours", icon: "⚡", color: C.gold },
-            { label: "Recommended Spend", value: "$80,000", icon: "🎯", color: C.green },
-            { label: "Remaining Reserve", value: "$134,000", icon: "💰", color: C.accent2 },
+            { label: "Recommended Spend", value: "$56,109", icon: "🎯", color: C.green },
+            { label: "Remaining Reserve", value: "$157,891", icon: "💰", color: C.accent2 },
           ].map((item, i) => (
             <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14, textAlign: "center" }}>
               <div style={{ fontSize: 24, marginBottom: 6 }}>{item.icon}</div>
