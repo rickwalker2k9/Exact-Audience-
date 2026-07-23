@@ -642,7 +642,7 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 6 }}>Exact Audience · Three Investment Levels · August 6 Primary</div>
         <div style={{ fontSize: mobile ? 18 : 24, fontWeight: 900, color: C.white, marginBottom: 8 }}>"You want something hard done right? Hire a farmer."</div>
         <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.6, maxWidth: 640 }}>
-          Charlie Hatcher is a 10th-generation farmer, veterinarian, and 7-year Ag Commissioner running against an incumbent with $15,000 cash and an open federal investigation. The window is open. The only question is how wide you want to open it. Below are three investment levels — three different outcomes.
+          Charlie Hatcher is a 10th-generation farmer, veterinarian, and 7-year Ag Commissioner running against an incumbent with $15,000 cash on hand and an open federal investigation. The structural advantage is real. But this district is 400 miles wide, heavily rural, and 83% of its voters have never cast a ballot in this congressional race. Paid media helps — a lot. It is not a silver bullet. Below are three honest investment scenarios, each with the conditions that have to hold for them to work.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 10, marginTop: 16 }}>
           <KpiCard label="Ogles Net Cash" value="$15,000" sub="After $70K in debt — cannot respond" color={C.red} C={C} />
