@@ -161,7 +161,7 @@ const SPEND_TIERS = [
     total: 69417,
     recommended: false,
     remaining: 144583,
-    narrative: "At $69,417, you are not running a campaign — you are running an air war that Ogles simply cannot answer. Every persuadable Republican primary voter in all 14 new counties will see Hatcher's face and hear his name on their TV, their phone, and their radio before they go to bed. Soft Trump voters who have never heard of Andy Ogles will know Charlie Hatcher. The ground game becomes a victory lap, not a lifeline. This is the number that makes August 7 a foregone conclusion.",
+    narrative: "At $69,417, you are not running a campaign — you are running an air war that Ogles simply cannot answer. Every persuadable Republican primary voter in all 14 new counties will see Hatcher's face and hear his name on their TV and their phone before they go to bed. Soft Trump voters who have never heard of Andy Ogles will know Charlie Hatcher. The ground game becomes a victory lap, not a lifeline. This is the number that makes August 7 a foregone conclusion.",
     groundGame: "Volunteer canvassing is a bonus, not a requirement. The ads carry the full load. Use your field team for Election Day turnout only.",
     organicSocial: "Amplification only — share the ads, post event photos, let the paid media do the persuasion work.",
     channels: [
@@ -240,7 +240,7 @@ const VOTER_PROFILES = [
     occupation: "Row crop farmer, 340 acres",
     segment: "Rural Republican, Ag-Adjacent",
     intent: 94,
-    channels: ["CTV", "Digital Video", "Radio"],
+    channels: ["CTV", "Digital Video", "Programmatic"],
     issues: ["Farm bill funding", "Rural broadband", "Ag commissioner continuity"],
     note: "Attended Hatcher's county fair booth in 2022. Farm bureau member. High-value target.",
     status: "Persuadable → Lean Hatcher",
@@ -266,7 +266,7 @@ const VOTER_PROFILES = [
     occupation: "Owner, Simmons Farm Supply",
     segment: "Small Business Owners",
     intent: 82,
-    channels: ["Radio", "Digital Video", "Facebook"],
+    channels: ["CTV", "Digital Video", "Facebook"],
     issues: ["Small business regulation", "Agricultural supply chain", "Local jobs"],
     note: "Hatcher visited his store twice during ag commissioner tenure. Strong name recognition.",
     status: "Lean Hatcher",
@@ -305,7 +305,7 @@ const VOTER_PROFILES = [
     occupation: "Co-op grain elevator manager",
     segment: "Rural Republican, Ag-Adjacent",
     intent: 89,
-    channels: ["Radio", "Programmatic", "CTV"],
+    channels: ["CTV", "Programmatic", "Digital Video"],
     issues: ["Commodity prices", "Farm credit access", "Rural economic development"],
     note: "Knows Hatcher personally from co-op visits. Will vote Hatcher if reminded of the relationship.",
     status: "Lean Hatcher → Strong",
@@ -318,7 +318,7 @@ const VOTER_PROFILES = [
     occupation: "Insurance agency owner",
     segment: "Small Business Owners",
     intent: 74,
-    channels: ["Facebook", "Digital Video", "Radio"],
+    channels: ["Facebook", "Digital Video", "Programmatic"],
     issues: ["Small business taxes", "Healthcare costs", "Local economic growth"],
     note: "Chamber of commerce member. Responds to business competence messaging over national politics.",
     status: "Competitive → Lean Hatcher",
@@ -1150,7 +1150,7 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
             {[
               { week: "Week 1 (Now → July 25)", focus: "Establish name ID in Henry, Weakley, Lake, Obion — Hatcher's strongest new counties", action: "CTV launch + digital video (Ag record)", color: C.green },
               { week: "Week 2 (July 26 → Aug 1)", focus: "Expand to Dyer, Lauderdale, Benton, Humphreys, Stewart, Houston", action: "Digital video surge + programmatic display (fiscal responsibility)", color: C.gold },
-              { week: "Week 3 (Aug 2 → Aug 7)", focus: "GOTV in all 14 counties — turnout operation", action: "CTV GOTV push + programmatic retargeting + radio blitz", color: C.accent2 },
+              { week: "Week 3 (Aug 2 → Aug 7)", focus: "GOTV in all 14 counties — turnout operation", action: "CTV GOTV push + programmatic retargeting + digital video", color: C.accent2 },
             ].map((w, i) => (
               <div key={i} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderLeft: `3px solid ${w.color}`, borderRadius: 10, padding: 14 }}>
                 <div style={{ fontSize: 11, color: w.color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>{w.week}</div>
