@@ -4,7 +4,7 @@
  * EA Intelligence Portal — B2C Voter Targeting & 3-Tier Spend Recommendation
  * Tabs: Race Overview | Persuadable Voters | Spend Plan | Voter Profiles | Path to Win
  */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "wouter";
 import { useTheme } from "../contexts/ThemeContext";
 import {
@@ -12,6 +12,71 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
 } from "recharts";
+
+// ── Animation Hooks ──────────────────────────────────────────────────────────
+function useCountUp(target: number, duration = 1400, decimals = 0, prefix = "", suffix = "") {
+  const [display, setDisplay] = useState(prefix + "0" + suffix);
+  const frameRef = useRef<number | null>(null);
+  const startRef = useRef<number | null>(null);
+  const startValue = useRef(0);
+
+  const animate = useCallback((timestamp: number) => {
+    if (!startRef.current) startRef.current = timestamp;
+    const elapsed = timestamp - startRef.current;
+    const progress = Math.min(elapsed / duration, 1);
+    // ease-out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = startValue.current + (target - startValue.current) * eased;
+    const formatted = decimals > 0
+      ? current.toFixed(decimals)
+      : Math.round(current).toLocaleString();
+    setDisplay(prefix + formatted + suffix);
+    if (progress < 1) {
+      frameRef.current = requestAnimationFrame(animate);
+    }
+  }, [target, duration, decimals, prefix, suffix]);
+
+  useEffect(() => {
+    startRef.current = null;
+    if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    frameRef.current = requestAnimationFrame(animate);
+    return () => { if (frameRef.current) cancelAnimationFrame(frameRef.current); };
+  }, [animate]);
+
+  return display;
+}
+
+function useCountdown(targetDate: string) {
+  const calc = () => {
+    const diff = new Date(targetDate).getTime() - Date.now();
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    return {
+      days: Math.floor(diff / 86400000),
+      hours: Math.floor((diff % 86400000) / 3600000),
+      minutes: Math.floor((diff % 3600000) / 60000),
+      seconds: Math.floor((diff % 60000) / 1000),
+    };
+  };
+  const [time, setTime] = useState(calc);
+  useEffect(() => {
+    const id = setInterval(() => setTime(calc()), 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+  return time;
+}
+
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } }, { threshold });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return { ref, inView };
+}
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 function useColors(isDark: boolean) {
@@ -100,12 +165,12 @@ const SPEND_TIERS = [
     groundGame: "Volunteer canvassing is a bonus, not a requirement. The ads carry the full load. Use your field team for Election Day turnout only.",
     organicSocial: "Amplification only — share the ads, post event photos, let the paid media do the persuasion work.",
     channels: [
-      { channel: "Connected TV (CTV)", budget: 34800, pct: 50.1, reach: "~105,000 households", frequency: "12–18x", color: "#1a56db",
-        desc: "Bought by ZIP code and county across all 14 new counties — every household in Hatcher's new district sees his 30-second spot on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. No voter file required: geographic saturation means no persuadable household goes untouched. Highest-recall medium in the mix." },
-      { channel: "Digital Video & Social", budget: 24617, pct: 35.5, reach: "~165,000 unique voters", frequency: "10–15x", color: "#3b82f6",
-        desc: "Facebook/Instagram video ads matched to the Republican primary voter file — these are named, identified voters, not just zip code residents. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. At this budget, every moveable voter gets hit 10–15 times across the 21-day sprint." },
-      { channel: "Programmatic Display & Audio", budget: 10000, pct: 14.4, reach: "~115,000 unique devices", frequency: "14–20x", color: "#93c5fd",
-        desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Reinforces CTV and social at the highest frequency tier — voters who see the CTV spot at night hear the audio spot during their morning commute. Maximum message repetition for minimum incremental cost." },
+      { channel: "Connected TV (CTV)", budget: 48900, pct: 70.4, reach: "~115,000 households", frequency: "14–20x", color: "#1a56db",
+        desc: "Bought by ZIP code and county across all 14 new counties — every household in Hatcher's new district sees his 30-second spot on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. No voter file required: geographic saturation means no persuadable household goes untouched. At this budget CTV is the dominant channel and the full air war." },
+      { channel: "Digital Video & Social", budget: 13617, pct: 19.6, reach: "~145,000 unique voters", frequency: "10–14x", color: "#3b82f6",
+        desc: "Facebook/Instagram video ads matched to the Republican primary voter file — named, identified voters, not just zip code residents. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. Reinforces CTV with voter-file precision." },
+      { channel: "Programmatic Display & Audio", budget: 6900, pct: 9.9, reach: "~105,000 unique devices", frequency: "12–16x", color: "#93c5fd",
+        desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Extends the CTV message into commute hours and mobile browsing — voters who see the TV spot at night hear the audio spot the next morning. Highest frequency per dollar of any channel in the plan." },
     ],
     metrics: { uniqueVoters: "~72,000", frequency: "12–18x", impressions: "~4.1M", costPerVoter: "$0.96", groundGameRequired: "Minimal" },
     projections: [
@@ -125,12 +190,12 @@ const SPEND_TIERS = [
     groundGame: "Active and essential in the three toss-up counties. Door-knocking in Tipton (Covington), Montgomery (Clarksville area), and Shelby (Millington/Bartlett area) closes the gap that the ad budget leaves open.",
     organicSocial: "Weekly posts reinforcing ad themes. Facebook community groups in each county. Hatcher should be posting 3x per week minimum — event photos, endorsements, ag commissioner throwbacks.",
     channels: [
-      { channel: "Connected TV (CTV)", budget: 28417, pct: 50.6, reach: "~85,000 households", frequency: "10–15x", color: "#1a56db",
+      { channel: "Connected TV (CTV)", budget: 39400, pct: 70.2, reach: "~92,000 households", frequency: "11–16x", color: "#1a56db",
         desc: "Bought by ZIP code and county across all 14 new counties — every household in Hatcher's new district gets covered. 30-second spots on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. Geographic targeting means no wasted impressions outside the district. CTV is the highest-recall medium and the anchor of the entire plan." },
-      { channel: "Digital Video & Social", budget: 18692, pct: 33.3, reach: "~130,000 unique voters", frequency: "8–12x", color: "#3b82f6",
+      { channel: "Digital Video & Social", budget: 11209, pct: 20.0, reach: "~110,000 unique voters", frequency: "8–11x", color: "#3b82f6",
         desc: "Facebook/Instagram video ads matched to the Republican primary voter file — named, identified persuadable voters, not just geographic residents. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. Voter-file matching means every dollar reaches a real Republican primary voter, not a random household member." },
-      { channel: "Programmatic Display & Audio", budget: 9000, pct: 16.0, reach: "~95,000 unique devices", frequency: "12–18x", color: "#93c5fd",
-        desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Reinforces CTV and social messaging throughout the day — voters who see the CTV spot at night hear the audio spot during their morning commute. The highest-frequency channel in the plan for the lowest incremental cost." },
+      { channel: "Programmatic Display & Audio", budget: 5500, pct: 9.8, reach: "~82,000 unique devices", frequency: "10–14x", color: "#93c5fd",
+        desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Extends the CTV message into commute hours and mobile browsing — voters who see the TV spot at night hear the audio spot the next morning. Highest frequency per dollar of any channel in the plan." },
     ],
     metrics: { uniqueVoters: "~58,000", frequency: "8–14x", impressions: "~3.1M", costPerVoter: "$0.97", groundGameRequired: "Active" },
     projections: [
@@ -150,12 +215,12 @@ const SPEND_TIERS = [
     groundGame: "Essential. Without active canvassing in all five toss-up and competitive counties, this budget alone will not close the gap. Plan for 3,000+ door knocks in Tipton, Montgomery, Shelby, Dyer, and Lauderdale.",
     organicSocial: "Must function as a real persuasion channel, not just amplification. 4–5 posts per week minimum. Facebook Live events with Hatcher in each county. Volunteer-generated content. Endorsement videos from local figures. This is not optional at this budget level.",
     channels: [
-      { channel: "Connected TV (CTV)", budget: 21200, pct: 51.4, reach: "~62,000 households", frequency: "8–10x", color: "#1a56db",
-        desc: "Bought by ZIP code and county — covers the highest-priority ZIP codes in the 14 new counties. At this budget, not every ZIP gets full saturation; the plan concentrates on the 8 counties with the highest persuadable density. 30-second spots on Hulu, Peacock, and local news streaming. Geographic targeting keeps every dollar inside the district." },
-      { channel: "Digital Video & Social", budget: 13584, pct: 32.9, reach: "~90,000 unique voters", frequency: "6–8x", color: "#3b82f6",
-        desc: "Facebook/Instagram video ads matched to the Republican primary voter file. At 6–8x frequency, this is enough to establish name recognition but not enough to fully move soft persuadables on its own. The organic social strategy must reinforce these ads — every paid impression should be backed by an organic post the same week." },
-      { channel: "Programmatic Display & Audio", budget: 6500, pct: 15.7, reach: "~72,000 unique devices", frequency: "8–12x", color: "#93c5fd",
-        desc: "IP-targeted display ads and Spotify/Pandora audio matched to the voter file. Reinforces CTV and social at a reduced frequency. At this budget level, audio is particularly valuable — it reaches voters during commutes and work hours when CTV cannot, extending the effective reach of the plan without significant added cost." },
+      { channel: "Connected TV (CTV)", budget: 28900, pct: 70.0, reach: "~68,000 households", frequency: "9–13x", color: "#1a56db",
+        desc: "Bought by ZIP code and county — concentrates on the highest-priority ZIP codes across the 14 new counties. Not every ZIP gets full saturation at this budget, but every county gets presence. 30-second spots on Hulu, Peacock, and local news streaming. Geographic targeting keeps every dollar inside the district." },
+      { channel: "Digital Video & Social", budget: 8284, pct: 20.1, reach: "~75,000 unique voters", frequency: "6–8x", color: "#3b82f6",
+        desc: "Facebook/Instagram video ads matched to the Republican primary voter file. At 6–8x frequency this establishes name recognition but needs organic social reinforcement to fully move soft persuadables. Every paid impression should be backed by an organic post the same week." },
+      { channel: "Programmatic Display & Audio", budget: 4100, pct: 9.9, reach: "~58,000 unique devices", frequency: "7–10x", color: "#93c5fd",
+        desc: "IP-targeted display ads and Spotify/Pandora audio matched to the voter file. Reaches voters during commutes and work hours when CTV cannot, extending effective reach without significant added cost. Most efficient channel per dollar at this budget level." },
     ],
     metrics: { uniqueVoters: "~42,000", frequency: "6–10x", impressions: "~2.2M", costPerVoter: "$0.98", groundGameRequired: "Essential" },
     projections: [
@@ -317,10 +382,25 @@ function SectionLabel({ children, C }: { children: React.ReactNode; C: C }) {
 }
 
 function KpiCard({ label, value, sub, color, C }: { label: string; value: string; sub?: string; color: string; C: C }) {
+  const { ref, inView } = useInView();
+  // Parse numeric value for count-up animation
+  const numMatch = value.replace(/,/g, "").match(/([^\d]*?)([\d.]+)([^\d]*)/);
+  const numTarget = numMatch ? parseFloat(numMatch[2]) : 0;
+  const prefix = numMatch ? numMatch[1] : "";
+  const suffix = numMatch ? numMatch[3] : "";
+  const hasDecimals = numMatch ? numMatch[2].includes(".") : false;
+  const animated = useCountUp(inView ? numTarget : 0, 1200, hasDecimals ? 1 : 0, prefix, suffix);
+  const displayValue = numTarget > 0 ? animated : value;
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${color}` }}>
+    <div ref={ref} style={{
+      background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px",
+      borderTop: `3px solid ${color}`,
+      opacity: inView ? 1 : 0,
+      transform: inView ? "translateY(0)" : "translateY(12px)",
+      transition: "opacity 0.5s ease-out, transform 0.5s ease-out",
+    }}>
       <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{label}</div>
-      <div style={{ fontSize: 26, fontWeight: 800, color: C.white, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 26, fontWeight: 800, color: C.white, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{displayValue}</div>
       {sub && <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>{sub}</div>}
     </div>
   );
@@ -800,8 +880,9 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         {/* Channel Cards */}
         <SectionLabel C={C}>Channel-by-Channel Breakdown</SectionLabel>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
-          {tier.channels.map((s: any) => (
-            <div key={s.channel} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderLeft: `4px solid ${s.color}`, borderRadius: 10, padding: 14 }}>
+          {tier.channels.map((s: any, ci: number) => (
+            <div key={s.channel} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderLeft: `4px solid ${s.color}`, borderRadius: 10, padding: 14,
+              animation: `fadeSlideIn 0.4s ease-out ${ci * 80}ms both` }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" as const, gap: 8, marginBottom: 8 }}>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 800, color: C.white }}>{s.channel}</div>
@@ -1011,6 +1092,21 @@ function TabProfiles({ mobile, C }: { mobile: boolean; C: C }) {
 }
 
 // ── TAB: Path to Win ──────────────────────────────────────────────────────────
+function AnimatedBar({ pct, color, C }: { pct: number; color: string; C: C }) {
+  const { ref, inView } = useInView();
+  return (
+    <div ref={ref} style={{ flex: 1, background: C.bg3, borderRadius: 3, height: 6, overflow: "hidden" }}>
+      <div style={{
+        width: inView ? `${pct}%` : "0%",
+        background: color,
+        height: "100%",
+        borderRadius: 3,
+        transition: "width 1s cubic-bezier(0.23,1,0.32,1)",
+      }} />
+    </div>
+  );
+}
+
 function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
   const radarData = PATH_TO_WIN.slice(0, 8).map(c => ({ county: c.county, confidence: c.confidence }));
   return (
@@ -1084,9 +1180,7 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
                   <td style={{ padding: "10px 12px", color: C.accent2, fontWeight: 700 }}>{c.needed.toLocaleString()}</td>
                   <td style={{ padding: "10px 12px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ flex: 1, background: C.bg3, borderRadius: 3, height: 6, overflow: "hidden" }}>
-                        <div style={{ width: `${c.confidence}%`, background: c.confidence >= 75 ? C.green : c.confidence >= 60 ? C.gold : C.red, height: "100%", borderRadius: 3 }} />
-                      </div>
+                      <AnimatedBar pct={c.confidence} color={c.confidence >= 75 ? C.green : c.confidence >= 60 ? C.gold : C.red} C={C} />
                       <span style={{ color: C.white, fontWeight: 700, minWidth: 32 }}>{c.confidence}%</span>
                     </div>
                   </td>
@@ -1138,6 +1232,7 @@ export default function CharlieHatcherDashboard() {
   const C = useColors(isDark);
   const [tab, setTab] = useState("overview");
   const [mobile, setMobile] = useState(window.innerWidth < 768);
+  const countdown = useCountdown("2026-08-07T06:00:00");
 
   useEffect(() => {
     const handler = () => setMobile(window.innerWidth < 768);
@@ -1169,9 +1264,23 @@ export default function CharlieHatcherDashboard() {
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.green, animation: "pulse 2s infinite" }} />
                 <span style={{ fontSize: 11, fontWeight: 700, color: C.green, letterSpacing: "0.08em" }}>LIVE INTELLIGENCE</span>
               </div>
-              <div style={{ background: `${C.gold}20`, border: `1px solid ${C.gold}60`, borderRadius: 10, padding: "6px 14px", textAlign: "center" }}>
-                <div style={{ fontSize: 9, color: C.gold, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>Days to Primary</div>
-                <div style={{ fontSize: 18, fontWeight: 900, color: C.white }}>{RACE.daysOut}</div>
+              <div style={{ background: `${C.gold}20`, border: `1px solid ${C.gold}60`, borderRadius: 10, padding: "8px 14px", textAlign: "center" }}>
+                <div style={{ fontSize: 9, color: C.gold, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Time to August 7 Primary</div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center" }}>
+                  {[
+                    { val: countdown.days, label: "days" },
+                    { val: countdown.hours, label: "hrs" },
+                    { val: countdown.minutes, label: "min" },
+                    { val: countdown.seconds, label: "sec" },
+                  ].map((u, i) => (
+                    <div key={i} style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: mobile ? 16 : 20, fontWeight: 900, color: C.white, lineHeight: 1, minWidth: 28, fontVariantNumeric: "tabular-nums" }}>
+                        {String(u.val).padStart(2, "0")}
+                      </div>
+                      <div style={{ fontSize: 8, color: C.muted, textTransform: "uppercase", letterSpacing: "0.06em" }}>{u.label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
