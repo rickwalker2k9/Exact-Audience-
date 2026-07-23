@@ -652,6 +652,68 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         </div>
       </div>
 
+      {/* Decision Framing Callout */}
+      <div style={{ background: "#0f1e35", border: "1px solid #1e3a5f", borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ fontSize: 10, color: "#60a5fa", textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 12 }}>How to Think About This Decision</div>
+
+        {/* The real comparison */}
+        <div style={{ background: "#1a0a0a", border: "1px solid #7f1d1d40", borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+          <div style={{ fontSize: 12, fontWeight: 800, color: "#fca5a5", marginBottom: 6 }}>The comparison that matters most is not $41K vs. $56K vs. $69K.</div>
+          <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.7 }}>
+            It is <strong style={{ color: C.white }}>any of these vs. nothing</strong>. Ogles has $15,000 net of debt. If Hatcher runs no paid media in the 14 new counties, Ogles' $15,000 is the only voice those voters hear in the final two weeks. In a low-turnout primary, name recognition alone can move 3–5 percentage points. That is the race. The question is not whether to spend — it is how much of the lead to protect.
+          </div>
+        </div>
+
+        {/* Why 3 options */}
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 10, marginBottom: 12 }}>
+          <div style={{ background: C.bg3, borderRadius: 10, padding: "14px 16px", borderLeft: "3px solid #3b82f6" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#93c5fd", marginBottom: 6 }}>Why three options, not four</div>
+            <div style={{ fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>
+              Four choices create decision paralysis. Three trigger what researchers call the <em>compromise effect</em> — when anchored between a high and a low, most people choose the middle option because it feels like the disciplined, credible choice. That is not an accident. It is how good decisions get made under pressure.
+            </div>
+          </div>
+          <div style={{ background: C.bg3, borderRadius: 10, padding: "14px 16px", borderLeft: "3px solid #22c55e" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#86efac", marginBottom: 6 }}>The $56K tier is recommended for a reason</div>
+            <div style={{ fontSize: 11, color: "#94a3b8", lineHeight: 1.6 }}>
+              It is not the cheapest option dressed up as the smart one. It is the level at which the paid media can do its job across all 14 counties at a frequency that actually moves persuadable voters — without requiring the campaign to be perfect on every other front simultaneously.
+            </div>
+          </div>
+        </div>
+
+        {/* The 5 honest realities */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase" as const, letterSpacing: "0.08em", marginBottom: 8 }}>Five things that are true regardless of which level you choose</div>
+        <div style={{ display: "flex", flexDirection: "column" as const, gap: 6, marginBottom: 12 }}>
+          {[
+            { icon: "✓", color: "#22c55e", text: "Hatcher has the largest war chest in the race. The money to do this is already there." },
+            { icon: "✓", color: "#22c55e", text: "Ogles cannot respond. $15,000 net of debt does not buy a counter-campaign in 14 counties." },
+            { icon: "✓", color: "#22c55e", text: "Early voting is open now. Every day without paid media is a day persuadable voters are making up their minds without hearing from Hatcher." },
+            { icon: "△", color: "#f59e0b", text: "This district is rural. Paid media reaches fewer people per dollar here than in a suburban district. That is the honest reality — and it is why ground game and candidate travel matter at every spend level." },
+            { icon: "△", color: "#f59e0b", text: "No paid media plan guarantees an outcome. What it does is give the campaign its best possible position to win. The rest is execution." },
+          ].map((item, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+              <span style={{ fontSize: 13, color: item.color, fontWeight: 700, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
+              <span style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.6 }}>{item.text}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* The loss-aversion anchor */}
+        <div style={{ background: "#0c1a0c", border: "1px solid #14532d40", borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#86efac", marginBottom: 6 }}>What $214K in the bank means in this context</div>
+          <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.7 }}>
+            Hatcher raised $214,000. That money exists to win this race. Leaving it unspent in the final two weeks of a primary — while 14 new counties decide whether they know his name — is not fiscal discipline. It is the most expensive possible outcome: losing a winnable race with money still in the account. A $56,109 spend leaves $157,891 in reserve. That is not a risk. That is a campaign protecting its lead.
+          </div>
+        </div>
+
+        {/* The urgency anchor */}
+        <div style={{ background: "#1a1000", border: "1px solid #78350f40", borderRadius: 10, padding: "14px 16px" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#fcd34d", marginBottom: 6 }}>The window is real — and it is closing</div>
+          <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.7 }}>
+            August 6 is 14 days away. Early voting is open now. CTV and digital campaigns need 2–3 days to launch and optimize. Every day of delay is not a neutral decision — it is a smaller window for the media to do its work. The voters who are easiest to move are the ones who decide early. Waiting costs frequency. Frequency is what moves persuadable voters.
+          </div>
+        </div>
+      </div>
+
       {/* Tier Selector */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
         {SPEND_TIERS.map((t, i) => (
