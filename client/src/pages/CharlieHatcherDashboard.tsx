@@ -86,7 +86,7 @@ const SPEND_PLAN = [
     channel: "Connected TV (CTV)",
     budget: 28417,
     pct: 50.6,
-    reach: "48,000 households",
+    reach: "~85,000 unique households",
     frequency: "10–15x per voter",
     desc: "30-second spots on Hulu, Peacock, Paramount+, YouTube TV, and local news streaming. Targets registered Republican primary voters by household in all 14 new counties. Highest recall medium — reaches voters where they actually watch.",
     color: "#1a56db",
@@ -95,7 +95,7 @@ const SPEND_PLAN = [
     channel: "Digital Video & Social",
     budget: 18692,
     pct: 33.3,
-    reach: "58,000 unique voters",
+    reach: "~130,000 unique voters",
     frequency: "8–12x per voter",
     desc: "Facebook/Instagram video ads targeting Republican primary voters 35+ in the 14 new counties. 15-second pre-roll on YouTube. Carousel ads featuring Hatcher's ag commissioner record and endorsements. Precise voter-file matching.",
     color: "#3b82f6",
@@ -104,7 +104,7 @@ const SPEND_PLAN = [
     channel: "Programmatic Display & Audio",
     budget: 9000,
     pct: 16.0,
-    reach: "52,000 unique devices",
+    reach: "~95,000 unique devices",
     frequency: "12–18x per voter",
     desc: "IP-targeted display ads and Spotify/Pandora audio spots matched to the voter file. Reaches persuadable voters on mobile and desktop throughout the day — reinforces CTV and social messaging for maximum frequency.",
     color: "#93c5fd",
@@ -513,11 +513,11 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>Exact Audience Recommended Spend · 21-Day Sprint</div>
         <div style={{ fontSize: mobile ? 22 : 28, fontWeight: 900, color: C.white, marginBottom: 8 }}>$56,109 Precision Voter Targeting Plan</div>
         <div style={{ fontSize: 13, color: "#cbd5e1", maxWidth: 600, lineHeight: 1.6 }}>
-          Reach every persuadable Republican primary voter in the 14 new counties at least 6–12 times before August 7. The goal is not broad awareness — it is surgical repetition to the ~41,300 voters who are genuinely moveable. Ogles cannot match this spend. That is the window.
+          Reach every persuadable Republican primary voter in the 14 new counties at least 6–12 times before August 7. The goal is not broad awareness — it is surgical repetition to the ~58,000 voters who are genuinely moveable. Ogles cannot match this spend. That is the window.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12, marginTop: 20 }}>
           <KpiCard label="Total Recommended Spend" value="$56,109" sub="21-day sprint to August 7" color={C.accent} C={C} />
-          <KpiCard label="Unique Voters Reached" value="41,300+" sub="Across all channels combined" color={C.green} C={C} />
+          <KpiCard label="Unique Voters Reached" value="~58,000" sub="Unduplicated cross-channel reach" color={C.green} C={C} />
           <KpiCard label="Avg. Touchpoints/Voter" value="8–14x" sub="Enough to move persuadables" color={C.gold} C={C} />
           <KpiCard label="Hatcher Cash Available" value="$214K" sub="$157,891 remaining after spend" color={C.accent2} C={C} />
         </div>
@@ -554,7 +554,7 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
             {[
               { label: "Ogles' net available cash", value: "$15,000", color: C.red, note: "Cannot run a meaningful paid media campaign in the final 3 weeks" },
               { label: "Hatcher after $56,109 spend", value: "$157,891", color: C.green, note: "Still has reserve for GOTV and unexpected needs" },
-              { label: "Persuadable voters reached", value: "41,300+", color: C.accent2, note: "Every moveable voter in the 14 new counties touched 8–14 times" },
+              { label: "Persuadable voters reached", value: "~58,000", color: C.accent2, note: "Unduplicated cross-channel reach across all 14 new counties, touched 8–14 times" },
               { label: "Trump endorsement reach", value: "Limited", color: C.gold, note: "In a low-salience primary, endorsement only matters if voters know about it. Hatcher's job is to win the information race first." },
             ].map((item, i) => (
               <div key={i} style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
