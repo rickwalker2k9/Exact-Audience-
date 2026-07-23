@@ -1201,12 +1201,20 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
 
       {/* The Pitch */}
       <div style={{ background: `${C.accent}10`, border: `1px solid ${C.accent}40`, borderRadius: 12, padding: 24 }}>
-        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 12 }}>The Exact Audience Offer to Charlie Hatcher</div>
-        <blockquote style={{ margin: 0, padding: "16px 20px", background: C.card, border: `1px solid ${C.border}`, borderLeft: `4px solid ${C.accent}`, borderRadius: 10 }}>
-          <p style={{ fontSize: 14, color: C.white, lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
-            "You have 21 days and $214,000. The 14 new counties are the ballgame. We can tell you, by precinct, which Republican primary voters in those counties already know your name from your time as Agriculture Commissioner, which ones are persuadable with one or two more contacts, and which ones are Ogles voters you should not waste money on. That is the difference between spending your $56,109 efficiently and spending it blind. We can have that map to you in 48 hours."
-          </p>
-        </blockquote>
+        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 12 }}>How This Plan Works</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {[
+            { icon: "🎯", text: "Every dollar in this plan is targeted to Republican primary voters in the 14 new counties — the voters who will decide this race." },
+            { icon: "📺", text: "CTV buys are by ZIP code and county, so Hatcher's 30-second spot reaches every household in the district — no voter file required, no impressions wasted outside CD-5." },
+            { icon: "📱", text: "Digital and programmatic buys are matched directly to the Republican primary voter file — named, identified persuadable voters, not random zip code residents." },
+            { icon: "⚡", text: "Campaigns can be live within 48–72 hours of a go decision. Early voting is open now. Every day matters." },
+          ].map((item, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 16px" }}>
+              <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
+              <span style={{ fontSize: 13, color: "#cbd5e1", lineHeight: 1.6 }}>{item.text}</span>
+            </div>
+          ))}
+        </div>
         <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
           {[
             { label: "Delivery Time", value: "48 hours", icon: "⚡", color: C.gold },
