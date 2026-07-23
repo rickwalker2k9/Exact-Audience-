@@ -23,6 +23,7 @@ import ImagineAgencyDashboard from "./pages/ImagineAgencyDashboard";
 import MogulDashboard from "./pages/MogulDashboard";
 import LitehouseHealthDashboard from "./pages/LitehouseHealthDashboard";
 import ProdromeDashboard from "./pages/ProdromeDashboard";
+import CharlieHatcherDashboard from "./pages/CharlieHatcherDashboard";
 
 function Router() {
   return (
@@ -46,6 +47,7 @@ function Router() {
       <Route path="/mogul" component={MogulDashboard} />
       <Route path="/litehouse" component={LitehouseHealthDashboard} />
       <Route path="/prodrome" component={ProdromeDashboard} />
+      <Route path="/charlie-hatcher" component={CharlieHatcherDashboard} />
 
       {/* Placeholder for campaigns without a full dashboard */}
       <Route path="/campaign/:slug" component={CampaignPlaceholder} />

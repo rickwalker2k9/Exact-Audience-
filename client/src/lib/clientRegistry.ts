@@ -268,6 +268,27 @@ export const CLIENTS: CampaignClient[] = [
     completionRate: 88.4,
     primaryColor: "#10b981",
   },
+  // ── CHARLIE HATCHER FOR CONGRESS ──────────────────────────────────────────────
+  {
+    id: 45,
+    slug: "charlie-hatcher",
+    name: "Charlie Hatcher for Congress",
+    vertical: "Political Campaign",
+    location: "Tennessee CD5",
+    description: "TN-CD5 Republican Primary 2026 — Voter targeting & $80K precision spend plan across 14 new counties",
+    domain: "hatcherforcongress.com",
+    logoDomain: "hatcherforcongress.com",
+    campaign: "TN-CD5 Republican Primary · August 7, 2026",
+    budget: "$80,000",
+    startDate: "Jul 23, 2026",
+    status: "active" as ClientStatus,
+    hasDashboard: true,
+    trend: risingTrend(28000),
+    impressionsToDate: 2840000,
+    reachToDate: 42000,
+    completionRate: 81.4,
+    primaryColor: "#1a56db",
+  },
   // ── ACTIVE PLACEHOLDERS ───────────────────────────────────────────────────────
   {
     id: 6,
