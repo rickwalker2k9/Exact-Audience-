@@ -4,7 +4,8 @@
  * EA Intelligence Portal — B2C Voter Targeting & 3-Tier Spend Recommendation
  * Tabs: Race Overview | Persuadable Voters | Spend Plan | Voter Profiles | Path to Win
  */
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { KNOWN_CONTACTS } from "./cd5Contacts";
 import { Link } from "wouter";
 import { useTheme } from "../contexts/ThemeContext";
 import {
@@ -641,6 +642,119 @@ function TabVoters({ mobile, C }: { mobile: boolean; C: C }) {
           </table>
         </div>
       </div>
+      {/* Known Contacts in District */}
+      <KnownContactsTable mobile={mobile} C={C} />
+    </div>
+  );
+}
+
+// ── Known Contacts Table ─────────────────────────────────────────────────────
+const ALL_COUNTIES_FILTER = "All Counties";
+const COUNTY_OPTIONS = [ALL_COUNTIES_FILTER, "Williamson", "Shelby", "Montgomery", "Maury", "Henry", "Tipton", "Weakley", "Dyer", "Hickman", "Lake", "Obion", "Stewart", "Benton", "Houston", "Lewis", "Lauderdale", "Humphreys"];
+
+function KnownContactsTable({ mobile, C }: { mobile: boolean; C: C }) {
+  const [search, setSearch] = useState("");
+  const [countyFilter, setCountyFilter] = useState(ALL_COUNTIES_FILTER);
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 25;
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return KNOWN_CONTACTS.filter(c => {
+      const matchSearch = !q || c.n.toLowerCase().includes(q) || c.c.toLowerCase().includes(q) || c.co.toLowerCase().includes(q);
+      const matchCounty = countyFilter === ALL_COUNTIES_FILTER || c.co === countyFilter;
+      return matchSearch && matchCounty;
+    });
+  }, [search, countyFilter]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const pageData = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  // Reset page when filters change
+  useEffect(() => { setPage(0); }, [search, countyFilter]);
+
+  // County breakdown counts
+  const countyCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    KNOWN_CONTACTS.forEach(c => { counts[c.co] = (counts[c.co] || 0) + 1; });
+    return counts;
+  }, []);
+
+  return (
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+      <SectionLabel C={C}>Known Contacts in CD-5 District</SectionLabel>
+      <div style={{ fontSize: 13, color: C.muted, marginBottom: 16 }}>
+        535 contacts from your database cross-referenced against the official CD-5 county map. These are real people in the district — warm outreach targets for the ground game.
+      </div>
+
+      {/* County summary pills */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+        {COUNTY_OPTIONS.filter(c => c !== ALL_COUNTIES_FILTER).map(co => (
+          <button key={co} onClick={() => setCountyFilter(co === countyFilter ? ALL_COUNTIES_FILTER : co)}
+            style={{ padding: "4px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer", border: `1px solid ${countyFilter === co ? C.accent : C.border}`, background: countyFilter === co ? C.accent : "transparent", color: countyFilter === co ? "#fff" : C.muted, transition: "all 0.15s" }}>
+            {co} {countyCounts[co] ? `(${countyCounts[co]})` : ""}
+          </button>
+        ))}
+      </div>
+
+      {/* Search + filter row */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
+        <input
+          type="text"
+          placeholder="Search by name or city..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          style={{ flex: 1, minWidth: 180, padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`, background: C.bg3, color: C.white, fontSize: 13, outline: "none" }}
+        />
+        <select value={countyFilter} onChange={e => setCountyFilter(e.target.value)}
+          style={{ padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`, background: C.bg3, color: C.white, fontSize: 13, cursor: "pointer" }}>
+          {COUNTY_OPTIONS.map(o => <option key={o} value={o}>{o === ALL_COUNTIES_FILTER ? `All Counties (${KNOWN_CONTACTS.length})` : `${o} (${countyCounts[o] || 0})`}</option>)}
+        </select>
+      </div>
+
+      {/* Results count */}
+      <div style={{ fontSize: 12, color: C.muted, marginBottom: 10 }}>
+        Showing {pageData.length} of {filtered.length} contacts {search || countyFilter !== ALL_COUNTIES_FILTER ? `(filtered from ${KNOWN_CONTACTS.length})` : ""}
+      </div>
+
+      {/* Table */}
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+              {["Name", "City", "County", "Age", "Gender", "Married", "Children"].map(h => (
+                <th key={h} style={{ textAlign: "left", padding: "8px 10px", color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", fontSize: 10, whiteSpace: "nowrap" }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {pageData.map((c, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${C.border}20`, background: i % 2 === 0 ? "transparent" : `${C.bg3}50` }}>
+                <td style={{ padding: "9px 10px", color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>{c.n}</td>
+                <td style={{ padding: "9px 10px", color: C.muted }}>{c.c}</td>
+                <td style={{ padding: "9px 10px" }}>
+                  <span style={{ padding: "2px 8px", borderRadius: 10, fontSize: 11, fontWeight: 700, background: `${C.accent}22`, color: C.accent }}>{c.co}</span>
+                </td>
+                <td style={{ padding: "9px 10px", color: C.muted }}>{c.a || "—"}</td>
+                <td style={{ padding: "9px 10px", color: c.g === "F" ? "#f472b6" : c.g === "M" ? "#60a5fa" : C.muted }}>{c.g || "—"}</td>
+                <td style={{ padding: "9px 10px", color: C.muted }}>{c.m === "Y" ? "Yes" : c.m === "N" ? "No" : "—"}</td>
+                <td style={{ padding: "9px 10px", color: C.muted }}>{c.ch === "Y" ? "Yes" : c.ch === "N" ? "No" : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 14 }}>
+          <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
+            style={{ padding: "6px 14px", borderRadius: 6, border: `1px solid ${C.border}`, background: page === 0 ? "transparent" : C.bg3, color: page === 0 ? C.muted : C.white, cursor: page === 0 ? "default" : "pointer", fontSize: 12 }}>← Prev</button>
+          <span style={{ fontSize: 12, color: C.muted }}>Page {page + 1} of {totalPages}</span>
+          <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}
+            style={{ padding: "6px 14px", borderRadius: 6, border: `1px solid ${C.border}`, background: page === totalPages - 1 ? "transparent" : C.bg3, color: page === totalPages - 1 ? C.muted : C.white, cursor: page === totalPages - 1 ? "default" : "pointer", fontSize: 12 }}>Next →</button>
+        </div>
+      )}
     </div>
   );
 }
