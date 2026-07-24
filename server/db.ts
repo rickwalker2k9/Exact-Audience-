@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -90,3 +90,25 @@ export async function getUserByOpenId(openId: string) {
 }
 
 // TODO: add feature queries here as your schema grows.
+
+// ── Voter CTV Prefs ───────────────────────────────────────────────────────────
+
+export async function getVoterCtvPrefs(voterKey: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(voterCtvPrefs).where(eq(voterCtvPrefs.voterKey, voterKey)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function upsertVoterCtvPrefs(prefs: InsertVoterCtvPrefs) {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(voterCtvPrefs).values(prefs).onDuplicateKeyUpdate({
+    set: {
+      bundleNetworkIds: prefs.bundleNetworkIds,
+      primaryPlatform: prefs.primaryPlatform,
+      filtersJson: prefs.filtersJson,
+      lastPreset: prefs.lastPreset,
+    },
+  });
+}

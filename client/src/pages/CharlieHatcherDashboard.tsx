@@ -796,11 +796,46 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
   const [selectedPost, setSelectedPost] = useState("grandkids-tractor");
   const msgs = buildMessages(contact);
 
+  // ── Bundle selector state ──────────────────────────────────────────────────
+  const [bundleIds, setBundleIds] = useState<Set<string>>(new Set());
+  const [bundleBrief, setBundleBrief] = useState("");
+  const [bundleLoading, setBundleLoading] = useState(false);
+
+  // ── Launch modal state ─────────────────────────────────────────────────────
+  type LaunchResult = { success: boolean; draft?: boolean; message?: string; campaignId?: string; orderId?: string; campaignName?: string; orderName?: string; targeting?: Record<string, string>; instructions?: string[]; };
+  const [launchModal, setLaunchModal] = useState<{ open: boolean; type: "meta" | "ctv" | null; loading: boolean; result: LaunchResult | null; }>({ open: false, type: null, loading: false, result: null });
+
+  // ── Voter key for persistence ──────────────────────────────────────────────
+  const voterKey = `${contact.n.toLowerCase().replace(/\s+/g, "-")}-${(contact.co || "unknown").toLowerCase()}`;
+
   const generateCTV = trpc.campaign.generateCTVCopy.useMutation();
   const generateSocial = trpc.campaign.generateSocialCopy.useMutation();
   const generateEmail = trpc.campaign.generateEmailCopy.useMutation();
   const generateSMS = trpc.campaign.generateSMSCopy.useMutation();
   const generateUGC = trpc.campaign.generateUGCVideoBrief.useMutation();
+  const generateBundleBrief = trpc.bundle.generateBundleBrief.useMutation();
+  const launchMetaAd = trpc.bundle.launchMetaAd.useMutation();
+  const launchCtvAd = trpc.bundle.launchCtvAd.useMutation();
+  const savePrefs = trpc.voterPrefs.saveCtv.useMutation();
+
+  // ── Load saved prefs on mount ──────────────────────────────────────────────
+  const { data: savedPrefs } = trpc.voterPrefs.getCtv.useQuery({ voterKey }, { retry: false });
+  const prefsLoaded = useRef(false);
+  useEffect(() => {
+    if (savedPrefs && !prefsLoaded.current) {
+      prefsLoaded.current = true;
+      if (savedPrefs.primaryPlatform) setCtvPlatform(savedPrefs.primaryPlatform);
+      if (savedPrefs.bundleNetworkIds?.length) setBundleIds(new Set(savedPrefs.bundleNetworkIds));
+      if (savedPrefs.filters) {
+        if (savedPrefs.filters.age) setCtvAgeFilter(savedPrefs.filters.age);
+        if (savedPrefs.filters.income) setCtvIncomeFilter(savedPrefs.filters.income);
+        if (savedPrefs.filters.political) setCtvPoliticalFilter(savedPrefs.filters.political);
+        if (savedPrefs.filters.viewing) setCtvViewingFilter(savedPrefs.filters.viewing);
+        if (savedPrefs.filters.category) setCtvCategory(savedPrefs.filters.category);
+      }
+      if (savedPrefs.lastPreset) setCtvPreset(savedPrefs.lastPreset);
+    }
+  }, [savedPrefs]);
 
   const contactInput = {
     contactName: contact.n,
@@ -859,6 +894,114 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
       setUgcBrief("Error generating brief. Please try again.");
     } finally {
       setUgcLoading(false);
+    }
+  };
+
+  // ── Save prefs to DB (called explicitly, not a hook) ─────────────────────────────────
+  // Note: filter state is declared below (after channelBtns); this function captures them
+  // via closure at call time, so the hoisting order does not matter for runtime.
+  // We use a ref-based approach to avoid stale closure issues.
+  const filterStateRef = useRef({ age: "All", income: "All", political: "All", viewing: "All", category: "All" });
+
+  const presetRef = useRef("");
+  const platformRef = useRef("hulu");
+
+  const savePrefsToDb = useCallback((overrides?: Partial<{ bundleIds: Set<string>; platform: string; preset: string; filters: typeof filterStateRef.current }>) => {
+    const ids = overrides?.bundleIds ?? bundleIds;
+    const platform = overrides?.platform ?? platformRef.current;
+    const preset = overrides?.preset ?? presetRef.current;
+    const filters = overrides?.filters ?? filterStateRef.current;
+    savePrefs.mutate({
+      voterKey,
+      bundleNetworkIds: Array.from(ids),
+      primaryPlatform: platform,
+      filters,
+      lastPreset: preset || undefined,
+    });
+  }, [voterKey, bundleIds, savePrefs]);
+
+  // ── Bundle helpers ──────────────────────────────────────────────────────────────
+  const toggleBundle = (id: string) => {
+    setBundleIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      savePrefsToDb({ bundleIds: next });
+      return next;
+    });
+    setBundleBrief("");
+  };
+
+  const bundleNetworks = CTV_NETWORKS.filter(n => bundleIds.has(n.id));
+
+  // Combined reach is the max single-network reach (rough estimate — real DSPs deduplicate)
+  const bundleCombinedReach = bundleNetworks.length > 0
+    ? bundleNetworks.reduce((best, n) => {
+        const num = parseFloat(n.reach.replace(/[^0-9.]/g, ""));
+        return num > best ? num : best;
+      }, 0) + "M+ HH (combined est.)"
+    : "";
+
+  // Avg CPM across bundle
+  const bundleAvgCpm = bundleNetworks.length > 0
+    ? (bundleNetworks.reduce((sum, n) => {
+        const [lo, hi] = n.cpm.replace(/\$/g, "").split("–").map(Number);
+        return sum + (lo + hi) / 2;
+      }, 0) / bundleNetworks.length).toFixed(2)
+    : "0";
+
+  const handleGenerateBundleBrief = async () => {
+    if (bundleNetworks.length === 0) return;
+    setBundleLoading(true);
+    setBundleBrief("");
+    try {
+      const result = await generateBundleBrief.mutateAsync({
+        ...contactInput,
+        networkLabels: bundleNetworks.map(n => n.label),
+        combinedReach: bundleCombinedReach,
+        avgCpm: bundleAvgCpm,
+      });
+      setBundleBrief(result.copy);
+    } catch {
+      setBundleBrief("Error generating bundle brief. Please try again.");
+    } finally {
+      setBundleLoading(false);
+    }
+  };
+
+  // ── Launch handlers ───────────────────────────────────────────────────────────────
+  const handleLaunchCtvAd = async () => {
+    const networks = bundleNetworks.length > 0 ? bundleNetworks : [selectedNetwork];
+    setLaunchModal({ open: true, type: "ctv", loading: true, result: null });
+    try {
+      const result = await launchCtvAd.mutateAsync({
+        contactName: contact.n,
+        contactCity: contact.c,
+        contactCounty: contact.co,
+        networkIds: networks.map(n => n.id),
+        networkLabels: networks.map(n => n.label),
+        adCopy: bundleBrief || aiCopy || `30-sec spot on ${networks.map(n => n.label).join(", ")}`,
+        budgetCents: 5000, // $50/day default
+      });
+      setLaunchModal(prev => ({ ...prev, loading: false, result: result as LaunchResult }));
+    } catch (e) {
+      setLaunchModal(prev => ({ ...prev, loading: false, result: { success: false, message: "Launch failed. Please try again." } }));
+    }
+  };
+
+  const handleLaunchMetaAd = async (platform: "facebook" | "instagram") => {
+    setLaunchModal({ open: true, type: "meta", loading: true, result: null });
+    try {
+      const result = await launchMetaAd.mutateAsync({
+        contactName: contact.n,
+        contactCity: contact.c,
+        contactCounty: contact.co,
+        adCopy: aiCopy || msgs.social[platform],
+        platform,
+        budgetCents: 5000, // $50/day default
+      });
+      setLaunchModal(prev => ({ ...prev, loading: false, result: result as LaunchResult }));
+    } catch (e) {
+      setLaunchModal(prev => ({ ...prev, loading: false, result: { success: false, message: "Launch failed. Please try again." } }));
     }
   };
 
@@ -933,6 +1076,11 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
     });
   }, [ctvCategory, ctvAgeFilter, ctvIncomeFilter, ctvPoliticalFilter, ctvViewingFilter, voterAgeGroup, voterIncome]);
 
+  // Keep refs in sync with state for savePrefsToDb
+  useEffect(() => { filterStateRef.current = { age: ctvAgeFilter, income: ctvIncomeFilter, political: ctvPoliticalFilter, viewing: ctvViewingFilter, category: ctvCategory }; }, [ctvAgeFilter, ctvIncomeFilter, ctvPoliticalFilter, ctvViewingFilter, ctvCategory]);
+  useEffect(() => { presetRef.current = ctvPreset; }, [ctvPreset]);
+  useEffect(() => { platformRef.current = ctvPlatform; }, [ctvPlatform]);
+
   const applyPreset = (preset: typeof CTV_PRESETS[0]) => {
     setCtvPreset(preset.id);
     setCtvAgeFilter(preset.age);
@@ -940,6 +1088,8 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
     setCtvPoliticalFilter(preset.political);
     setCtvViewingFilter(preset.viewing);
     setCtvCategory("All");
+    // Save immediately with explicit values since state updates are async
+    savePrefsToDb({ preset: preset.id, filters: { age: preset.age, income: preset.income, political: preset.political, viewing: preset.viewing, category: "All" } });
   };
 
   const applyVoterMatch = () => {
@@ -949,6 +1099,7 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
     setCtvPoliticalFilter(voterPolitical);
     setCtvViewingFilter(voterViewing);
     setCtvCategory("All");
+    savePrefsToDb({ preset: "voter-match", filters: { age: voterAgeGroup, income: voterIncome, political: voterPolitical, viewing: voterViewing, category: "All" } });
   };
 
   const clearFilters = () => {
@@ -957,6 +1108,7 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
     setCtvIncomeFilter("All");
     setCtvPoliticalFilter("All");
     setCtvViewingFilter("All");
+    savePrefsToDb({ preset: "", filters: { age: "All", income: "All", political: "All", viewing: "All", category: ctvCategory } });
   };
 
   const hasActiveFilters = ctvAgeFilter !== "All" || ctvIncomeFilter !== "All" || ctvPoliticalFilter !== "All" || ctvViewingFilter !== "All";
@@ -1067,7 +1219,7 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                     <div style={{ fontSize: 10, color: C.muted, marginBottom: 3 }}>Age Group</div>
                     <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                       {["All","25-34","35-44","45-54","55-64","65+"].map(a => (
-                        <button key={a} onClick={() => { setCtvAgeFilter(a); setCtvPreset(""); }}
+                        <button key={a} onClick={() => { setCtvAgeFilter(a); setCtvPreset(""); savePrefsToDb({ filters: { ...filterStateRef.current, age: a }, preset: "" }); }}
                           style={{ padding: "3px 8px", borderRadius: 6, border: `1px solid ${ctvAgeFilter === a ? C.accent2 : C.border}`, background: ctvAgeFilter === a ? `${C.accent2}22` : "transparent", color: ctvAgeFilter === a ? C.accent2 : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.12s" }}>
                           {a}
                         </button>
@@ -1079,7 +1231,7 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                     <div style={{ fontSize: 10, color: C.muted, marginBottom: 3 }}>Income</div>
                     <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                       {["All","low","middle","high"].map(inc => (
-                        <button key={inc} onClick={() => { setCtvIncomeFilter(inc); setCtvPreset(""); }}
+                        <button key={inc} onClick={() => { setCtvIncomeFilter(inc); setCtvPreset(""); savePrefsToDb({ filters: { ...filterStateRef.current, income: inc }, preset: "" }); }}
                           style={{ padding: "3px 8px", borderRadius: 6, border: `1px solid ${ctvIncomeFilter === inc ? C.gold : C.border}`, background: ctvIncomeFilter === inc ? `${C.gold}22` : "transparent", color: ctvIncomeFilter === inc ? C.gold : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.12s", textTransform: "capitalize" }}>
                           {inc}
                         </button>
@@ -1091,7 +1243,7 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                     <div style={{ fontSize: 10, color: C.muted, marginBottom: 3 }}>Political Lean</div>
                     <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                       {["All","conservative","swing","moderate"].map(pol => (
-                        <button key={pol} onClick={() => { setCtvPoliticalFilter(pol); setCtvPreset(""); }}
+                        <button key={pol} onClick={() => { setCtvPoliticalFilter(pol); setCtvPreset(""); savePrefsToDb({ filters: { ...filterStateRef.current, political: pol }, preset: "" }); }}
                           style={{ padding: "3px 8px", borderRadius: 6, border: `1px solid ${ctvPoliticalFilter === pol ? C.red : C.border}`, background: ctvPoliticalFilter === pol ? `${C.red}22` : "transparent", color: ctvPoliticalFilter === pol ? C.red : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.12s", textTransform: "capitalize" }}>
                           {pol}
                         </button>
@@ -1103,7 +1255,7 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                     <div style={{ fontSize: 10, color: C.muted, marginBottom: 3 }}>Viewing Habit</div>
                     <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                       {["All","news","sports","drama","western","documentary"].map(v => (
-                        <button key={v} onClick={() => { setCtvViewingFilter(v); setCtvPreset(""); }}
+                        <button key={v} onClick={() => { setCtvViewingFilter(v); setCtvPreset(""); savePrefsToDb({ filters: { ...filterStateRef.current, viewing: v }, preset: "" }); }}
                           style={{ padding: "3px 8px", borderRadius: 6, border: `1px solid ${ctvViewingFilter === v ? C.green : C.border}`, background: ctvViewingFilter === v ? `${C.green}22` : "transparent", color: ctvViewingFilter === v ? C.green : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.12s", textTransform: "capitalize" }}>
                           {v}
                         </button>
@@ -1127,7 +1279,7 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                 {/* Network type tabs */}
                 <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 10, paddingTop: 8, borderTop: `1px solid ${C.border}` }}>
                   {CTV_CATEGORIES.map(cat => (
-                    <button key={cat} onClick={() => setCtvCategory(cat)}
+                    <button key={cat} onClick={() => { setCtvCategory(cat); savePrefsToDb({ filters: { ...filterStateRef.current, category: cat } }); }}
                       style={{ padding: "3px 9px", borderRadius: 20, border: `1px solid ${ctvCategory === cat ? C.accent : C.border}`, background: ctvCategory === cat ? C.accent : "transparent", color: ctvCategory === cat ? "#fff" : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.15s" }}>
                       {cat}
                     </button>
@@ -1135,30 +1287,102 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                 </div>
               </div>
 
-              {/* Network grid with match scores */}
-              <div style={{ fontSize: 10, color: C.muted, marginBottom: 6 }}>
-                {filteredNetworks.length} network{filteredNetworks.length !== 1 ? "s" : ""} matching · sorted by voter match
+              {/* Network grid with match scores + bundle checkboxes */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div style={{ fontSize: 10, color: C.muted }}>
+                  {filteredNetworks.length} network{filteredNetworks.length !== 1 ? "s" : ""} matching · sorted by voter match
+                </div>
+                {bundleIds.size > 0 && (
+                  <div style={{ fontSize: 10, fontWeight: 700, color: C.accent2 }}>
+                    {bundleIds.size} in bundle
+                  </div>
+                )}
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 14, maxHeight: 240, overflowY: "auto" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 14, maxHeight: 260, overflowY: "auto" }}>
                 {filteredNetworks.map(net => {
                   const matchScore = scoreNetwork(net, voterAgeGroup, voterIncome, voterPolitical, voterViewing);
                   const matchLabel = matchScore === 4 ? "★ Best Match" : matchScore === 3 ? "✦ Strong" : matchScore === 2 ? "◆ Good" : matchScore === 1 ? "◇ Partial" : "";
                   const matchColor = matchScore === 4 ? C.gold : matchScore === 3 ? C.green : matchScore === 2 ? C.accent2 : C.muted;
+                  const inBundle = bundleIds.has(net.id);
+                  const isPrimary = ctvPlatform === net.id;
                   return (
-                    <button key={net.id} onClick={() => { setCtvPlatform(net.id); setAiCopy(""); }}
-                      style={{ padding: "8px 10px", borderRadius: 8, border: `2px solid ${ctvPlatform === net.id ? net.color : C.border}`, background: ctvPlatform === net.id ? `${net.color}18` : C.card, cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: ctvPlatform === net.id ? net.color : C.white, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "65%" }}>{net.label}</div>
-                        <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: `${net.color}22`, color: net.color, fontWeight: 700, flexShrink: 0 }}>{net.category}</span>
-                      </div>
-                      <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>{net.cpm} CPM · {net.reach}</div>
-                      {matchLabel && (
-                        <div style={{ fontSize: 9, color: matchColor, fontWeight: 700, marginTop: 3 }}>{matchLabel}</div>
-                      )}
-                    </button>
+                    <div key={net.id} style={{ position: "relative" }}>
+                      <button onClick={() => { setCtvPlatform(net.id); setAiCopy(""); savePrefsToDb({ platform: net.id }); }}
+                        style={{ width: "100%", padding: "8px 10px", borderRadius: 8, border: `2px solid ${isPrimary ? net.color : inBundle ? `${net.color}88` : C.border}`, background: isPrimary ? `${net.color}18` : inBundle ? `${net.color}0d` : C.card, cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: isPrimary ? net.color : C.white, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "65%" }}>{net.label}</div>
+                          <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: `${net.color}22`, color: net.color, fontWeight: 700, flexShrink: 0 }}>{net.category}</span>
+                        </div>
+                        <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>{net.cpm} CPM · {net.reach}</div>
+                        {matchLabel && (
+                          <div style={{ fontSize: 9, color: matchColor, fontWeight: 700, marginTop: 3 }}>{matchLabel}</div>
+                        )}
+                      </button>
+                      {/* Bundle toggle checkbox */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleBundle(net.id); }}
+                        title={inBundle ? "Remove from bundle" : "Add to bundle"}
+                        style={{ position: "absolute", top: 5, right: 5, width: 18, height: 18, borderRadius: 4, border: `1.5px solid ${inBundle ? net.color : C.border}`, background: inBundle ? net.color : "transparent", color: "#fff", fontSize: 10, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, lineHeight: 1, zIndex: 2, transition: "all 0.15s" }}>
+                        {inBundle ? "✓" : "+"}
+                      </button>
+                    </div>
                   );
                 })}
               </div>
+
+              {/* ── Bundle Summary Panel ── */}
+              {bundleIds.size > 0 && (
+                <div style={{ background: `${C.accent}10`, border: `1px solid ${C.accent}40`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: C.accent2 }}>📦 Multi-Network Bundle ({bundleIds.size} platforms)</div>
+                    <button onClick={() => { setBundleIds(new Set()); setBundleBrief(""); savePrefsToDb({ bundleIds: new Set() }); }}
+                      style={{ fontSize: 10, color: C.muted, background: "transparent", border: `1px solid ${C.border}`, borderRadius: 6, padding: "2px 8px", cursor: "pointer" }}>Clear Bundle</button>
+                  </div>
+                  {/* Network chips */}
+                  <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 10 }}>
+                    {bundleNetworks.map(n => (
+                      <span key={n.id} style={{ padding: "3px 8px", borderRadius: 12, background: `${n.color}22`, color: n.color, fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", gap: 4 }}>
+                        {n.label}
+                        <button onClick={() => toggleBundle(n.id)} style={{ background: "none", border: "none", color: n.color, cursor: "pointer", fontSize: 11, lineHeight: 1, padding: 0 }}>✕</button>
+                      </span>
+                    ))}
+                  </div>
+                  {/* Combined stats */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 10 }}>
+                    <div style={{ background: C.bg3, borderRadius: 8, padding: "8px 10px", textAlign: "center" }}>
+                      <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>Combined Reach</div>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: C.white }}>{bundleCombinedReach || "—"}</div>
+                    </div>
+                    <div style={{ background: C.bg3, borderRadius: 8, padding: "8px 10px", textAlign: "center" }}>
+                      <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>Avg CPM</div>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: C.gold }}>${bundleAvgCpm}</div>
+                    </div>
+                    <div style={{ background: C.bg3, borderRadius: 8, padding: "8px 10px", textAlign: "center" }}>
+                      <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>Platforms</div>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: C.accent2 }}>{bundleIds.size}</div>
+                    </div>
+                  </div>
+                  {/* Bundle AI brief */}
+                  <button onClick={handleGenerateBundleBrief} disabled={bundleLoading}
+                    style={{ width: "100%", padding: "9px", borderRadius: 8, border: "none", background: bundleLoading ? C.bg3 : `linear-gradient(135deg, ${C.accent}, #7c3aed)`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: bundleLoading ? "not-allowed" : "pointer", marginBottom: bundleBrief ? 10 : 0 }}>
+                    {bundleLoading ? "⏳ Generating Bundle Brief..." : "✨ Generate Unified Bundle Brief"}
+                  </button>
+                  {bundleBrief && (
+                    <div style={{ marginTop: 8 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                        <div style={{ fontSize: 10, color: C.accent2, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Bundle Brief</div>
+                        <CopyBtn text={bundleBrief} id="bundle-brief" />
+                      </div>
+                      <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7, whiteSpace: "pre-wrap", background: C.bg3, borderRadius: 8, padding: 10 }}>{bundleBrief}</div>
+                    </div>
+                  )}
+                  {/* Launch bundle button */}
+                  <button onClick={handleLaunchCtvAd}
+                    style={{ width: "100%", marginTop: 10, padding: "10px", borderRadius: 8, border: `1px solid ${C.green}`, background: `${C.green}18`, color: C.green, fontSize: 12, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                    🚀 Launch Bundle on {bundleIds.size} Platform{bundleIds.size !== 1 ? "s" : ""}
+                  </button>
+                </div>
+              )}
 
               {/* Selected network brief */}
               <div style={{ background: C.card, border: `1px solid ${selectedNetwork.color}40`, borderRadius: 10, padding: 14, marginBottom: 12 }}>
@@ -1180,10 +1404,12 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                   style={{ flex: 1, padding: "10px", borderRadius: 8, border: "none", background: aiLoading ? C.bg3 : `linear-gradient(135deg, ${C.accent}, #7c3aed)`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
                   {aiLoading ? "⏳ Generating..." : "✨ Generate AI Ad Copy for " + firstName}
                 </button>
-                <a href="https://ads.google.com/home/" target="_blank" rel="noopener noreferrer"
-                  style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${C.green}`, background: `${C.green}18`, color: C.green, fontSize: 11, fontWeight: 700, textDecoration: "none", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
-                  🚀 Launch Ad
-                </a>
+                {bundleIds.size === 0 && (
+                  <button onClick={handleLaunchCtvAd}
+                    style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${C.green}`, background: `${C.green}18`, color: C.green, fontSize: 11, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
+                    🚀 Launch on {selectedNetwork.label}
+                  </button>
+                )}
               </div>
 
               {aiCopy && (
@@ -1440,11 +1666,87 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
           )}
         </div>
       </div>
+
+      {/* ── Launch Modal ── */}
+      {launchModal.open && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div onClick={() => !launchModal.loading && setLaunchModal(prev => ({ ...prev, open: false }))} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.8)" }} />
+          <div style={{ position: "relative", width: "min(480px, 100%)", background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24, animation: "slideInRight 0.2s cubic-bezier(0.23,1,0.32,1)" }}>
+            {launchModal.loading ? (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>⏳</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: C.white, marginBottom: 6 }}>Submitting to {launchModal.type === "meta" ? "Meta Ads Manager" : "CTV DSP"}...</div>
+                <div style={{ fontSize: 12, color: C.muted }}>Building campaign draft with your targeting parameters</div>
+              </div>
+            ) : launchModal.result ? (
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                  <div style={{ fontSize: 28 }}>{launchModal.result.success ? "✅" : "❌"}</div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: launchModal.result.success ? C.green : C.red }}>
+                      {launchModal.result.success ? (launchModal.result.draft ? "Campaign Draft Created" : "Campaign Launched") : "Launch Failed"}
+                    </div>
+                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>
+                      {launchModal.type === "meta" ? "Meta Ads Manager" : "CTV DSP / Trade Desk"}
+                    </div>
+                  </div>
+                </div>
+                {launchModal.result.message && (
+                  <div style={{ fontSize: 13, color: C.muted, marginBottom: 14, lineHeight: 1.6, background: C.bg3, borderRadius: 8, padding: 12 }}>
+                    {launchModal.result.message}
+                  </div>
+                )}
+                {launchModal.result.campaignName && (
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Campaign Name</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.white }}>{launchModal.result.campaignName}</div>
+                    {launchModal.result.campaignId && <div style={{ fontSize: 11, color: C.muted }}>ID: {launchModal.result.campaignId}</div>}
+                  </div>
+                )}
+                {launchModal.result.orderName && (
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Order Name</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.white }}>{launchModal.result.orderName}</div>
+                    {launchModal.result.orderId && <div style={{ fontSize: 11, color: C.muted }}>ID: {launchModal.result.orderId}</div>}
+                  </div>
+                )}
+                {launchModal.result.targeting && (
+                  <div style={{ marginBottom: 14 }}>
+                    <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Targeting Parameters</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      {Object.entries(launchModal.result.targeting).map(([k, v]) => (
+                        <div key={k} style={{ display: "flex", justifyContent: "space-between", fontSize: 12, background: C.bg3, borderRadius: 6, padding: "5px 10px" }}>
+                          <span style={{ color: C.muted, textTransform: "capitalize" }}>{k.replace(/_/g, " ")}</span>
+                          <span style={{ color: C.white, fontWeight: 600 }}>{v}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {launchModal.result.instructions && launchModal.result.instructions.length > 0 && (
+                  <div style={{ marginBottom: 14 }}>
+                    <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Next Steps</div>
+                    <ol style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
+                      {launchModal.result.instructions.map((step, i) => (
+                        <li key={i} style={{ fontSize: 12, color: C.muted, lineHeight: 1.5 }}>{step}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+                <button onClick={() => setLaunchModal(prev => ({ ...prev, open: false }))}
+                  style={{ width: "100%", padding: "10px", borderRadius: 8, border: "none", background: launchModal.result.success ? C.green : C.bg3, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", marginTop: 4 }}>
+                  {launchModal.result.success ? "Done" : "Close"}
+                </button>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// ── Known Contacts Table ─────────────────────────────────────────────────────
+// ── Known Contacts Table ──────────────────────────────────────────────────────────────
 const ALL_COUNTIES_FILTER = "All Counties";
 const COUNTY_OPTIONS = [ALL_COUNTIES_FILTER, "Williamson", "Shelby", "Montgomery", "Maury", "Henry", "Tipton", "Weakley", "Dyer", "Hickman", "Lake", "Obion", "Stewart", "Benton", "Houston", "Lewis", "Lauderdale", "Humphreys"];
 

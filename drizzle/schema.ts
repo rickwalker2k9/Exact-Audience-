@@ -26,3 +26,23 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
 // TODO: Add your tables here
+
+// Persists the last CTV filter state per voter contact so the panel remembers
+// which networks were targeted when the user re-opens the drawer.
+export const voterCtvPrefs = mysqlTable("voter_ctv_prefs", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Stable voter identifier — first+last+county slug e.g. "john-doe-henry" */
+  voterKey: varchar("voterKey", { length: 128 }).notNull().unique(),
+  /** Comma-separated list of selected network IDs in the bundle */
+  bundleNetworkIds: text("bundleNetworkIds"),
+  /** The single "primary" selected platform */
+  primaryPlatform: varchar("primaryPlatform", { length: 64 }),
+  /** Active filter dimensions (JSON-serialised) */
+  filtersJson: text("filtersJson"),
+  /** Last preset applied */
+  lastPreset: varchar("lastPreset", { length: 64 }),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type VoterCtvPrefs = typeof voterCtvPrefs.$inferSelect;
+export type InsertVoterCtvPrefs = typeof voterCtvPrefs.$inferInsert;
