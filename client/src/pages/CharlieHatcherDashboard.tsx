@@ -102,10 +102,7 @@ type C = ReturnType<typeof useColors>;
 const RACE = {
   title: "TN-CD5 Republican Primary 2026",
   date: "August 7, 2026",
-  daysOut: (() => {
-    const diff = new Date("2026-08-07").getTime() - Date.now();
-    return Math.max(0, Math.ceil(diff / 86400000));
-  })(),
+  get daysOut() { return Math.max(0, Math.ceil((new Date("2026-08-07T06:00:00").getTime() - Date.now()) / 86400000)); },
   summary: "A redrawn district that removed Ogles' home counties and added 14 rural counties where Charlie Hatcher spent 7 years as Agriculture Commissioner. 83% of voters are casting ballots in a congressional race they have never voted in before.",
   marketOdds: 20,
   newCounties: 14,
@@ -451,7 +448,7 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         <KpiCard label="New-District Voters" value="83%" sub="Never voted in this race before" color={C.gold} C={C} />
         <KpiCard label="New Counties Added" value="14" sub="Hatcher's home turf from Ag Comm." color={C.accent2} C={C} />
         <KpiCard label="Persuadable Voters" value="47,300" sub="Across all 14 new counties" color={C.accent} C={C} />
-        <KpiCard label="Days to August 6" value={RACE.daysOut.toString()} sub="Early voting open now" color={C.accent2} C={C} />
+        <KpiCard label="Days to Primary" value={RACE.daysOut.toString()} sub="August 7 · Early voting open now" color={C.accent2} C={C} />
       </div>
 
       {/* Polling */}
@@ -1967,7 +1964,7 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
           <KpiCard label="New Voters in District" value="83%" sub="Never voted in this congressional race" color={C.gold} C={C} />
           <KpiCard label="Persuadable Universe" value="47,300" sub="Across all 14 new counties" color={C.accent} C={C} />
           <KpiCard label="Ogles Ethics Status" value="Active" sub="House Ethics Committee — 6-0 vote" color={C.red} C={C} />
-          <KpiCard label="Days to August 6" value={RACE.daysOut.toString()} sub="Early voting open now through Aug 1" color={C.accent2} C={C} />
+          <KpiCard label="Days to Primary" value={RACE.daysOut.toString()} sub="August 7 · Early voting open now" color={C.accent2} C={C} />
         </div>
       </div>
 
@@ -2028,7 +2025,7 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ background: "#1a1000", border: "1px solid #78350f40", borderRadius: 10, padding: "14px 16px" }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: "#fcd34d", marginBottom: 6 }}>The window is real — and it is closing</div>
           <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.7 }}>
-            August 6 is 14 days away. Early voting is open now. CTV and digital campaigns need 2–3 days to launch and optimize. Every day of delay is not a neutral decision — it is a smaller window for the media to do its work. The voters who are easiest to move are the ones who decide early. Waiting costs frequency. Frequency is what moves persuadable voters.
+            August 7 is {RACE.daysOut} days away. Early voting is open now. CTV and digital campaigns need 2–3 days to launch and optimize. Every day of delay is not a neutral decision — it is a smaller window for the media to do its work. The voters who are easiest to move are the ones who decide early. Waiting costs frequency. Frequency is what moves persuadable voters.
           </div>
         </div>
       </div>
@@ -2245,7 +2242,7 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ background: `${C.green}10`, border: `1px solid ${C.green}30`, borderRadius: 10, padding: 14, marginTop: 16 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 6 }}>Why This Works for Hatcher Specifically</div>
           <div style={{ fontSize: 12, color: "#cbd5e1", lineHeight: 1.7 }}>
-            Charlie Hatcher's entire brand is authenticity — "less talk, more work," a 200-year family farm, a daughter who runs the vet clinic, a son who runs the dairy. His voters are not persuaded by polished political ads. They are persuaded by their neighbors. The comment on his most-liked Facebook post says it all: <em>"Charlie does what he says he will do, and is honest — two sentences we all too rarely associate with anyone in the political arena. We do associate these terms with farmers."</em> UGC videos are not a supplement to the paid media plan. At this stage of the race, with 14 days left, they are the most credible persuasion tool available.
+            Charlie Hatcher's entire brand is authenticity — "less talk, more work," a 200-year family farm, a daughter who runs the vet clinic, a son who runs the dairy. His voters are not persuaded by polished political ads. They are persuaded by their neighbors. The comment on his most-liked Facebook post says it all: <em>"Charlie does what he says he will do, and is honest — two sentences we all too rarely associate with anyone in the political arena. We do associate these terms with farmers."</em> UGC videos are not a supplement to the paid media plan. At this stage of the race, with {RACE.daysOut} days left, they are the most credible persuasion tool available.
           </div>
         </div>
       </div>
