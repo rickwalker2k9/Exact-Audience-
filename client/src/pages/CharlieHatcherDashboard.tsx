@@ -5,7 +5,7 @@
  * Tabs: Race Overview | Persuadable Voters | Spend Plan | Voter Profiles | Path to Win
  */
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { KNOWN_CONTACTS } from "./cd5Contacts";
+import { KNOWN_CONTACTS, type KnownContact } from "./cd5Contacts";
 import { Link } from "wouter";
 import { useTheme } from "../contexts/ThemeContext";
 import {
@@ -645,6 +645,211 @@ function TabVoters({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
+// ── Contact Ad Action Panel ─────────────────────────────────────────────────
+type AdChannel = "ctv" | "social" | "email" | "sms";
+type SocialPlatform = "facebook" | "instagram" | "tiktok" | "youtube";
+type CtvPlatform = "hulu" | "peacock" | "paramount" | "youtube_tv" | "local_news";
+
+function buildMessages(contact: KnownContact) {
+  const firstName = contact.n.split(" ")[0];
+  const isParent = contact.ch === "Y";
+  const isFarmer = ["Henry", "Weakley", "Obion", "Dyer", "Lauderdale", "Benton", "Humphreys", "Houston", "Stewart", "Lake"].includes(contact.co);
+  const isVet = contact.g === "M" && (contact.a === "55-64" || contact.a === "65 and older");
+
+  const hook = isFarmer
+    ? "Charlie Hatcher has been in your county's barns. He knows what diesel costs, what fertilizer costs, and what it means to protect the land your family farms."
+    : isParent
+    ? "Charlie Hatcher passed the Farmland Preservation Act to protect Tennessee land for the next generation — including yours."
+    : isVet
+    ? "Charlie Hatcher believes in less talk and more work. 7 years as Ag Commissioner. 8 businesses built. A record that speaks for itself."
+    : "Charlie Hatcher is a 10th-generation Tennessee farmer, veterinarian, and 7-year Agriculture Commissioner. He showed up before he needed your vote.";
+
+  return {
+    email: {
+      subject: `${firstName}, a Tennessee farmer needs your vote on August 6`,
+      body: `Hi ${firstName},\n\nMy name is Charlie Hatcher. I'm a veterinarian, a dairy farmer, and for the past seven years I've served as Tennessee's Agriculture Commissioner — traveling every county in this state, including yours.\n\n${hook}\n\nOn August 6, I'm asking for your vote in the Republican primary for Tennessee's 5th Congressional District. This district was redrawn to include the rural counties I've spent my career serving. I know these roads. I know these farms. I know what Washington is getting wrong.\n\nYou want something hard done right? Hire a farmer.\n\nEarly voting is open now through August 1.\n\nWith gratitude,\nCharlie Hatcher\nCharlie Hatcher for Congress\nhttps://charliehatcher.com`,
+    },
+    sms: `Hi ${firstName} — Charlie Hatcher here, TN farmer & Ag Commissioner running for Congress in CD-5. Early voting is open NOW through Aug 1. I've spent 7 years in your county fighting for farmers & families. Vote Charlie Hatcher Aug 6. Learn more: charliehatcher.com Reply STOP to opt out.`,
+    social: {
+      facebook: `${firstName} lives in ${contact.c}, ${contact.co} County — a persuadable Republican primary voter. Target with: "Hire a Farmer" 15-second video ad. Audience: Republican primary voters, ${contact.co} County, age ${contact.a || "25-65+"}. Budget: $8–12 CPM. ${hook}`,
+      instagram: `Reel ad — 15 sec. Open on Hatcher walking a field at sunrise. VO: "Ten generations. One mission. Less talk. More work." End card: Vote Charlie Hatcher · August 6. Target: ${contact.co} County, ${contact.a || "25-54"}, interests: farming, rural life, conservative values.`,
+      tiktok: `UGC-style 30-sec video. Farmer or rural mom to camera: "I'm voting for Charlie Hatcher because he's been in my barn. He knows what it costs to run a farm. He's not a politician — he's one of us." Hashtags: #HireAFarmer #TN5 #CharlieHatcher #Tennessee. Target: ${contact.co} County zip codes.`,
+      youtube: `Pre-roll 15-sec non-skippable. Open: aerial shot of Tennessee farmland. VO: "Charlie Hatcher. Veterinarian. Farmer. 7-year Ag Commissioner. The new 5th District needs someone who's already been here." CTA: Vote August 6. Target: ${contact.co} County, YouTube TV + connected devices, political content viewers.`,
+    },
+    ctv: {
+      hulu: `30-sec spot on Hulu. ZIP code targeting: ${contact.c}, ${contact.co} County. Ad unit: mid-roll, non-skippable. Creative: "Farm Strong" 30-sec (CH26-106W). Frequency cap: 4x/week. Estimated CPM: $22–28. Message: Hatcher's Ag Commissioner record + "Hire a Farmer" close.`,
+      peacock: `30-sec spot on Peacock. County-level targeting: ${contact.co} County. Ad unit: pre-roll on local news and sports content. Creative: "Farm Strong" 30-sec. Frequency cap: 3x/week. Estimated CPM: $18–24. Best for: news-watching voters 45+.`,
+      paramount: `30-sec spot on Paramount+. ZIP targeting: ${contact.c} area. Ad unit: mid-roll. Creative: "Farm Strong" 30-sec. Frequency cap: 3x/week. CPM: $20–26. Audience: rural households, conservative content viewers.`,
+      youtube_tv: `15-sec pre-roll on YouTube TV. County targeting: ${contact.co}. Non-skippable. Creative: "Farm Strong" 15-sec (CH26-107W). Frequency: 5x/week. CPM: $15–20. High-recall format — best for name ID in new counties.`,
+      local_news: `30-sec spot on local news streaming (NewsON, local ABC/NBC/CBS affiliates). ${contact.co} County DMA. Creative: "Farm Strong" 30-sec. Frequency: 3x/week. CPM: $12–18. Highest trust format — local news viewers are high-propensity primary voters.`,
+    },
+  };
+}
+
+function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose: () => void; C: C }) {
+  const [channel, setChannel] = useState<AdChannel>("ctv");
+  const [ctvPlatform, setCtvPlatform] = useState<CtvPlatform>("hulu");
+  const [socialPlatform, setSocialPlatform] = useState<SocialPlatform>("facebook");
+  const [copied, setCopied] = useState("");
+  const msgs = buildMessages(contact);
+
+  const copyText = (text: string, key: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(key);
+      setTimeout(() => setCopied(""), 2000);
+    });
+  };
+
+  const CopyBtn = ({ text, id }: { text: string; id: string }) => (
+    <button onClick={() => copyText(text, id)}
+      style={{ padding: "4px 10px", borderRadius: 6, border: `1px solid ${C.border}`, background: copied === id ? C.green : C.bg3, color: copied === id ? "#fff" : C.muted, fontSize: 11, cursor: "pointer", transition: "all 0.2s", flexShrink: 0 }}>
+      {copied === id ? "✓ Copied" : "Copy"}
+    </button>
+  );
+
+  const channelBtns: { id: AdChannel; label: string; icon: string }[] = [
+    { id: "ctv", label: "Connected TV", icon: "📺" },
+    { id: "social", label: "Social Media", icon: "📱" },
+    { id: "email", label: "Email", icon: "✉️" },
+    { id: "sms", label: "SMS", icon: "💬" },
+  ];
+
+  const ctvPlatforms: { id: CtvPlatform; label: string }[] = [
+    { id: "hulu", label: "Hulu" },
+    { id: "peacock", label: "Peacock" },
+    { id: "paramount", label: "Paramount+" },
+    { id: "youtube_tv", label: "YouTube TV" },
+    { id: "local_news", label: "Local News" },
+  ];
+
+  const socialPlatforms: { id: SocialPlatform; label: string; icon: string }[] = [
+    { id: "facebook", label: "Facebook", icon: "f" },
+    { id: "instagram", label: "Instagram", icon: "IG" },
+    { id: "tiktok", label: "TikTok", icon: "TT" },
+    { id: "youtube", label: "YouTube", icon: "▶" },
+  ];
+
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
+      {/* Backdrop */}
+      <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)" }} />
+      {/* Panel */}
+      <div style={{ position: "relative", width: "min(520px, 100vw)", height: "100vh", background: C.bg, borderLeft: `1px solid ${C.border}`, display: "flex", flexDirection: "column", overflowY: "auto", animation: "slideInRight 0.25s cubic-bezier(0.23,1,0.32,1)" }}>
+        {/* Header */}
+        <div style={{ padding: "20px 20px 16px", borderBottom: `1px solid ${C.border}`, background: C.card, flexShrink: 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 4 }}>Run an Ad To</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: C.white }}>{contact.n}</div>
+              <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{contact.c}, {contact.co} County · {contact.a || "Age unknown"} · {contact.g === "M" ? "Male" : contact.g === "F" ? "Female" : "Unknown gender"}</div>
+            </div>
+            <button onClick={onClose} style={{ background: "transparent", border: `1px solid ${C.border}`, color: C.muted, borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 14 }}>✕</button>
+          </div>
+        </div>
+
+        {/* Channel selector */}
+        <div style={{ padding: "16px 20px 0", flexShrink: 0 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+            {channelBtns.map(btn => (
+              <button key={btn.id} onClick={() => setChannel(btn.id)}
+                style={{ padding: "10px 4px", borderRadius: 10, border: `2px solid ${channel === btn.id ? C.accent : C.border}`, background: channel === btn.id ? `${C.accent}18` : C.card, color: channel === btn.id ? C.accent : C.muted, cursor: "pointer", fontSize: 11, fontWeight: 700, textAlign: "center", transition: "all 0.15s" }}>
+                <div style={{ fontSize: 18, marginBottom: 4 }}>{btn.icon}</div>
+                {btn.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content area */}
+        <div style={{ padding: "16px 20px 24px", flex: 1 }}>
+
+          {/* CTV */}
+          {channel === "ctv" && (
+            <div>
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Select a streaming platform. Each brief is pre-written for {contact.co} County ZIP/county targeting with the correct creative recommendation.</div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+                {ctvPlatforms.map(p => (
+                  <button key={p.id} onClick={() => setCtvPlatform(p.id)}
+                    style={{ padding: "6px 12px", borderRadius: 20, border: `1px solid ${ctvPlatform === p.id ? C.accent : C.border}`, background: ctvPlatform === p.id ? C.accent : "transparent", color: ctvPlatform === p.id ? "#fff" : C.muted, cursor: "pointer", fontSize: 12, fontWeight: 600, transition: "all 0.15s" }}>
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{ctvPlatforms.find(p => p.id === ctvPlatform)?.label} — Ad Brief</div>
+                  <CopyBtn text={msgs.ctv[ctvPlatform]} id={`ctv-${ctvPlatform}`} />
+                </div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{msgs.ctv[ctvPlatform]}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Social */}
+          {channel === "social" && (
+            <div>
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Select a platform. Each brief is tailored to {contact.n}'s demographic profile and {contact.co} County targeting.</div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+                {socialPlatforms.map(p => (
+                  <button key={p.id} onClick={() => setSocialPlatform(p.id)}
+                    style={{ padding: "6px 14px", borderRadius: 20, border: `1px solid ${socialPlatform === p.id ? C.accent : C.border}`, background: socialPlatform === p.id ? C.accent : "transparent", color: socialPlatform === p.id ? "#fff" : C.muted, cursor: "pointer", fontSize: 12, fontWeight: 700, transition: "all 0.15s" }}>
+                    {p.icon} {p.label}
+                  </button>
+                ))}
+              </div>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{socialPlatforms.find(p => p.id === socialPlatform)?.label} — Ad Brief</div>
+                  <CopyBtn text={msgs.social[socialPlatform]} id={`social-${socialPlatform}`} />
+                </div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7 }}>{msgs.social[socialPlatform]}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Email */}
+          {channel === "email" && (
+            <div>
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Personalized email draft for {contact.n} in {contact.c}. Copy and send from your campaign email platform.</div>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14, marginBottom: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <div style={{ fontSize: 11, color: C.accent2, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Subject Line</div>
+                  <CopyBtn text={msgs.email.subject} id="email-subject" />
+                </div>
+                <div style={{ fontSize: 13, color: C.white, fontWeight: 600 }}>{msgs.email.subject}</div>
+              </div>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div style={{ fontSize: 11, color: C.accent2, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Email Body</div>
+                  <CopyBtn text={msgs.email.body} id="email-body" />
+                </div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{msgs.email.body}</div>
+              </div>
+            </div>
+          )}
+
+          {/* SMS */}
+          {channel === "sms" && (
+            <div>
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Personalized SMS for {contact.n}. 160-character limit respected. Copy and send via your SMS platform.</div>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>Text Message</div>
+                  <CopyBtn text={msgs.sms} id="sms" />
+                </div>
+                <div style={{ background: "#1a2a1a", border: "1px solid #22c55e30", borderRadius: 12, padding: 14, marginBottom: 8 }}>
+                  <div style={{ fontSize: 13, color: "#d1fae5", lineHeight: 1.7 }}>{msgs.sms}</div>
+                </div>
+                <div style={{ fontSize: 11, color: C.muted }}>{msgs.sms.length} characters · Estimated {Math.ceil(msgs.sms.length / 160)} SMS segment(s)</div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Known Contacts Table ─────────────────────────────────────────────────────
 const ALL_COUNTIES_FILTER = "All Counties";
 const COUNTY_OPTIONS = [ALL_COUNTIES_FILTER, "Williamson", "Shelby", "Montgomery", "Maury", "Henry", "Tipton", "Weakley", "Dyer", "Hickman", "Lake", "Obion", "Stewart", "Benton", "Houston", "Lewis", "Lauderdale", "Humphreys"];
@@ -653,6 +858,7 @@ function KnownContactsTable({ mobile, C }: { mobile: boolean; C: C }) {
   const [search, setSearch] = useState("");
   const [countyFilter, setCountyFilter] = useState(ALL_COUNTIES_FILTER);
   const [page, setPage] = useState(0);
+  const [selectedContact, setSelectedContact] = useState<KnownContact | null>(null);
   const PAGE_SIZE = 25;
 
   const filtered = useMemo(() => {
@@ -719,8 +925,8 @@ function KnownContactsTable({ mobile, C }: { mobile: boolean; C: C }) {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-              {["Name", "City", "County", "Age", "Gender", "Married", "Children"].map(h => (
-                <th key={h} style={{ textAlign: "left", padding: "8px 10px", color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", fontSize: 10, whiteSpace: "nowrap" }}>{h}</th>
+              {["Name", "City", "County", "Age", "Gender", "Married", "Children", ""].map((h, idx) => (
+                <th key={idx} style={{ textAlign: h === "" ? "center" : "left", padding: "8px 10px", color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", fontSize: 10, whiteSpace: "nowrap" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -736,11 +942,24 @@ function KnownContactsTable({ mobile, C }: { mobile: boolean; C: C }) {
                 <td style={{ padding: "9px 10px", color: c.g === "F" ? "#f472b6" : c.g === "M" ? "#60a5fa" : C.muted }}>{c.g || "—"}</td>
                 <td style={{ padding: "9px 10px", color: C.muted }}>{c.m === "Y" ? "Yes" : c.m === "N" ? "No" : "—"}</td>
                 <td style={{ padding: "9px 10px", color: C.muted }}>{c.ch === "Y" ? "Yes" : c.ch === "N" ? "No" : "—"}</td>
+                <td style={{ padding: "9px 6px", textAlign: "center" }}>
+                  <button onClick={() => setSelectedContact(c)}
+                    style={{ padding: "5px 10px", borderRadius: 6, border: `1px solid ${C.accent}`, background: `${C.accent}18`, color: C.accent2, fontSize: 11, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = C.accent; (e.currentTarget as HTMLButtonElement).style.color = "#fff"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = `${C.accent}18`; (e.currentTarget as HTMLButtonElement).style.color = C.accent2; }}>
+                    Run an Ad
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Ad Action Panel slide-out */}
+      {selectedContact && (
+        <AdActionPanel contact={selectedContact} onClose={() => setSelectedContact(null)} C={C} />
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (
