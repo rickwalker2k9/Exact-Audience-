@@ -555,7 +555,7 @@ function TabVoters({ mobile, C }: { mobile: boolean; C: C }) {
           <KpiCard label="Total Persuadable" value={TOTAL_PERSUADABLE.toLocaleString()} sub="Across 14 new counties" color={C.accent} C={C} />
           <KpiCard label="High-Intent Targets" value="18,400" sub="Intent score 80+" color={C.green} C={C} />
           <KpiCard label="Ag-Adjacent Voters" value="14,200" sub="Hatcher has direct relationships" color={C.gold} C={C} />
-          <KpiCard label="Reachable in 21 Days" value="41,800" sub="Via CTV + digital + programmatic" color={C.accent2} C={C} />
+          <KpiCard label={`Reachable in ${RACE.daysOut} Days`} value="41,800" sub="Via CTV + digital + programmatic" color={C.accent2} C={C} />
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
           <ResponsiveContainer width="100%" height={220}>
