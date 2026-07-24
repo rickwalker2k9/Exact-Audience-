@@ -106,9 +106,6 @@ const RACE = {
     return Math.max(0, Math.ceil(diff / 86400000));
   })(),
   summary: "A redrawn district that removed Ogles' home counties and added 14 rural counties where Charlie Hatcher spent 7 years as Agriculture Commissioner. 83% of voters are casting ballots in a congressional race they have never voted in before.",
-  hatcherCash: 214000,
-  oglesCash: 15000,  // net of debt
-  oglesDebt: 70300,
   marketOdds: 20,
   newCounties: 14,
   newVoterPct: 83,
@@ -187,7 +184,7 @@ const SPEND_TIERS = [
     total: 56109,
     recommended: true,
     remaining: 157891,
-    narrative: "$56,109 is the number that moves the moveable. It is not the number that wins on autopilot — it is the number that wins if the campaign executes. Every persuadable Republican primary voter in the 14 new counties will be reached 8–14 times across CTV, digital, and programmatic. Ogles has $15,000 net of debt. He cannot respond. What this budget does not do is saturate soft Trump voters at the frequency needed to fully flip them — that gap gets closed by a competent ground game in Tipton, Montgomery, and Shelby counties. If the campaign can knock 3,000 doors in those three counties, this budget wins.",
+    narrative: "$56,109 is the number that moves the moveable. It is not the number that wins on autopilot — it is the number that wins if the campaign executes. Every persuadable Republican primary voter in the 14 new counties will be reached 8–14 times across CTV, digital, and programmatic. What this budget does not do is saturate soft Trump voters at the frequency needed to fully flip them — that gap gets closed by a competent ground game in Tipton, Montgomery, and Shelby counties. If the campaign can knock 3,000 doors in those three counties, this budget wins.",
     groundGame: "Active and essential in the three toss-up counties. Door-knocking in Tipton (Covington), Montgomery (Clarksville area), and Shelby (Millington/Bartlett area) closes the gap that the ad budget leaves open.",
     organicSocial: "Weekly posts reinforcing ad themes. Facebook community groups in each county. Hatcher should be posting 3x per week minimum — event photos, endorsements, ag commissioner throwbacks.",
     channels: [
@@ -450,13 +447,13 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
 
       {/* KPI Row */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
-        <KpiCard label="Hatcher Cash on Hand" value="$214K" sub="Zero debt — fully deployable" color={C.green} C={C} />
-        <KpiCard label="Ogles Net Cash" value="$15K" sub="$85K cash − $70.3K debt" color={C.red} C={C} />
         <KpiCard label="New-District Voters" value="83%" sub="Never voted in this race before" color={C.gold} C={C} />
         <KpiCard label="New Counties Added" value="14" sub="Hatcher's home turf from Ag Comm." color={C.accent2} C={C} />
+        <KpiCard label="Persuadable Voters" value="47,300" sub="Across all 14 new counties" color={C.accent} C={C} />
+        <KpiCard label="Days to August 6" value={RACE.daysOut.toString()} sub="Early voting open now" color={C.accent2} C={C} />
       </div>
 
-      {/* Polling + Cash Advantage */}
+      {/* Polling */}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
           <SectionLabel C={C}>Current Polling</SectionLabel>
@@ -486,24 +483,24 @@ function TabOverview({ mobile, C }: { mobile: boolean; C: C }) {
         </div>
 
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
-          <SectionLabel C={C}>Cash Advantage — The Real Story</SectionLabel>
+          <SectionLabel C={C}>Structural Advantage</SectionLabel>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ background: `${C.green}15`, border: `1px solid ${C.green}40`, borderRadius: 10, padding: 16 }}>
-              <div style={{ fontSize: 11, color: C.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Charlie Hatcher</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: C.white }}>$214,000</div>
-              <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Cash on hand · Zero debt · Fully deployable</div>
-              <div style={{ marginTop: 10, background: C.green, height: 8, borderRadius: 4, width: "100%" }} />
-            </div>
-            <div style={{ background: `${C.red}15`, border: `1px solid ${C.red}40`, borderRadius: 10, padding: 16 }}>
-              <div style={{ fontSize: 11, color: C.red, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Andy Ogles</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: C.white }}>$15,000</div>
-              <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Net available ($85K cash − $70.3K debt)</div>
-              <div style={{ marginTop: 10, background: C.red, height: 8, borderRadius: 4, width: "7%" }} />
+            <div style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 12, color: C.gold, fontWeight: 700, marginBottom: 6 }}>⚡ Why This Race Is Winnable</div>
+              <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+                Redistricting removed Ogles' home counties and added 14 rural counties where Hatcher spent 7 years as Agriculture Commissioner. 83% of voters are casting ballots in a congressional race they have never voted in before. Ogles has no infrastructure in these counties. Hatcher does.
+              </div>
             </div>
             <div style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
-              <div style={{ fontSize: 12, color: C.gold, fontWeight: 700, marginBottom: 6 }}>⚡ Why This Matters</div>
+              <div style={{ fontSize: 12, color: C.accent, fontWeight: 700, marginBottom: 6 }}>📋 The Ethics Investigation</div>
               <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
-                Early voting has started. The campaign that can afford digital ads and field operations in the final 3 weeks has a structural advantage. Hatcher has that money. Ogles does not — unless the Freedom Caucus Fund spends outside money.
+                The House Ethics Committee voted 6-0 to investigate Ogles over a reported $320,000 campaign loan that his own treasurer said was fabricated. The investigation is ongoing. Voters in the new counties have not heard this story.
+              </div>
+            </div>
+            <div style={{ background: C.bg3, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 12, color: C.green, fontWeight: 700, marginBottom: 6 }}>🌾 The Hatcher Advantage</div>
+              <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+                Early voting is open now. The campaign with the stronger ground game and paid media presence in the 14 new counties has a structural advantage in a low-turnout primary where name recognition moves votes.
               </div>
             </div>
           </div>
@@ -849,13 +846,13 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 6 }}>Exact Audience · Three Investment Levels · August 6 Primary</div>
         <div style={{ fontSize: mobile ? 18 : 24, fontWeight: 900, color: C.white, marginBottom: 8 }}>"You want something hard done right? Hire a farmer."</div>
         <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.6, maxWidth: 640 }}>
-          Charlie Hatcher is a 10th-generation farmer, veterinarian, and 7-year Ag Commissioner running against an incumbent with $15,000 cash on hand and an open federal investigation. The structural advantage is real. But this district is 400 miles wide, heavily rural, and 83% of its voters have never cast a ballot in this congressional race. Paid media helps — a lot. It is not a silver bullet. Below are three honest investment scenarios, each with the conditions that have to hold for them to work.
+          Charlie Hatcher is a 10th-generation farmer, veterinarian, and 7-year Ag Commissioner running against an incumbent under active federal ethics investigation. The structural advantage is real. But this district is 400 miles wide, heavily rural, and 83% of its voters have never cast a ballot in this congressional race. Paid media helps — a lot. It is not a silver bullet. Below are three honest investment scenarios, each with the conditions that have to hold for them to work.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 10, marginTop: 16 }}>
-          <KpiCard label="Ogles Net Cash" value="$15,000" sub="After $70K in debt — cannot respond" color={C.red} C={C} />
-          <KpiCard label="Hatcher Cash on Hand" value="$214K" sub="Largest war chest in the race" color={C.green} C={C} />
           <KpiCard label="New Voters in District" value="83%" sub="Never voted in this congressional race" color={C.gold} C={C} />
-          <KpiCard label="Days to August 6" value="14" sub="Early voting open now through Aug 1" color={C.accent2} C={C} />
+          <KpiCard label="Persuadable Universe" value="47,300" sub="Across all 14 new counties" color={C.accent} C={C} />
+          <KpiCard label="Ogles Ethics Status" value="Active" sub="House Ethics Committee — 6-0 vote" color={C.red} C={C} />
+          <KpiCard label="Days to August 6" value={RACE.daysOut.toString()} sub="Early voting open now through Aug 1" color={C.accent2} C={C} />
         </div>
       </div>
 
@@ -891,8 +888,8 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
         <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase" as const, letterSpacing: "0.08em", marginBottom: 8 }}>Five things that are true regardless of which level you choose</div>
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 6, marginBottom: 12 }}>
           {[
-            { icon: "✓", color: "#22c55e", text: "Hatcher has the largest war chest in the race. The money to do this is already there." },
-            { icon: "✓", color: "#22c55e", text: "Ogles cannot respond. $15,000 net of debt does not buy a counter-campaign in 14 counties." },
+            { icon: "✓", color: "#22c55e", text: "Hatcher has the structural advantage in the 14 new counties — 7 years of Ag Commissioner relationships that Ogles simply does not have." },
+            { icon: "✓", color: "#22c55e", text: "Ogles is under active ethics investigation. The House Ethics Committee voted 6-0 to investigate. Voters in the new counties have not heard this story yet." },
             { icon: "✓", color: "#22c55e", text: "Early voting is open now. Every day without paid media is a day persuadable voters are making up their minds without hearing from Hatcher." },
             { icon: "△", color: "#f59e0b", text: "This district is rural. Paid media reaches fewer people per dollar here than in a suburban district. That is the honest reality — and it is why ground game and candidate travel matter at every spend level." },
             { icon: "△", color: "#f59e0b", text: "No paid media plan guarantees an outcome. What it does is give the campaign its best possible position to win. The rest is execution." },
@@ -906,9 +903,9 @@ function TabSpend({ mobile, C }: { mobile: boolean; C: C }) {
 
         {/* The loss-aversion anchor */}
         <div style={{ background: "#0c1a0c", border: "1px solid #14532d40", borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#86efac", marginBottom: 6 }}>What $214K in the bank means in this context</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#86efac", marginBottom: 6 }}>The cost of doing nothing</div>
           <div style={{ fontSize: 11, color: "#cbd5e1", lineHeight: 1.7 }}>
-            Hatcher raised $214,000. That money exists to win this race. Leaving it unspent in the final two weeks of a primary — while 14 new counties decide whether they know his name — is not fiscal discipline. It is the most expensive possible outcome: losing a winnable race with money still in the account. A $56,109 spend leaves $157,891 in reserve. That is not a risk. That is a campaign protecting its lead.
+            In a low-turnout primary, the campaign that runs paid media in the final two weeks has a decisive advantage. The 14 new counties are deciding whether they know Charlie Hatcher's name right now — during early voting. Every day without paid media is a day those voters are making up their minds without hearing from him. The structural advantages are real. Paid media is what activates them.
           </div>
         </div>
 
