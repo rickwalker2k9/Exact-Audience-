@@ -24,8 +24,8 @@ import MogulDashboard from "./pages/MogulDashboard";
 import LitehouseHealthDashboard from "./pages/LitehouseHealthDashboard";
 import ProdromeDashboard from "./pages/ProdromeDashboard";
 import CharlieHatcherDashboard from "./pages/CharlieHatcherDashboard";
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       {/* Campaign directory — post-login home */}

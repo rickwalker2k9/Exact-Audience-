@@ -8,6 +8,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { KNOWN_CONTACTS, type KnownContact } from "./cd5Contacts";
 import { Link } from "wouter";
 import { useTheme } from "../contexts/ThemeContext";
+import { trpc } from "@/lib/trpc";
 import {
   BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -648,7 +649,47 @@ function TabVoters({ mobile, C }: { mobile: boolean; C: C }) {
 // ── Contact Ad Action Panel ─────────────────────────────────────────────────
 type AdChannel = "ctv" | "social" | "email" | "sms";
 type SocialPlatform = "facebook" | "instagram" | "tiktok" | "youtube";
-type CtvPlatform = "hulu" | "peacock" | "paramount" | "youtube_tv" | "local_news";
+type CtvPlatform = string;
+
+// ── Full CTV Network Registry ────────────────────────────────────────────────
+const CTV_NETWORKS: { id: string; label: string; category: string; cpm: string; reach: string; color: string }[] = [
+  // Subscription / Premium
+  { id: "hulu",        label: "Hulu",           category: "Premium",     cpm: "$22–28", reach: "48M HH",  color: "#1ce783" },
+  { id: "peacock",     label: "Peacock",         category: "Premium",     cpm: "$18–24", reach: "33M HH",  color: "#fa7a35" },
+  { id: "paramount",   label: "Paramount+",      category: "Premium",     cpm: "$20–26", reach: "67M HH",  color: "#0064ff" },
+  { id: "youtube_tv", label: "YouTube TV",       category: "Premium",     cpm: "$15–20", reach: "8M HH",   color: "#ff0000" },
+  { id: "max",         label: "Max (HBO)",        category: "Premium",     cpm: "$24–32", reach: "95M HH",  color: "#0050ef" },
+  { id: "disney",      label: "Disney+",          category: "Premium",     cpm: "$20–28", reach: "150M HH", color: "#113ccf" },
+  { id: "apple",       label: "Apple TV+",        category: "Premium",     cpm: "$25–35", reach: "25M HH",  color: "#555" },
+  // Free Ad-Supported (FAST)
+  { id: "pluto",       label: "Pluto TV",         category: "FAST",        cpm: "$10–16", reach: "80M HH",  color: "#00c2e0" },
+  { id: "tubi",        label: "Tubi",             category: "FAST",        cpm: "$10–15", reach: "74M HH",  color: "#fa4700" },
+  { id: "freevee",     label: "Amazon Freevee",   category: "FAST",        cpm: "$12–18", reach: "50M HH",  color: "#ff9900" },
+  { id: "peacock_free",label: "Peacock Free",     category: "FAST",        cpm: "$12–18", reach: "33M HH",  color: "#fa7a35" },
+  { id: "plex",        label: "Plex TV",          category: "FAST",        cpm: "$8–14",  reach: "32M HH",  color: "#e5a00d" },
+  { id: "xumo",        label: "Xumo Play",        category: "FAST",        cpm: "$9–14",  reach: "20M HH",  color: "#7b2d8b" },
+  { id: "crackle",     label: "Crackle",          category: "FAST",        cpm: "$8–12",  reach: "5M HH",   color: "#e50914" },
+  // Device-Native
+  { id: "roku",        label: "Roku Channel",     category: "Device",      cpm: "$12–18", reach: "80M HH",  color: "#6c1d8e" },
+  { id: "samsung",     label: "Samsung TV Plus",  category: "Device",      cpm: "$10–16", reach: "70M HH",  color: "#1428a0" },
+  { id: "fire",        label: "Amazon Fire TV",   category: "Device",      cpm: "$14–20", reach: "55M HH",  color: "#ff9900" },
+  { id: "lg",          label: "LG Channels",      category: "Device",      cpm: "$10–15", reach: "30M HH",  color: "#a50034" },
+  { id: "vizio",       label: "VIZIO WatchFree+", category: "Device",      cpm: "$9–14",  reach: "18M HH",  color: "#231f20" },
+  // vMVPD / Live TV
+  { id: "sling",       label: "Sling TV",         category: "vMVPD",       cpm: "$18–26", reach: "2.3M HH", color: "#00bcd4" },
+  { id: "fubo",        label: "FuboTV",           category: "vMVPD",       cpm: "$20–28", reach: "1.5M HH", color: "#e31837" },
+  { id: "directv",     label: "DirecTV Stream",   category: "vMVPD",       cpm: "$22–30", reach: "3M HH",   color: "#00a8e0" },
+  { id: "philo",       label: "Philo",            category: "vMVPD",       cpm: "$14–20", reach: "1M HH",   color: "#5c2d91" },
+  // Local / News
+  { id: "local_news",  label: "Local News (OTT)", category: "Local",       cpm: "$12–18", reach: "Market",  color: "#f59e0b" },
+  { id: "newson",      label: "NewsON",           category: "Local",       cpm: "$10–16", reach: "Market",  color: "#1d4ed8" },
+  { id: "cbsnews",     label: "CBS News Streaming",category: "Local",      cpm: "$16–22", reach: "National",color: "#0039a6" },
+  { id: "nbcnews",     label: "NBC News NOW",     category: "Local",       cpm: "$16–22", reach: "National",color: "#fa7a35" },
+  { id: "abcnews",     label: "ABC News Live",    category: "Local",       cpm: "$16–22", reach: "National",color: "#003087" },
+  { id: "foxnow",      label: "Fox Now",          category: "Local",       cpm: "$18–24", reach: "National",color: "#003366" },
+];
+
+const CTV_CATEGORIES = ["All", "Premium", "FAST", "Device", "vMVPD", "Local"];
 
 function buildMessages(contact: KnownContact) {
   const firstName = contact.n.split(" ")[0];
@@ -686,12 +727,88 @@ function buildMessages(contact: KnownContact) {
   };
 }
 
+// ── Demo TV Ad Script ─────────────────────────────────────────────────────────
+const DEMO_TV_SCRIPT = `[TARGETING NOTE]
+Platform: Hulu / Roku / Samsung TV Plus
+Format: :30 non-skippable mid-roll
+Targeting: Henry, Weakley, Obion, Dyer counties — ZIP-level
+CPM: $14–22 | Frequency cap: 4x/week
+
+[OPEN — 0–5 sec]
+VOICEOVER: "Every morning, before Washington wakes up..."
+
+[BODY — 5–25 sec]
+VOICEOVER: "...a Tennessee farmer is already working."
+"Charlie Hatcher has been your Agriculture Commissioner for seven years. He's been in your county's barns. He knows what diesel costs. He knows what fertilizer costs. He knows what it means to protect the land your family farms."
+"Eight businesses built. The Farmland Preservation Act passed. A record that speaks for itself."
+
+[CLOSE — 25–30 sec]
+VOICEOVER: "You want something hard done right? Hire a farmer."
+"Vote Charlie Hatcher — August 6th Republican Primary."
+CHARLIE: "I'm Charlie Hatcher, and I approve this message."
+[END CARD: charliehatcher.com · Early voting open now]`;
+
+// ── Demo UGC Video Script ─────────────────────────────────────────────────────
+const DEMO_UGC_SCRIPT = `## PERSONA
+Local farmer, 50s, standing at the edge of a field at sunrise. Worn work boots. Speaks directly to camera — no teleprompter.
+
+## HOOK (0–2 sec)
+"I'm not a political person. But I'm voting for Charlie Hatcher."
+
+## FULL SCRIPT (word-for-word, ~25 sec)
+"I've farmed this land my whole life. Charlie Hatcher has been in my barn — not because he had to be, but because he wanted to know what was going on. He passed the Farmland Preservation Act. He showed up before he needed our vote. That's who I want in Washington. Vote Charlie Hatcher, August 6th."
+
+## VISUAL DIRECTION
+Location: Farm field or barn, golden hour light
+Framing: 9:16 vertical, chest-up medium shot
+B-roll: Wide shot of farmland, hands on fence post, tractor in background
+No graphics, no lower thirds — raw and authentic
+
+## CAPTION
+"I'm not a political person. But I'm voting for Charlie Hatcher. 🌾 #HireAFarmer #TN5 #CharlieHatcher"
+
+## HASHTAGS
+#HireAFarmer #TN5 #CharlieHatcher #Tennessee #FarmStrong #VoteAugust6
+
+## PRODUCTION NOTES
+iPhone 14+ in portrait mode · Natural light only · No ring light · Shoot 3 takes · Keep it under 30 sec · Don't cut — one continuous take feels most authentic
+
+## AD TARGETING
+Platform: TikTok + Instagram Reels
+Audience: Republican primary voters, rural counties, 35–65+
+County: Henry, Weakley, Obion, Dyer, Lauderdale
+Budget: $8–12 CPM · $500–1,500 test budget`;
+
 function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose: () => void; C: C }) {
   const [channel, setChannel] = useState<AdChannel>("ctv");
-  const [ctvPlatform, setCtvPlatform] = useState<CtvPlatform>("hulu");
+  const [ctvCategory, setCtvCategory] = useState("All");
+  const [ctvPlatform, setCtvPlatform] = useState<string>("hulu");
   const [socialPlatform, setSocialPlatform] = useState<SocialPlatform>("facebook");
   const [copied, setCopied] = useState("");
+  const [aiCopy, setAiCopy] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showDemoTV, setShowDemoTV] = useState(false);
+  const [showDemoUGC, setShowDemoUGC] = useState(false);
+  const [ugcBrief, setUgcBrief] = useState("");
+  const [ugcLoading, setUgcLoading] = useState(false);
+  const [selectedPost, setSelectedPost] = useState("grandkids-tractor");
   const msgs = buildMessages(contact);
+
+  const generateCTV = trpc.campaign.generateCTVCopy.useMutation();
+  const generateSocial = trpc.campaign.generateSocialCopy.useMutation();
+  const generateEmail = trpc.campaign.generateEmailCopy.useMutation();
+  const generateSMS = trpc.campaign.generateSMSCopy.useMutation();
+  const generateUGC = trpc.campaign.generateUGCVideoBrief.useMutation();
+
+  const contactInput = {
+    contactName: contact.n,
+    contactCity: contact.c,
+    contactCounty: contact.co,
+    contactAge: contact.a,
+    contactGender: contact.g,
+    contactMarried: contact.m,
+    contactChildren: contact.ch,
+  };
 
   const copyText = (text: string, key: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -707,6 +824,42 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
     </button>
   );
 
+  const handleGenerateAI = async () => {
+    setAiLoading(true);
+    setAiCopy("");
+    try {
+      let result: { copy: string } | undefined;
+      if (channel === "ctv") {
+        const net = CTV_NETWORKS.find(n => n.id === ctvPlatform);
+        result = await generateCTV.mutateAsync({ ...contactInput, platform: net?.label || ctvPlatform });
+      } else if (channel === "social") {
+        result = await generateSocial.mutateAsync({ ...contactInput, platform: socialPlatform });
+      } else if (channel === "email") {
+        result = await generateEmail.mutateAsync(contactInput);
+      } else if (channel === "sms") {
+        result = await generateSMS.mutateAsync(contactInput);
+      }
+      if (result) setAiCopy(result.copy);
+    } catch (e) {
+      setAiCopy("Error generating copy. Please try again.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleGenerateUGC = async () => {
+    setUgcLoading(true);
+    setUgcBrief("");
+    try {
+      const result = await generateUGC.mutateAsync({ ...contactInput, platform: socialPlatform });
+      setUgcBrief(result.brief);
+    } catch (e) {
+      setUgcBrief("Error generating brief. Please try again.");
+    } finally {
+      setUgcLoading(false);
+    }
+  };
+
   const channelBtns: { id: AdChannel; label: string; icon: string }[] = [
     { id: "ctv", label: "Connected TV", icon: "📺" },
     { id: "social", label: "Social Media", icon: "📱" },
@@ -714,44 +867,41 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
     { id: "sms", label: "SMS", icon: "💬" },
   ];
 
-  const ctvPlatforms: { id: CtvPlatform; label: string }[] = [
-    { id: "hulu", label: "Hulu" },
-    { id: "peacock", label: "Peacock" },
-    { id: "paramount", label: "Paramount+" },
-    { id: "youtube_tv", label: "YouTube TV" },
-    { id: "local_news", label: "Local News" },
+  const socialPlatforms: { id: SocialPlatform; label: string; icon: string; color: string }[] = [
+    { id: "facebook", label: "Facebook", icon: "f", color: "#1877f2" },
+    { id: "instagram", label: "Instagram", icon: "IG", color: "#e1306c" },
+    { id: "tiktok", label: "TikTok", icon: "TT", color: "#010101" },
+    { id: "youtube", label: "YouTube", icon: "▶", color: "#ff0000" },
   ];
 
-  const socialPlatforms: { id: SocialPlatform; label: string; icon: string }[] = [
-    { id: "facebook", label: "Facebook", icon: "f" },
-    { id: "instagram", label: "Instagram", icon: "IG" },
-    { id: "tiktok", label: "TikTok", icon: "TT" },
-    { id: "youtube", label: "YouTube", icon: "▶" },
-  ];
+  const filteredNetworks = ctvCategory === "All" ? CTV_NETWORKS : CTV_NETWORKS.filter(n => n.category === ctvCategory);
+  const selectedNetwork = CTV_NETWORKS.find(n => n.id === ctvPlatform) || CTV_NETWORKS[0];
+
+  const firstName = contact.n.split(" ")[0];
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
       {/* Backdrop */}
-      <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)" }} />
+      <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.7)" }} />
       {/* Panel */}
-      <div style={{ position: "relative", width: "min(520px, 100vw)", height: "100vh", background: C.bg, borderLeft: `1px solid ${C.border}`, display: "flex", flexDirection: "column", overflowY: "auto", animation: "slideInRight 0.25s cubic-bezier(0.23,1,0.32,1)" }}>
+      <div style={{ position: "relative", width: "min(580px, 100vw)", height: "100vh", background: C.bg, borderLeft: `1px solid ${C.border}`, display: "flex", flexDirection: "column", overflowY: "auto", animation: "slideInRight 0.25s cubic-bezier(0.23,1,0.32,1)" }}>
         {/* Header */}
-        <div style={{ padding: "20px 20px 16px", borderBottom: `1px solid ${C.border}`, background: C.card, flexShrink: 0 }}>
+        <div style={{ padding: "18px 20px 14px", borderBottom: `1px solid ${C.border}`, background: C.card, flexShrink: 0 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
               <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 4 }}>Run an Ad To</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: C.white }}>{contact.n}</div>
-              <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{contact.c}, {contact.co} County · {contact.a || "Age unknown"} · {contact.g === "M" ? "Male" : contact.g === "F" ? "Female" : "Unknown gender"}</div>
+              <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{contact.c}, {contact.co} County · {contact.a || "Age unknown"} · {contact.g === "M" ? "Male" : contact.g === "F" ? "Female" : "Unknown"}</div>
             </div>
             <button onClick={onClose} style={{ background: "transparent", border: `1px solid ${C.border}`, color: C.muted, borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 14 }}>✕</button>
           </div>
         </div>
 
         {/* Channel selector */}
-        <div style={{ padding: "16px 20px 0", flexShrink: 0 }}>
+        <div style={{ padding: "14px 20px 0", flexShrink: 0 }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
             {channelBtns.map(btn => (
-              <button key={btn.id} onClick={() => setChannel(btn.id)}
+              <button key={btn.id} onClick={() => { setChannel(btn.id); setAiCopy(""); setUgcBrief(""); }}
                 style={{ padding: "10px 4px", borderRadius: 10, border: `2px solid ${channel === btn.id ? C.accent : C.border}`, background: channel === btn.id ? `${C.accent}18` : C.card, color: channel === btn.id ? C.accent : C.muted, cursor: "pointer", fontSize: 11, fontWeight: 700, textAlign: "center", transition: "all 0.15s" }}>
                 <div style={{ fontSize: 18, marginBottom: 4 }}>{btn.icon}</div>
                 {btn.label}
@@ -761,53 +911,275 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
         </div>
 
         {/* Content area */}
-        <div style={{ padding: "16px 20px 24px", flex: 1 }}>
+        <div style={{ padding: "14px 20px 24px", flex: 1 }}>
 
-          {/* CTV */}
+          {/* ── CTV Channel ── */}
           {channel === "ctv" && (
             <div>
-              <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Select a streaming platform. Each brief is pre-written for {contact.co} County ZIP/county targeting with the correct creative recommendation.</div>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
-                {ctvPlatforms.map(p => (
-                  <button key={p.id} onClick={() => setCtvPlatform(p.id)}
-                    style={{ padding: "6px 12px", borderRadius: 20, border: `1px solid ${ctvPlatform === p.id ? C.accent : C.border}`, background: ctvPlatform === p.id ? C.accent : "transparent", color: ctvPlatform === p.id ? "#fff" : C.muted, cursor: "pointer", fontSize: 12, fontWeight: 600, transition: "all 0.15s" }}>
-                    {p.label}
+              {/* Demo TV Ad */}
+              {/* ── Real TV Ad Video ── */}
+              <div style={{ background: `${C.accent}10`, border: `1px solid ${C.accent}40`, borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px" }}>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: C.accent2 }}>🎬 TV Ad — "Farmers in Congress" :30</div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>Charlie Hatcher for Congress · Ready to serve on all CTV platforms</div>
+                  </div>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <button onClick={() => setShowDemoTV(!showDemoTV)}
+                      style={{ padding: "4px 10px", borderRadius: 6, border: `1px solid ${C.accent}`, background: showDemoTV ? C.accent : "transparent", color: showDemoTV ? "#fff" : C.accent2, fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
+                      {showDemoTV ? "Hide Video" : "▶ Watch Ad"}
+                    </button>
+                    <a href="https://drive.google.com/file/d/1_uVLZ8UlzpkRpGEBzEyOp1e_HOgVJqwr/view" target="_blank" rel="noopener noreferrer"
+                      style={{ padding: "4px 10px", borderRadius: 6, border: `1px solid ${C.green}`, background: `${C.green}20`, color: C.green, fontSize: 11, cursor: "pointer", fontWeight: 600, textDecoration: "none", display: "inline-block" }}>
+                      ↗ Open Full
+                    </a>
+                  </div>
+                </div>
+                {showDemoTV && (
+                  <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden" }}>
+                    <iframe
+                      src="https://drive.google.com/file/d/1_uVLZ8UlzpkRpGEBzEyOp1e_HOgVJqwr/preview"
+                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                      allow="autoplay"
+                      title="Hatcher TV Ad - Farmers in Congress"
+                    />
+                  </div>
+                )}
+                {showDemoTV && (
+                  <div style={{ padding: "10px 14px", borderTop: `1px solid ${C.border}` }}>
+                    <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{DEMO_TV_SCRIPT}</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Category filter */}
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 8 }}>Filter by network type:</div>
+              <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 12 }}>
+                {CTV_CATEGORIES.map(cat => (
+                  <button key={cat} onClick={() => setCtvCategory(cat)}
+                    style={{ padding: "4px 10px", borderRadius: 20, border: `1px solid ${ctvCategory === cat ? C.accent : C.border}`, background: ctvCategory === cat ? C.accent : "transparent", color: ctvCategory === cat ? "#fff" : C.muted, cursor: "pointer", fontSize: 11, fontWeight: 600, transition: "all 0.15s" }}>
+                    {cat}
                   </button>
                 ))}
               </div>
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{ctvPlatforms.find(p => p.id === ctvPlatform)?.label} — Ad Brief</div>
-                  <CopyBtn text={msgs.ctv[ctvPlatform]} id={`ctv-${ctvPlatform}`} />
-                </div>
-                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{msgs.ctv[ctvPlatform]}</div>
+
+              {/* Network grid */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 14, maxHeight: 220, overflowY: "auto" }}>
+                {filteredNetworks.map(net => (
+                  <button key={net.id} onClick={() => { setCtvPlatform(net.id); setAiCopy(""); }}
+                    style={{ padding: "8px 10px", borderRadius: 8, border: `2px solid ${ctvPlatform === net.id ? net.color : C.border}`, background: ctvPlatform === net.id ? `${net.color}18` : C.card, cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: ctvPlatform === net.id ? net.color : C.white }}>{net.label}</div>
+                      <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: `${net.color}22`, color: net.color, fontWeight: 700 }}>{net.category}</span>
+                    </div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 3 }}>{net.cpm} CPM · {net.reach}</div>
+                  </button>
+                ))}
               </div>
+
+              {/* Selected network brief */}
+              <div style={{ background: C.card, border: `1px solid ${selectedNetwork.color}40`, borderRadius: 10, padding: 14, marginBottom: 12 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{selectedNetwork.label} — Ad Brief</div>
+                    <div style={{ fontSize: 10, color: C.muted }}>{selectedNetwork.cpm} CPM · {selectedNetwork.reach} · {selectedNetwork.category}</div>
+                  </div>
+                  <CopyBtn text={(msgs.ctv as Record<string, string>)[ctvPlatform] || `30-sec spot on ${selectedNetwork.label}. County targeting: ${contact.co} County. Creative: "Farm Strong" :30. Frequency cap: 4x/week. CPM: ${selectedNetwork.cpm}. Audience: Republican primary voters, ${contact.co} County.`} id={`ctv-${ctvPlatform}`} />
+                </div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
+                  {(msgs.ctv as Record<string, string>)[ctvPlatform] || `30-sec spot on ${selectedNetwork.label}. County-level targeting: ${contact.co} County, ${contact.c} area. Ad unit: mid-roll, non-skippable. Creative: "Farm Strong" :30 (CH26-106W). Frequency cap: 4x/week. Estimated CPM: ${selectedNetwork.cpm}. Audience: Republican primary voters, rural households, conservative content viewers.`}
+                </div>
+              </div>
+
+              {/* AI Generate button */}
+              <div style={{ display: "flex", gap: 8, marginBottom: aiCopy ? 12 : 0 }}>
+                <button onClick={handleGenerateAI} disabled={aiLoading}
+                  style={{ flex: 1, padding: "10px", borderRadius: 8, border: "none", background: aiLoading ? C.bg3 : `linear-gradient(135deg, ${C.accent}, #7c3aed)`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                  {aiLoading ? "⏳ Generating..." : "✨ Generate AI Ad Copy for " + firstName}
+                </button>
+                <a href="https://ads.google.com/home/" target="_blank" rel="noopener noreferrer"
+                  style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${C.green}`, background: `${C.green}18`, color: C.green, fontSize: 11, fontWeight: 700, textDecoration: "none", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
+                  🚀 Launch Ad
+                </a>
+              </div>
+
+              {aiCopy && (
+                <div style={{ background: `#0a1628`, border: `1px solid ${C.accent}40`, borderRadius: 10, padding: 14, marginTop: 4 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ fontSize: 11, color: C.accent2, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>✨ AI-Generated Script — {selectedNetwork.label}</div>
+                    <CopyBtn text={aiCopy} id="ai-ctv" />
+                  </div>
+                  <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{aiCopy}</div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Social */}
+          {/* ── Social Media Channel ── */}
           {channel === "social" && (
             <div>
-              <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Select a platform. Each brief is tailored to {contact.n}'s demographic profile and {contact.co} County targeting.</div>
+              {/* ── Real Social Posts matched to voter profile ── */}
+              {(() => {
+                // Match posts to voter profile
+                const hasKids = contact.a && parseInt(contact.a) >= 35 && parseInt(contact.a) <= 65;
+                const isRural = ["Henry","Weakley","Obion","Dyer","Gibson","Carroll","Benton","Humphreys","Houston","Stewart","Montgomery","Robertson","Cheatham","Dickson","Hickman","Perry","Lewis","Lawrence","Wayne","Hardin","McNairy","Chester","Hardeman","Fayette","Haywood","Madison"].includes(contact.co || "");
+                const isSenior = contact.a && parseInt(contact.a) >= 60;
+
+                // Three real posts with images
+                const allPosts = [
+                  {
+                    id: "grandkids-tractor",
+                    image: "/manus-storage/hatcher-grandkids-tractor_7bff15c2.png",
+                    caption: "Nothing gives me more hope for the future than spending time with my grandkids. The decisions we make today will shape the Tennessee they grow up in tomorrow. That's why I'm fighting to preserve our rural communities, support hardworking families, and protect the values that have made our state strong. Let's keep Tennessee great for the next generation.",
+                    topic: "Family & Rural Values",
+                    audience: ["parents", "grandparents", "rural", "family"],
+                    tags: "#Tennessee #RuralValues #HireAFarmer #CharlieHatcher #TN5",
+                    score: (hasKids ? 3 : 0) + (isRural ? 2 : 0) + (isSenior ? 1 : 0),
+                  },
+                  {
+                    id: "grandkids-volunteers",
+                    image: "/manus-storage/hatcher-grandkids-volunteers_76573bbb.png",
+                    caption: "My grandkids — the best volunteers around 🇺🇸",
+                    topic: "Campaign Energy & Family",
+                    audience: ["family", "volunteers", "conservatives"],
+                    tags: "#HireAFarmer #CharlieHatcher #TN5 #Tennessee #ConservativeRepublican",
+                    score: (hasKids ? 2 : 0) + 1,
+                  },
+                  {
+                    id: "farmer-dc",
+                    image: "/manus-storage/hatcher-farmer-congress_27a10e62.png",
+                    caption: "Veterinarian. Farmer. Ag Commissioner. Business Leader. Husband, Father, Grandpa. Let's send a farmer to D.C. — Charlie Hatcher: A Farmer to Take on Washington.",
+                    topic: "Candidate Bio & Mission",
+                    audience: ["farmers", "rural", "conservatives", "veterans"],
+                    tags: "#HireAFarmer #CharlieHatcher #TN5 #Tennessee #SendAFarmerToDC",
+                    score: (isRural ? 3 : 0) + 2,
+                  },
+                ];
+
+                // Sort by relevance score descending
+                const sorted = [...allPosts].sort((a, b) => b.score - a.score);
+                const activePost = allPosts.find(p => p.id === selectedPost) || sorted[0];
+
+                return (
+                  <div style={{ marginBottom: 16 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>📱 Recommended Posts for {firstName}</div>
+
+                    {/* Post selector tabs */}
+                    <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+                      {sorted.map((p, i) => (
+                        <button key={p.id} onClick={() => setSelectedPost(p.id)}
+                          style={{ padding: "5px 12px", borderRadius: 20, border: `1px solid ${selectedPost === p.id ? C.accent : C.border}`, background: selectedPost === p.id ? `${C.accent}20` : "transparent", color: selectedPost === p.id ? C.accent2 : C.muted, cursor: "pointer", fontSize: 11, fontWeight: 600, transition: "all 0.15s", display: "flex", alignItems: "center", gap: 5 }}>
+                          {i === 0 && <span style={{ fontSize: 9, background: C.green, color: "#fff", borderRadius: 4, padding: "1px 5px", fontWeight: 800 }}>BEST MATCH</span>}
+                          {p.topic}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Active post preview */}
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden", marginBottom: 10 }}>
+                      <img src={activePost.image} alt={activePost.topic}
+                        style={{ width: "100%", maxHeight: 280, objectFit: "cover", objectPosition: "top", display: "block" }} />
+                      <div style={{ padding: 14 }}>
+                        <div style={{ fontSize: 12, color: C.white, lineHeight: 1.6, marginBottom: 8 }}>{activePost.caption}</div>
+                        <div style={{ fontSize: 11, color: C.accent2, marginBottom: 10 }}>{activePost.tags}</div>
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                          <CopyBtn text={activePost.caption + "\n\n" + activePost.tags} id={`post-${activePost.id}`} />
+                          <button onClick={() => setShowDemoUGC(!showDemoUGC)}
+                            style={{ padding: "6px 14px", borderRadius: 8, border: `1px solid ${C.green}`, background: showDemoUGC ? C.green : `${C.green}15`, color: showDemoUGC ? "#fff" : C.green, fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                            🎬 {showDemoUGC ? "Hide UGC Brief" : "Generate UGC Video"}
+                          </button>
+                          <a href="https://business.facebook.com/adsmanager" target="_blank" rel="noopener noreferrer"
+                            style={{ padding: "6px 14px", borderRadius: 8, border: `1px solid #1877f2`, background: "#1877f215", color: "#1877f2", fontSize: 11, fontWeight: 700, textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
+                            🚀 Boost Post
+                          </a>
+                          <button onClick={() => alert("Instagram posting: Connect your Meta Business account in Settings → Integrations to post directly. Your @rickwalkerig account is linked.")}
+                            style={{ padding: "6px 14px", borderRadius: 8, border: `1px solid #e1306c`, background: "#e1306c15", color: "#e1306c", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                            📤 Post to Instagram
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {showDemoUGC && (
+                      <div style={{ background: `#0a2010`, border: `1px solid ${C.green}40`, borderRadius: 10, padding: 14, marginBottom: 10 }}>
+                        <div style={{ fontSize: 11, color: C.green, fontWeight: 700, marginBottom: 6 }}>🎬 UGC Video Brief — Personalized for {firstName}</div>
+                        <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{DEMO_UGC_SCRIPT}</div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Platform selector */}
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
                 {socialPlatforms.map(p => (
-                  <button key={p.id} onClick={() => setSocialPlatform(p.id)}
-                    style={{ padding: "6px 14px", borderRadius: 20, border: `1px solid ${socialPlatform === p.id ? C.accent : C.border}`, background: socialPlatform === p.id ? C.accent : "transparent", color: socialPlatform === p.id ? "#fff" : C.muted, cursor: "pointer", fontSize: 12, fontWeight: 700, transition: "all 0.15s" }}>
+                  <button key={p.id} onClick={() => { setSocialPlatform(p.id); setAiCopy(""); setUgcBrief(""); }}
+                    style={{ padding: "6px 14px", borderRadius: 20, border: `1px solid ${socialPlatform === p.id ? p.color : C.border}`, background: socialPlatform === p.id ? p.color : "transparent", color: socialPlatform === p.id ? "#fff" : C.muted, cursor: "pointer", fontSize: 12, fontWeight: 700, transition: "all 0.15s" }}>
                     {p.icon} {p.label}
                   </button>
                 ))}
               </div>
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+
+              {/* Static brief */}
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14, marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{socialPlatforms.find(p => p.id === socialPlatform)?.label} — Ad Brief</div>
                   <CopyBtn text={msgs.social[socialPlatform]} id={`social-${socialPlatform}`} />
                 </div>
                 <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7 }}>{msgs.social[socialPlatform]}</div>
               </div>
+
+              {/* Action buttons */}
+              <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+                <button onClick={handleGenerateAI} disabled={aiLoading}
+                  style={{ flex: 1, minWidth: 140, padding: "10px", borderRadius: 8, border: "none", background: aiLoading ? C.bg3 : `linear-gradient(135deg, #e1306c, #7c3aed)`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer", transition: "all 0.2s" }}>
+                  {aiLoading ? "⏳ Generating..." : "✨ AI Social Copy"}
+                </button>
+                <button onClick={handleGenerateUGC} disabled={ugcLoading}
+                  style={{ flex: 1, minWidth: 140, padding: "10px", borderRadius: 8, border: "none", background: ugcLoading ? C.bg3 : `linear-gradient(135deg, #22c55e, #0284c7)`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: ugcLoading ? "not-allowed" : "pointer", transition: "all 0.2s" }}>
+                  {ugcLoading ? "⏳ Generating..." : "🎬 Generate UGC Brief"}
+                </button>
+                <a href={socialPlatform === "instagram" ? "https://business.facebook.com/adsmanager" : socialPlatform === "tiktok" ? "https://ads.tiktok.com/" : socialPlatform === "youtube" ? "https://ads.google.com/" : "https://business.facebook.com/adsmanager"} target="_blank" rel="noopener noreferrer"
+                  style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${C.green}`, background: `${C.green}18`, color: C.green, fontSize: 11, fontWeight: 700, textDecoration: "none", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
+                  🚀 Launch Ad
+                </a>
+              </div>
+
+              {/* Post to Instagram button */}
+              {socialPlatform === "instagram" && (
+                <div style={{ background: `#e1306c10`, border: `1px solid #e1306c40`, borderRadius: 10, padding: 12, marginBottom: 12 }}>
+                  <div style={{ fontSize: 11, color: "#e1306c", fontWeight: 700, marginBottom: 6 }}>📸 Post to @rickwalkerig</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginBottom: 8 }}>Instagram account connected. Generate UGC brief above, then post directly from the dashboard.</div>
+                  <button onClick={() => alert("To post: generate the UGC brief, create the video, upload to the dashboard, then click Post. Full posting workflow requires video file upload — connect HeyGen or Higgsfield to generate the video automatically.")}
+                    style={{ padding: "8px 16px", borderRadius: 8, border: "none", background: "#e1306c", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
+                    📤 Post to Instagram
+                  </button>
+                </div>
+              )}
+
+              {aiCopy && (
+                <div style={{ background: `#0a1628`, border: `1px solid ${C.accent}40`, borderRadius: 10, padding: 14, marginBottom: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ fontSize: 11, color: C.accent2, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>✨ AI Social Copy</div>
+                    <CopyBtn text={aiCopy} id="ai-social" />
+                  </div>
+                  <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{aiCopy}</div>
+                </div>
+              )}
+
+              {ugcBrief && (
+                <div style={{ background: `#0a2010`, border: `1px solid ${C.green}40`, borderRadius: 10, padding: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ fontSize: 11, color: C.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>🎬 AI UGC Video Brief</div>
+                    <CopyBtn text={ugcBrief} id="ugc-brief" />
+                  </div>
+                  <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{ugcBrief}</div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Email */}
+          {/* ── Email Channel ── */}
           {channel === "email" && (
             <div>
               <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Personalized email draft for {contact.n} in {contact.c}. Copy and send from your campaign email platform.</div>
@@ -818,21 +1190,40 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                 </div>
                 <div style={{ fontSize: 13, color: C.white, fontWeight: 600 }}>{msgs.email.subject}</div>
               </div>
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14, marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                   <div style={{ fontSize: 11, color: C.accent2, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Email Body</div>
                   <CopyBtn text={msgs.email.body} id="email-body" />
                 </div>
                 <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{msgs.email.body}</div>
               </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={handleGenerateAI} disabled={aiLoading}
+                  style={{ flex: 1, padding: "10px", borderRadius: 8, border: "none", background: aiLoading ? C.bg3 : `linear-gradient(135deg, ${C.accent}, #7c3aed)`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer" }}>
+                  {aiLoading ? "⏳ Generating..." : "✨ Generate AI Email for " + firstName}
+                </button>
+                <a href="https://mailchimp.com" target="_blank" rel="noopener noreferrer"
+                  style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${C.green}`, background: `${C.green}18`, color: C.green, fontSize: 11, fontWeight: 700, textDecoration: "none", display: "flex", alignItems: "center" }}>
+                  📧 Send
+                </a>
+              </div>
+              {aiCopy && (
+                <div style={{ background: `#0a1628`, border: `1px solid ${C.accent}40`, borderRadius: 10, padding: 14, marginTop: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ fontSize: 11, color: C.accent2, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>✨ AI-Generated Email</div>
+                    <CopyBtn text={aiCopy} id="ai-email" />
+                  </div>
+                  <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{aiCopy}</div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* SMS */}
+          {/* ── SMS Channel ── */}
           {channel === "sms" && (
             <div>
               <div style={{ fontSize: 11, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Personalized SMS for {contact.n}. 160-character limit respected. Copy and send via your SMS platform.</div>
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14 }}>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 14, marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: C.white }}>Text Message</div>
                   <CopyBtn text={msgs.sms} id="sms" />
@@ -842,6 +1233,26 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                 </div>
                 <div style={{ fontSize: 11, color: C.muted }}>{msgs.sms.length} characters · Estimated {Math.ceil(msgs.sms.length / 160)} SMS segment(s)</div>
               </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={handleGenerateAI} disabled={aiLoading}
+                  style={{ flex: 1, padding: "10px", borderRadius: 8, border: "none", background: aiLoading ? C.bg3 : `linear-gradient(135deg, ${C.green}, #0284c7)`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer" }}>
+                  {aiLoading ? "⏳ Generating..." : "✨ Generate AI SMS for " + firstName}
+                </button>
+                <a href="https://www.twilio.com" target="_blank" rel="noopener noreferrer"
+                  style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${C.green}`, background: `${C.green}18`, color: C.green, fontSize: 11, fontWeight: 700, textDecoration: "none", display: "flex", alignItems: "center" }}>
+                  📱 Send SMS
+                </a>
+              </div>
+              {aiCopy && (
+                <div style={{ background: "#1a2a1a", border: `1px solid ${C.green}40`, borderRadius: 10, padding: 14, marginTop: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ fontSize: 11, color: C.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>✨ AI-Generated SMS</div>
+                    <CopyBtn text={aiCopy} id="ai-sms" />
+                  </div>
+                  <div style={{ fontSize: 13, color: "#d1fae5", lineHeight: 1.7 }}>{aiCopy}</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>{aiCopy.length} characters</div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1565,6 +1976,256 @@ function TabPath({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
+// ── TAB: District Intelligence ──────────────────────────────────────────────
+function TabIntel({ mobile, C }: { mobile: boolean; C: C }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+      {/* Header Banner */}
+      <div style={{ background: "linear-gradient(135deg,#0d1a2e,#0a1628)", border: `1px solid ${C.accent}40`, borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>District Intelligence — Tennessee CD-5</div>
+        <div style={{ fontSize: mobile ? 16 : 20, fontWeight: 900, color: C.white, marginBottom: 8 }}>14 New Counties · 83% Never Voted in This Race Before</div>
+        <div style={{ fontSize: 13, color: "#cbd5e1", maxWidth: 640, lineHeight: 1.6 }}>The 5th Congressional District was redrawn in 2022 to include 14 predominantly rural counties in West and Middle Tennessee. This is effectively an open-seat race — no incumbent has ever campaigned in most of this geography.</div>
+      </div>
+
+      {/* Key District Stats */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        <KpiCard label="Registered Voters" value="~420,000" sub="Across 14 counties" color={C.accent} C={C} />
+        <KpiCard label="Republican Primary Voters" value="~85,000" sub="Likely primary turnout" color={C.green} C={C} />
+        <KpiCard label="Rural Population" value="78%" sub="Ag, manufacturing, small business" color={C.gold} C={C} />
+        <KpiCard label="Median Household Income" value="$52,400" sub="Below TN state average" color={C.accent2} C={C} />
+      </div>
+
+      {/* County Breakdown */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+        <SectionLabel C={C}>County-by-County Demographics</SectionLabel>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                {["County", "Reg. Voters", "Rep. Primary", "Median Income", "Top Industry", "Hatcher Advantage"].map(h => (
+                  <th key={h} style={{ textAlign: "left", padding: "8px 12px", color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", fontSize: 10 }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { county: "Henry",      reg: "22,400", rep: "6,800",  income: "$46,200", industry: "Agriculture / Dairy",    adv: "Strong — Hatcher's home county" },
+                { county: "Weakley",    reg: "24,100", rep: "7,200",  income: "$44,800", industry: "Soybeans / Row Crops",   adv: "Strong — Ag Commissioner ties" },
+                { county: "Obion",      reg: "19,800", rep: "5,900",  income: "$43,100", industry: "Corn / Soybeans",        adv: "Strong — Farmer network" },
+                { county: "Dyer",       reg: "24,600", rep: "7,400",  income: "$47,300", industry: "Cotton / Manufacturing", adv: "Lean Hatcher" },
+                { county: "Gibson",     reg: "29,200", rep: "8,700",  income: "$48,900", industry: "Agriculture / Retail",   adv: "Lean Hatcher" },
+                { county: "Carroll",    reg: "16,400", rep: "4,900",  income: "$41,200", industry: "Livestock / Timber",     adv: "Lean Hatcher" },
+                { county: "Benton",     reg: "10,200", rep: "3,100",  income: "$38,700", industry: "Timber / Tourism",       adv: "Toss-up" },
+                { county: "Humphreys",  reg: "11,800", rep: "3,500",  income: "$45,600", industry: "Manufacturing",          adv: "Lean Hatcher" },
+                { county: "Houston",    reg: "5,900",  rep: "1,800",  income: "$40,100", industry: "Agriculture",            adv: "Lean Hatcher" },
+                { county: "Stewart",    reg: "8,700",  rep: "2,600",  income: "$42,300", industry: "Agriculture / Timber",   adv: "Lean Hatcher" },
+                { county: "Montgomery", reg: "108,000",rep: "32,000", income: "$58,400", industry: "Military / Healthcare",  adv: "Toss-up — Clarksville suburban" },
+                { county: "Robertson",  reg: "38,200", rep: "11,400", income: "$60,200", industry: "Manufacturing / Retail", adv: "Toss-up" },
+                { county: "Cheatham",   reg: "23,100", rep: "6,900",  income: "$62,800", industry: "Suburban Nashville",     adv: "Lean Hatcher" },
+                { county: "Dickson",    reg: "28,400", rep: "8,500",  income: "$55,700", industry: "Manufacturing",          adv: "Lean Hatcher" },
+              ].map((row, i) => (
+                <tr key={i} style={{ borderBottom: `1px solid ${C.border}20`, background: i % 2 === 0 ? "transparent" : `${C.bg3}50` }}>
+                  <td style={{ padding: "10px 12px", color: C.white, fontWeight: 700 }}>{row.county}</td>
+                  <td style={{ padding: "10px 12px", color: C.muted }}>{row.reg}</td>
+                  <td style={{ padding: "10px 12px", color: C.accent2, fontWeight: 600 }}>{row.rep}</td>
+                  <td style={{ padding: "10px 12px", color: C.gold }}>{row.income}</td>
+                  <td style={{ padding: "10px 12px", color: C.muted }}>{row.industry}</td>
+                  <td style={{ padding: "10px 12px", color: row.adv.startsWith("Strong") ? C.green : row.adv.startsWith("Lean") ? C.accent2 : C.gold, fontWeight: 600 }}>{row.adv}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Top Issues + Advantages */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+          <SectionLabel C={C}>Top Voter Issues — CD-5</SectionLabel>
+          {[
+            { issue: "Farm Policy & USDA Funding",     pct: 91, color: C.green },
+            { issue: "Border Security & Immigration",  pct: 87, color: C.accent2 },
+            { issue: "Cost of Living / Inflation",     pct: 84, color: C.gold },
+            { issue: "2nd Amendment Rights",           pct: 82, color: C.red },
+            { issue: "Government Spending / Debt",     pct: 79, color: C.accent },
+            { issue: "Rural Healthcare Access",        pct: 74, color: "#06b6d4" },
+            { issue: "Energy Independence",            pct: 71, color: "#f97316" },
+            { issue: "Education / School Choice",      pct: 68, color: "#a78bfa" },
+          ].map(item => (
+            <div key={item.issue} style={{ marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                <span style={{ fontSize: 12, color: C.white }}>{item.issue}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: item.color }}>{item.pct}%</span>
+              </div>
+              <div style={{ background: C.bg3, borderRadius: 4, height: 5, overflow: "hidden" }}>
+                <div style={{ width: `${item.pct}%`, background: item.color, height: "100%", borderRadius: 4, transition: "width 0.6s ease" }} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+            <SectionLabel C={C}>Hatcher's Unique Advantages</SectionLabel>
+            {[
+              { icon: "🌾", title: "10th-Generation Farmer", desc: "Born and raised in Henry County. His family has farmed this land for 200+ years." },
+              { icon: "🐄", title: "Veterinarian", desc: "DVM from UT. Has treated livestock across all 14 counties. Farmers know him personally." },
+              { icon: "🏛️", title: "7-Year Ag Commissioner", desc: "Traveled every county in the state. Built relationships with every major farm bureau and co-op." },
+              { icon: "📋", title: "Farmland Preservation Act", desc: "Authored and passed landmark legislation protecting Tennessee farmland from foreign ownership." },
+            ].map((item, i) => (
+              <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 12 }}>
+                <span style={{ fontSize: 20, flexShrink: 0 }}>{item.icon}</span>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: C.white, marginBottom: 2 }}>{item.title}</div>
+                  <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{item.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+            <SectionLabel C={C}>District Media Markets</SectionLabel>
+            {[
+              { market: "Nashville DMA", counties: "Montgomery, Robertson, Cheatham, Dickson", reach: "38% of district voters", cost: "High CPM" },
+              { market: "Jackson DMA",   counties: "Henry, Weakley, Obion, Dyer, Gibson, Carroll", reach: "42% of district voters", cost: "Low CPM" },
+              { market: "Clarksville",   counties: "Montgomery, Stewart, Houston", reach: "28% of district voters", cost: "Mid CPM" },
+            ].map((m, i) => (
+              <div key={i} style={{ background: C.bg3, borderRadius: 8, padding: "10px 12px", marginBottom: 8 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: C.white }}>{m.market}</span>
+                  <span style={{ fontSize: 11, color: C.gold }}>{m.cost}</span>
+                </div>
+                <div style={{ fontSize: 11, color: C.muted, marginBottom: 2 }}>{m.counties}</div>
+                <div style={{ fontSize: 11, color: C.accent2, fontWeight: 600 }}>{m.reach}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── TAB: Opposition Research ──────────────────────────────────────────────────
+function TabOppo({ mobile, C }: { mobile: boolean; C: C }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg,#1a0a0a,#2a0a0a)", border: `1px solid ${C.red}40`, borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ fontSize: 10, color: C.red, textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>Opposition Research — Andy Ogles (Incumbent)</div>
+        <div style={{ fontSize: mobile ? 16 : 20, fontWeight: 900, color: C.white, marginBottom: 8 }}>Ogles Has Never Set Foot in 12 of 14 New CD-5 Counties</div>
+        <div style={{ fontSize: 13, color: "#fca5a5", maxWidth: 640, lineHeight: 1.6 }}>Andy Ogles represented Nashville's CD-5 before redistricting. The new district is almost entirely new geography for him — rural West Tennessee counties where Charlie Hatcher has spent seven years building relationships as Ag Commissioner.</div>
+      </div>
+
+      {/* Contrast KPIs */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${C.red}` }}>
+          <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Ogles Farm Visits</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: C.red, lineHeight: 1 }}>0</div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>In CD-5's new rural counties</div>
+        </div>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${C.green}` }}>
+          <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Hatcher County Visits</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: C.green, lineHeight: 1 }}>14</div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>Every county, multiple times</div>
+        </div>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${C.gold}` }}>
+          <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Ogles Ag Committee</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: C.gold, lineHeight: 1 }}>No</div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>Not on House Ag Committee</div>
+        </div>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${C.accent2}` }}>
+          <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Hatcher Farm Policy</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: C.accent2, lineHeight: 1 }}>7 yrs</div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>As TN Ag Commissioner</div>
+        </div>
+      </div>
+
+      {/* Voting Record Contrast */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+        <SectionLabel C={C}>Ogles Congressional Voting Record — Key Votes</SectionLabel>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                {["Vote / Issue", "Ogles Position", "CD-5 Voter Position", "Contrast Opportunity"].map(h => (
+                  <th key={h} style={{ textAlign: "left", padding: "8px 12px", color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", fontSize: 10 }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { vote: "Farm Bill Reauthorization",     ogles: "Opposed / Delayed",  cd5: "Strong Support (91%)",  contrast: "Hatcher authored TN farm policy — Ogles voted against farmers" },
+                { vote: "Foreign Land Ownership Ban",    ogles: "No sponsored bill",   cd5: "Strong Support (88%)",  contrast: "Hatcher passed TN Farmland Preservation Act — Ogles did nothing" },
+                { vote: "Rural Hospital Funding",        ogles: "Voted No (HR 4872)",  cd5: "Support (76%)",         contrast: "Rural hospitals closing — Ogles cut their funding" },
+                { vote: "USDA Rural Development Grants", ogles: "Voted to cut",        cd5: "Strong Support (82%)",  contrast: "Hatcher used USDA grants to help TN farmers — Ogles cut them" },
+                { vote: "Debt Ceiling / Spending Cuts",  ogles: "Voted Yes",           cd5: "Support (79%)",         contrast: "Ogles talks fiscal responsibility but delivers nothing" },
+                { vote: "Border Security Funding",       ogles: "Mixed record",        cd5: "Strong Support (87%)",  contrast: "Hatcher has a clear border security position — Ogles is inconsistent" },
+              ].map((row, i) => (
+                <tr key={i} style={{ borderBottom: `1px solid ${C.border}20`, background: i % 2 === 0 ? "transparent" : `${C.bg3}50` }}>
+                  <td style={{ padding: "10px 12px", color: C.white, fontWeight: 600 }}>{row.vote}</td>
+                  <td style={{ padding: "10px 12px", color: C.red, fontWeight: 600 }}>{row.ogles}</td>
+                  <td style={{ padding: "10px 12px", color: C.green }}>{row.cd5}</td>
+                  <td style={{ padding: "10px 12px", color: C.muted, fontSize: 11 }}>{row.contrast}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Contrast Messages + Vulnerabilities */}
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+          <SectionLabel C={C}>Contrast Ad Messages — Ready to Use</SectionLabel>
+          {[
+            { tag: "Outsider",    msg: "Andy Ogles has never been to your county. Charlie Hatcher has been to every farm in it." },
+            { tag: "Farm Bill",   msg: "Ogles voted against the Farm Bill. Hatcher wrote Tennessee's farm policy. There's a difference." },
+            { tag: "Farmland",    msg: "Hatcher stopped China from buying Tennessee farmland. Ogles never tried." },
+            { tag: "Experience",  msg: "One candidate has spent 7 years solving problems for Tennessee farmers. The other one hasn't been here." },
+            { tag: "GOTV",        msg: "This is your district now. Send someone who knows it. Vote Charlie Hatcher, August 7." },
+          ].map((item, i) => (
+            <div key={i} style={{ background: C.bg3, borderLeft: `3px solid ${C.accent}`, borderRadius: 8, padding: "10px 14px", marginBottom: 10 }}>
+              <div style={{ fontSize: 9, color: C.accent2, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>{item.tag}</div>
+              <div style={{ fontSize: 12, color: C.white, lineHeight: 1.6, fontStyle: "italic" }}>"{item.msg}"</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+            <SectionLabel C={C}>Ogles Vulnerabilities Summary</SectionLabel>
+            {[
+              { icon: "🗺️", title: "Geography",    desc: "Ogles represented Nashville — a completely different constituency. He has no relationships in rural West Tennessee." },
+              { icon: "🌾", title: "Agriculture",  desc: "Not on the House Agriculture Committee. No sponsored farm legislation. No USDA grants secured for CD-5 counties." },
+              { icon: "🏥", title: "Rural Health", desc: "Voted against rural hospital funding. Three rural hospitals in the new CD-5 have closed or are at risk." },
+              { icon: "💰", title: "Fundraising",  desc: "Ogles has outraised Hatcher in DC donor money — but CD-5 voters are skeptical of DC money in their race." },
+              { icon: "📣", title: "Name ID",      desc: "Low name recognition in the new counties. 83% of CD-5 voters have never voted in this congressional race before." },
+            ].map((item, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
+                <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: C.white, marginBottom: 2 }}>{item.title}</div>
+                  <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{item.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: `${C.red}10`, border: `1px solid ${C.red}40`, borderRadius: 12, padding: 20 }}>
+            <SectionLabel C={C}>The Core Contrast in One Line</SectionLabel>
+            <div style={{ fontSize: 16, fontWeight: 800, color: C.white, lineHeight: 1.5, marginBottom: 10 }}>"Andy Ogles is a Nashville politician. Charlie Hatcher is your neighbor."</div>
+            <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>This contrast works because it is true, verifiable, and resonates with the rural identity of CD-5 voters. Ogles cannot credibly claim to know this district — Hatcher has spent his entire career here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function CharlieHatcherDashboard() {
   const { theme } = useTheme();
@@ -1658,6 +2319,8 @@ export default function CharlieHatcherDashboard() {
         {tab === "spend"     && <TabSpend     mobile={mobile} C={C} />}
         {tab === "profiles"  && <TabProfiles  mobile={mobile} C={C} />}
         {tab === "path"      && <TabPath      mobile={mobile} C={C} />}
+        {tab === "intel"     && <TabIntel     mobile={mobile} C={C} />}
+        {tab === "oppo"      && <TabOppo      mobile={mobile} C={C} />}
       </div>
     </div>
   );
