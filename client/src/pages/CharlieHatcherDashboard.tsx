@@ -652,41 +652,43 @@ type SocialPlatform = "facebook" | "instagram" | "tiktok" | "youtube";
 type CtvPlatform = string;
 
 // ── Full CTV Network Registry ────────────────────────────────────────────────
-const CTV_NETWORKS: { id: string; label: string; category: string; cpm: string; reach: string; color: string }[] = [
+type CTVNetwork = { id: string; label: string; category: string; cpm: string; reach: string; color: string; ageGroups: string[]; income: string[]; political: string[]; viewing: string[]; };
+
+const CTV_NETWORKS: CTVNetwork[] = [
   // Subscription / Premium
-  { id: "hulu",        label: "Hulu",           category: "Premium",     cpm: "$22–28", reach: "48M HH",  color: "#1ce783" },
-  { id: "peacock",     label: "Peacock",         category: "Premium",     cpm: "$18–24", reach: "33M HH",  color: "#fa7a35" },
-  { id: "paramount",   label: "Paramount+",      category: "Premium",     cpm: "$20–26", reach: "67M HH",  color: "#0064ff" },
-  { id: "youtube_tv", label: "YouTube TV",       category: "Premium",     cpm: "$15–20", reach: "8M HH",   color: "#ff0000" },
-  { id: "max",         label: "Max (HBO)",        category: "Premium",     cpm: "$24–32", reach: "95M HH",  color: "#0050ef" },
-  { id: "disney",      label: "Disney+",          category: "Premium",     cpm: "$20–28", reach: "150M HH", color: "#113ccf" },
-  { id: "apple",       label: "Apple TV+",        category: "Premium",     cpm: "$25–35", reach: "25M HH",  color: "#555" },
+  { id: "hulu",        label: "Hulu",             category: "Premium", cpm: "$22–28", reach: "48M HH",  color: "#1ce783", ageGroups: ["25-34","35-44","45-54"], income: ["middle","high"],       political: ["swing","moderate"],        viewing: ["drama","comedy","sports"] },
+  { id: "peacock",     label: "Peacock",           category: "Premium", cpm: "$18–24", reach: "33M HH",  color: "#fa7a35", ageGroups: ["35-44","45-54","55-64"], income: ["middle","high"],       political: ["swing","conservative"],    viewing: ["news","sports","drama"] },
+  { id: "paramount",   label: "Paramount+",        category: "Premium", cpm: "$20–26", reach: "67M HH",  color: "#0064ff", ageGroups: ["35-44","45-54","55-64"], income: ["middle","high"],       political: ["conservative","swing"],    viewing: ["news","drama","sports"] },
+  { id: "youtube_tv",  label: "YouTube TV",        category: "Premium", cpm: "$15–20", reach: "8M HH",   color: "#ff0000", ageGroups: ["25-34","35-44","45-54"], income: ["high"],               political: ["swing","moderate"],        viewing: ["sports","news","variety"] },
+  { id: "max",         label: "Max (HBO)",          category: "Premium", cpm: "$24–32", reach: "95M HH",  color: "#0050ef", ageGroups: ["25-34","35-44","45-54"], income: ["high"],               political: ["moderate","swing"],        viewing: ["drama","documentary"] },
+  { id: "disney",      label: "Disney+",            category: "Premium", cpm: "$20–28", reach: "150M HH", color: "#113ccf", ageGroups: ["25-34","35-44"],          income: ["middle","high"],       political: ["swing","moderate"],        viewing: ["family","drama"] },
+  { id: "apple",       label: "Apple TV+",          category: "Premium", cpm: "$25–35", reach: "25M HH",  color: "#888",    ageGroups: ["25-34","35-44","45-54"], income: ["high"],               political: ["moderate","swing"],        viewing: ["drama","documentary"] },
   // Free Ad-Supported (FAST)
-  { id: "pluto",       label: "Pluto TV",         category: "FAST",        cpm: "$10–16", reach: "80M HH",  color: "#00c2e0" },
-  { id: "tubi",        label: "Tubi",             category: "FAST",        cpm: "$10–15", reach: "74M HH",  color: "#fa4700" },
-  { id: "freevee",     label: "Amazon Freevee",   category: "FAST",        cpm: "$12–18", reach: "50M HH",  color: "#ff9900" },
-  { id: "peacock_free",label: "Peacock Free",     category: "FAST",        cpm: "$12–18", reach: "33M HH",  color: "#fa7a35" },
-  { id: "plex",        label: "Plex TV",          category: "FAST",        cpm: "$8–14",  reach: "32M HH",  color: "#e5a00d" },
-  { id: "xumo",        label: "Xumo Play",        category: "FAST",        cpm: "$9–14",  reach: "20M HH",  color: "#7b2d8b" },
-  { id: "crackle",     label: "Crackle",          category: "FAST",        cpm: "$8–12",  reach: "5M HH",   color: "#e50914" },
+  { id: "pluto",       label: "Pluto TV",           category: "FAST",    cpm: "$10–16", reach: "80M HH",  color: "#00c2e0", ageGroups: ["45-54","55-64","65+"],    income: ["low","middle"],        political: ["conservative","swing"],    viewing: ["news","western","classic"] },
+  { id: "tubi",        label: "Tubi",               category: "FAST",    cpm: "$10–15", reach: "74M HH",  color: "#fa4700", ageGroups: ["35-44","45-54","55-64"], income: ["low","middle"],        political: ["conservative","swing"],    viewing: ["drama","western","family"] },
+  { id: "freevee",     label: "Amazon Freevee",     category: "FAST",    cpm: "$12–18", reach: "50M HH",  color: "#ff9900", ageGroups: ["35-44","45-54","55-64"], income: ["middle"],              political: ["swing"],                   viewing: ["drama","comedy","variety"] },
+  { id: "peacock_free",label: "Peacock Free",       category: "FAST",    cpm: "$12–18", reach: "33M HH",  color: "#fa7a35", ageGroups: ["45-54","55-64","65+"],    income: ["low","middle"],        political: ["conservative","swing"],    viewing: ["news","sports","drama"] },
+  { id: "plex",        label: "Plex TV",            category: "FAST",    cpm: "$8–14",  reach: "32M HH",  color: "#e5a00d", ageGroups: ["25-34","35-44","45-54"], income: ["middle"],              political: ["swing","moderate"],        viewing: ["documentary","drama","variety"] },
+  { id: "xumo",        label: "Xumo Play",          category: "FAST",    cpm: "$9–14",  reach: "20M HH",  color: "#7b2d8b", ageGroups: ["45-54","55-64","65+"],    income: ["low","middle"],        political: ["conservative"],            viewing: ["news","classic","western"] },
+  { id: "crackle",     label: "Crackle",            category: "FAST",    cpm: "$8–12",  reach: "5M HH",   color: "#e50914", ageGroups: ["35-44","45-54"],          income: ["low","middle"],        political: ["swing"],                   viewing: ["drama","comedy"] },
   // Device-Native
-  { id: "roku",        label: "Roku Channel",     category: "Device",      cpm: "$12–18", reach: "80M HH",  color: "#6c1d8e" },
-  { id: "samsung",     label: "Samsung TV Plus",  category: "Device",      cpm: "$10–16", reach: "70M HH",  color: "#1428a0" },
-  { id: "fire",        label: "Amazon Fire TV",   category: "Device",      cpm: "$14–20", reach: "55M HH",  color: "#ff9900" },
-  { id: "lg",          label: "LG Channels",      category: "Device",      cpm: "$10–15", reach: "30M HH",  color: "#a50034" },
-  { id: "vizio",       label: "VIZIO WatchFree+", category: "Device",      cpm: "$9–14",  reach: "18M HH",  color: "#231f20" },
+  { id: "roku",        label: "Roku Channel",       category: "Device",  cpm: "$12–18", reach: "80M HH",  color: "#6c1d8e", ageGroups: ["35-44","45-54","55-64","65+"], income: ["middle"],         political: ["conservative","swing"],    viewing: ["news","sports","western","classic"] },
+  { id: "samsung",     label: "Samsung TV Plus",    category: "Device",  cpm: "$10–16", reach: "70M HH",  color: "#1428a0", ageGroups: ["35-44","45-54","55-64","65+"], income: ["middle","high"],    political: ["conservative","swing"],    viewing: ["news","sports","drama"] },
+  { id: "fire",        label: "Amazon Fire TV",     category: "Device",  cpm: "$14–20", reach: "55M HH",  color: "#ff9900", ageGroups: ["35-44","45-54","55-64"], income: ["middle","high"],       political: ["swing","conservative"],    viewing: ["drama","variety","sports"] },
+  { id: "lg",          label: "LG Channels",        category: "Device",  cpm: "$10–15", reach: "30M HH",  color: "#a50034", ageGroups: ["45-54","55-64","65+"],    income: ["middle","high"],       political: ["conservative","swing"],    viewing: ["news","sports","classic"] },
+  { id: "vizio",       label: "VIZIO WatchFree+",   category: "Device",  cpm: "$9–14",  reach: "18M HH",  color: "#555",    ageGroups: ["45-54","55-64","65+"],    income: ["low","middle"],        political: ["conservative"],            viewing: ["news","western","classic"] },
   // vMVPD / Live TV
-  { id: "sling",       label: "Sling TV",         category: "vMVPD",       cpm: "$18–26", reach: "2.3M HH", color: "#00bcd4" },
-  { id: "fubo",        label: "FuboTV",           category: "vMVPD",       cpm: "$20–28", reach: "1.5M HH", color: "#e31837" },
-  { id: "directv",     label: "DirecTV Stream",   category: "vMVPD",       cpm: "$22–30", reach: "3M HH",   color: "#00a8e0" },
-  { id: "philo",       label: "Philo",            category: "vMVPD",       cpm: "$14–20", reach: "1M HH",   color: "#5c2d91" },
+  { id: "sling",       label: "Sling TV",           category: "vMVPD",   cpm: "$18–26", reach: "2.3M HH", color: "#00bcd4", ageGroups: ["45-54","55-64","65+"],    income: ["middle"],              political: ["conservative","swing"],    viewing: ["news","sports","western"] },
+  { id: "fubo",        label: "FuboTV",             category: "vMVPD",   cpm: "$20–28", reach: "1.5M HH", color: "#e31837", ageGroups: ["35-44","45-54"],          income: ["high"],               political: ["swing"],                   viewing: ["sports"] },
+  { id: "directv",     label: "DirecTV Stream",     category: "vMVPD",   cpm: "$22–30", reach: "3M HH",   color: "#00a8e0", ageGroups: ["45-54","55-64","65+"],    income: ["middle","high"],       political: ["conservative"],            viewing: ["news","sports","western"] },
+  { id: "philo",       label: "Philo",              category: "vMVPD",   cpm: "$14–20", reach: "1M HH",   color: "#5c2d91", ageGroups: ["25-34","35-44","45-54"], income: ["low","middle"],        political: ["swing"],                   viewing: ["drama","comedy","variety"] },
   // Local / News
-  { id: "local_news",  label: "Local News (OTT)", category: "Local",       cpm: "$12–18", reach: "Market",  color: "#f59e0b" },
-  { id: "newson",      label: "NewsON",           category: "Local",       cpm: "$10–16", reach: "Market",  color: "#1d4ed8" },
-  { id: "cbsnews",     label: "CBS News Streaming",category: "Local",      cpm: "$16–22", reach: "National",color: "#0039a6" },
-  { id: "nbcnews",     label: "NBC News NOW",     category: "Local",       cpm: "$16–22", reach: "National",color: "#fa7a35" },
-  { id: "abcnews",     label: "ABC News Live",    category: "Local",       cpm: "$16–22", reach: "National",color: "#003087" },
-  { id: "foxnow",      label: "Fox Now",          category: "Local",       cpm: "$18–24", reach: "National",color: "#003366" },
+  { id: "local_news",  label: "Local News (OTT)",   category: "Local",   cpm: "$12–18", reach: "Market",  color: "#f59e0b", ageGroups: ["45-54","55-64","65+"],    income: ["low","middle","high"],  political: ["conservative","swing"],    viewing: ["news"] },
+  { id: "newson",      label: "NewsON",             category: "Local",   cpm: "$10–16", reach: "Market",  color: "#1d4ed8", ageGroups: ["55-64","65+"],            income: ["low","middle"],        political: ["conservative"],            viewing: ["news"] },
+  { id: "cbsnews",     label: "CBS News Streaming", category: "Local",   cpm: "$16–22", reach: "National",color: "#0039a6", ageGroups: ["45-54","55-64","65+"],    income: ["middle","high"],       political: ["swing","moderate"],        viewing: ["news"] },
+  { id: "nbcnews",     label: "NBC News NOW",       category: "Local",   cpm: "$16–22", reach: "National",color: "#fa7a35", ageGroups: ["45-54","55-64","65+"],    income: ["middle","high"],       political: ["swing","moderate"],        viewing: ["news"] },
+  { id: "abcnews",     label: "ABC News Live",      category: "Local",   cpm: "$16–22", reach: "National",color: "#003087", ageGroups: ["45-54","55-64","65+"],    income: ["middle","high"],       political: ["swing","moderate"],        viewing: ["news"] },
+  { id: "foxnow",      label: "Fox Now",            category: "Local",   cpm: "$18–24", reach: "National",color: "#003366", ageGroups: ["45-54","55-64","65+"],    income: ["middle","high"],       political: ["conservative"],            viewing: ["news","sports"] },
 ];
 
 const CTV_CATEGORIES = ["All", "Premium", "FAST", "Device", "vMVPD", "Local"];
@@ -874,7 +876,91 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
     { id: "youtube", label: "YouTube", icon: "▶", color: "#ff0000" },
   ];
 
-  const filteredNetworks = ctvCategory === "All" ? CTV_NETWORKS : CTV_NETWORKS.filter(n => n.category === ctvCategory);
+  // Smart CTV filter state
+  const [ctvAgeFilter, setCtvAgeFilter] = useState("All");
+  const [ctvIncomeFilter, setCtvIncomeFilter] = useState("All");
+  const [ctvPoliticalFilter, setCtvPoliticalFilter] = useState("All");
+  const [ctvViewingFilter, setCtvViewingFilter] = useState("All");
+  const [ctvPreset, setCtvPreset] = useState("");
+
+  // Demographic presets
+  const CTV_PRESETS = [
+    { id: "senior-conservative", label: "Senior Conservative", icon: "🗳️",
+      age: "65+", income: "All", political: "conservative", viewing: "news" },
+    { id: "rural-household", label: "Rural Household", icon: "🌾",
+      age: "55-64", income: "middle", political: "conservative", viewing: "western" },
+    { id: "high-income", label: "High Income", icon: "💼",
+      age: "All", income: "high", political: "All", viewing: "All" },
+    { id: "sports-fan", label: "Sports Fan", icon: "🏈",
+      age: "All", income: "All", political: "All", viewing: "sports" },
+    { id: "news-watcher", label: "News Watcher", icon: "📰",
+      age: "All", income: "All", political: "All", viewing: "news" },
+    { id: "swing-voter", label: "Swing Voter", icon: "⚖️",
+      age: "All", income: "All", political: "swing", viewing: "All" },
+  ];
+
+  // Auto-derive voter profile from contact data for "Best Match" preset
+  const voterAge = contact.a ? parseInt(contact.a) : 0;
+  const voterAgeGroup = voterAge >= 65 ? "65+" : voterAge >= 55 ? "55-64" : voterAge >= 45 ? "45-54" : voterAge >= 35 ? "35-44" : voterAge >= 25 ? "25-34" : "All";
+  const ruralCounties = ["Lake","Obion","Weakley","Henry","Dyer","Lauderdale","Benton","Houston","Stewart","Humphreys","Hickman","Lewis"];
+  const isRural = ruralCounties.some(c => contact.co?.includes(c));
+  const voterIncome = isRural ? "middle" : "high";
+  const voterPolitical = "conservative"; // All CD-5 Republican primary voters
+  const voterViewing = isRural ? "news" : "news";
+
+  // Compute match score for a network (0–4 dimensions matched)
+  const scoreNetwork = (net: CTVNetwork, age: string, income: string, political: string, viewing: string) => {
+    let score = 0;
+    if (age !== "All" && net.ageGroups.includes(age)) score++;
+    if (income !== "All" && net.income.includes(income)) score++;
+    if (political !== "All" && net.political.includes(political)) score++;
+    if (viewing !== "All" && net.viewing.includes(viewing)) score++;
+    return score;
+  };
+
+  // Apply all active filters and sort by match score
+  const filteredNetworks = useMemo(() => {
+    let nets = ctvCategory === "All" ? CTV_NETWORKS : CTV_NETWORKS.filter(n => n.category === ctvCategory);
+    if (ctvAgeFilter !== "All") nets = nets.filter(n => n.ageGroups.includes(ctvAgeFilter));
+    if (ctvIncomeFilter !== "All") nets = nets.filter(n => n.income.includes(ctvIncomeFilter));
+    if (ctvPoliticalFilter !== "All") nets = nets.filter(n => n.political.includes(ctvPoliticalFilter));
+    if (ctvViewingFilter !== "All") nets = nets.filter(n => n.viewing.includes(ctvViewingFilter));
+    // Sort by voter profile match score descending
+    return [...nets].sort((a, b) => {
+      const sa = scoreNetwork(a, voterAgeGroup, voterIncome, voterPolitical, voterViewing);
+      const sb = scoreNetwork(b, voterAgeGroup, voterIncome, voterPolitical, voterViewing);
+      return sb - sa;
+    });
+  }, [ctvCategory, ctvAgeFilter, ctvIncomeFilter, ctvPoliticalFilter, ctvViewingFilter, voterAgeGroup, voterIncome]);
+
+  const applyPreset = (preset: typeof CTV_PRESETS[0]) => {
+    setCtvPreset(preset.id);
+    setCtvAgeFilter(preset.age);
+    setCtvIncomeFilter(preset.income);
+    setCtvPoliticalFilter(preset.political);
+    setCtvViewingFilter(preset.viewing);
+    setCtvCategory("All");
+  };
+
+  const applyVoterMatch = () => {
+    setCtvPreset("voter-match");
+    setCtvAgeFilter(voterAgeGroup);
+    setCtvIncomeFilter(voterIncome);
+    setCtvPoliticalFilter(voterPolitical);
+    setCtvViewingFilter(voterViewing);
+    setCtvCategory("All");
+  };
+
+  const clearFilters = () => {
+    setCtvPreset("");
+    setCtvAgeFilter("All");
+    setCtvIncomeFilter("All");
+    setCtvPoliticalFilter("All");
+    setCtvViewingFilter("All");
+  };
+
+  const hasActiveFilters = ctvAgeFilter !== "All" || ctvIncomeFilter !== "All" || ctvPoliticalFilter !== "All" || ctvViewingFilter !== "All";
+
   const selectedNetwork = CTV_NETWORKS.find(n => n.id === ctvPlatform) || CTV_NETWORKS[0];
 
   const firstName = contact.n.split(" ")[0];
@@ -952,29 +1038,126 @@ function AdActionPanel({ contact, onClose, C }: { contact: KnownContact; onClose
                 )}
               </div>
 
-              {/* Category filter */}
-              <div style={{ fontSize: 11, color: C.muted, marginBottom: 8 }}>Filter by network type:</div>
-              <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 12 }}>
-                {CTV_CATEGORIES.map(cat => (
-                  <button key={cat} onClick={() => setCtvCategory(cat)}
-                    style={{ padding: "4px 10px", borderRadius: 20, border: `1px solid ${ctvCategory === cat ? C.accent : C.border}`, background: ctvCategory === cat ? C.accent : "transparent", color: ctvCategory === cat ? "#fff" : C.muted, cursor: "pointer", fontSize: 11, fontWeight: 600, transition: "all 0.15s" }}>
-                    {cat}
+              {/* ── Smart CTV Filter System ── */}
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+
+                {/* Best Match for voter button */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Smart Network Filter</div>
+                  <button onClick={applyVoterMatch}
+                    style={{ padding: "5px 12px", borderRadius: 20, border: `1px solid ${C.accent}`, background: ctvPreset === "voter-match" ? C.accent : `${C.accent}18`, color: ctvPreset === "voter-match" ? "#fff" : C.accent2, fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "all 0.15s", display: "flex", alignItems: "center", gap: 5 }}>
+                    <span>⭐</span> Best Match for {firstName}
                   </button>
-                ))}
+                </div>
+
+                {/* Quick-select demographic presets */}
+                <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
+                  {CTV_PRESETS.map(preset => (
+                    <button key={preset.id} onClick={() => applyPreset(preset)}
+                      style={{ padding: "4px 10px", borderRadius: 20, border: `1px solid ${ctvPreset === preset.id ? C.gold : C.border}`, background: ctvPreset === preset.id ? `${C.gold}22` : "transparent", color: ctvPreset === preset.id ? C.gold : C.muted, cursor: "pointer", fontSize: 11, fontWeight: 600, transition: "all 0.15s", display: "flex", alignItems: "center", gap: 4 }}>
+                      <span>{preset.icon}</span> {preset.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Dimension filter dropdowns */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 }}>
+                  {/* Age filter */}
+                  <div>
+                    <div style={{ fontSize: 10, color: C.muted, marginBottom: 3 }}>Age Group</div>
+                    <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                      {["All","25-34","35-44","45-54","55-64","65+"].map(a => (
+                        <button key={a} onClick={() => { setCtvAgeFilter(a); setCtvPreset(""); }}
+                          style={{ padding: "3px 8px", borderRadius: 6, border: `1px solid ${ctvAgeFilter === a ? C.accent2 : C.border}`, background: ctvAgeFilter === a ? `${C.accent2}22` : "transparent", color: ctvAgeFilter === a ? C.accent2 : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.12s" }}>
+                          {a}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Income filter */}
+                  <div>
+                    <div style={{ fontSize: 10, color: C.muted, marginBottom: 3 }}>Income</div>
+                    <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                      {["All","low","middle","high"].map(inc => (
+                        <button key={inc} onClick={() => { setCtvIncomeFilter(inc); setCtvPreset(""); }}
+                          style={{ padding: "3px 8px", borderRadius: 6, border: `1px solid ${ctvIncomeFilter === inc ? C.gold : C.border}`, background: ctvIncomeFilter === inc ? `${C.gold}22` : "transparent", color: ctvIncomeFilter === inc ? C.gold : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.12s", textTransform: "capitalize" }}>
+                          {inc}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Political filter */}
+                  <div>
+                    <div style={{ fontSize: 10, color: C.muted, marginBottom: 3 }}>Political Lean</div>
+                    <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                      {["All","conservative","swing","moderate"].map(pol => (
+                        <button key={pol} onClick={() => { setCtvPoliticalFilter(pol); setCtvPreset(""); }}
+                          style={{ padding: "3px 8px", borderRadius: 6, border: `1px solid ${ctvPoliticalFilter === pol ? C.red : C.border}`, background: ctvPoliticalFilter === pol ? `${C.red}22` : "transparent", color: ctvPoliticalFilter === pol ? C.red : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.12s", textTransform: "capitalize" }}>
+                          {pol}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Viewing filter */}
+                  <div>
+                    <div style={{ fontSize: 10, color: C.muted, marginBottom: 3 }}>Viewing Habit</div>
+                    <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                      {["All","news","sports","drama","western","documentary"].map(v => (
+                        <button key={v} onClick={() => { setCtvViewingFilter(v); setCtvPreset(""); }}
+                          style={{ padding: "3px 8px", borderRadius: 6, border: `1px solid ${ctvViewingFilter === v ? C.green : C.border}`, background: ctvViewingFilter === v ? `${C.green}22` : "transparent", color: ctvViewingFilter === v ? C.green : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.12s", textTransform: "capitalize" }}>
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Active filter chips + clear */}
+                {hasActiveFilters && (
+                  <div style={{ display: "flex", gap: 5, flexWrap: "wrap", alignItems: "center", paddingTop: 8, borderTop: `1px solid ${C.border}` }}>
+                    <span style={{ fontSize: 10, color: C.muted }}>Active:</span>
+                    {ctvAgeFilter !== "All" && <span style={{ padding: "2px 8px", borderRadius: 12, background: `${C.accent2}22`, color: C.accent2, fontSize: 10, fontWeight: 700 }}>Age: {ctvAgeFilter}</span>}
+                    {ctvIncomeFilter !== "All" && <span style={{ padding: "2px 8px", borderRadius: 12, background: `${C.gold}22`, color: C.gold, fontSize: 10, fontWeight: 700, textTransform: "capitalize" }}>Income: {ctvIncomeFilter}</span>}
+                    {ctvPoliticalFilter !== "All" && <span style={{ padding: "2px 8px", borderRadius: 12, background: `${C.red}22`, color: C.red, fontSize: 10, fontWeight: 700, textTransform: "capitalize" }}>Lean: {ctvPoliticalFilter}</span>}
+                    {ctvViewingFilter !== "All" && <span style={{ padding: "2px 8px", borderRadius: 12, background: `${C.green}22`, color: C.green, fontSize: 10, fontWeight: 700, textTransform: "capitalize" }}>Viewing: {ctvViewingFilter}</span>}
+                    <button onClick={clearFilters} style={{ padding: "2px 8px", borderRadius: 12, border: `1px solid ${C.border}`, background: "transparent", color: C.muted, fontSize: 10, cursor: "pointer" }}>✕ Clear</button>
+                  </div>
+                )}
+
+                {/* Network type tabs */}
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 10, paddingTop: 8, borderTop: `1px solid ${C.border}` }}>
+                  {CTV_CATEGORIES.map(cat => (
+                    <button key={cat} onClick={() => setCtvCategory(cat)}
+                      style={{ padding: "3px 9px", borderRadius: 20, border: `1px solid ${ctvCategory === cat ? C.accent : C.border}`, background: ctvCategory === cat ? C.accent : "transparent", color: ctvCategory === cat ? "#fff" : C.muted, cursor: "pointer", fontSize: 10, fontWeight: 600, transition: "all 0.15s" }}>
+                      {cat}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Network grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 14, maxHeight: 220, overflowY: "auto" }}>
-                {filteredNetworks.map(net => (
-                  <button key={net.id} onClick={() => { setCtvPlatform(net.id); setAiCopy(""); }}
-                    style={{ padding: "8px 10px", borderRadius: 8, border: `2px solid ${ctvPlatform === net.id ? net.color : C.border}`, background: ctvPlatform === net.id ? `${net.color}18` : C.card, cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: ctvPlatform === net.id ? net.color : C.white }}>{net.label}</div>
-                      <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: `${net.color}22`, color: net.color, fontWeight: 700 }}>{net.category}</span>
-                    </div>
-                    <div style={{ fontSize: 10, color: C.muted, marginTop: 3 }}>{net.cpm} CPM · {net.reach}</div>
-                  </button>
-                ))}
+              {/* Network grid with match scores */}
+              <div style={{ fontSize: 10, color: C.muted, marginBottom: 6 }}>
+                {filteredNetworks.length} network{filteredNetworks.length !== 1 ? "s" : ""} matching · sorted by voter match
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 14, maxHeight: 240, overflowY: "auto" }}>
+                {filteredNetworks.map(net => {
+                  const matchScore = scoreNetwork(net, voterAgeGroup, voterIncome, voterPolitical, voterViewing);
+                  const matchLabel = matchScore === 4 ? "★ Best Match" : matchScore === 3 ? "✦ Strong" : matchScore === 2 ? "◆ Good" : matchScore === 1 ? "◇ Partial" : "";
+                  const matchColor = matchScore === 4 ? C.gold : matchScore === 3 ? C.green : matchScore === 2 ? C.accent2 : C.muted;
+                  return (
+                    <button key={net.id} onClick={() => { setCtvPlatform(net.id); setAiCopy(""); }}
+                      style={{ padding: "8px 10px", borderRadius: 8, border: `2px solid ${ctvPlatform === net.id ? net.color : C.border}`, background: ctvPlatform === net.id ? `${net.color}18` : C.card, cursor: "pointer", textAlign: "left", transition: "all 0.15s" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: ctvPlatform === net.id ? net.color : C.white, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "65%" }}>{net.label}</div>
+                        <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: `${net.color}22`, color: net.color, fontWeight: 700, flexShrink: 0 }}>{net.category}</span>
+                      </div>
+                      <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>{net.cpm} CPM · {net.reach}</div>
+                      {matchLabel && (
+                        <div style={{ fontSize: 9, color: matchColor, fontWeight: 700, marginTop: 3 }}>{matchLabel}</div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Selected network brief */}
