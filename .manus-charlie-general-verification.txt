@@ -1,0 +1,9 @@
+Railway verification — Aug. 15, 2026
+
+Verified public route: https://ea-dashboard-production.up.railway.app/charlie-hatcher
+
+The deployed page returned successfully and rendered the simplified one-page Hatcher–Molder general-election dashboard. The public output confirmed the live Nov. 3 countdown, the August 15, 2026 update label, the 53.2% primary-result context, 17-county framing, public FEC Molder cash-on-hand context ($1.48M through July 17), granular targeting capability, Exact Audience paid-ad execution workflow, and reconciled $120K/$240K/$360K illustrative media scenarios.
+
+The page explicitly labels the media plans as illustrations, requires a line-by-line agency comparison before claiming savings, and states that delivery estimates require rate cards and platform reporting.
+
+Browser verification also completed successfully after deployment. The live page rendered the simplified one-page general-election layout, including the August 15 update label, Hatcher–Molder race brief, Nov. 3 countdown, granular targeting cards, ad-execution flow, and the $240,000 selected media scenario with its six reconciled channel allocations.

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Tn5InteractiveMap } from "@/components/Tn5InteractiveMap";
 
 export const ELECTION_DATE = new Date("2026-11-03T06:00:00");
 
@@ -94,7 +95,7 @@ export default function CharlieHatcherGeneralDashboard() {
               <div><div style={{ fontSize: 15, fontWeight: 900, color: ink }}>Charlie Hatcher for Congress</div><div style={{ fontSize: 10, color: muted, marginTop: 2 }}>TN-05 · General Election · Hatcher (R) vs. Molder (D)</div></div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <ScrollLink target="race">Race</ScrollLink><ScrollLink target="capabilities">Targeting</ScrollLink><ScrollLink target="execution">Ad execution</ScrollLink><ScrollLink target="media">Media plan</ScrollLink>
+              <ScrollLink target="race">Race</ScrollLink><ScrollLink target="capabilities">Targeting</ScrollLink><ScrollLink target="district-map">District map</ScrollLink><ScrollLink target="execution">Ad execution</ScrollLink><ScrollLink target="media">Media plan</ScrollLink>
             </div>
           </div>
         </div>
@@ -125,6 +126,8 @@ export default function CharlieHatcherGeneralDashboard() {
           <div style={{ display: "flex", alignItems: "end", justifyContent: "space-between", gap: 16, flexWrap: "wrap", marginBottom: 14 }}><div><div style={{ color: "#0ea5e9", fontSize: 10, letterSpacing: ".14em", fontWeight: 800, textTransform: "uppercase" }}>What Exact Audience demonstrates</div><h2 style={{ margin: "6px 0 0", fontSize: 27, letterSpacing: "-.025em" }}>Granularity without clutter.</h2></div><p style={{ color: muted, fontSize: 12, maxWidth: 440, lineHeight: 1.6, margin: 0 }}>The point is not more dashboards. It is a documented workflow that shows exactly how audience, creative, and delivery decisions become granular.</p></div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 12 }}>{CAPABILITIES.map((item, index) => <article key={item.title} style={{ background: card, border: `1px solid ${border}`, borderRadius: 14, padding: 17 }}><div style={{ width: 28, height: 28, borderRadius: 8, display: "grid", placeItems: "center", background: "rgba(14,165,233,.13)", color: "#38bdf8", fontWeight: 900, fontSize: 12 }}>{String(index + 1).padStart(2,"0")}</div><h3 style={{ color: ink, margin: "13px 0 7px", fontSize: 13 }}>{item.title}</h3><p style={{ color: muted, fontSize: 11, lineHeight: 1.65, margin: 0 }}>{item.text}</p></article>)}</div>
         </section>
+
+        <Tn5InteractiveMap card={card} ink={ink} muted={muted} border={border} isDark={isDark} />
 
         <section id="execution" style={{ scrollMarginTop: 90, marginTop: 34, display: "grid", gridTemplateColumns: "minmax(0,1.15fr) minmax(320px,.85fr)", gap: 16 }}>
           <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 16, padding: 20 }}><div style={{ color: "#0ea5e9", fontSize: 10, letterSpacing: ".14em", fontWeight: 800, textTransform: "uppercase" }}>Paid-ad execution</div><h2 style={{ margin: "7px 0 8px", fontSize: 25, letterSpacing: "-.025em" }}>We plan, launch, manage, and report the ads.</h2><p style={{ color: muted, fontSize: 12, lineHeight: 1.65, margin: "0 0 16px" }}>Exact Audience operates the paid workflow across CTV, online video, Meta, programmatic, search, and consented CRM activation. The campaign approves strategy, creative, budget ceiling, and compliance; each change is logged against a weekly report.</p><div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 10 }}>{EXECUTION_STEPS.map(([number,title,text]) => <div key={number} style={{ background: isDark ? "#0a1020" : "#f6f9fd", border: `1px solid ${border}`, borderRadius: 12, padding: 14 }}><div style={{ color: "#38bdf8", fontSize: 11, fontWeight: 900 }}>{number}</div><div style={{ color: ink, fontSize: 12, fontWeight: 800, marginTop: 5 }}>{title}</div><div style={{ color: muted, fontSize: 10, lineHeight: 1.55, marginTop: 5 }}>{text}</div></div>)}</div></div>
