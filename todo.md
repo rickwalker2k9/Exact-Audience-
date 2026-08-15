@@ -19,10 +19,20 @@
 
 ## Railway Deployment Remediation — Aug 15, 2026
 - [x] Diagnose and fix the Railway network healthcheck failure for the latest dashboard deployment.
-- [ ] Verify Railway serves the refreshed Lamborghini roster after the corrected deployment succeeds.
-- [ ] Inspect the correct Railway service deployment at project c3bc7500-c9f9-46b5-b081-a7ee4eac9cae and resolve any remaining healthcheck failure.
+- [x] Verify Railway serves the refreshed Lamborghini roster after the corrected deployment succeeds.
+- [x] Inspect the correct Railway service deployment at project c3bc7500-c9f9-46b5-b081-a7ee4eac9cae and resolve any remaining healthcheck failure.
 - [x] Replace unsupported import.meta.dirname usage in the production bundle and ensure missing Railway configuration does not crash startup.
 - [x] Document the required OAUTH_SERVER_URL Railway variable and any other mandatory service configuration.
-- [ ] Confirm that the Railway deployment created from GitHub commit cc48eb2 succeeds, rather than reviewing the older failed b49bcbda deployment.
-- [ ] Obtain the status or logs for the Railway deployment created after 1:42 PM MST, not deployment b49bcbda from 1:12 PM MST.
-- [ ] Trigger a new Railway deployment from GitHub main if no deployment for cc48eb2 appears in the service deployment list.
+- [x] Confirm that the Railway deployment created from GitHub commit cc48eb2 succeeds, rather than reviewing the older failed b49bcbda deployment.
+- [x] Obtain the status or logs for the Railway deployment created after 1:42 PM MST, not deployment b49bcbda from 1:12 PM MST.
+- [x] Trigger a new Railway deployment from GitHub main if no deployment for cc48eb2 appears in the service deployment list.
+
+## Lamborghini Demo URL — Aug 15, 2026
+- [ ] Identify the Railway public domain for the active Exact Audience service and verify the `/lamborghini` demo route.
+- [ ] Confirm the public `/lamborghini` URL returns HTTP 200 and displays the refreshed Exact Audience dashboard content.
+
+## Lamborghini Live Dates — Aug 15, 2026
+- [x] Replace static Lamborghini traffic-series dates with labels derived from the viewer’s current local date.
+- [x] Make time-sensitive dashboard labels roll forward automatically and cover the live 7-, 14-, and 30-day chart selections.
+- [ ] Add test coverage for date rollover behavior and verify the public Railway demo after deployment.
+- [x] Correct the chart's 30-day selection to include exactly 30 current-date labels and validate it before deployment.

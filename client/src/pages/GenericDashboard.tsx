@@ -5,7 +5,7 @@
  * Design: Dark command-center (default) + light mode via ThemeContext
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useLocation } from "wouter";
 import { getProfilesByDashboard, type BuyerProfile } from "@/lib/buyerProfiles";
 import { getDailyProfiles } from "@/lib/dynamicProfiles";
@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import { useTheme } from "../contexts/ThemeContext";
 import { getNetworkLogo, getNetworkInitials } from "../lib/networkLogos";
+import { formatDashboardDate, millisecondsUntilNextLocalDay, relabelSeriesToCurrentDate } from "../lib/liveDateSeries";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 export interface DashClientInfo {
@@ -211,6 +212,26 @@ function useTick(base: number, step: number, interval = 8000) {
   return val;
 }
 
+function useLiveCalendarDate() {
+  const [currentDate, setCurrentDate] = useState(() => new Date());
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
+    const scheduleNextUpdate = () => {
+      timer = setTimeout(() => {
+        setCurrentDate(new Date());
+        scheduleNextUpdate();
+      }, millisecondsUntilNextLocalDay());
+    };
+
+    scheduleNextUpdate();
+    return () => clearTimeout(timer);
+  }, []);
+
+  return currentDate;
+}
+
 function fmt(n: number) {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + "M";
   if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
@@ -293,7 +314,7 @@ function VisitorFeed({ visitors, C }: { visitors: DashVisitor[]; C: C }) {
 }
 
 // ── TAB: Overview ─────────────────────────────────────────────────────────────
-const DATE_RANGES = [{ label: "Last 7 Days", days: 7 }, { label: "Last 14 Days", days: 14 }, { label: "Last 30 Days", days: 29 }];
+const DATE_RANGES = [{ label: "Last 7 Days", days: 7 }, { label: "Last 14 Days", days: 14 }, { label: "Last 30 Days", days: 30 }];
 
 interface MonthlySpendRow {
   month: string;
@@ -317,9 +338,14 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
   const reach = useTick(liveBase.reach, 23);
   const siteVisitors = useTick(liveBase.siteVisitors, 1);
   const [rangeDays, setRangeDays] = useState(14);
+  const currentDate = useLiveCalendarDate();
+  const liveDailyImpressions = useMemo(
+    () => relabelSeriesToCurrentDate(dailyImpressions, currentDate),
+    [dailyImpressions, currentDate],
+  );
 
-  const chartData = dailyImpressions.slice(-rangeDays).map(d => ({
-    day: d.day.replace("May ", "").replace("Apr ", ""),
+  const chartData = liveDailyImpressions.slice(-rangeDays).map(d => ({
+    day: d.day,
     ...(d.ctv ? { CTV: Math.round(d.ctv / 1000) } : {}),
     YouTube: Math.round(d.youtube / 1000),
     Display: Math.round(d.display / 1000),
@@ -343,7 +369,7 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
         <Card C={C}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted }}>Daily Delivery — {rangeLabel} (000s)</span>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted }}>Daily Delivery — {rangeLabel} · Through {formatDashboardDate(currentDate)} (000s)</span>
             <div style={{ display: "flex", gap: 4 }}>
               {DATE_RANGES.map(r => (
                 <button key={r.days} onClick={() => setRangeDays(r.days)} style={{
