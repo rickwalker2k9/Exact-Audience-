@@ -23,3 +23,6 @@
 - [ ] Inspect the correct Railway service deployment at project c3bc7500-c9f9-46b5-b081-a7ee4eac9cae and resolve any remaining healthcheck failure.
 - [x] Replace unsupported import.meta.dirname usage in the production bundle and ensure missing Railway configuration does not crash startup.
 - [x] Document the required OAUTH_SERVER_URL Railway variable and any other mandatory service configuration.
+- [ ] Confirm that the Railway deployment created from GitHub commit cc48eb2 succeeds, rather than reviewing the older failed b49bcbda deployment.
+- [ ] Obtain the status or logs for the Railway deployment created after 1:42 PM MST, not deployment b49bcbda from 1:12 PM MST.
+- [ ] Trigger a new Railway deployment from GitHub main if no deployment for cc48eb2 appears in the service deployment list.
