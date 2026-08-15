@@ -28,11 +28,11 @@
 - [x] Trigger a new Railway deployment from GitHub main if no deployment for cc48eb2 appears in the service deployment list.
 
 ## Lamborghini Demo URL — Aug 15, 2026
-- [ ] Identify the Railway public domain for the active Exact Audience service and verify the `/lamborghini` demo route.
-- [ ] Confirm the public `/lamborghini` URL returns HTTP 200 and displays the refreshed Exact Audience dashboard content.
+- [x] Identify the Railway public domain for the active Exact Audience service and verify the `/lamborghini` demo route.
+- [x] Confirm the public `/lamborghini` URL returns HTTP 200 and displays the refreshed Exact Audience dashboard content.
 
 ## Lamborghini Live Dates — Aug 15, 2026
 - [x] Replace static Lamborghini traffic-series dates with labels derived from the viewer’s current local date.
 - [x] Make time-sensitive dashboard labels roll forward automatically and cover the live 7-, 14-, and 30-day chart selections.
-- [ ] Add test coverage for date rollover behavior and verify the public Railway demo after deployment.
+- [x] Add test coverage for date rollover behavior and verify the public Railway demo after deployment.
 - [x] Correct the chart's 30-day selection to include exactly 30 current-date labels and validate it before deployment.

@@ -1,0 +1,4 @@
+Public verification — 2026-08-15
+
+URL: https://ea-dashboard-production.up.railway.app/lamborghini
+Result: The live browser rendered "Daily Delivery — Last 14 Days · Through Aug 15 (000s)" with chart labels Aug 2 through Aug 15. The refreshed Lamborghini visitor card displayed Marisol Vega. This confirms the public Railway route is serving the live-date dashboard build.
