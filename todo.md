@@ -16,3 +16,7 @@
 - [x] Complete the Lamborghini pool in full three-profile rotation groups and test that no profile repeats before every profile has appeared.
 - [x] Verify the Lamborghini dashboard rotation and TypeScript build before checkpointing.
 - [x] Replace the older full People-tab audience roster so all displayed Lamborghini individuals are refreshed and distinct.
+
+## Railway Deployment Remediation — Aug 15, 2026
+- [x] Diagnose and fix the Railway network healthcheck failure for the latest dashboard deployment.
+- [ ] Verify Railway serves the refreshed Lamborghini roster after the corrected deployment succeeds.

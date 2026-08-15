@@ -8,3 +8,9 @@ Follow-up verification — 2026-08-15
 
 - The People tab now shows a Lamborghini-specific caption and a refreshed Arizona-only roster of sixty distinct names beginning with Marisol Vega, Trent Nakamura, Imani Brooks, Owen Calder, and Leila Sethi.
 - The three daily journey cards remain distinct: hybrid ownership education, hospitality-event nurture, and performance-drive evaluation.
+
+Railway verification — 2026-08-15
+
+- GitHub accepted commit 03935c8 on main, but Railway was still serving the prior Lamborghini visitor roster after its first deployment check; the live feed showed Prescott Wentworth and then Donovan Ashby rather than a refreshed visitor. Continue monitoring until the new build is live.
+- After two additional Railway checks and more than three minutes of waiting, the live site continued serving the previous visitor roster, including Ingrid Vasquez. The pushed GitHub commit is confirmed on main, so deployment-status investigation is required.
+- The Railway project URL did not render deployment controls or status in the sandbox browser, indicating that a connected personal browser session may be required to inspect the Railway dashboard directly.
