@@ -28,14 +28,12 @@ function todaySeed(dashboardId: string): number {
   return base + offset;
 }
 
-function pickN<T>(arr: T[], n: number, rng: () => number): T[] {
-  const copy = [...arr];
-  const result: T[] = [];
-  for (let i = 0; i < n && copy.length > 0; i++) {
-    const idx = Math.floor(rng() * copy.length);
-    result.push(copy.splice(idx, 1)[0]);
-  }
-  return result;
+function pickRotatingProfiles<T>(arr: T[], n: number, dashboardId: string): T[] {
+  if (arr.length === 0) return [];
+  const daysSinceEpoch = Math.floor(Date.now() / 86_400_000);
+  const offset = dashboardId.split("").reduce((total, char) => total + char.charCodeAt(0), 0) % arr.length;
+  const start = (daysSinceEpoch * n + offset) % arr.length;
+  return Array.from({ length: Math.min(n, arr.length) }, (_, index) => arr[(start + index) % arr.length]);
 }
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
@@ -699,6 +697,284 @@ const LAMBO_POOL: RawProfile[] = [
       },
     },
   },
+  {
+    id: "lb-p06", dashboardId: "lamborghini",
+    name: "Marisol Vega", age: 42, location: "Paradise Valley, AZ",
+    occupation: "Chief Financial Officer, Regional Health Network", avatar: "MV", avatarColor: "#0f766e",
+    buyerDNA: "Executive replacing a Mercedes G 63 with a refined daily-performance SUV. Values discretion, scheduling control, and a concise, data-led purchase process.",
+    engagementScore: 94,
+    signals: [
+      { channel: "CTV", action: "Completed ad view", detail: "Watched the Urus SE efficiency-and-performance spot through completion on a business-travel hotel stream", strength: "high" },
+      { channel: "Google Search", action: "Comparison research", detail: "Searched 'Urus SE real-world range' and 'Urus SE vs G 63 daily driving'", strength: "very-high" },
+      { channel: "Website", action: "Model comparison", detail: "Compared Urus SE and Urus S dimensions, rear-seat specifications, and available driver-assistance features for 17 minutes", strength: "high" },
+      { channel: "Concierge", action: "Live chat", detail: "Asked for a weekday private appointment outside showroom hours and requested a concise ownership-cost overview", strength: "very-high" },
+      { channel: "Calendar", action: "Appointment request", detail: "Selected a Tuesday morning private Urus SE walkaround and asked that no financing paperwork be prepared in advance", strength: "very-high" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 68, reasoning: "She has chosen the model category and requested a controlled appointment; the next interaction is the decision point." },
+      { window: "30 days", probability: 86, reasoning: "A specific scheduling request and model comparison indicate an active replacement cycle rather than casual browsing." },
+      { window: "6 months", probability: 96, reasoning: "Her existing vehicle and executive use case make a luxury SUV replacement highly likely this year." },
+    ],
+    personalizedMessage: { subject: "Marisol — your private Urus SE appointment is reserved", body: "Marisol, your requested weekday Urus SE walkaround is reserved. We will have a single vehicle prepared, the specifications you reviewed on hand, and a concise ownership comparison ready when you arrive." },
+    mediaRecommendations: [
+      { channel: "Personal Concierge", allocation: 45, tactic: "Confirm her requested appointment with one point of contact and a short ownership brief; do not use a high-volume sales cadence.", color: "#0f766e" },
+      { channel: "Email", allocation: 30, tactic: "Send a one-page Urus SE versus G 63 daily-use comparison before the appointment.", color: "#7c3aed" },
+      { channel: "CTV Retargeting", allocation: 15, tactic: "Use Urus SE refinement and daily usability creative in business-travel viewing environments.", color: "#38bdf8" },
+      { channel: "Direct Mail", allocation: 10, tactic: "Deliver a minimal, premium appointment confirmation card after she visits.", color: "#f59e0b" },
+    ],
+    tags: ["Urus SE", "Executive Replacement", "Private Appointment", "Discretion", "High Intent"],
+    journeySummary: "Marisol is not accessory-shopping; she is choosing a quieter, more controlled purchase experience for a practical executive replacement. A punctual private appointment and concise comparison are the right next step.",
+  },
+  {
+    id: "lb-p07", dashboardId: "lamborghini",
+    name: "Trent Nakamura", age: 49, location: "Scottsdale, AZ",
+    occupation: "Hospitality Group Owner", avatar: "TN", avatarColor: "#d4a017",
+    buyerDNA: "Lease-maturity buyer whose Range Rover Autobiography term ends this quarter. Exploring a Urus S because he wants a higher-energy arrival experience for hospitality events.",
+    engagementScore: 88,
+    signals: [
+      { channel: "Email", action: "Opened", detail: "Opened a dealership ownership newsletter focused on lease-turnover timing and current Urus S arrivals", strength: "medium" },
+      { channel: "Financial Services", action: "Lease maturity check", detail: "Reviewed the remaining term and residual value on a Range Rover Autobiography lease", strength: "very-high" },
+      { channel: "Website", action: "Inventory watchlist", detail: "Saved two Urus S units and revisited their delivery-estimate panels on three separate days", strength: "very-high" },
+      { channel: "Phone", action: "Trade-in question", detail: "Asked whether an early evaluation can be completed before the lease end date", strength: "high" },
+      { channel: "Website", action: "Deal estimator", detail: "Used the payment-versus-cash comparison tool without submitting a credit application", strength: "medium" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 54, reasoning: "He needs an early trade evaluation before the lease date drives the timetable." },
+      { window: "30 days", probability: 79, reasoning: "Saved inventory and lease research point to a planned turnover within the current quarter." },
+      { window: "6 months", probability: 93, reasoning: "The scheduled lease maturity gives this journey a clear, real deadline." },
+    ],
+    personalizedMessage: { subject: "Trent — an early appraisal before your lease-maturity decision", body: "Trent, we can complete a no-obligation appraisal before your lease maturity and walk through the two Urus S units you saved. That will give you a clear answer without forcing a decision today." },
+    mediaRecommendations: [
+      { channel: "Personal Outreach", allocation: 40, tactic: "Assign a trade specialist to schedule an early appraisal around his hospitality operating hours.", color: "#d4a017" },
+      { channel: "Email", allocation: 30, tactic: "Send the two saved units with arrival timing and a transparent lease-transition checklist.", color: "#7c3aed" },
+      { channel: "Google Retargeting", allocation: 20, tactic: "Reach him on lease-maturity and Urus S inventory queries, not aftermarket searches.", color: "#38bdf8" },
+      { channel: "CTV Retargeting", allocation: 10, tactic: "Use arrival-and-presence creative that fits his hospitality-host identity.", color: "#14b8a6" },
+    ],
+    tags: ["Urus S", "Lease Maturity", "Saved Inventory", "Trade Evaluation", "Planned Turnover"],
+    journeySummary: "Trent's journey is governed by a lease clock. His best next step is an early appraisal and a transparent transition plan—not a generic follow-up campaign.",
+  },
+  {
+    id: "lb-p08", dashboardId: "lamborghini",
+    name: "Imani Brooks", age: 37, location: "Phoenix, AZ",
+    occupation: "Chief Operating Officer, Technology Services Firm", avatar: "IB", avatarColor: "#38bdf8",
+    buyerDNA: "Relocating executive who wants a performance SUV delivered soon after settling in Arizona. She is researching remotely and values a complete video-first buying process.",
+    engagementScore: 83,
+    signals: [
+      { channel: "Google Search", action: "Local-market research", detail: "Searched 'Lamborghini Urus in stock Phoenix delivery' while researching Scottsdale neighborhoods", strength: "high" },
+      { channel: "Website", action: "Remote inventory visit", detail: "Viewed in-stock Urus S inventory from an out-of-state IP and used the distance-to-dealer map", strength: "high" },
+      { channel: "Concierge", action: "Video request", detail: "Requested a live video walkaround of a Blu Eleos Urus S before her relocation date", strength: "very-high" },
+      { channel: "Phone", action: "Logistics call", detail: "Asked about vehicle holding, delivery timing, and Arizona registration steps", strength: "very-high" },
+      { channel: "Website", action: "Return visit", detail: "Revisited the same VIN page after receiving a relocation checklist", strength: "high" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 39, reasoning: "She has a strong product preference but needs her move timeline confirmed." },
+      { window: "30 days", probability: 72, reasoning: "A requested walkaround and logistics call make this a concrete relocation purchase." },
+      { window: "6 months", probability: 90, reasoning: "Her relocation provides a natural new-market vehicle purchase event." },
+    ],
+    personalizedMessage: { subject: "Imani — your remote Urus S walkaround and delivery timeline", body: "Imani, we can host a live walkaround of the Blu Eleos Urus S and map the timing from your move date through Arizona delivery. We will keep the process video-first until you are ready to visit." },
+    mediaRecommendations: [
+      { channel: "Concierge Video", allocation: 45, tactic: "Schedule a live, single-vehicle video walkaround with delivery and registration questions answered in one session.", color: "#38bdf8" },
+      { channel: "Email", allocation: 25, tactic: "Send a relocation-to-delivery timeline and the exact vehicle specification sheet.", color: "#7c3aed" },
+      { channel: "Google Retargeting", allocation: 20, tactic: "Target local-market and in-stock Urus delivery searches as her relocation approaches.", color: "#14b8a6" },
+      { channel: "CTV Retargeting", allocation: 10, tactic: "Keep an understated Urus S ownership message present during her Arizona market research.", color: "#f59e0b" },
+    ],
+    tags: ["Urus S", "Relocation", "Remote Buyer", "Video Walkaround", "Delivery Planning"],
+    journeySummary: "Imani is on a relocation clock and is buying remotely. A remote walkaround and delivery plan matter more than an in-store event or accessory content.",
+  },
+  {
+    id: "lb-p09", dashboardId: "lamborghini",
+    name: "Owen Calder", age: 61, location: "Fountain Hills, AZ",
+    occupation: "Private Investor", avatar: "OC", avatarColor: "#9333ea",
+    buyerDNA: "Collector exploring his next allocation after a Ferrari 812 GTS. Values scarcity, provenance, and a serious conversation about future Lamborghini allocation rather than immediate retail inventory.",
+    engagementScore: 86,
+    signals: [
+      { channel: "Print", action: "Editorial engagement", detail: "Visited long-form coverage of limited-production Lamborghini models and collector-market history", strength: "high" },
+      { channel: "Website", action: "Heritage content visit", detail: "Read the Revuelto and limited-series ownership pages, then downloaded the collector consultation request", strength: "very-high" },
+      { channel: "Phone", action: "Allocation inquiry", detail: "Asked the dealership principal how collector relationship history affects future allocation conversations", strength: "very-high" },
+      { channel: "Dealership", action: "Private consultation request", detail: "Requested a quiet consultation focused on model horizon and ownership provenance rather than a showroom test drive", strength: "very-high" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 31, reasoning: "His immediate action is relationship-building, not a retail close." },
+      { window: "30 days", probability: 49, reasoning: "A private allocation conversation could convert to a deposit if the right opportunity appears." },
+      { window: "6 months", probability: 82, reasoning: "Collector interest is durable and tied to future model availability." },
+    ],
+    personalizedMessage: { subject: "Owen — a private collector conversation at your pace", body: "Owen, we would be glad to arrange a private conversation about Lamborghini model horizons, ownership history, and how to build the right relationship for a future allocation. There is no retail presentation attached." },
+    mediaRecommendations: [
+      { channel: "Dealership Principal", allocation: 55, tactic: "Use a principal-led collector consultation; avoid performance marketing or promotional pricing language.", color: "#9333ea" },
+      { channel: "Private Email", allocation: 25, tactic: "Share concise model-horizon material and provenance-focused editorial content.", color: "#d4a017" },
+      { channel: "Direct Mail", allocation: 20, tactic: "Send a discreet collector portfolio rather than an inventory brochure.", color: "#0f766e" },
+    ],
+    tags: ["Collector", "Future Allocation", "Revuelto", "Private Consultation", "Relationship-Led"],
+    journeySummary: "Owen is a collector journey, not an in-market retargeting sequence. A principal-led allocation conversation is the appropriate next action.",
+  },
+  {
+    id: "lb-p10", dashboardId: "lamborghini",
+    name: "Leila Sethi", age: 45, location: "Paradise Valley, AZ",
+    occupation: "Founder, Energy Advisory Firm", avatar: "LS", avatarColor: "#14b8a6",
+    buyerDNA: "Considering a Urus SE as a performance-oriented family SUV. Her decision is centered on charging practicality, day-to-day range, and whether hybrid ownership fits an energy-conscious lifestyle.",
+    engagementScore: 79,
+    signals: [
+      { channel: "YouTube", action: "Long-form view", detail: "Watched an Urus SE engineering overview and a real-world hybrid-use review through completion", strength: "high" },
+      { channel: "Google Search", action: "Practicality research", detail: "Searched 'Urus SE charging time home charger' and 'Urus SE family daily use'", strength: "very-high" },
+      { channel: "Website", action: "Ownership tools", detail: "Used the charging and range explainer, then compared Urus SE to Bentayga Hybrid operating assumptions", strength: "high" },
+      { channel: "Email", action: "Guide request", detail: "Requested the dealership's hybrid ownership guide and selected family-use as her interest area", strength: "very-high" },
+      { channel: "Concierge", action: "Question submitted", detail: "Asked whether a home charging consultation can be coordinated before a test drive", strength: "high" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 26, reasoning: "She is still resolving ownership-fit questions before she wants a vehicle appointment." },
+      { window: "30 days", probability: 63, reasoning: "A guide request and detailed home-charging question show practical evaluation is underway." },
+      { window: "6 months", probability: 87, reasoning: "Her need is category-based and will persist once the hybrid ownership questions are answered." },
+    ],
+    personalizedMessage: { subject: "Leila — a clear Urus SE ownership and charging conversation", body: "Leila, we can arrange a short, practical Urus SE ownership discussion focused on home charging, real-world use, and the questions that matter for your household before you decide whether to drive one." },
+    mediaRecommendations: [
+      { channel: "Educational Email", allocation: 38, tactic: "Send a concise hybrid ownership guide and answer her charging question directly.", color: "#14b8a6" },
+      { channel: "Concierge Consultation", allocation: 32, tactic: "Offer a product specialist conversation before asking for a test drive.", color: "#7c3aed" },
+      { channel: "YouTube Retargeting", allocation: 20, tactic: "Use engineering and daily-use Urus SE creative rather than status-led creative.", color: "#38bdf8" },
+      { channel: "Direct Mail", allocation: 10, tactic: "Follow with a premium Urus SE ownership overview after the education call.", color: "#f59e0b" },
+    ],
+    tags: ["Urus SE", "Hybrid Ownership", "Family Use", "Education Journey", "Longer Consideration"],
+    journeySummary: "Leila's journey is practical and education-led. She needs credible hybrid-use answers before a drive, not generic urgency or aftermarket content.",
+  },
+  {
+    id: "lb-p11", dashboardId: "lamborghini",
+    name: "Julian Verma", age: 54, location: "Scottsdale, AZ",
+    occupation: "Managing Director, Restaurant Group", avatar: "JV", avatarColor: "#f59e0b",
+    buyerDNA: "Brand-experience buyer who first encountered Lamborghini through a hospitality event. He is responding to the social occasion and a potential executive-hosting vehicle rather than a technical specification chase.",
+    engagementScore: 74,
+    signals: [
+      { channel: "Event", action: "RSVP", detail: "Registered for a sunset reveal event and added a guest from his executive team", strength: "high" },
+      { channel: "Email", action: "Opened + clicked", detail: "Opened the event itinerary twice and clicked the RSVP confirmation details", strength: "high" },
+      { channel: "Website", action: "Brand story visit", detail: "Visited the Urus lifestyle gallery and dealership hospitality page after the event invitation", strength: "medium" },
+      { channel: "Event", action: "Attendance", detail: "Attended the reveal, spoke with a product specialist, and requested to be notified about the next private drive event", strength: "very-high" },
+      { channel: "CRM", action: "Follow-up preference", detail: "Selected text-message event invitations rather than sales calls", strength: "high" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 18, reasoning: "He is engaging with the brand experience and has not yet started a direct product evaluation." },
+      { window: "30 days", probability: 46, reasoning: "A follow-up driving event can convert brand affinity into a product conversation." },
+      { window: "6 months", probability: 76, reasoning: "His engagement is relationship-led and could mature through relevant private events." },
+    ],
+    personalizedMessage: { subject: "Julian — the next private Lamborghini driving event", body: "Julian, thank you for joining us at the reveal. We will reserve a place for you at the next intimate driving event and will text you the details before invitations are released more broadly." },
+    mediaRecommendations: [
+      { channel: "SMS Event Invitation", allocation: 45, tactic: "Respect his stated preference: send one concise invitation to a relevant private drive event.", color: "#f59e0b" },
+      { channel: "Email", allocation: 25, tactic: "Follow event attendance with a visual recap and a low-pressure next-event option.", color: "#7c3aed" },
+      { channel: "CTV Retargeting", allocation: 20, tactic: "Use hospitality and arrival-experience creative, not price or configuration messaging.", color: "#14b8a6" },
+      { channel: "Personal Outreach", allocation: 10, tactic: "Have the specialist he met send a brief personal thank-you before the next event.", color: "#38bdf8" },
+    ],
+    tags: ["Event Attendee", "Brand Experience", "SMS Preference", "Hospitality", "Nurture"],
+    journeySummary: "Julian is a relationship and experience journey. The correct next action is a relevant private drive invitation, not an inventory pitch.",
+  },
+  {
+    id: "lb-p12", dashboardId: "lamborghini",
+    name: "Arden Morales", age: 38, location: "Tempe, AZ",
+    occupation: "Founder, Motorsport Software Startup", avatar: "AM", avatarColor: "#38bdf8",
+    buyerDNA: "Performance enthusiast moving from an Audi R8 into a more usable super-SUV. The buying trigger is proving the driving experience, not acquiring a customized build.",
+    engagementScore: 76,
+    signals: [
+      { channel: "Podcast", action: "Content engagement", detail: "Clicked from a motorsport technology podcast episode to the Urus Performante performance page", strength: "medium" },
+      { channel: "Google Search", action: "Performance research", detail: "Searched 'Urus Performante lap time' and 'Urus Performante vs DBX 707 handling'", strength: "very-high" },
+      { channel: "Website", action: "Technical visit", detail: "Read the performance, chassis, and drive-mode specifications; spent 15 minutes on telemetry content", strength: "high" },
+      { channel: "Experience", action: "Drive interest", detail: "Requested notification for the next controlled-road or track-oriented demonstration", strength: "very-high" },
+      { channel: "Email", action: "Content click", detail: "Clicked a comparison article about performance SUV driving dynamics", strength: "high" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 21, reasoning: "He needs a credible driving experience before his purchase timing becomes immediate." },
+      { window: "30 days", probability: 57, reasoning: "He has defined the performance comparison set and asked for a demonstration." },
+      { window: "6 months", probability: 84, reasoning: "The category transition from a two-seat sports car to a usable performance SUV is meaningful and durable." },
+    ],
+    personalizedMessage: { subject: "Arden — a performance-focused Urus Performante drive", body: "Arden, we will keep you first in line for our next performance-focused Urus demonstration. It will be built around how the vehicle drives—not a showroom sales presentation." },
+    mediaRecommendations: [
+      { channel: "Performance Experience", allocation: 40, tactic: "Invite him to a controlled demonstration where a specialist can answer chassis and drive-mode questions.", color: "#38bdf8" },
+      { channel: "Technical Email", allocation: 30, tactic: "Share focused performance comparisons and driving-dynamics material.", color: "#7c3aed" },
+      { channel: "YouTube Retargeting", allocation: 20, tactic: "Use engineering and handling content, avoiding lifestyle or accessory messaging.", color: "#14b8a6" },
+      { channel: "Google Retargeting", allocation: 10, tactic: "Target competitive performance-SUV research terms.", color: "#f59e0b" },
+    ],
+    tags: ["Urus Performante", "Driving Experience", "Performance Research", "Audi Conquest", "Consideration"],
+    journeySummary: "Arden is evaluating driving credibility. A track-oriented demonstration and technical conversation will advance this journey; accessory merchandising will not.",
+  },
+  {
+    id: "lb-p13", dashboardId: "lamborghini",
+    name: "Caleb Roth", age: 57, location: "Carefree, AZ",
+    occupation: "Logistics Executive", avatar: "CR", avatarColor: "#0f766e",
+    buyerDNA: "Current Aston Martin DBX owner entering a trade window. His journey is valuation-led: he wants clarity on equity, market timing, and whether a Urus provides the right business-and-weekend vehicle blend.",
+    engagementScore: 81,
+    signals: [
+      { channel: "Market Data", action: "Resale research", detail: "Reviewed market-value ranges and recent transaction trends for a 2023 Aston Martin DBX", strength: "very-high" },
+      { channel: "Website", action: "Trade estimator", detail: "Completed an initial non-binding trade estimate using his current vehicle details", strength: "very-high" },
+      { channel: "Google Search", action: "Competitive research", detail: "Searched 'Urus S resale value' and 'Urus S vs DBX long-term value'", strength: "high" },
+      { channel: "Concierge", action: "Valuation request", detail: "Asked for a preliminary appraisal appointment and a side-by-side ownership cost conversation", strength: "very-high" },
+      { channel: "Website", action: "Return visit", detail: "Returned to an in-stock Urus S after reviewing the trade-estimate confirmation", strength: "high" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 47, reasoning: "A completed estimate and requested appraisal create a clear near-term decision point." },
+      { window: "30 days", probability: 74, reasoning: "He is actively weighing equity and value retention, not merely browsing models." },
+      { window: "6 months", probability: 91, reasoning: "The mature trade window supports a likely replacement once the numbers are clear." },
+    ],
+    personalizedMessage: { subject: "Caleb — a clear DBX-to-Urus appraisal conversation", body: "Caleb, we can prepare a straightforward preliminary appraisal and walk through the Urus S ownership case next to your DBX. The goal is to give you decision-quality numbers before you commit to a next step." },
+    mediaRecommendations: [
+      { channel: "Trade Specialist", allocation: 45, tactic: "Lead with a transparent, appointment-based appraisal and market context.", color: "#0f766e" },
+      { channel: "Email", allocation: 30, tactic: "Send a concise ownership-value comparison built around his existing DBX.", color: "#7c3aed" },
+      { channel: "Google Retargeting", allocation: 15, tactic: "Use valuation and competitive SUV value messaging, not creative customization.", color: "#38bdf8" },
+      { channel: "Direct Mail", allocation: 10, tactic: "Follow the appraisal with a premium, factual trade review packet.", color: "#f59e0b" },
+    ],
+    tags: ["Urus S", "Aston Martin Conquest", "Trade Appraisal", "Resale Value", "Decision-Ready"],
+    journeySummary: "Caleb is using equity and resale-value logic to govern his timing. A clear appraisal is more relevant than a generic test-drive invitation.",
+  },
+  {
+    id: "lb-p14", dashboardId: "lamborghini",
+    name: "Talia Okeke", age: 33, location: "Scottsdale, AZ",
+    occupation: "Architect and Studio Principal", avatar: "TO", avatarColor: "#d4a017",
+    buyerDNA: "Referral-led first Lamborghini consideration. She responds to design, service, and a low-pressure concierge experience, and wants to understand how an Urus fits both client-facing work and personal travel.",
+    engagementScore: 71,
+    signals: [
+      { channel: "Referral", action: "Introduction", detail: "A current owner referred her to a client experience specialist for a first Lamborghini conversation", strength: "very-high" },
+      { channel: "Website", action: "Design exploration", detail: "Spent time with color, material, and interior-design galleries rather than technical configuration tools", strength: "high" },
+      { channel: "Instagram", action: "Organic engagement", detail: "Saved dealership posts featuring client delivery experiences and interior craftsmanship", strength: "medium" },
+      { channel: "Concierge", action: "Preference call", detail: "Asked for a short conversation about ownership, service pickup, and private viewing options before selecting a model", strength: "very-high" },
+      { channel: "Website", action: "Return visit", detail: "Returned to Urus S interior pages after the concierge call", strength: "high" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 17, reasoning: "She is establishing trust and understanding the ownership experience before she wants a transaction." },
+      { window: "30 days", probability: 43, reasoning: "A referred, concierge-led conversation can develop quickly if the experience remains personal." },
+      { window: "6 months", probability: 78, reasoning: "Her design and service priorities make this a real first-luxury purchase path, but not an urgency play." },
+    ],
+    personalizedMessage: { subject: "Talia — an introduction to Lamborghini ownership, on your terms", body: "Talia, thank you for the introduction. We would be pleased to arrange a short private conversation about ownership, service, and the Urus experience before you decide whether a vehicle viewing is useful." },
+    mediaRecommendations: [
+      { channel: "Client Experience Specialist", allocation: 45, tactic: "Keep one consistent concierge contact and begin with her ownership and service questions.", color: "#d4a017" },
+      { channel: "Email", allocation: 25, tactic: "Share design-led Urus material and an explanation of the private viewing process.", color: "#7c3aed" },
+      { channel: "Instagram Retargeting", allocation: 20, tactic: "Use craftsmanship and delivery-experience content, avoiding conversion pressure.", color: "#14b8a6" },
+      { channel: "Direct Mail", allocation: 10, tactic: "Send a referral acknowledgment with a simple invitation to view when ready.", color: "#38bdf8" },
+    ],
+    tags: ["Urus S", "Referral", "First Lamborghini", "Design-Led", "Concierge"],
+    journeySummary: "Talia is a referral and service-experience journey. A single thoughtful concierge relationship is the correct next action—not a repeated promotional sequence.",
+  },
+  {
+    id: "lb-p15", dashboardId: "lamborghini",
+    name: "Sasha Feldman", age: 47, location: "Paradise Valley, AZ",
+    occupation: "Venture Partner, Southwest Venture Fund", avatar: "SF", avatarColor: "#a78bfa",
+    buyerDNA: "Aspirational brand explorer moving from a Bentley Continental GT into a more versatile second vehicle. Her interest began with ownership community and design culture—not an active transaction timeline.",
+    engagementScore: 63,
+    signals: [
+      { channel: "Newsletter", action: "Subscription", detail: "Subscribed to dealership event and ownership-culture updates after reading a design-focused delivery story", strength: "medium" },
+      { channel: "Instagram", action: "Organic engagement", detail: "Saved posts about Lamborghini club drives and commented on a client delivery experience", strength: "medium" },
+      { channel: "Website", action: "Brand exploration", detail: "Read the Urus ownership overview and viewed the customer-experience calendar without opening inventory", strength: "medium" },
+      { channel: "Event", action: "Interest registered", detail: "Asked to be considered for a future owners-and-guests drive rather than a sales appointment", strength: "high" },
+      { channel: "Website", action: "Return visit", detail: "Returned to the Urus SE lifestyle page after a club-drive recap was posted", strength: "medium" },
+    ],
+    purchaseWindows: [
+      { window: "7 days", probability: 9, reasoning: "Her engagement is cultural and community-led; a hard sales sequence would be premature." },
+      { window: "30 days", probability: 27, reasoning: "A relevant drive experience may create a model conversation, but she is not yet evaluating inventory." },
+      { window: "6 months", probability: 68, reasoning: "She has established high-quality brand affinity and a plausible second-vehicle need." },
+    ],
+    personalizedMessage: { subject: "Sasha — a future Lamborghini owners-and-guests drive", body: "Sasha, we will keep you informed about our next owners-and-guests driving experience. It is designed to let you spend time with the community and the vehicles without turning the day into a sales appointment." },
+    mediaRecommendations: [
+      { channel: "Event Nurture", allocation: 45, tactic: "Invite her to one relevant community drive and preserve a low-pressure cadence.", color: "#a78bfa" },
+      { channel: "Editorial Email", allocation: 30, tactic: "Share ownership stories and design-led event recaps rather than inventory alerts.", color: "#7c3aed" },
+      { channel: "Instagram Retargeting", allocation: 15, tactic: "Use club-drive and ownership-community creative aligned with her organic engagement.", color: "#14b8a6" },
+      { channel: "Personal Outreach", allocation: 10, tactic: "Have the community host send a short welcome before the next drive event.", color: "#d4a017" },
+    ],
+    tags: ["Brand Explorer", "Community", "Owners Event", "Urus SE", "Long-Cycle Nurture"],
+    journeySummary: "Sasha is a long-cycle community journey. Relevant owner experiences build trust; inventory pressure or an aftermarket-parts sequence would be counterproductive.",
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -725,8 +1001,9 @@ const POOL_MAP: Record<string, RawProfile[]> = {
 };
 
 /**
- * Returns 3 profiles for the given dashboard, seeded by today's date.
- * The same 3 profiles are returned all day; they rotate at midnight.
+ * Returns 3 profiles for the given dashboard in a deterministic daily rotation.
+ * The same 3 profiles are returned all day; every new day advances to the next
+ * group so profiles do not repeat until the available pool has been covered.
  * Dates in signals are shifted to be relative to today.
  */
 export function getDailyProfiles(dashboardId: DashboardId): BuyerProfile[] {
@@ -734,7 +1011,7 @@ export function getDailyProfiles(dashboardId: DashboardId): BuyerProfile[] {
   if (!pool || pool.length === 0) return [];
 
   const rng = seedRng(todaySeed(dashboardId));
-  const picked = pickN(pool, 3, rng);
+  const picked = pickRotatingProfiles(pool, 3, dashboardId);
 
   return picked.map(p => ({
     ...p,

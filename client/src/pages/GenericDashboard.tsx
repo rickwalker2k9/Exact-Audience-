@@ -1001,6 +1001,7 @@ function TabPeople({ mobile, C, dashboardId, accentColor, audienceSegment, audie
   const DYNAMIC_DASHBOARDS = ["land-rover", "lamborghini", "warby-parker", "policygenius", "breeze-insurance", "barrett-financial"];
   const dynamicProfiles = DYNAMIC_DASHBOARDS.includes(dashboardId) ? getDailyProfiles(dashboardId as any) : [];
   const profiles = dynamicProfiles.length > 0 ? dynamicProfiles : getProfilesByDashboard(dashboardId);
+  const isLamborghiniDashboard = dashboardId === "lamborghini";
   const windowColors = ["#4ade80", "#f59e0b", "#38bdf8"];
   const [search, setSearch] = useState("");
   const [filterState, setFilterState] = useState("All");
@@ -1009,6 +1010,12 @@ function TabPeople({ mobile, C, dashboardId, accentColor, audienceSegment, audie
   const [showCount, setShowCount] = useState(20);
 
   const people = audienceSegment || [];
+  const audienceTitle = isLamborghiniDashboard
+    ? `Current Lamborghini Prospect Roster — ${people.length} Featured Profiles`
+    : "Target Audience List — 39 Confirmed Leads";
+  const audienceDescription = isLamborghiniDashboard
+    ? "A refreshed Arizona prospect roster with varied engagement signals, model interests, and next-step statuses. Search and filter to prioritize the right Lamborghini conversation."
+    : <>All 39 leads originated from <strong style={{ color: accentColor }}>incomeprotectioncalculator.com</strong>. Each person completed the 6-step calculator and opted in. Search, filter, and explore every confirmed lead below.</>;
   const states = ["All", ...Array.from(new Set(people.map(p => p.state))).sort()];
   const statuses = ["All", "hot", "warm", "reached", "pending"];
   const genders = ["All", "Male", "Female"];
@@ -1072,8 +1079,8 @@ function TabPeople({ mobile, C, dashboardId, accentColor, audienceSegment, audie
       {people.length > 0 && audienceSegmentStats && (
         <div>
           <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 24, marginBottom: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: C.white, marginBottom: 4 }}>Target Audience List — 39 Confirmed Leads</div>
-            <div style={{ fontSize: 12, color: C.white }}>All 39 leads originated from <strong style={{ color: accentColor }}>incomeprotectioncalculator.com</strong>. Each person completed the 6-step calculator and opted in. Search, filter, and explore every confirmed lead below.</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: C.white, marginBottom: 4 }}>{audienceTitle}</div>
+            <div style={{ fontSize: 12, color: C.white }}>{audienceDescription}</div>
           </div>
           {/* Stats */}
           <div style={{ display: "grid", gridTemplateColumns: mobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 12, marginBottom: 16 }}>

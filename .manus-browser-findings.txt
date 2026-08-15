@@ -1,0 +1,10 @@
+Lamborghini preview verification — 2026-08-15
+
+- The refreshed Overview live visitor card renders Marisol Vega with the new private-appointment journey signal.
+- The People tab renders three distinct daily profile cards: Leila Sethi (hybrid ownership education), Julian Verma (event and brand experience), and Arden Morales (performance driving evaluation).
+- The People tab also displays a separate full audience table sourced from Lamborghini's audience-segment file. It still contains the older large roster and must be refreshed to avoid the appearance of stale individuals in the dashboard.
+
+Follow-up verification — 2026-08-15
+
+- The People tab now shows a Lamborghini-specific caption and a refreshed Arizona-only roster of sixty distinct names beginning with Marisol Vega, Trent Nakamura, Imani Brooks, Owen Calder, and Leila Sethi.
+- The three daily journey cards remain distinct: hybrid ownership education, hospitality-event nurture, and performance-drive evaluation.
