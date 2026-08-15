@@ -100,13 +100,14 @@ type C = ReturnType<typeof useColors>;
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const RACE = {
-  title: "TN-CD5 Republican Primary 2026",
-  date: "August 7, 2026",
-  get daysOut() { return Math.max(0, Math.ceil((new Date("2026-08-07T06:00:00").getTime() - Date.now()) / 86400000)); },
-  summary: "A redrawn district that removed Ogles' home counties and added 14 rural counties where Charlie Hatcher spent 7 years as Agriculture Commissioner. 83% of voters are casting ballots in a congressional race they have never voted in before.",
-  marketOdds: 20,
-  newCounties: 14,
-  newVoterPct: 83,
+  title: "TN-CD5 General Election 2026",
+  date: "November 3, 2026",
+  isoDate: "2026-11-03T06:00:00",
+  get daysOut() { return Math.max(0, Math.ceil((new Date("2026-11-03T06:00:00").getTime() - Date.now()) / 86400000)); },
+  summary: "A newly redrawn 17-county district stretching from Middle Tennessee through rural West Tennessee and into the Memphis area. Charlie Hatcher is the Republican nominee facing Democratic nominee Chaz Molder in the Nov. 3 general election.",
+  marketOdds: null,
+  newCounties: 17,
+  newVoterPct: 82,
 };
 
 const POLLING = [
@@ -360,13 +361,13 @@ const TOTAL_TARGET = PATH_TO_WIN.reduce((s, c) => s + c.target, 0);
 const TOTAL_NEEDED = PATH_TO_WIN.reduce((s, c) => s + c.needed, 0);
 
 const TABS = [
-  { id: "overview",   label: "Race Overview" },
-  { id: "voters",     label: "Persuadable Voters" },
-  { id: "spend",      label: "Spend Plan & Strategy" },
-  { id: "profiles",   label: "Voter Profiles" },
-  { id: "path",       label: "Path to Win" },
+  { id: "overview",   label: "General Overview" },
+  { id: "voters",     label: "General Electorate" },
+  { id: "spend",      label: "General Media Plan" },
+  { id: "profiles",   label: "Audience Readiness" },
+  { id: "path",       label: "General Path" },
   { id: "intel",      label: "District Intelligence" },
-  { id: "oppo",       label: "Opposition Research" },
+  { id: "oppo",       label: "Opponent Research" },
 ];
 
 // ── Shared Components ─────────────────────────────────────────────────────────
@@ -2707,6 +2708,194 @@ function TabOppo({ mobile, C }: { mobile: boolean; C: C }) {
   );
 }
 
+// ── GENERAL ELECTION PANELS ───────────────────────────────────────────────────
+function TabGeneralOverview({ mobile, C }: { mobile: boolean; C: C }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ background: "linear-gradient(135deg,#0d1a2e,#0a1628)", border: `1px solid ${C.accent}40`, borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>General Election Intelligence · Verified public baseline</div>
+        <div style={{ fontSize: mobile ? 19 : 26, fontWeight: 900, color: C.white, marginBottom: 8 }}>Charlie Hatcher (R) vs. Chaz Molder (D)</div>
+        <div style={{ fontSize: 13, color: C.muted, maxWidth: 760, lineHeight: 1.65 }}>
+          The Aug. 6 primary is complete. Hatcher advances to the Nov. 3 general election against Columbia Mayor Chaz Molder in a redrawn 17-county district. This dashboard separates confirmed public facts from planning assumptions so the campaign can update the plan as new polling, FEC filings, rate cards, and field data arrive.
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        <KpiCard label="Days to General" value={RACE.daysOut.toString()} sub="Election Day · Nov. 3, 2026" color={C.accent2} C={C} />
+        <KpiCard label="Primary Result" value="53.2%" sub="Hatcher reported share · Aug. 6" color={C.green} C={C} />
+        <KpiCard label="District Footprint" value="17" sub="Counties from Middle TN to Memphis" color={C.gold} C={C} />
+        <KpiCard label="Opponent Cash" value="$1.48M" sub="Molder FEC filing through Jul. 17" color={C.accent} C={C} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+          <SectionLabel C={C}>What changed after the primary</SectionLabel>
+          {[
+            ["The opponent", "The general-election opponent is Chaz Molder, Columbia's mayor and the Democratic nominee—not Andy Ogles."],
+            ["The electorate", "The plan must reach the whole eligible general-election electorate, not only Republican primary voters."],
+            ["The window", "The campaign has an 80-day operating window from Aug. 15 to Nov. 3; pacing should be re-evaluated weekly."],
+            ["The resource gap", "Public FEC data through July 17 shows materially greater Molder cash on hand. That makes disciplined sequencing and measurement essential."],
+          ].map(([title, text]) => (
+            <div key={title} style={{ background: C.bg3, borderLeft: `3px solid ${C.accent}`, borderRadius: 8, padding: "10px 12px", marginBottom: 10 }}>
+              <div style={{ color: C.white, fontWeight: 700, fontSize: 12, marginBottom: 3 }}>{title}</div>
+              <div style={{ color: C.muted, fontSize: 11, lineHeight: 1.55 }}>{text}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+          <SectionLabel C={C}>Operating discipline</SectionLabel>
+          <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.65, marginBottom: 14 }}>
+            Do not treat the primary result as a general-election forecast. The dashboard should track delivery, reach, frequency, website response, field contact, and verified public filings—not promise a vote outcome from media exposure alone.
+          </div>
+          {[
+            "Refresh FEC cash and spending data when the next filing is available.",
+            "Replace illustrative delivery estimates with signed platform rate cards before launch.",
+            "Maintain county-level field, volunteer, and earned-media reporting alongside paid media.",
+            "Run legal and platform compliance review on every creative and targeting segment.",
+          ].map((text) => <div key={text} style={{ display: "flex", gap: 8, color: C.white, fontSize: 11, lineHeight: 1.55, marginBottom: 8 }}><span style={{ color: C.green }}>✓</span>{text}</div>)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const GENERAL_SPEND_TIERS = [
+  { id: "lean", label: "Lean Test & Learn", total: 120000, recommended: false, note: "A conservative initial commitment that funds learning, local video, and retargeting. It requires sharp geographic prioritization and strong field/earned-media follow-through.", channels: [["CTV / Streaming", 36000, "#3b82f6"], ["Online Video", 30000, "#60a5fa"], ["Meta", 18000, "#22c55e"], ["Programmatic", 18000, "#a78bfa"], ["Search", 6000, "#f59e0b"], ["CRM / SMS / Email", 12000, "#14b8a6"]] },
+  { id: "recommended", label: "Disciplined General Plan", total: 240000, recommended: true, note: "An illustrative 80-day, $3,000-per-day alternative designed for continuity across video, addressable digital, search, and owned-list activation. This is not a comparison to the agency until its scope, production, and fee assumptions are supplied.", channels: [["CTV / Streaming", 72000, "#3b82f6"], ["Online Video", 60000, "#60a5fa"], ["Meta", 36000, "#22c55e"], ["Programmatic", 36000, "#a78bfa"], ["Search", 12000, "#f59e0b"], ["CRM / SMS / Email", 24000, "#14b8a6"]] },
+  { id: "robust", label: "Robust Paid-Media Plan", total: 360000, recommended: false, note: "More flexibility for county-level sequencing, additional creative rotation, and late-window reinforcement. It remains subject to rate-card verification, production capacity, and weekly performance review.", channels: [["CTV / Streaming", 108000, "#3b82f6"], ["Online Video", 90000, "#60a5fa"], ["Meta", 54000, "#22c55e"], ["Programmatic", 54000, "#a78bfa"], ["Search", 18000, "#f59e0b"], ["CRM / SMS / Email", 36000, "#14b8a6"]] },
+] as const;
+
+function TabGeneralSpend({ mobile, C }: { mobile: boolean; C: C }) {
+  const [selectedTier, setSelectedTier] = useState(1);
+  const tier = GENERAL_SPEND_TIERS[selectedTier];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ background: "linear-gradient(135deg,#0d1a2e,#0a1628)", border: `1px solid ${C.accent}40`, borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>General Election Paid-Media Scenarios · Nov. 3, 2026</div>
+        <div style={{ fontSize: mobile ? 18 : 24, fontWeight: 900, color: C.white, marginBottom: 8 }}>A lower-spend alternative that is explicit about tradeoffs</div>
+        <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.65, maxWidth: 800 }}>These are planning scenarios, not forecasts or guarantees. They exclude production, field, mail, research, legal/compliance, and agency-management costs unless a signed scope says otherwise. The campaign should compare every line to the incumbent agency proposal before choosing a plan.</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 10 }}>
+        {GENERAL_SPEND_TIERS.map((plan, index) => <button key={plan.id} onClick={() => setSelectedTier(index)} style={{ cursor: "pointer", textAlign: "left", background: selectedTier === index ? `${C.accent}18` : C.card, border: `2px solid ${selectedTier === index ? C.accent2 : C.border}`, borderRadius: 12, padding: 16 }}>
+          {plan.recommended && <div style={{ fontSize: 9, color: C.green, fontWeight: 800, letterSpacing: "0.1em", marginBottom: 5 }}>RECOMMENDED SCENARIO</div>}
+          <div style={{ fontSize: 24, color: C.white, fontWeight: 900 }}>${plan.total.toLocaleString()}</div>
+          <div style={{ color: C.accent2, fontSize: 12, fontWeight: 700, marginTop: 4 }}>{plan.label}</div>
+        </button>)}
+      </div>
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderTop: `3px solid ${C.accent2}`, borderRadius: 12, padding: 20 }}>
+        <div style={{ fontSize: 20, color: C.white, fontWeight: 900, marginBottom: 6 }}>${tier.total.toLocaleString()} · {tier.label}</div>
+        <div style={{ color: C.muted, fontSize: 12, lineHeight: 1.65, marginBottom: 18 }}>{tier.note}</div>
+        <SectionLabel C={C}>Illustrative allocation</SectionLabel>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 10 }}>
+          {tier.channels.map(([channel, budget, color]) => <div key={channel} style={{ background: C.bg3, borderLeft: `3px solid ${color}`, borderRadius: 8, padding: "10px 12px", display: "flex", justifyContent: "space-between", gap: 10 }}><span style={{ color: C.white, fontSize: 12, fontWeight: 600 }}>{channel}</span><span style={{ color, fontSize: 13, fontWeight: 800 }}>${budget.toLocaleString()}</span></div>)}
+        </div>
+        <div style={{ marginTop: 16, padding: "12px 14px", borderRadius: 8, background: `${C.gold}12`, border: `1px solid ${C.gold}35`, color: C.muted, fontSize: 11, lineHeight: 1.6 }}><strong style={{ color: C.gold }}>Required before approval:</strong> the agency’s total budget, line-item deliverables, production and management fees, platform minimums, expected reach/frequency, and cancellation terms. Without those, “substantially less” is a target concept—not a verified savings claim.</div>
+      </div>
+    </div>
+  );
+}
+
+function TabGeneralOpponent({ mobile, C }: { mobile: boolean; C: C }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ background: "linear-gradient(135deg,#10182b,#0a1628)", border: `1px solid ${C.accent2}40`, borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>Opponent Research · Chaz Molder (D)</div>
+        <div style={{ fontSize: mobile ? 17 : 22, fontWeight: 900, color: C.white, marginBottom: 8 }}>General-election research should distinguish record, message, and campaign claim</div>
+        <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.65, maxWidth: 760 }}>Molder is Columbia’s mayor and the Democratic nominee. His official campaign emphasizes local government experience, balanced budgets, infrastructure, education, reducing corruption, and rising costs. Use source-backed contrast and legal review; do not recycle primary-era claims about Andy Ogles.</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
+        <KpiCard label="Current Office" value="Mayor" sub="Columbia, Tennessee" color={C.accent2} C={C} />
+        <KpiCard label="Public FEC Cash" value="$1.48M" sub="Reported through Jul. 17" color={C.gold} C={C} />
+        <KpiCard label="Opponent Message" value="Local" sub="Costs · corruption · infrastructure" color={C.green} C={C} />
+        <KpiCard label="District Scope" value="17" sub="Counties to validate in research" color={C.accent} C={C} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+          <SectionLabel C={C}>Public profile and research baseline</SectionLabel>
+          {[
+            ["Molder campaign website", "Describes eight balanced city budgets, infrastructure and education investment, and a coalition of Democrats, Republicans, and Independents. Treat these as campaign claims pending document-level verification."],
+            ["FEC snapshot", "Molder’s FEC profile reports $2.60M in receipts, $1.12M in disbursements, and $1.48M cash on hand through July 17. Refresh after each new filing."],
+            ["Geography", "Local reporting describes a 17-county district from Middle Tennessee through rural West Tennessee and into the Memphis area. A county-by-county research matrix is required before localized creative."],
+          ].map(([title, text]) => <div key={title} style={{ padding: "11px 0", borderBottom: `1px solid ${C.border}` }}><div style={{ color: C.white, fontSize: 12, fontWeight: 700, marginBottom: 4 }}>{title}</div><div style={{ color: C.muted, fontSize: 11, lineHeight: 1.6 }}>{text}</div></div>)}
+        </div>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+          <SectionLabel C={C}>Contrast-development checklist</SectionLabel>
+          {[
+            "Verify every claimed record item against official city, state, or federal sources before placing it in paid creative.",
+            "Test Hatcher’s farmer, veterinarian, business-builder, and former Ag Commissioner record against district-specific concerns—not a generic national script.",
+            "Segment by county and issue salience; do not assume the primary coalition maps to the November electorate.",
+            "Use positive contrast and documented policy differences; reserve negative claims for counsel-reviewed, sourced material.",
+            "Monitor independent expenditures and updated FEC filings as outside spending can change the paid-media environment quickly.",
+          ].map(text => <div key={text} style={{ display: "flex", gap: 8, fontSize: 11, color: C.muted, lineHeight: 1.6, marginBottom: 10 }}><span style={{ color: C.gold }}>•</span>{text}</div>)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TabGeneralAudience({ mobile, C }: { mobile: boolean; C: C }) {
+  const segments = [
+    ["Hatcher primary coalition", "Retain and expand the farmer, small-business, faith, and service relationships that delivered the Aug. 6 win.", C.green],
+    ["General-election persuadables", "Build a verified universe from the general-election voter file and current contact data; do not rely on a Republican-primary model.", C.accent2],
+    ["Low-propensity supporters", "Use owned-list activation, community validators, and deadline messaging only after voter-file and compliance review.", C.gold],
+    ["County-specific audiences", "Use local issue research and field reporting across the 17-county district before assigning message or media weights.", C.accent],
+  ];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ background: "linear-gradient(135deg,#0d1a2e,#0a1628)", border: `1px solid ${C.accent}40`, borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>General-Election Audience Architecture</div>
+        <div style={{ fontSize: mobile ? 18 : 23, fontWeight: 900, color: C.white, marginBottom: 8 }}>From a primary voter file to a full general-election universe</div>
+        <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.65, maxWidth: 760 }}>The primary audience cannot simply be carried into November. This panel establishes the workflow for a current general-election universe: verified voter file, consented owned data, county issue research, platform-compliant matching, and weekly suppression of contacts already reached through field or direct voter contact.</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+        {segments.map(([title, text, color]) => <div key={String(title)} style={{ background: C.card, border: `1px solid ${C.border}`, borderTop: `3px solid ${color}`, borderRadius: 12, padding: 16 }}><div style={{ color: C.white, fontSize: 13, fontWeight: 800, marginBottom: 6 }}>{title}</div><div style={{ color: C.muted, fontSize: 11, lineHeight: 1.65 }}>{text}</div></div>)}
+      </div>
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+        <SectionLabel C={C}>Required data before audience activation</SectionLabel>
+        {[
+          "Current general-election voter file with county, voting history, and lawful contact fields.",
+          "Campaign-approved audience definitions, exclusions, and consent documentation.",
+          "County-level issue findings, trusted local validators, and event calendar.",
+          "Signed media rate cards, delivery estimates, and platform political-ad authorization.",
+          "A weekly performance report that connects paid delivery with field, web, and volunteer signals.",
+        ].map((text, index) => <div key={text} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 10 }}><span style={{ color: C.accent2, fontWeight: 800 }}>{index + 1}</span><span style={{ color: C.muted, fontSize: 11, lineHeight: 1.6 }}>{text}</span></div>)}
+      </div>
+    </div>
+  );
+}
+
+function TabGeneralPath({ mobile, C }: { mobile: boolean; C: C }) {
+  const now = new Date();
+  const election = new Date(RACE.isoDate);
+  const remainingMs = Math.max(0, election.getTime() - now.getTime());
+  const phaseOne = new Date(now.getTime() + remainingMs * 0.34);
+  const phaseTwo = new Date(now.getTime() + remainingMs * 0.72);
+  const dateLabel = (date: Date) => date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  const phases = [
+    ["Phase 1 · Foundation", `${dateLabel(now)} → ${dateLabel(phaseOne)}`, "Confirm current voter universe, county research, creative claims, rate cards, and reporting baselines.", C.green],
+    ["Phase 2 · Persuasion", `${dateLabel(phaseOne)} → ${dateLabel(phaseTwo)}`, "Sequence positive biography, issue proof, and localized community messages; refresh delivery against verified field and web signals.", C.accent2],
+    ["Phase 3 · Decision window", `${dateLabel(phaseTwo)} → Nov. 3`, "Shift to turnout and direct-response activity only after counsel, data, and platform review; coordinate paid media with the field plan.", C.gold],
+  ];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ background: "linear-gradient(135deg,#0d1a2e,#0a1628)", border: `1px solid ${C.accent}40`, borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ fontSize: 10, color: C.accent2, textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 700, marginBottom: 8 }}>General Election Operating Path</div>
+        <div style={{ fontSize: mobile ? 18 : 23, fontWeight: 900, color: C.white, marginBottom: 8 }}>{RACE.daysOut} days to the November 3 general election</div>
+        <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.65 }}>The operating clock updates from the current calendar date. It is a sequencing framework, not a vote forecast: every phase requires updated data, legal review, and a documented decision gate before spend is advanced.</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 12 }}>
+        {phases.map(([title, window, text, color]) => <div key={String(title)} style={{ background: C.card, border: `1px solid ${C.border}`, borderTop: `3px solid ${color}`, borderRadius: 12, padding: 16 }}><div style={{ color, fontSize: 10, fontWeight: 800, letterSpacing: "0.08em", marginBottom: 6 }}>{title}</div><div style={{ color: C.white, fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{window}</div><div style={{ color: C.muted, fontSize: 11, lineHeight: 1.6 }}>{text}</div></div>)}
+      </div>
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
+        <SectionLabel C={C}>Weekly decision gates</SectionLabel>
+        <div style={{ overflowX: "auto" as const }}><table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 11 }}><thead><tr style={{ borderBottom: `1px solid ${C.border}` }}><th style={{ textAlign: "left", padding: "8px 10px", color: C.muted }}>Review</th><th style={{ textAlign: "left", padding: "8px 10px", color: C.muted }}>Evidence required</th><th style={{ textAlign: "left", padding: "8px 10px", color: C.muted }}>Decision</th></tr></thead><tbody>{[
+          ["Audience", "Fresh voter file, county research, exclusion list", "Approve or revise universe"],
+          ["Creative", "Substantiation file, counsel approval, platform policy check", "Rotate, pause, or produce"],
+          ["Media", "Rate card, reach/frequency report, delivery variance", "Reallocate within approved cap"],
+          ["Field", "Contact, volunteer, event, and earned-media report", "Coordinate paid and direct voter contact"],
+        ].map(([review, evidence, decision]) => <tr key={review} style={{ borderBottom: `1px solid ${C.border}25` }}><td style={{ padding: "10px", color: C.white, fontWeight: 700 }}>{review}</td><td style={{ padding: "10px", color: C.muted }}>{evidence}</td><td style={{ padding: "10px", color: C.accent2 }}>{decision}</td></tr>)}</tbody></table></div>
+      </div>
+    </div>
+  );
+}
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function CharlieHatcherDashboard() {
@@ -2715,7 +2904,7 @@ export default function CharlieHatcherDashboard() {
   const C = useColors(isDark);
   const [tab, setTab] = useState("overview");
   const [mobile, setMobile] = useState(window.innerWidth < 768);
-  const countdown = useCountdown("2026-08-07T06:00:00");
+  const countdown = useCountdown(RACE.isoDate);
 
   useEffect(() => {
     const handler = () => setMobile(window.innerWidth < 768);
@@ -2737,10 +2926,10 @@ export default function CharlieHatcherDashboard() {
                 <div style={{ width: 44, height: 44, borderRadius: 10, background: `${C.accent}20`, border: `2px solid ${C.accent}60`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>🏛️</div>
                 <div>
                   <div style={{ fontSize: mobile ? 18 : 22, fontWeight: 900, color: C.white, lineHeight: 1.1 }}>Charlie Hatcher for Congress</div>
-                  <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>TN-CD5 Republican Primary · August 7, 2026</div>
+                  <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>TN-CD5 General Election · Hatcher (R) vs. Molder (D) · November 3, 2026</div>
                 </div>
               </div>
-              <div style={{ fontSize: 12, color: C.muted }}>Tennessee CD5 · Republican Primary · Exact Audience + Campaign Strategy Live</div>
+              <div style={{ fontSize: 12, color: C.muted }}>Tennessee CD5 · General Election · Exact Audience + Campaign Strategy Live</div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, background: `${C.green}20`, border: `1px solid ${C.green}60`, borderRadius: 20, padding: "6px 14px" }}>
@@ -2748,7 +2937,7 @@ export default function CharlieHatcherDashboard() {
                 <span style={{ fontSize: 11, fontWeight: 700, color: C.green, letterSpacing: "0.08em" }}>LIVE INTELLIGENCE</span>
               </div>
               <div style={{ background: `${C.gold}20`, border: `1px solid ${C.gold}60`, borderRadius: 10, padding: "8px 14px", textAlign: "center" }}>
-                <div style={{ fontSize: 9, color: C.gold, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Time to August 7 Primary</div>
+                <div style={{ fontSize: 9, color: C.gold, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Time to Nov. 3 General Election</div>
                 <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center" }}>
                   {[
                     { val: countdown.days, label: "days" },
@@ -2796,13 +2985,13 @@ export default function CharlieHatcherDashboard() {
 
       {/* Content */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: mobile ? "16px" : "24px 32px" }}>
-        {tab === "overview"  && <TabOverview  mobile={mobile} C={C} />}
-        {tab === "voters"    && <TabVoters    mobile={mobile} C={C} />}
-        {tab === "spend"     && <TabSpend     mobile={mobile} C={C} />}
-        {tab === "profiles"  && <TabProfiles  mobile={mobile} C={C} />}
-        {tab === "path"      && <TabPath      mobile={mobile} C={C} />}
+        {tab === "overview"  && <TabGeneralOverview mobile={mobile} C={C} />}
+        {tab === "voters"    && <TabGeneralAudience mobile={mobile} C={C} />}
+        {tab === "spend"     && <TabGeneralSpend mobile={mobile} C={C} />}
+        {tab === "profiles"  && <TabGeneralAudience mobile={mobile} C={C} />}
+        {tab === "path"      && <TabGeneralPath mobile={mobile} C={C} />}
         {tab === "intel"     && <TabIntel     mobile={mobile} C={C} />}
-        {tab === "oppo"      && <TabOppo      mobile={mobile} C={C} />}
+        {tab === "oppo"      && <TabGeneralOpponent mobile={mobile} C={C} />}
       </div>
     </div>
   );

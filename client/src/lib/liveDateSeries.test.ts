@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { relabelSeriesToCurrentDate } from "./liveDateSeries";
+import { relabelSeriesToCurrentDate, rollingCurrentMonthLabels } from "./liveDateSeries";
 
 describe("relabelSeriesToCurrentDate", () => {
   it("anchors the newest traffic row to the viewer's current local date", () => {
@@ -31,5 +31,16 @@ describe("relabelSeriesToCurrentDate", () => {
     expect(relabeled).toHaveLength(30);
     expect(relabeled[0].day).toBe("Jul 17");
     expect(relabeled.at(-1)?.day).toBe("Aug 15");
+  });
+
+  it("creates a chronological rolling monthly window through the current month", () => {
+    expect(rollingCurrentMonthLabels(6, new Date(2026, 7, 15, 12))).toEqual([
+      "Mar 2026",
+      "Apr 2026",
+      "May 2026",
+      "Jun 2026",
+      "Jul 2026",
+      "Aug 2026",
+    ]);
   });
 });

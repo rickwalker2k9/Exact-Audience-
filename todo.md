@@ -36,3 +36,20 @@
 - [x] Make time-sensitive dashboard labels roll forward automatically and cover the live 7-, 14-, and 30-day chart selections.
 - [x] Add test coverage for date rollover behavior and verify the public Railway demo after deployment.
 - [x] Correct the chart's 30-day selection to include exactly 30 current-date labels and validate it before deployment.
+
+## Cross-Dashboard Live Dates & Client Priorities — Aug 15, 2026
+- [ ] Apply live calendar-based traffic dates to Warby Parker, Land Rover, Charlie Hatcher, Barrett, and Breeze dashboards.
+- [ ] Audit and refine Charlie Hatcher date-sensitive views and requested campaign adjustments.
+- [ ] Audit and refine Breeze date-sensitive views and requested campaign adjustments.
+- [ ] Gather the business, brand, campaign, and data requirements for a new car-dealership dashboard.
+- [ ] Validate all updated dashboard routes and deploy the shared live-date update to Railway.
+
+## Charlie Hatcher General Election — Aug 15, 2026
+- [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
+- [x] Replace primary-focused Charlie Hatcher dashboard content with a current November 3 general-election framework against Chaz Molder.
+- [x] Develop a documented, lower-spend media-buy alternative that states assumptions, tradeoffs, and conditions rather than promising an outcome.
+- [ ] Validate and deploy the Hatcher general-election dashboard update to Railway.
+- [x] Simplify the Charlie Hatcher dashboard to a concise race brief, granular targeting capability, paid-ad execution view, and decision-ready media plan.
+- [x] Remove or consolidate primary-era tabs and nonessential detail while retaining source-based opponent context and current election timing.
+- [x] Make every visible Charlie date label roll forward after midnight and add focused rollover test coverage.
+- [ ] Verify the simplified `/charlie-hatcher` page in the browser and on Railway after deployment.

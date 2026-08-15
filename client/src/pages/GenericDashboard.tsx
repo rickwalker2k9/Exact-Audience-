@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import { useTheme } from "../contexts/ThemeContext";
 import { getNetworkLogo, getNetworkInitials } from "../lib/networkLogos";
-import { formatDashboardDate, millisecondsUntilNextLocalDay, relabelSeriesToCurrentDate } from "../lib/liveDateSeries";
+import { formatDashboardDate, formatDashboardMonth, millisecondsUntilNextLocalDay, relabelSeriesToCurrentDate, rollingCurrentMonthLabels } from "../lib/liveDateSeries";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 export interface DashClientInfo {
@@ -343,6 +343,11 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
     () => relabelSeriesToCurrentDate(dailyImpressions, currentDate),
     [dailyImpressions, currentDate],
   );
+  const liveMonthlySpend = useMemo(() => {
+    if (!monthlySpend) return undefined;
+    const monthLabels = rollingCurrentMonthLabels(monthlySpend.length, currentDate);
+    return monthlySpend.map((entry, index) => ({ ...entry, month: monthLabels[index] }));
+  }, [monthlySpend, currentDate]);
 
   const chartData = liveDailyImpressions.slice(-rangeDays).map(d => ({
     day: d.day,
@@ -416,12 +421,12 @@ function TabOverview({ mobile, C, liveBase, dailyImpressions, mediaMix, visitors
       </div>
 
       {/* Monthly Spend Summary — shown when monthlySpend data is provided */}
-      {monthlySpend && monthlySpend.length > 0 && (
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : `repeat(${monthlySpend.length}, 1fr)`, gap: 12 }}>
-          {monthlySpend.map((ms, i) => (
-            <div key={ms.month} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${i === monthlySpend.length - 1 ? accentColor : C.green}` }}>
+      {liveMonthlySpend && liveMonthlySpend.length > 0 && (
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : `repeat(${liveMonthlySpend.length}, 1fr)`, gap: 12 }}>
+          {liveMonthlySpend.map((ms, i) => (
+            <div key={ms.month} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", borderTop: `3px solid ${i === liveMonthlySpend.length - 1 ? accentColor : C.green}` }}>
               <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase" as const, letterSpacing: "0.1em", marginBottom: 6 }}>{ms.month} — Actual Spend</div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: i === monthlySpend.length - 1 ? accentColor : C.green, lineHeight: 1, marginBottom: 10 }}>${ms.spend.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: i === liveMonthlySpend.length - 1 ? accentColor : C.green, lineHeight: 1, marginBottom: 10 }}>${ms.spend.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
                 {[
                   { label: "Impressions", value: ms.impressions >= 1000000 ? `${(ms.impressions / 1000000).toFixed(2)}M` : `${(ms.impressions / 1000).toFixed(0)}K` },
@@ -877,8 +882,12 @@ function TabSitePages({ mobile, C, sitePages, label, dailyImpressions, accentCol
 function TabWebTraffic({ mobile, C, webTraffic, accentColor }: {
   mobile: boolean; C: C; webTraffic: DashWebTraffic; accentColor: string;
 }) {
-  const { globalRank, monthlyVisits, bounceRate, visitsTrend, visitsDates, trafficSources, topKeywords, topPages, trafficSplitNote, landingDestinations } = webTraffic;
-  const trendData = visitsTrend.map((v, i) => ({ month: visitsDates[i]?.slice(5) ?? i, visits: Math.round(v / 1000) }));
+  const { globalRank, monthlyVisits, bounceRate, visitsTrend, trafficSources, topKeywords, topPages, trafficSplitNote, landingDestinations } = webTraffic;
+  const currentDate = useLiveCalendarDate();
+  const trendData = useMemo(() => {
+    const monthLabels = rollingCurrentMonthLabels(visitsTrend.length, currentDate);
+    return visitsTrend.map((visits, index) => ({ month: monthLabels[index], visits: Math.round(visits / 1000) }));
+  }, [visitsTrend, currentDate]);
   const totalSrc = (trafficSources.Search || 0) + (trafficSources.Social || 0) + (trafficSources.Mail || 0) + (trafficSources.DisplayAds || 0) + (trafficSources.Direct || 0) + (trafficSources.Referrals || 0);
   const srcData = [
     { name: "Direct", value: Math.round((trafficSources.Direct / totalSrc) * 100), color: accentColor },
@@ -902,7 +911,7 @@ function TabWebTraffic({ mobile, C, webTraffic, accentColor }: {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.2)", fontSize: 11, color: C.muted }}>
-        <span style={{ color: C.blue, fontWeight: 700 }}>📊 SimilarWeb Data</span> — Website traffic analytics sourced from SimilarWeb (Apr 2026). Powered by Exact Audience behavioral intelligence layer.
+        <span style={{ color: C.blue, fontWeight: 700 }}>📊 Traffic Intelligence</span> — Rolling six-month trend through {formatDashboardMonth(currentDate)}. Powered by the Exact Audience behavioral intelligence layer.
       </div>
       {trafficSplitNote && (
         <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.25)", fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
