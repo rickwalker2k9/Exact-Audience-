@@ -632,7 +632,13 @@ const { data } = trpc.items.getByIds.useQuery({ ids });
 ### Empty `Select.Item` values
 
 **Rule:** Every `<Select.Item>` must have a non-empty `value` prop—never `""`, `undefined`, or omitted.
-
 **Rule:** Use sonner for toasts; do not add react-toastify or @radix-ui/react-toast
-
 **Rule:** If you put placeholder components for App.tsx routes, you MUST replace them with actual components after your implementation.
+
+---
+
+## Railway deployment configuration
+
+The service listens on Railway's injected `PORT` and binds on `0.0.0.0`; keep the Railway healthcheck path set to `/`.
+
+The dashboard can start and pass the root healthcheck without OAuth configuration. To enable the complete Manus OAuth flow in Railway, set `OAUTH_SERVER_URL=https://api.manus.im` and provide the app-specific values for `VITE_APP_ID` and `VITE_OAUTH_PORTAL_URL`. Set `JWT_SECRET` to a strong, persistent random value. Add `DATABASE_URL` only when database-backed campaign preferences and authenticated user persistence are required. Do not commit any of these values to the repository.
