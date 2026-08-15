@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { TN5_COUNTIES, TN5_MAP_SOURCE_URL } from "@/lib/tn5Map";
 
 const DISTRICT_LAYOUT: Record<string, { x: number; y: number }> = {
@@ -42,7 +42,7 @@ export function Tn5InteractiveMap({ card, ink, muted, border, isDark }: { card: 
               const layout = DISTRICT_LAYOUT[county.name];
               const isSelected = county.name === selectedCounty.name;
               const color = REGION_COLORS[county.region] ?? "#0ea5e9";
-              return <g key={county.name} transform={`translate(${layout.x},${layout.y})`} onClick={() => setSelectedCountyName(county.name)} style={{ cursor: "pointer" }}>
+              return <g key={county.name} transform={`translate(${layout.x},${layout.y})`} role="button" tabIndex={0} aria-label={`Open ${county.name} county intelligence`} onClick={() => setSelectedCountyName(county.name)} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedCountyName(county.name); } }} style={{ cursor: "pointer" }}>
                 <title>{`${county.name} County — ${county.region}`}</title>
                 <path d="M10 0 H74 L84 12 V40 L74 52 H10 L0 40 V12 Z" fill={isSelected ? color : isDark ? "#17243a" : "#ffffff"} stroke={isSelected ? "#e0f2fe" : color} strokeWidth={isSelected ? 3 : 1.5} filter="url(#mapShadow)" />
                 <text x="42" y="30" textAnchor="middle" fill={isSelected ? "#ffffff" : isDark ? "#dbeafe" : "#1e3a5f"} fontSize="10" fontWeight="800" style={{ pointerEvents: "none" }}>{county.name}</text>

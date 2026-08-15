@@ -1,0 +1,7 @@
+TN-5 focused-map deployment verification — Aug. 15, 2026
+
+Public route verified: https://ea-dashboard-production.up.railway.app/charlie-hatcher
+
+The deployed page contains the new “TN-5 district intelligence” section and explicitly states “Only the counties in this race.” Its public content confirms that the statewide reference has been replaced with a focused clickable planning map for the 17 TN-5 counties. The default county panel is Williamson County with the Southern Middle Tennessee region, public district-context note, planning lens, and boundary-validation caution.
+
+Browser-extracted SVG content confirms labeled controls for TN-5 counties only: Lake, Obion, Weakley, Henry, Dyer, Lauderdale, Tipton, Shelby, Houston, Benton, Humphreys, Stewart, Montgomery, Williamson, Hickman, Lewis, and Maury. A follow-up browser-controls inspection timed out in the connected browser, so visual interaction should receive a final user-side click check when convenient.

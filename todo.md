@@ -53,7 +53,9 @@
 - [x] Remove or consolidate primary-era tabs and nonessential detail while retaining source-based opponent context and current election timing.
 - [x] Make every visible Charlie date label roll forward after midnight and add focused rollover test coverage.
 - [x] Verify the simplified `/charlie-hatcher` page in the browser and on Railway after deployment.
-- [ ] Add a concise interactive Tennessee district map using the supplied county-map reference with click-to-open county intelligence.
+- [x] Add a concise TN-5-only interactive district schematic, informed by the supplied county-map reference, with click-to-open county intelligence.
 - [x] Verify the new TN-5 county list and build source-backed county context and research-status details for the map.
-- [ ] Add the interactive map to the simplified Charlie Hatcher dashboard, test it, deploy it, and verify it on Railway.
-- [ ] Replace the statewide map presentation with a TN-5-only interactive district map containing no irrelevant counties.
+- [x] Add the interactive map to the simplified Charlie Hatcher dashboard, test it, deploy it, and verify it on Railway.
+- [x] Replace the statewide map presentation with a TN-5-only interactive district map containing no irrelevant counties.
+- [x] Add a component test proving a TN-5 county click changes the visible intelligence panel.
+- [ ] Deploy the accessible map controls and re-verify a live Railway county selection interaction.
