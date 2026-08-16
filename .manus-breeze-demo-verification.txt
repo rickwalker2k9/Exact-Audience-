@@ -17,3 +17,11 @@ The local Breeze page now renders the approved owner-review roster directly belo
 Railway owner-review verification — Aug. 16, 2026
 
 The deployed Breeze page now renders the temporary owner-review roster without a sign-in gate. It presents the approved validated-gold roster, locations, tiers, funnel stages, and last-activity values alongside the aggregate operating metrics. Contact email addresses, spreadsheet links, upload controls, and source metadata remain absent from the deployed route.
+
+Calibrated routing verification — Aug. 16, 2026
+
+The deployed page now labels the approved counts as source roster inventory rather than traffic, quote, or completed-form performance. It reports no campaign-delivery, click, quote, or completed-form result until corresponding data sources are connected. The routing history shows Income Protection Calculator as the May–July destination and the supplied Meet Breeze affiliate quote link as the current traffic destination.
+
+Results-focused editorial verification — Aug. 16, 2026
+
+The local Breeze review page now opens with “Breeze operating results,” source status, recorded event status, traffic destination history, and approved roster sections. The former outcome-oriented hero, representative journey, channel recommendations, and “configured next” cards are removed. The page explicitly distinguishes source inventory and recorded events from unconnected performance data.

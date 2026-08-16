@@ -4,7 +4,6 @@ import { trpc } from "@/lib/trpc";
 import {
   ArrowRight,
   CheckCircle2,
-  ChevronRight,
   CircleAlert,
   ClipboardCheck,
   Database,
@@ -14,8 +13,6 @@ import {
   MailCheck,
   MousePointerClick,
   ShieldCheck,
-  Target,
-  UsersRound,
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
@@ -48,8 +45,8 @@ function PortalHeader({ staff = false }: { staff?: boolean }) {
           <span><span className="block text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-200">Exact Audience</span><span className="block text-lg font-extrabold tracking-tight">Breeze Insurance</span></span>
         </Link>
         <div className="flex items-center gap-2">
-          <StatusPill><span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> Live operations</StatusPill>
-          {staff ? <Link href="/breeze-insurance" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-slate-200 no-underline hover:bg-white/5">Public view</Link> : <Link href="/breeze-insurance/staff" className="rounded-lg border border-cyan-300/30 px-3 py-2 text-xs font-semibold text-cyan-100 no-underline hover:bg-cyan-300/10">Staff workflow <ChevronRight className="ml-1 inline" size={13} /></Link>}
+          <StatusPill><span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> Operating status</StatusPill>
+          {staff && <Link href="/breeze-insurance" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-slate-200 no-underline hover:bg-white/5">Review view</Link>}
         </div>
       </div>
     </header>
@@ -77,12 +74,11 @@ export default function BreezeLeadPortal() {
     <section className="relative overflow-hidden border-b border-cyan-300/10 bg-[radial-gradient(circle_at_78%_0%,rgba(34,211,238,.18),transparent_34%),linear-gradient(110deg,#071722_0%,#092334_55%,#07131d_100%)]">
       <div className="mx-auto max-w-7xl px-5 py-12 sm:py-16">
         <div className="max-w-3xl">
-          <StatusPill tone="emerald"><CheckCircle2 size={12} /> Approved-contact operation</StatusPill>
-          <h1 className="mt-5 text-4xl font-black tracking-[-0.04em] text-white sm:text-6xl">Turn verified insurance intent into completed forms.</h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">This is the live operating layer for approved Breeze contacts—not a pitch deck. It keeps the team focused on approved audiences, progression to the Breeze form, and the next action at each stage.</p>
+          <StatusPill tone="emerald"><CheckCircle2 size={12} /> Owner review</StatusPill>
+          <h1 className="mt-5 text-4xl font-black tracking-[-0.04em] text-white sm:text-6xl">Breeze operating results.</h1>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">Current approved-source inventory, recorded funnel events, and destination history. Counts are shown only where a source is connected; blank activity is not modeled or estimated.</p>
           <div className="mt-7 flex flex-wrap gap-3 text-sm">
-            <span className="inline-flex items-center gap-2 rounded-lg bg-cyan-300 px-4 py-2.5 font-bold text-[#061018]"><Database size={16} /> Approved source roster</span>
-            <Link href="/breeze-insurance/staff" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-4 py-2.5 font-bold text-white no-underline hover:bg-white/5"><LockKeyhole size={16} /> Staff lead workflow</Link>
+            <span className="inline-flex items-center gap-2 rounded-lg bg-cyan-300 px-4 py-2.5 font-bold text-[#061018]"><Database size={16} /> Approved-source data</span>
           </div>
         </div>
       </div>
@@ -90,7 +86,7 @@ export default function BreezeLeadPortal() {
 
     <div className="mx-auto max-w-7xl px-5 py-9">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Layer 1 · approved audience health</p><h2 className="mt-1 text-2xl font-extrabold text-white">Only approved records enter the operating funnel.</h2><p className="mt-2 text-xs text-slate-400">{formatSourceRefresh(data?.refreshedAt)}</p></div>
+        <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Source status</p><h2 className="mt-1 text-2xl font-extrabold text-white">Approved records currently available for review.</h2><p className="mt-2 text-xs text-slate-400">{formatSourceRefresh(data?.refreshedAt)}</p></div>
         {!isLoading && <StatusPill tone={validReady && goldReady ? "emerald" : "amber"}>{validReady && goldReady ? "Schema ready" : "Action needed"}</StatusPill>}
       </div>
       {error ? <div className="rounded-xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-100">The approved-lead summary could not be refreshed. No lead details are exposed. Retry the source connection before acting on counts.</div> : <div className="grid gap-4 md:grid-cols-3">
@@ -101,28 +97,19 @@ export default function BreezeLeadPortal() {
 
       {!validReady && !isLoading && <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-300/25 bg-amber-300/10 p-4 text-sm leading-6 text-amber-50"><CircleAlert className="mt-0.5 shrink-0 text-amber-300" size={18} /><span><strong>General valid tab is held safely.</strong> Add the reviewed header row used by the validated-gold tab before it is automatically imported. This prevents a column-order change from misclassifying real contacts.</span></div>}
 
-      <section className="mt-10 grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
+      <section className="mt-10">
         <div className="rounded-2xl border border-white/10 bg-[#0b1b27] p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Layer 2 · conversion workflow</p>
-          <h2 className="mt-2 text-2xl font-extrabold text-white">A simple, measurable path to the Breeze form.</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Recorded event status</p>
+          <h2 className="mt-2 text-2xl font-extrabold text-white">Funnel events recorded to date.</h2>
           <div className="mt-6 grid gap-3 sm:grid-cols-5">
             {[{ key: "approved", icon: Filter, title: "Approved", text: "Valid only" }, { key: "activated", icon: MailCheck, title: "Activated", text: "Email / paid touch" }, { key: "visited", icon: MousePointerClick, title: "Visited", text: "Website event" }, { key: "form-started", icon: ClipboardCheck, title: "Form started", text: "Intent signal" }, { key: "form-completed", icon: CheckCircle2, title: "Form completed", text: "Lead handoff" }].map((step, index) => <div key={step.title} className="relative rounded-xl border border-white/10 bg-[#07131d] p-4">{index < 4 && <ArrowRight className="absolute -right-4 top-1/2 z-10 hidden -translate-y-1/2 text-cyan-300 sm:block" size={18} />}<step.icon className="text-cyan-300" size={20} /><p className="mt-5 text-sm font-bold text-white">{step.title}</p><p className="mt-1 text-2xl font-black text-cyan-100">{isLoading ? "—" : formatCount(data?.funnel?.[step.key as keyof NonNullable<typeof data>['funnel']] ?? 0)}</p><p className="mt-1 text-xs text-slate-400">{step.text}</p></div>)}</div>
-          <p className="mt-5 text-sm leading-6 text-slate-300">These are recorded operating events only. Campaign-delivery, click, quote, and completed-form results remain intentionally unreported until their data sources are connected.</p>
+          <p className="mt-5 text-sm leading-6 text-slate-300">These are recorded operating events only. Campaign delivery, clicks, quotes, website visits, and form outcomes remain unreported until their source data is connected.</p>
         </div>
-        <aside className="rounded-2xl border border-cyan-300/20 bg-[linear-gradient(160deg,#0b2836,#0b1b27)] p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Representative journey</p>
-          <h2 className="mt-2 text-xl font-extrabold text-white">Validated contact → coverage inquiry</h2>
-          <ol className="mt-5 space-y-4 text-sm leading-5 text-slate-300"><li><strong className="text-white">1. Segment:</strong> select an approved tier and a compliant audience rule.</li><li><strong className="text-white">2. Activate:</strong> coordinate email, Meta, Google, and LinkedIn toward a single Breeze form objective.</li><li><strong className="text-white">3. Observe:</strong> capture delivered, clicked, visited, started, and completed events as integrations are connected.</li><li><strong className="text-white">4. Follow through:</strong> staff see the approved individual workflow after sign-in.</li></ol>
-        </aside>
-      </section>
-
-      <section className="mt-6 grid gap-4 md:grid-cols-4">
-        {[{ name: "Email", note: "Validated cohort activation", icon: MailCheck }, { name: "Meta", note: "Form-completion retargeting", icon: Target }, { name: "Google", note: "High-intent demand capture", icon: Globe2 }, { name: "LinkedIn", note: "Professional audience workflows", icon: UsersRound }].map(channel => <article key={channel.name} className="rounded-xl border border-white/10 bg-[#0b1b27] p-4"><channel.icon size={18} className="text-cyan-300" /><p className="mt-4 font-bold text-white">{channel.name}</p><p className="mt-1 text-sm text-slate-400">{channel.note}</p><StatusPill tone="slate">Configured next</StatusPill></article>)}
       </section>
 
       <section className="mt-6 rounded-2xl border border-white/10 bg-[#0b1b27] p-6">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Destination history · no performance claim</p>
-        <h2 className="mt-2 text-2xl font-extrabold text-white">The campaign destination changed after July.</h2>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Destination history</p>
+        <h2 className="mt-2 text-2xl font-extrabold text-white">Traffic destination by period.</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">May through July traffic was sent to the Income Protection Calculator. Current traffic is directed to the affiliate quote flow. This panel describes routing only; it does not infer traffic, clicks, quotes, or completed forms.</p>
         <div className="mt-5 grid gap-3 md:grid-cols-4">
           {BREEZE_CAMPAIGN_DESTINATIONS.map(destination => <article key={destination.period} className="rounded-xl border border-white/10 bg-[#07131d] p-4"><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-400">{destination.period}</p><p className="mt-3 font-bold text-white">{destination.destination}</p><p className="mt-2 text-xs text-slate-400">{destination.status}</p>{destination.url && <a href={destination.url} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-cyan-200 hover:text-cyan-100">Open affiliate quote flow <ArrowRight size={14} /></a>}</article>)}
@@ -131,7 +118,7 @@ export default function BreezeLeadPortal() {
 
       <section className="mt-6 overflow-hidden rounded-2xl border border-cyan-300/20 bg-[#0b1b27]">
         <div className="flex flex-wrap items-end justify-between gap-3 border-b border-white/10 px-6 py-5">
-          <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Owner review · approved roster</p><h2 className="mt-1 text-2xl font-extrabold text-white">Approved names and current operating stage</h2><p className="mt-2 text-sm text-slate-400">Temporary review view. Contact addresses and source controls are not displayed here.</p></div>
+          <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Approved roster</p><h2 className="mt-1 text-2xl font-extrabold text-white">Names and current recorded stage</h2><p className="mt-2 text-sm text-slate-400">Temporary owner-review view. Contact addresses and source controls are not displayed here.</p></div>
           <StatusPill tone="amber">Temporary review</StatusPill>
         </div>
         {review.isLoading ? <p className="p-6 text-sm text-slate-300">Loading approved roster…</p> : review.error ? <p className="p-6 text-sm text-rose-200">The approved review roster could not be refreshed.</p> : <div className="max-h-[34rem] overflow-auto"><table className="w-full min-w-[640px] text-left text-sm"><thead className="sticky top-0 bg-[#0d2330] text-[10px] uppercase tracking-[0.15em] text-slate-400"><tr><th className="px-6 py-3">Approved contact</th><th className="px-6 py-3">Location</th><th className="px-6 py-3">Tier</th><th className="px-6 py-3">Funnel stage</th><th className="px-6 py-3">Last activity</th></tr></thead><tbody>{review.data?.map((lead, index) => <tr key={`${lead.name}-${index}`} className="border-t border-white/[.07] text-slate-200"><td className="px-6 py-3.5 font-semibold">{lead.name}</td><td className="px-6 py-3.5">{lead.location}</td><td className="px-6 py-3.5"><StatusPill tone={lead.tier === "valid-gold" ? "emerald" : "slate"}>{lead.tier === "valid-gold" ? "Validated gold" : "Valid"}</StatusPill></td><td className="px-6 py-3.5 capitalize">{lead.stage.replace("-", " ")}</td><td className="px-6 py-3.5 text-slate-400">{lead.lastKnownActivity}</td></tr>)}</tbody></table></div>}

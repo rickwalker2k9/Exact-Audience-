@@ -67,8 +67,9 @@
 - [ ] Require the valid tab to receive the validated-gold header schema before automatic production synchronization.
 - [ ] Implement live website-engagement and form-status ingestion so the Breeze funnel shows actual visited, started, and completed counts.
 - [ ] Add a spreadsheet source-selection and column-mapping workflow instead of relying only on the currently configured Google Sheet.
-- [ ] Replace inflated Breeze performance claims with conservative, clearly labeled operating metrics.
-- [ ] Show May–July traffic as Income Protection Calculator activity and route the current campaign to the supplied affiliate quote destination.
+- [x] Replace inflated Breeze performance claims with conservative, clearly labeled operating metrics.
+- [x] Show May–July traffic as Income Protection Calculator activity and route the current campaign to the supplied affiliate quote destination.
+- [ ] Remove pitch-oriented Breeze copy and non-results sections; replace them with factual operating status, recorded counts, and data-source provenance.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
