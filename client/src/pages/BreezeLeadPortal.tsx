@@ -24,6 +24,11 @@ function formatCount(count: number) {
   return new Intl.NumberFormat("en-US").format(count);
 }
 
+function formatSourceRefresh(refreshedAt?: string) {
+  if (!refreshedAt) return "Refreshing approved source…";
+  return `Approved source refreshed ${new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(refreshedAt))}`;
+}
+
 function StatusPill({ children, tone = "emerald" }: { children: React.ReactNode; tone?: "emerald" | "amber" | "slate" }) {
   const classes = {
     emerald: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
@@ -87,7 +92,7 @@ export default function BreezeLeadPortal() {
 
     <div className="mx-auto max-w-7xl px-5 py-9">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Layer 1 · approved audience health</p><h2 className="mt-1 text-2xl font-extrabold text-white">Only approved records enter the operating funnel.</h2></div>
+        <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Layer 1 · approved audience health</p><h2 className="mt-1 text-2xl font-extrabold text-white">Only approved records enter the operating funnel.</h2><p className="mt-2 text-xs text-slate-400">{formatSourceRefresh(data?.refreshedAt)}</p></div>
         {!isLoading && <StatusPill tone={validReady && goldReady ? "emerald" : "amber"}>{validReady && goldReady ? "Schema ready" : "Action needed"}</StatusPill>}
       </div>
       {error ? <div className="rounded-xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-100">The approved-lead summary could not be refreshed. No lead details are exposed. Retry the source connection before acting on counts.</div> : <div className="grid gap-4 md:grid-cols-3">

@@ -804,11 +804,12 @@ function TabSitePages({ mobile, C, sitePages, label, dailyImpressions, accentCol
 }) {
   const [rangeDays, setRangeDays] = useState(14);
   const totalViews = sitePages.reduce((s, p) => s + p.views, 0);
+  const currentDate = useLiveCalendarDate();
 
-  const chartData = dailyImpressions.slice(-rangeDays).map((d, i) => {
+  const chartData = relabelSeriesToCurrentDate(dailyImpressions.slice(-rangeDays), currentDate).map((d, i) => {
     const base = (d.ctv ?? d.youtube) / 1000;
     return {
-      day: d.day.replace("May ", ""),
+      day: d.day,
       ...Object.fromEntries(sitePages.map((p, pi) => [
         p.label.split(" ")[0],
         Math.round(base * (0.3 - pi * 0.04) * (1 + i * 0.01))

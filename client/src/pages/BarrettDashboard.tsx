@@ -20,6 +20,7 @@ import {
   BARRETT_WEB_TRAFFIC, BARRETT_SEGMENT_STATS, BARRETT_ROI,
 } from "@/lib/barrettData";
 import { getNetworkLogo, getNetworkInitials } from "@/lib/networkLogos";
+import { formatDashboardMonth, millisecondsUntilNextLocalDay, rollingCurrentMonthLabels } from "@/lib/liveDateSeries";
 
 // ── Colors ────────────────────────────────────────────────────────────────────
 const C = {
@@ -68,6 +69,21 @@ function useTick(base: number, step: number, interval = 9000) {
     return () => clearInterval(id);
   }, [step, interval]);
   return v;
+}
+function useLiveCalendarDate() {
+  const [currentDate, setCurrentDate] = useState(() => new Date());
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const schedule = () => {
+      timer = setTimeout(() => {
+        setCurrentDate(new Date());
+        schedule();
+      }, millisecondsUntilNextLocalDay());
+    };
+    schedule();
+    return () => clearTimeout(timer);
+  }, []);
+  return currentDate;
 }
 function useCountUp(target: number, duration = 1800) {
   const [val, setVal] = useState(0);
@@ -715,10 +731,11 @@ function BuyerJourneys({ mobile }: { mobile: boolean }) {
 // ── WEB TRAFFIC TAB ───────────────────────────────────────────────────────────
 function WebTrafficTab({ mobile }: { mobile: boolean }) {
   const wt = BARRETT_WEB_TRAFFIC;
+  const currentDate = useLiveCalendarDate();
   const srcData = Object.entries(wt.trafficSources).map(([name, value], i) => ({
     name, value, color: [C.accent2, "#1877F2", C.gold, C.green, C.purple, C.muted][i],
   }));
-  const trendData = wt.visitsTrend.map((v, i) => ({ month: wt.visitsDates[i], visits: v }));
+  const trendData = wt.visitsTrend.map((v, i) => ({ month: rollingCurrentMonthLabels(wt.visitsTrend.length, currentDate)[i], visits: v }));
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -740,7 +757,7 @@ function WebTrafficTab({ mobile }: { mobile: boolean }) {
 
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "2fr 1fr", gap: 16 }}>
         <Card>
-          <SectionTitle>Monthly Visitor Trend</SectionTitle>
+          <SectionTitle>Monthly Visitor Trend · Through {formatDashboardMonth(currentDate)}</SectionTitle>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={trendData}>
               <defs>

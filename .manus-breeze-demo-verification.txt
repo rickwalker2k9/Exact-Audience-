@@ -1,0 +1,7 @@
+Breeze demo deployment verification — Aug. 16, 2026
+
+Verified route: https://ea-dashboard-production.up.railway.app/breeze-insurance
+
+The deployed Breeze route first renders a private lead-portal sign-in screen. Before authentication, it exposes no approved contact counts, funnel metrics, contact records, source-sheet link, or source controls. The available UI is limited to a Breeze operations access explanation and the “Sign in to Breeze” action.
+
+The temporary approved-sheet feed remains server-side for the demo, restricted to the valid and valid-gold tabs. Individual lead details remain behind the protected staff workflow.

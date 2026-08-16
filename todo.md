@@ -39,6 +39,9 @@
 
 ## Cross-Dashboard Live Dates & Client Priorities — Aug 15, 2026
 - [ ] Apply live calendar-based traffic dates to Warby Parker, Land Rover, Charlie Hatcher, Barrett, and Breeze dashboards.
+- [x] Verify Warby Parker and Land Rover inherit the shared live-date mapping, then convert Barrett’s standalone traffic and monthly labels.
+- [x] Convert GenericDashboard Site Pages trend labels to the shared live-date utility so Warby Parker and Land Rover have no remaining static chart dates.
+- [ ] Add a current local refresh timestamp to Breeze’s approved-source portal layer and re-verify the full named-dashboard rollout.
 - [x] Audit and refine Charlie Hatcher date-sensitive views and requested campaign adjustments.
 - [ ] Audit and refine Breeze date-sensitive views and requested campaign adjustments.
 - [ ] Gather the business, brand, campaign, and data requirements for a new car-dealership dashboard.
@@ -47,7 +50,7 @@
 ## Breeze Insurance Dashboard — Aug 15, 2026
 - [x] Audit the current Breeze route, dashboard data, insurance funnel, live-date behavior, and visible campaign claims.
 - [x] Redesign Breeze as a focused lead-generation and form-completion dashboard, prioritizing Meta, Google, LinkedIn, and email over CTV.
-- [ ] Test and deploy the Breeze refinements to Railway after user review of the proposed adjustment plan.
+- [x] Test and deploy the Breeze refinements to Railway after user review of the proposed adjustment plan.
 - [ ] Transform Breeze from a proposal dashboard into a live lead-generation operating portal with funnel, form-status, website-engagement, and representative journey layers.
 - [ ] Add a privacy-conscious spreadsheet intake and column-mapping workflow for the user’s real lead uploads.
 - [ ] Configure a secure Google Sheets synchronization option that refreshes authorized lead data without exposing unnecessary personal data.

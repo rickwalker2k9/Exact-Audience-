@@ -1,0 +1,10 @@
+Cross-dashboard live-date verification — Aug. 16, 2026
+
+Barrett Financial local verification:
+- The Web Traffic tab rendered “Monthly Visitor Trend · Through Aug 2026.”
+- The chart axis showed a rolling Jan 2026 through Aug 2026 range rather than its former static historical labels.
+- The date labels are supplied by the shared live-date utilities and update after local midnight.
+
+Warby Parker and Land Rover verification:
+- Both routes are thin wrappers over GenericDashboard.
+- GenericDashboard’s overview, web-traffic, monthly spend, and now Site Pages daily trend use the shared live-date helper, so their chart labels roll forward from the viewer’s current local calendar date.
