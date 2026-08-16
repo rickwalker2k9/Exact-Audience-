@@ -65,14 +65,10 @@ function MetricCard({ label, value, description, tone = "cyan" }: { label: strin
 }
 
 export default function BreezeLeadPortal() {
-  const { isAuthenticated, loading } = useAuth();
-  const { data, isLoading, error } = trpc.breezePortal.summary.useQuery(undefined, { enabled: isAuthenticated, refetchInterval: 5 * 60 * 1000 });
+  const { data, isLoading, error } = trpc.breezePortal.summary.useQuery(undefined, { refetchInterval: 5 * 60 * 1000 });
   const validReady = Boolean(data?.valid.schemaReady);
   const goldReady = Boolean(data?.validGold.schemaReady);
   const approvedTotal = (data?.valid.count ?? 0) + (data?.validGold.count ?? 0);
-
-  if (loading) return <div className="grid min-h-screen place-items-center bg-[#061018] text-slate-200">Checking Breeze access…</div>;
-  if (!isAuthenticated) return <main className="min-h-screen bg-[#061018] text-slate-100"><PortalHeader /><section className="grid min-h-[calc(100vh-72px)] place-items-center p-6"><div className="max-w-md rounded-2xl border border-cyan-300/20 bg-[#0b1b27] p-8 text-center shadow-[0_18px_60px_rgba(0,0,0,.25)]"><LockKeyhole className="mx-auto text-cyan-300" size={38} /><StatusPill tone="emerald">Private lead portal</StatusPill><h1 className="mt-4 text-3xl font-black">Breeze operations access</h1><p className="mt-3 text-sm leading-6 text-slate-300">Sign in to view approved audience counts, current funnel status, and your permitted Breeze operating views. Contact-level records and source controls are reserved for staff.</p><button onClick={() => startLogin()} className="mt-6 rounded-lg bg-cyan-300 px-5 py-3 text-sm font-bold text-[#061018] hover:bg-cyan-200">Sign in to Breeze</button></div></section></main>;
 
   return <main className="min-h-screen bg-[#061018] text-slate-100">
     <PortalHeader />

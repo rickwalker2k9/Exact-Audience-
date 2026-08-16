@@ -38,7 +38,7 @@
 - [x] Correct the chart's 30-day selection to include exactly 30 current-date labels and validate it before deployment.
 
 ## Cross-Dashboard Live Dates & Client Priorities — Aug 15, 2026
-- [ ] Apply live calendar-based traffic dates to Warby Parker, Land Rover, Charlie Hatcher, Barrett, and Breeze dashboards.
+- [ ] Apply live calendar-based traffic dates to Warby Parker, Land Rover, Charlie Hatcher, and Barrett, and ensure Breeze has no obsolete static traffic dates after its live-portal redesign.
 - [x] Verify Warby Parker and Land Rover inherit the shared live-date mapping, then convert Barrett’s standalone traffic and monthly labels.
 - [x] Convert GenericDashboard Site Pages trend labels to the shared live-date utility so Warby Parker and Land Rover have no remaining static chart dates.
 - [ ] Add a current local refresh timestamp to Breeze’s approved-source portal layer and re-verify the full named-dashboard rollout.
@@ -46,6 +46,8 @@
 - [ ] Audit and refine Breeze date-sensitive views and requested campaign adjustments.
 - [ ] Gather the business, brand, campaign, and data requirements for a new car-dealership dashboard.
 - [ ] Validate all updated dashboard routes and deploy the shared live-date update to Railway.
+- [x] Verify on Railway that Warby Parker and Land Rover render current shared live-date labels after the latest deployment.
+- [ ] Sign in to Breeze and verify the approved-source refresh timestamp renders as a current local date/time on Railway.
 
 ## Breeze Insurance Dashboard — Aug 15, 2026
 - [x] Audit the current Breeze route, dashboard data, insurance funnel, live-date behavior, and visible campaign claims.
@@ -59,6 +61,7 @@
 - [x] Show aggregate funnel reporting on the normal Breeze route and restrict individual approved-lead workflow access to signed-in staff.
 - [x] Require Breeze sign-in for all portal data and define viewer, staff, and administrator visibility levels for approved lead information and source controls.
 - [x] Use the current approved-sheet read-only feed for the Breeze demo while deferring the private Google service-account connection.
+- [ ] Remove the Breeze sign-in interruption for the complete aggregate demo while keeping individual contact details and source controls protected.
 - [ ] Require the valid tab to receive the validated-gold header schema before automatic production synchronization.
 - [ ] Implement live website-engagement and form-status ingestion so the Breeze funnel shows actual visited, started, and completed counts.
 - [ ] Add a spreadsheet source-selection and column-mapping workflow instead of relying only on the currently configured Google Sheet.

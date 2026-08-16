@@ -8,3 +8,8 @@ Barrett Financial local verification:
 Warby Parker and Land Rover verification:
 - Both routes are thin wrappers over GenericDashboard.
 - GenericDashboard’s overview, web-traffic, monthly spend, and now Site Pages daily trend use the shared live-date helper, so their chart labels roll forward from the viewer’s current local calendar date.
+
+Railway verification:
+- The deployed Barrett Web Traffic page rendered “Monthly Visitor Trend · Through Aug 2026” with a Jan 2026 through Aug 2026 axis, confirming the standalone production conversion is live.
+- The deployed Warby Parker Daily Delivery chart rendered “Through Aug 16” with an Aug 3 through Aug 16 range.
+- The deployed Land Rover Daily Delivery chart rendered “Through Aug 16” with an Aug 3 through Aug 16 range.

@@ -5,3 +5,7 @@ Verified route: https://ea-dashboard-production.up.railway.app/breeze-insurance
 The deployed Breeze route first renders a private lead-portal sign-in screen. Before authentication, it exposes no approved contact counts, funnel metrics, contact records, source-sheet link, or source controls. The available UI is limited to a Breeze operations access explanation and the “Sign in to Breeze” action.
 
 The temporary approved-sheet feed remains server-side for the demo, restricted to the valid and valid-gold tabs. Individual lead details remain behind the protected staff workflow.
+
+Temporary no-sign-in demo verification — Aug. 16, 2026
+
+The local Breeze route now renders the complete aggregate operating portal without a sign-in gate. It displays only the approved-source refresh time, aggregate approved counts (439 validated-gold and 0 general-valid pending headers), aggregate funnel stages, representative journey, and channel workflow. No names, emails, source-sheet URL, upload controls, or individual lead records appear on the demo route. The separate staff workflow link continues to require authentication.
