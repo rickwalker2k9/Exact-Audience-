@@ -62,6 +62,8 @@
 - [x] Require Breeze sign-in for all portal data and define viewer, staff, and administrator visibility levels for approved lead information and source controls.
 - [x] Use the current approved-sheet read-only feed for the Breeze demo while deferring the private Google service-account connection.
 - [ ] Remove the Breeze sign-in interruption for the complete aggregate demo while keeping individual contact details and source controls protected.
+- [ ] Add a lightweight access-code-protected Breeze view for approved individual names, stages, and operating statistics without exposing them on the public demo route.
+- [ ] Temporarily display approved lead names and operating statistics directly in Breeze for the owner’s review, then restore access controls on approval.
 - [ ] Require the valid tab to receive the validated-gold header schema before automatic production synchronization.
 - [ ] Implement live website-engagement and form-status ingestion so the Breeze funnel shows actual visited, started, and completed counts.
 - [ ] Add a spreadsheet source-selection and column-mapping workflow instead of relying only on the currently configured Google Sheet.

@@ -20,6 +20,14 @@ export type ApprovedLead = {
   lastKnownActivity: string;
 };
 
+export type BreezeOwnerReviewLead = {
+  name: string;
+  location: string;
+  tier: ApprovedLead["tier"];
+  stage: BreezeFunnelStage;
+  lastKnownActivity: string;
+};
+
 export const BREEZE_FUNNEL_STAGES = ["approved", "activated", "visited", "form-started", "form-completed"] as const;
 export type BreezeFunnelStage = (typeof BREEZE_FUNNEL_STAGES)[number];
 
@@ -105,6 +113,20 @@ export function toLeadSummary(imports: Awaited<ReturnType<typeof getApprovedBree
     validGold: { count: imports.validGold.leads.length, schemaReady: imports.validGold.schemaReady, reason: imports.validGold.reason ?? null },
     allowedTabs: [BREEZE_ALLOWED_TABS.valid, BREEZE_ALLOWED_TABS.validGold],
     refreshedAt: imports.refreshedAt,
+  };
+}
+
+/**
+ * Temporary owner-review projection. It omits email, provider, and source
+ * metadata while allowing the approved roster and funnel state to be reviewed.
+ */
+export function toOwnerReviewLead(lead: ApprovedLead, stage: BreezeFunnelStage): BreezeOwnerReviewLead {
+  return {
+    name: `${lead.firstName} ${lead.lastName}`.trim() || "Approved contact",
+    location: [lead.city, lead.state].filter(Boolean).join(", ") || "Location unavailable",
+    tier: lead.tier,
+    stage,
+    lastKnownActivity: lead.lastKnownActivity || "—",
   };
 }
 

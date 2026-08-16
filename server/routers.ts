@@ -4,7 +4,7 @@ import { invokeLLM } from "./_core/llm";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { createBreezeImportSource, getBreezeProgressByContactKeys, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertVoterCtvPrefs } from "./db";
-import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBreezeContactKey, mapApprovedCsv, toLeadSummary, type BreezeFunnelStage } from "./breezeSheet";
+import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBreezeContactKey, mapApprovedCsv, toLeadSummary, toOwnerReviewLead, type BreezeFunnelStage } from "./breezeSheet";
 import { TRPCError } from "@trpc/server";
 import { storagePut } from "./storage";
 import { z } from "zod";
@@ -71,6 +71,15 @@ export const appRouter = router({
       const progressByKey = new Map(progress.map(row => [row.contactKey, row.stage as BreezeFunnelStage]));
       return { ...toLeadSummary(imports), funnel: buildFunnelCounts(leads.map(lead => progressByKey.get(getBreezeContactKey(lead)) ?? "approved")) };
     }),
+    ownerReview: publicProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(500).default(500) }))
+      .query(async ({ input }) => {
+        const imports = await getApprovedBreezeLeads();
+        const leads = [...imports.validGold.leads, ...imports.valid.leads].slice(0, input.limit);
+        const progress = await getBreezeProgressByContactKeys(leads.map(getBreezeContactKey));
+        const progressByKey = new Map(progress.map(row => [row.contactKey, row.stage as BreezeFunnelStage]));
+        return leads.map(lead => toOwnerReviewLead(lead, progressByKey.get(getBreezeContactKey(lead)) ?? "approved"));
+      }),
     staffLeads: protectedProcedure
       .input(z.object({ tier: z.enum(["valid", "valid-gold"]).optional(), limit: z.number().int().min(1).max(100).default(50) }))
       .query(async ({ ctx, input }) => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildFunnelCounts, getBreezeContactKey, mapApprovedCsv, toLeadSummary } from "./breezeSheet";
+import { buildFunnelCounts, getBreezeContactKey, mapApprovedCsv, toLeadSummary, toOwnerReviewLead } from "./breezeSheet";
 
 const headers = "FIRST NAME,LAST NAME,CITY,ST,PERS V EMAILS,ZB Status,ZB SMTP Provider,ZB Last Known Activity";
 
@@ -36,5 +36,12 @@ describe("Breeze approved lead import", () => {
       "form-started": 1,
       "form-completed": 1,
     });
+  });
+
+  it("creates an owner-review row without exposing an email address", () => {
+    const lead = mapApprovedCsv(`${headers}\nAda,Stone,Austin,TX,ada@example.com,valid,google,2026-08-15`, "valid-gold").leads[0];
+    const row = toOwnerReviewLead(lead, "visited");
+    expect(row).toEqual({ name: "Ada Stone", location: "Austin, TX", tier: "valid-gold", stage: "visited", lastKnownActivity: "2026-08-15" });
+    expect(JSON.stringify(row)).not.toContain("ada@example.com");
   });
 });
