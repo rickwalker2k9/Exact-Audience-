@@ -73,6 +73,7 @@
 - [ ] Add separate monthly traffic sections for the historical Income Protection Calculator and the current affiliate quote destination, with non-overlapping illustrative demo months.
 - [ ] Present the approved spreadsheet names beneath the traffic sections as an owner-review roster without adding disallowed tab records.
 - [ ] Label every illustrative Breeze traffic figure as demo data rather than sourced campaign performance.
+- [ ] Replace generic tier labels in the Breeze owner-review roster with useful approved-spreadsheet profile information and current operating status.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

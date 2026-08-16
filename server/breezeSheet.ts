@@ -23,7 +23,7 @@ export type ApprovedLead = {
 export type BreezeOwnerReviewLead = {
   name: string;
   location: string;
-  tier: ApprovedLead["tier"];
+  emailProvider: string;
   stage: BreezeFunnelStage;
   lastKnownActivity: string;
 };
@@ -124,7 +124,7 @@ export function toOwnerReviewLead(lead: ApprovedLead, stage: BreezeFunnelStage):
   return {
     name: `${lead.firstName} ${lead.lastName}`.trim() || "Approved contact",
     location: [lead.city, lead.state].filter(Boolean).join(", ") || "Location unavailable",
-    tier: lead.tier,
+    emailProvider: lead.emailProvider || "Provider unavailable",
     stage,
     lastKnownActivity: lead.lastKnownActivity || "—",
   };

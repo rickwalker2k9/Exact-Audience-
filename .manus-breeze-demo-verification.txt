@@ -33,3 +33,7 @@ The live Breeze portal renders “Breeze operating results,” approved-source s
 Illustrative traffic-section verification — Aug. 16, 2026
 
 The local Breeze portal displays two distinct traffic sections above the owner-review roster. The Income Protection Calculator section contains May and June illustrative values only; the affiliate quote section begins in July and includes July and August illustrative values. The page labels the series as illustrative demo data and states it is not sourced campaign analytics. The approved roster follows these sections and remains restricted to approved tab records.
+
+Useful-profile roster verification — Aug. 16, 2026
+
+The local owner-review roster now replaces the generic tier column with profile information available in the approved spreadsheet: location, email service/provider, last known activity, and recorded funnel stage. The table retains approved names while omitting contact email addresses and source controls.
