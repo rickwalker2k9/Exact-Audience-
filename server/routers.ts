@@ -64,7 +64,7 @@ export const appRouter = router({
   }),
 
   breezePortal: router({
-    summary: publicProcedure.query(async () => {
+    summary: protectedProcedure.query(async () => {
       const imports = await getApprovedBreezeLeads();
       const leads = [...imports.validGold.leads, ...imports.valid.leads];
       const progress = await getBreezeProgressByContactKeys(leads.map(getBreezeContactKey));

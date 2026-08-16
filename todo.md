@@ -54,6 +54,8 @@
 - [ ] Inspect and map the provided Breeze Google Sheet (ID: 14E8eR5vIKd-_rYc1XBtAfkGosz2SKXau5qOTrOjZI4I) into the portal’s authorized lead-data model after the valid-tab header is added.
 - [x] Limit all Breeze portal ingestion and views to the sheet’s approved valid and valid-gold tabs; exclude spam-risk, invalid, unsubscribe, unknown, and rejected tabs.
 - [x] Show aggregate funnel reporting on the normal Breeze route and restrict individual approved-lead workflow access to signed-in staff.
+- [x] Require Breeze sign-in for all portal data and define viewer, staff, and administrator visibility levels for approved lead information and source controls.
+- [x] Use the current approved-sheet read-only feed for the Breeze demo while deferring the private Google service-account connection.
 - [ ] Require the valid tab to receive the validated-gold header schema before automatic production synchronization.
 - [ ] Implement live website-engagement and form-status ingestion so the Breeze funnel shows actual visited, started, and completed counts.
 - [ ] Add a spreadsheet source-selection and column-mapping workflow instead of relying only on the currently configured Google Sheet.
