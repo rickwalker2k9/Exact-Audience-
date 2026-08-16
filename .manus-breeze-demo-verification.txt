@@ -13,3 +13,7 @@ The local Breeze route now renders the complete aggregate operating portal witho
 Temporary owner-review verification — Aug. 16, 2026
 
 The local Breeze page now renders the approved owner-review roster directly below the aggregate operating layers. It shows 439 validated-gold lead names, locations, tiers, stages, and last-activity status without displaying email addresses, spreadsheet links, provider metadata, or upload controls. The general valid tab remains safely held until its header row is added.
+
+Railway owner-review verification — Aug. 16, 2026
+
+The deployed Breeze page now renders the temporary owner-review roster without a sign-in gate. It presents the approved validated-gold roster, locations, tiers, funnel stages, and last-activity values alongside the aggregate operating metrics. Contact email addresses, spreadsheet links, upload controls, and source metadata remain absent from the deployed route.

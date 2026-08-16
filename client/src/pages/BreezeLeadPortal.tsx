@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
+import { BREEZE_CAMPAIGN_DESTINATIONS } from "@/lib/breezeCampaignDestinations";
 
 function formatCount(count: number) {
   return new Intl.NumberFormat("en-US").format(count);
@@ -80,7 +81,7 @@ export default function BreezeLeadPortal() {
           <h1 className="mt-5 text-4xl font-black tracking-[-0.04em] text-white sm:text-6xl">Turn verified insurance intent into completed forms.</h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">This is the live operating layer for approved Breeze contacts—not a pitch deck. It keeps the team focused on approved audiences, progression to the Breeze form, and the next action at each stage.</p>
           <div className="mt-7 flex flex-wrap gap-3 text-sm">
-            <span className="inline-flex items-center gap-2 rounded-lg bg-cyan-300 px-4 py-2.5 font-bold text-[#061018]"><Database size={16} /> Private approved source</span>
+            <span className="inline-flex items-center gap-2 rounded-lg bg-cyan-300 px-4 py-2.5 font-bold text-[#061018]"><Database size={16} /> Approved source roster</span>
             <Link href="/breeze-insurance/staff" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-4 py-2.5 font-bold text-white no-underline hover:bg-white/5"><LockKeyhole size={16} /> Staff lead workflow</Link>
           </div>
         </div>
@@ -93,8 +94,8 @@ export default function BreezeLeadPortal() {
         {!isLoading && <StatusPill tone={validReady && goldReady ? "emerald" : "amber"}>{validReady && goldReady ? "Schema ready" : "Action needed"}</StatusPill>}
       </div>
       {error ? <div className="rounded-xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-100">The approved-lead summary could not be refreshed. No lead details are exposed. Retry the source connection before acting on counts.</div> : <div className="grid gap-4 md:grid-cols-3">
-        <MetricCard label="Approved contact pool" value={isLoading ? "—" : formatCount(approvedTotal)} description={validReady && goldReady ? "Validated and validated-gold contacts currently ready for a governed outreach workflow." : "Counts appear only after each approved tab passes header validation."} />
-        <MetricCard label="Validated-gold priority" value={isLoading ? "—" : formatCount(data?.validGold.count ?? 0)} description="Highest-priority approved cohort. Staff can review this tier first after signing in." tone="emerald" />
+        <MetricCard label="Approved source roster" value={isLoading ? "—" : formatCount(approvedTotal)} description="Roster size only—not campaign traffic, quote, or completed-form performance." />
+        <MetricCard label="Validated-gold review set" value={isLoading ? "—" : formatCount(data?.validGold.count ?? 0)} description="Approved contacts available for owner review; this is not a conversion result." tone="emerald" />
         <MetricCard label="General valid cohort" value={isLoading ? "—" : formatCount(data?.valid.count ?? 0)} description={validReady ? "Approved sendable records from the standard validated cohort." : "Awaiting the matching header row before this tab is imported automatically."} tone={validReady ? "cyan" : "amber"} />
       </div>}
 
@@ -106,7 +107,7 @@ export default function BreezeLeadPortal() {
           <h2 className="mt-2 text-2xl font-extrabold text-white">A simple, measurable path to the Breeze form.</h2>
           <div className="mt-6 grid gap-3 sm:grid-cols-5">
             {[{ key: "approved", icon: Filter, title: "Approved", text: "Valid only" }, { key: "activated", icon: MailCheck, title: "Activated", text: "Email / paid touch" }, { key: "visited", icon: MousePointerClick, title: "Visited", text: "Website event" }, { key: "form-started", icon: ClipboardCheck, title: "Form started", text: "Intent signal" }, { key: "form-completed", icon: CheckCircle2, title: "Form completed", text: "Lead handoff" }].map((step, index) => <div key={step.title} className="relative rounded-xl border border-white/10 bg-[#07131d] p-4">{index < 4 && <ArrowRight className="absolute -right-4 top-1/2 z-10 hidden -translate-y-1/2 text-cyan-300 sm:block" size={18} />}<step.icon className="text-cyan-300" size={20} /><p className="mt-5 text-sm font-bold text-white">{step.title}</p><p className="mt-1 text-2xl font-black text-cyan-100">{isLoading ? "—" : formatCount(data?.funnel?.[step.key as keyof NonNullable<typeof data>['funnel']] ?? 0)}</p><p className="mt-1 text-xs text-slate-400">{step.text}</p></div>)}</div>
-          <p className="mt-5 text-sm leading-6 text-slate-300">These counts come from the protected staff workflow or a future approved event connection. A zero is a real absence of a recorded event—not a modeled estimate.</p>
+          <p className="mt-5 text-sm leading-6 text-slate-300">These are recorded operating events only. Campaign-delivery, click, quote, and completed-form results remain intentionally unreported until their data sources are connected.</p>
         </div>
         <aside className="rounded-2xl border border-cyan-300/20 bg-[linear-gradient(160deg,#0b2836,#0b1b27)] p-6">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Representative journey</p>
@@ -117,6 +118,15 @@ export default function BreezeLeadPortal() {
 
       <section className="mt-6 grid gap-4 md:grid-cols-4">
         {[{ name: "Email", note: "Validated cohort activation", icon: MailCheck }, { name: "Meta", note: "Form-completion retargeting", icon: Target }, { name: "Google", note: "High-intent demand capture", icon: Globe2 }, { name: "LinkedIn", note: "Professional audience workflows", icon: UsersRound }].map(channel => <article key={channel.name} className="rounded-xl border border-white/10 bg-[#0b1b27] p-4"><channel.icon size={18} className="text-cyan-300" /><p className="mt-4 font-bold text-white">{channel.name}</p><p className="mt-1 text-sm text-slate-400">{channel.note}</p><StatusPill tone="slate">Configured next</StatusPill></article>)}
+      </section>
+
+      <section className="mt-6 rounded-2xl border border-white/10 bg-[#0b1b27] p-6">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Destination history · no performance claim</p>
+        <h2 className="mt-2 text-2xl font-extrabold text-white">The campaign destination changed after July.</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">May through July traffic was sent to the Income Protection Calculator. Current traffic is directed to the affiliate quote flow. This panel describes routing only; it does not infer traffic, clicks, quotes, or completed forms.</p>
+        <div className="mt-5 grid gap-3 md:grid-cols-4">
+          {BREEZE_CAMPAIGN_DESTINATIONS.map(destination => <article key={destination.period} className="rounded-xl border border-white/10 bg-[#07131d] p-4"><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-400">{destination.period}</p><p className="mt-3 font-bold text-white">{destination.destination}</p><p className="mt-2 text-xs text-slate-400">{destination.status}</p>{destination.url && <a href={destination.url} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-cyan-200 hover:text-cyan-100">Open affiliate quote flow <ArrowRight size={14} /></a>}</article>)}
+        </div>
       </section>
 
       <section className="mt-6 overflow-hidden rounded-2xl border border-cyan-300/20 bg-[#0b1b27]">
