@@ -44,6 +44,20 @@
 - [ ] Gather the business, brand, campaign, and data requirements for a new car-dealership dashboard.
 - [ ] Validate all updated dashboard routes and deploy the shared live-date update to Railway.
 
+## Breeze Insurance Dashboard — Aug 15, 2026
+- [x] Audit the current Breeze route, dashboard data, insurance funnel, live-date behavior, and visible campaign claims.
+- [x] Redesign Breeze as a focused lead-generation and form-completion dashboard, prioritizing Meta, Google, LinkedIn, and email over CTV.
+- [ ] Test and deploy the Breeze refinements to Railway after user review of the proposed adjustment plan.
+- [ ] Transform Breeze from a proposal dashboard into a live lead-generation operating portal with funnel, form-status, website-engagement, and representative journey layers.
+- [ ] Add a privacy-conscious spreadsheet intake and column-mapping workflow for the user’s real lead uploads.
+- [ ] Configure a secure Google Sheets synchronization option that refreshes authorized lead data without exposing unnecessary personal data.
+- [ ] Inspect and map the provided Breeze Google Sheet (ID: 14E8eR5vIKd-_rYc1XBtAfkGosz2SKXau5qOTrOjZI4I) into the portal’s authorized lead-data model after the valid-tab header is added.
+- [x] Limit all Breeze portal ingestion and views to the sheet’s approved valid and valid-gold tabs; exclude spam-risk, invalid, unsubscribe, unknown, and rejected tabs.
+- [x] Show aggregate funnel reporting on the normal Breeze route and restrict individual approved-lead workflow access to signed-in staff.
+- [ ] Require the valid tab to receive the validated-gold header schema before automatic production synchronization.
+- [ ] Implement live website-engagement and form-status ingestion so the Breeze funnel shows actual visited, started, and completed counts.
+- [ ] Add a spreadsheet source-selection and column-mapping workflow instead of relying only on the currently configured Google Sheet.
+
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
 - [x] Replace primary-focused Charlie Hatcher dashboard content with a current November 3 general-election framework against Chaz Molder.

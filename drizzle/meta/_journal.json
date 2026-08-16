@@ -8,6 +8,13 @@
       "when": 1784858154750,
       "tag": "0000_far_baron_strucker",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1786841000145,
+      "tag": "0001_worthless_shape",
+      "breakpoints": true
     }
   ]
 }

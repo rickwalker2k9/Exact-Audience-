@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs } from "../drizzle/schema";
+import { BreezeLeadProgress, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeLeadProgress, breezeImportSources } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -111,4 +111,43 @@ export async function upsertVoterCtvPrefs(prefs: InsertVoterCtvPrefs) {
       lastPreset: prefs.lastPreset,
     },
   });
+}
+
+export async function getBreezeProgressByContactKeys(contactKeys: string[]) {
+  const db = await getDb();
+  if (!db || contactKeys.length === 0) return [] as BreezeLeadProgress[];
+  return db.select().from(breezeLeadProgress).where(inArray(breezeLeadProgress.contactKey, contactKeys));
+}
+
+export async function upsertBreezeLeadProgress(input: {
+  contactKey: string;
+  stage: string;
+  updatedByOpenId: string;
+  websiteVisitedAt?: Date | null;
+  formStartedAt?: Date | null;
+  formCompletedAt?: Date | null;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Breeze progress storage is unavailable");
+  await db.insert(breezeLeadProgress).values(input).onDuplicateKeyUpdate({
+    set: {
+      stage: input.stage,
+      websiteVisitedAt: input.websiteVisitedAt ?? null,
+      formStartedAt: input.formStartedAt ?? null,
+      formCompletedAt: input.formCompletedAt ?? null,
+      updatedByOpenId: input.updatedByOpenId,
+    },
+  });
+}
+
+export async function createBreezeImportSource(input: {
+  ownerOpenId: string;
+  sourceLabel: string;
+  storageKey: string;
+  mappingJson: string;
+  approvedRecordCount: number;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Breeze import metadata storage is unavailable");
+  await db.insert(breezeImportSources).values(input);
 }

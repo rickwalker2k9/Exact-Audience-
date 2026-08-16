@@ -13,7 +13,7 @@ import WarbyDashboard from "./pages/WarbyDashboard";
 import PolicyGeniusDashboard from "./pages/PolicyGeniusDashboard";
 import CampaignPlaceholder from "./pages/CampaignPlaceholder";
 import BuyerProfilePage from "./pages/BuyerProfilePage";
-import BreezeDashboard from "./pages/BreezeDashboard";
+import BreezeLeadPortal, { BreezeStaffLeads } from "./pages/BreezeLeadPortal";
 import LandRoverDashboard from "./pages/LandRoverDashboard";
 import BarrettDashboard from "./pages/BarrettDashboard";
 import NeuroCatchDashboard from "./pages/NeuroCatchDashboard";
@@ -36,7 +36,8 @@ function Router() {
       <Route path="/lamborghini" component={LamborghiniDashboard} />
       <Route path="/warby-parker" component={WarbyDashboard} />
       <Route path="/policygenius" component={PolicyGeniusDashboard} />
-      <Route path="/breeze-insurance" component={BreezeDashboard} />
+      <Route path="/breeze-insurance/staff" component={BreezeStaffLeads} />
+      <Route path="/breeze-insurance" component={BreezeLeadPortal} />
       <Route path="/land-rover" component={LandRoverDashboard} />
       <Route path="/barrett-financial" component={BarrettDashboard} />
       <Route path="/neurocatch" component={NeuroCatchDashboard} />

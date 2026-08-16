@@ -1,0 +1,5 @@
+Breeze portal local verification — Aug. 16, 2026
+
+The new `/breeze-insurance` portal rendered successfully in the development preview. It displayed only aggregate data: 439 validated-gold approved contacts, 0 general-valid imported contacts, and an action-needed badge. No individual names, emails, addresses, or other lead-level information appeared on the public page.
+
+The page correctly held the general valid tab because its matching header row is missing, and displayed a clear instruction to add the validated-gold header row before automatic import. The portal also rendered the approved-contact workflow (approved → activated → engaged → form started → form completed), representative customer journey, source-sheet link, and staff-only workflow link.

@@ -2,8 +2,11 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { invokeLLM } from "./_core/llm";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
-import { getVoterCtvPrefs, upsertVoterCtvPrefs } from "./db";
+import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { createBreezeImportSource, getBreezeProgressByContactKeys, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertVoterCtvPrefs } from "./db";
+import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBreezeContactKey, mapApprovedCsv, toLeadSummary, type BreezeFunnelStage } from "./breezeSheet";
+import { TRPCError } from "@trpc/server";
+import { storagePut } from "./storage";
 import { z } from "zod";
 
 // ── Shared voter profile builder ─────────────────────────────────────────────
@@ -58,6 +61,68 @@ export const appRouter = router({
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
+  }),
+
+  breezePortal: router({
+    summary: publicProcedure.query(async () => {
+      const imports = await getApprovedBreezeLeads();
+      const leads = [...imports.validGold.leads, ...imports.valid.leads];
+      const progress = await getBreezeProgressByContactKeys(leads.map(getBreezeContactKey));
+      const progressByKey = new Map(progress.map(row => [row.contactKey, row.stage as BreezeFunnelStage]));
+      return { ...toLeadSummary(imports), funnel: buildFunnelCounts(leads.map(lead => progressByKey.get(getBreezeContactKey(lead)) ?? "approved")) };
+    }),
+    staffLeads: protectedProcedure
+      .input(z.object({ tier: z.enum(["valid", "valid-gold"]).optional(), limit: z.number().int().min(1).max(100).default(50) }))
+      .query(async ({ ctx, input }) => {
+        const isOwner = Boolean(process.env.OWNER_OPEN_ID && ctx.user.openId === process.env.OWNER_OPEN_ID);
+        if (!isOwner && ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Staff access is required for Breeze lead details." });
+        const imports = await getApprovedBreezeLeads();
+        const leads = [...imports.validGold.leads, ...imports.valid.leads]
+          .filter(lead => !input.tier || lead.tier === input.tier)
+          .slice(0, input.limit);
+        const progress = await getBreezeProgressByContactKeys(leads.map(getBreezeContactKey));
+        const progressByKey = new Map(progress.map(row => [row.contactKey, row]));
+        return {
+          leads: leads.map(lead => ({ ...lead, contactKey: getBreezeContactKey(lead), stage: (progressByKey.get(getBreezeContactKey(lead))?.stage as BreezeFunnelStage | undefined) ?? "approved" })),
+          summary: toLeadSummary(imports),
+        };
+      }),
+    updateLeadStage: protectedProcedure
+      .input(z.object({ contactKey: z.string().length(64), stage: z.enum(BREEZE_FUNNEL_STAGES) }))
+      .mutation(async ({ ctx, input }) => {
+        const isOwner = Boolean(process.env.OWNER_OPEN_ID && ctx.user.openId === process.env.OWNER_OPEN_ID);
+        if (!isOwner && ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Staff access is required for Breeze lead details." });
+        const [previous] = await getBreezeProgressByContactKeys([input.contactKey]);
+        const now = new Date();
+        const stageIndex = BREEZE_FUNNEL_STAGES.indexOf(input.stage);
+        await upsertBreezeLeadProgress({
+          contactKey: input.contactKey,
+          stage: input.stage,
+          updatedByOpenId: ctx.user.openId,
+          websiteVisitedAt: stageIndex >= BREEZE_FUNNEL_STAGES.indexOf("visited") ? previous?.websiteVisitedAt ?? now : previous?.websiteVisitedAt ?? null,
+          formStartedAt: stageIndex >= BREEZE_FUNNEL_STAGES.indexOf("form-started") ? previous?.formStartedAt ?? now : previous?.formStartedAt ?? null,
+          formCompletedAt: stageIndex >= BREEZE_FUNNEL_STAGES.indexOf("form-completed") ? previous?.formCompletedAt ?? now : previous?.formCompletedAt ?? null,
+        });
+        return { success: true };
+      }),
+    uploadApprovedCsv: protectedProcedure
+      .input(z.object({ fileName: z.string().min(1).max(255), csvText: z.string().min(1).max(5_000_000), tier: z.enum(["valid", "valid-gold"]) }))
+      .mutation(async ({ ctx, input }) => {
+        const isOwner = Boolean(process.env.OWNER_OPEN_ID && ctx.user.openId === process.env.OWNER_OPEN_ID);
+        if (!isOwner && ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Staff access is required for Breeze source uploads." });
+        const mapped = mapApprovedCsv(input.csvText, input.tier);
+        if (!mapped.schemaReady) throw new TRPCError({ code: "BAD_REQUEST", message: mapped.reason ?? "A reviewed header row is required." });
+        const safeName = input.fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const stored = await storagePut(`breeze-imports/${ctx.user.openId}/${safeName}`, input.csvText, "text/csv");
+        await createBreezeImportSource({
+          ownerOpenId: ctx.user.openId,
+          sourceLabel: input.fileName,
+          storageKey: stored.key,
+          mappingJson: JSON.stringify({ tier: input.tier, source: "staff-upload", requiredHeaders: ["FIRST NAME", "LAST NAME", "PERS V EMAILS", "ZB Status"] }),
+          approvedRecordCount: mapped.leads.length,
+        });
+        return { success: true, approvedRecordCount: mapped.leads.length, tier: input.tier };
+      }),
   }),
 
   campaign: router({

@@ -46,3 +46,32 @@ export const voterCtvPrefs = mysqlTable("voter_ctv_prefs", {
 
 export type VoterCtvPrefs = typeof voterCtvPrefs.$inferSelect;
 export type InsertVoterCtvPrefs = typeof voterCtvPrefs.$inferInsert;
+
+// Stores only a deterministic contact key plus staff-entered funnel events.
+// Individual contact details remain in the approved Google Sheet and are not copied into the database.
+export const breezeLeadProgress = mysqlTable("breeze_lead_progress", {
+  id: int("id").autoincrement().primaryKey(),
+  contactKey: varchar("contactKey", { length: 128 }).notNull().unique(),
+  stage: varchar("stage", { length: 32 }).notNull().default("approved"),
+  websiteVisitedAt: timestamp("websiteVisitedAt"),
+  formStartedAt: timestamp("formStartedAt"),
+  formCompletedAt: timestamp("formCompletedAt"),
+  updatedByOpenId: varchar("updatedByOpenId", { length: 64 }).notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type BreezeLeadProgress = typeof breezeLeadProgress.$inferSelect;
+export type InsertBreezeLeadProgress = typeof breezeLeadProgress.$inferInsert;
+
+// Stores metadata only for staff-uploaded source spreadsheets; file bytes live in secure object storage.
+export const breezeImportSources = mysqlTable("breeze_import_sources", {
+  id: int("id").autoincrement().primaryKey(),
+  ownerOpenId: varchar("ownerOpenId", { length: 64 }).notNull(),
+  sourceLabel: varchar("sourceLabel", { length: 255 }).notNull(),
+  storageKey: text("storageKey").notNull(),
+  mappingJson: text("mappingJson").notNull(),
+  approvedRecordCount: int("approvedRecordCount").notNull().default(0),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type BreezeImportSource = typeof breezeImportSources.$inferSelect;
