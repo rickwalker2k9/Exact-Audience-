@@ -17,6 +17,7 @@ import {
 import { useState } from "react";
 import { Link } from "wouter";
 import { BREEZE_CAMPAIGN_DESTINATIONS } from "@/lib/breezeCampaignDestinations";
+import { BREEZE_AFFILIATE_TRAFFIC, BREEZE_CALCULATOR_TRAFFIC, BREEZE_TRAFFIC_DEMO_MAX } from "@/lib/breezeTrafficDemo";
 
 function formatCount(count: number) {
   return new Intl.NumberFormat("en-US").format(count);
@@ -108,11 +109,9 @@ export default function BreezeLeadPortal() {
       </section>
 
       <section className="mt-6 rounded-2xl border border-white/10 bg-[#0b1b27] p-6">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Destination history</p>
-        <h2 className="mt-2 text-2xl font-extrabold text-white">Traffic destination by period.</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">May through July traffic was sent to the Income Protection Calculator. Current traffic is directed to the affiliate quote flow. This panel describes routing only; it does not infer traffic, clicks, quotes, or completed forms.</p>
-        <div className="mt-5 grid gap-3 md:grid-cols-4">
-          {BREEZE_CAMPAIGN_DESTINATIONS.map(destination => <article key={destination.period} className="rounded-xl border border-white/10 bg-[#07131d] p-4"><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-400">{destination.period}</p><p className="mt-3 font-bold text-white">{destination.destination}</p><p className="mt-2 text-xs text-slate-400">{destination.status}</p>{destination.url && <a href={destination.url} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-cyan-200 hover:text-cyan-100">Open affiliate quote flow <ArrowRight size={14} /></a>}</article>)}
+        <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Traffic review · illustrative demo data</p><h2 className="mt-2 text-2xl font-extrabold text-white">Destination traffic by month.</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">The figures below are a specific illustrative review series requested for this demo, not sourced campaign analytics. Calculator traffic stops before July; affiliate traffic begins in July.</p></div><StatusPill tone="amber">Illustrative only</StatusPill></div>
+        <div className="mt-6 grid gap-5 lg:grid-cols-2">
+          {[{ title: "Income Protection Calculator", note: "Historical destination · May–June", points: BREEZE_CALCULATOR_TRAFFIC, color: "bg-violet-400" }, { title: "Breeze affiliate quote flow", note: "Current destination · July onward", points: BREEZE_AFFILIATE_TRAFFIC, color: "bg-cyan-300" }].map(section => <article key={section.title} className="rounded-xl border border-white/10 bg-[#07131d] p-5"><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-400">{section.note}</p><h3 className="mt-2 text-lg font-extrabold text-white">{section.title}</h3><div className="mt-5 space-y-4">{section.points.map(point => <div key={point.month}><div className="flex items-baseline justify-between gap-3 text-sm"><span className="text-slate-300">{point.month}</span><strong className="text-white">{formatCount(point.hits)} demo hits</strong></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10"><div className={`h-full rounded-full ${section.color}`} style={{ width: `${Math.round((point.hits / BREEZE_TRAFFIC_DEMO_MAX) * 100)}%` }} /></div></div>)}</div>{section.title === "Breeze affiliate quote flow" && <a href={BREEZE_CAMPAIGN_DESTINATIONS.at(-1)?.url} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-cyan-200 hover:text-cyan-100">Open affiliate quote flow <ArrowRight size={14} /></a>}</article>)}
         </div>
       </section>
 

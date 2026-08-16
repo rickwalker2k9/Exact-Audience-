@@ -69,7 +69,10 @@
 - [ ] Add a spreadsheet source-selection and column-mapping workflow instead of relying only on the currently configured Google Sheet.
 - [x] Replace inflated Breeze performance claims with conservative, clearly labeled operating metrics.
 - [x] Show May–July traffic as Income Protection Calculator activity and route the current campaign to the supplied affiliate quote destination.
-- [ ] Remove pitch-oriented Breeze copy and non-results sections; replace them with factual operating status, recorded counts, and data-source provenance.
+- [x] Remove pitch-oriented Breeze copy and non-results sections; replace them with factual operating status, recorded counts, and data-source provenance.
+- [ ] Add separate monthly traffic sections for the historical Income Protection Calculator and the current affiliate quote destination, with non-overlapping illustrative demo months.
+- [ ] Present the approved spreadsheet names beneath the traffic sections as an owner-review roster without adding disallowed tab records.
+- [ ] Label every illustrative Breeze traffic figure as demo data rather than sourced campaign performance.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

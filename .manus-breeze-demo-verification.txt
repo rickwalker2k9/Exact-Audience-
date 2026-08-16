@@ -25,3 +25,11 @@ The deployed page now labels the approved counts as source roster inventory rath
 Results-focused editorial verification — Aug. 16, 2026
 
 The local Breeze review page now opens with “Breeze operating results,” source status, recorded event status, traffic destination history, and approved roster sections. The former outcome-oriented hero, representative journey, channel recommendations, and “configured next” cards are removed. The page explicitly distinguishes source inventory and recorded events from unconnected performance data.
+
+Railway results-focused verification — Aug. 16, 2026
+
+The live Breeze portal renders “Breeze operating results,” approved-source status, recorded-event status, traffic destination history, and the affiliate quote link. It no longer contains the former conversion-oriented hero, representative journey, or channel recommendation cards.
+
+Illustrative traffic-section verification — Aug. 16, 2026
+
+The local Breeze portal displays two distinct traffic sections above the owner-review roster. The Income Protection Calculator section contains May and June illustrative values only; the affiliate quote section begins in July and includes July and August illustrative values. The page labels the series as illustrative demo data and states it is not sourced campaign analytics. The approved roster follows these sections and remains restricted to approved tab records.
