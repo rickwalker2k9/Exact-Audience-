@@ -41,7 +41,8 @@
 - [ ] Apply live calendar-based traffic dates to Warby Parker, Land Rover, Charlie Hatcher, and Barrett, and ensure Breeze has no obsolete static traffic dates after its live-portal redesign.
 - [x] Verify Warby Parker and Land Rover inherit the shared live-date mapping, then convert Barrett’s standalone traffic and monthly labels.
 - [x] Convert GenericDashboard Site Pages trend labels to the shared live-date utility so Warby Parker and Land Rover have no remaining static chart dates.
-- [ ] Add a current local refresh timestamp to Breeze’s approved-source portal layer and re-verify the full named-dashboard rollout.
+- [ ] Verify locally and on Railway that the Breeze approved-source refresh timestamp visibly renders as a current local date/time.
+- [ ] Document the post-change Breeze UI verification for the refresh timestamp before marking the source-refresh task complete.
 - [x] Audit and refine Charlie Hatcher date-sensitive views and requested campaign adjustments.
 - [ ] Audit and refine Breeze date-sensitive views and requested campaign adjustments.
 - [ ] Gather the business, brand, campaign, and data requirements for a new car-dealership dashboard.
