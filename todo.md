@@ -121,6 +121,8 @@
 - [x] Make the Breeze operating-flow revision explicit in code: strengthen visible customer-journey, funnel-stage, and website-status UI tied to uploaded Exact Audience, Google, and Meta data, then re-test.
 - [x] Return the verified live public Breeze dashboard link to the user after the broader operating-flow revision is complete.
 - [x] Label the fourth Breeze funnel layer Pending SiteID Installation and show its future visitor-data categories without displaying visitor results.
+- [ ] Add a more animated, chart-driven visualization to the Behavior-based list to affiliate quote flow section, with clear stage motion and responsive status treatments.
+- [ ] Add compact visual charts for uploaded Exact Audience and Google/Meta counts, illustrative Email Outreach activity, Pending SiteID installation, and the active affiliate destination without implying unavailable results.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

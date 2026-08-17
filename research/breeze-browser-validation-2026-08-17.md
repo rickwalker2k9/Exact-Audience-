@@ -41,3 +41,5 @@ Final public verification after the retry: the Breeze route rendered successfull
 Public verification of the explicit operating-path revision: the public Breeze route shows a dated Current operating path panel. It visibly separates the uploaded Exact Audience list (2,696) and uploaded Google/Meta responders (350) from the illustrative Email Outreach state (248), the SiteID visitor upload dependency, and the active affiliate destination with no conversion claim.
 
 Public verification of the SiteID readiness update: the public Breeze route now states “Pending SiteID installation; visitor categories populate after installation.” The fourth funnel layer retains all future visitor-data categories and does not show or infer any visitor result before installation.
+
+Local verification of the animation and source-logo refinement: the Breeze funnel now uses compact text initials (EA, G, and M) rather than internal image logos. The Current operating path shows the animated stage rail, staggered stage cards, and compact relative-volume bars, while its labels keep uploaded, illustrative, pending, active, and unavailable data distinct.

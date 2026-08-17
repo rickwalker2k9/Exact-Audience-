@@ -246,6 +246,55 @@
   filter: drop-shadow(0 0 8px rgba(251, 146, 60, 0.42));
 }
 
+@keyframes breezeStageEnter {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes breezeFlowSweep {
+  0% { transform: translateX(-135%); }
+  100% { transform: translateX(335%); }
+}
+
+@keyframes breezeMetricGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes breezeArrowPulse {
+  0%, 100% { opacity: 0.5; transform: translateY(-1px); }
+  50% { opacity: 1; transform: translateY(3px); }
+}
+
+.breeze-funnel-flow {
+  position: relative;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(20,184,166,.22), rgba(251,191,36,.24), rgba(249,115,22,.22), rgba(20,184,166,.22));
+}
+
+.breeze-funnel-flow__signal {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, #14b8a6, #fbbf24, #f97316, transparent);
+  filter: drop-shadow(0 0 7px rgba(251,191,36,.8));
+  animation: breezeFlowSweep 4.2s linear infinite;
+}
+
+.breeze-stage-card { opacity: 0; }
+.breeze-metric-fill { transform-origin: left center; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .breeze-stage-card { animation: breezeStageEnter 520ms var(--ease-out, cubic-bezier(.23,1,.32,1)) both; }
+  .breeze-metric-fill { animation: breezeMetricGrow 800ms var(--ease-out, cubic-bezier(.23,1,.32,1)) both; }
+  .breeze-metric-fill--pending { animation-delay: 300ms; opacity: .75; }
+  .breeze-funnel-arrow { animation: breezeArrowPulse 1.5s ease-in-out infinite; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .breeze-logo-frame::before { animation: none; }
+  .breeze-logo-frame::before, .breeze-funnel-flow__signal, .breeze-stage-card, .breeze-metric-fill, .breeze-funnel-arrow { animation: none; }
+  .breeze-stage-card { opacity: 1; }
 }
