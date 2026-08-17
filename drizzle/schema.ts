@@ -91,3 +91,26 @@ export const breezePixelConfigurations = mysqlTable("breeze_pixel_configurations
 }, table => [uniqueIndex("breeze_pixel_platform_id_unique").on(table.platform, table.pixelId)]);
 
 export type BreezePixelConfiguration = typeof breezePixelConfigurations.$inferSelect;
+
+// Persisted source-specific records used by the Breeze operating portal.
+// The source file remains in controlled intake; this table only stores the
+// selected presentation fields required for the owner-requested source views.
+export const breezeSourceRecords = mysqlTable("breeze_source_records", {
+  id: int("id").autoincrement().primaryKey(),
+  source: varchar("source", { length: 32 }).notNull(),
+  recordKey: varchar("recordKey", { length: 64 }).notNull(),
+  firstName: varchar("firstName", { length: 100 }).notNull(),
+  lastName: varchar("lastName", { length: 100 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 64 }).notNull(),
+  ageRange: varchar("ageRange", { length: 64 }).notNull(),
+  incomeRange: varchar("incomeRange", { length: 64 }).notNull(),
+  city: varchar("city", { length: 120 }).notNull(),
+  state: varchar("state", { length: 32 }).notNull(),
+  sourceLabel: varchar("sourceLabel", { length: 255 }).notNull(),
+  recordOrdinal: int("recordOrdinal").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => [uniqueIndex("breeze_source_record_unique").on(table.source, table.recordKey)]);
+
+export type BreezeSourceRecord = typeof breezeSourceRecords.$inferSelect;

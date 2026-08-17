@@ -1,6 +1,7 @@
 import { desc, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { BreezeLeadProgress, BreezePixelConfiguration, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeLeadProgress, breezeImportSources, breezePixelConfigurations } from "../drizzle/schema";
+import { asc, sql } from "drizzle-orm";
+import { BreezeLeadProgress, BreezePixelConfiguration, BreezeSourceRecord, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeLeadProgress, breezeImportSources, breezePixelConfigurations, breezeSourceRecords } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -176,4 +177,47 @@ export async function upsertBreezePixelConfiguration(input: {
       updatedByOpenId: input.updatedByOpenId,
     },
   });
+}
+
+export async function upsertBreezeSourceRecords(records: Array<{
+  source: string;
+  recordKey: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  ageRange: string;
+  incomeRange: string;
+  city: string;
+  state: string;
+  sourceLabel: string;
+  recordOrdinal: number;
+}>) {
+  const db = await getDb();
+  if (!db) throw new Error("Breeze source record storage is unavailable");
+  if (!records.length) return;
+  await db.insert(breezeSourceRecords).values(records).onDuplicateKeyUpdate({
+    set: {
+      firstName: sql`values(firstName)`,
+      lastName: sql`values(lastName)`,
+      email: sql`values(email)`,
+      phone: sql`values(phone)`,
+      ageRange: sql`values(ageRange)`,
+      incomeRange: sql`values(incomeRange)`,
+      city: sql`values(city)`,
+      state: sql`values(state)`,
+      sourceLabel: sql`values(sourceLabel)`,
+      recordOrdinal: sql`values(recordOrdinal)`,
+    },
+  });
+}
+
+export async function getBreezeSourceRecords(input: { source: string; limit: number; offset: number }) {
+  const db = await getDb();
+  if (!db) return [] as BreezeSourceRecord[];
+  return db.select().from(breezeSourceRecords)
+    .where(eq(breezeSourceRecords.source, input.source))
+    .orderBy(asc(breezeSourceRecords.recordOrdinal))
+    .limit(input.limit)
+    .offset(input.offset);
 }

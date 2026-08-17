@@ -3,9 +3,10 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { invokeLLM } from "./_core/llm";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { createBreezeImportSource, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
+import { createBreezeImportSource, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getBreezeSourceRecords, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
 import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBreezeContactKey, mapApprovedCsv, toLeadSummary, toOwnerReviewLead, type BreezeFunnelStage } from "./breezeSheet";
 import { parseBreezePixelCsv } from "./breezePixelImport";
+import { BREEZE_RECORD_SOURCES } from "./breezeSourceRecords";
 import { TRPCError } from "@trpc/server";
 import { storagePut } from "./storage";
 import { z } from "zod";
@@ -145,6 +146,25 @@ export const appRouter = router({
         updatedAt: configuration.updatedAt,
       }));
     }),
+    sourceRecords: publicProcedure
+      .input(z.object({ source: z.enum(BREEZE_RECORD_SOURCES), limit: z.number().int().min(1).max(100).default(60), offset: z.number().int().min(0).max(3_000).default(0) }))
+      .query(async ({ input }) => {
+        const records = await getBreezeSourceRecords(input);
+        return records.map(record => ({
+          id: record.id,
+          source: record.source,
+          firstName: record.firstName,
+          lastName: record.lastName,
+          email: record.email,
+          phone: record.phone,
+          ageRange: record.ageRange,
+          incomeRange: record.incomeRange,
+          city: record.city,
+          state: record.state,
+          sourceLabel: record.sourceLabel,
+          recordOrdinal: record.recordOrdinal,
+        }));
+      }),
     importPixelCsv: protectedProcedure
       .input(z.object({ fileName: z.string().min(1).max(255), csvText: z.string().min(1).max(1_000_000) }))
       .mutation(async ({ ctx, input }) => {

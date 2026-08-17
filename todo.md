@@ -96,6 +96,17 @@
 - [ ] Add verified-result fields for Google Ads clicks, Meta Ads clicks, and landing-page visits that remain blank until first-party source data is supplied or connected.
 - [ ] Populate Google Ads clicks, Meta Ads clicks, and landing-page visits only from user-uploaded spreadsheets; do not connect GA4 or ad-platform accounts.
 - [x] Import reporting sheet 1AydQ20lsvFBgO7sdFf8c0ZddWgnYyi-anMedOJBuky0 and display 112 Google Ads results with the remaining 238 verified records assigned to Meta Ads.
+- [x] Aggregate the attached LTDI_UNDER65_100KPLUS_PART_03 Exact Audience CSV into source-record storage and add it as the Email Outreach source.
+- [x] Clearly label the Breeze Email Outreach source as originating from Exact Audience alongside Google Ads and Meta Ads.
+- [x] Add Google Ads, Meta Ads, and Exact Audience Data buttons that open each source in a polished, dashboard-style record view rather than a raw spreadsheet.
+- [x] Remove backgrounds from the supplied Google, Meta, and Exact Audience logos and render the logo marks in white on black source buttons.
+- [x] Build an Exact Audience — Behavior Based Data funnel header above the Google Ads and Meta Ads engagement layers.
+- [x] Add a Website Visitors layer with the user-supplied SiteID field schema as visually marked placeholders until its CSV is provided.
+- [x] Show customer journeys as progression from Exact Audience data through ad engagement to website visits and affiliate destination activity.
+- [x] Reorder Breeze as Exact Audience list → ads served → Google/Meta responders → SiteID website visitors → Breeze affiliate quote link.
+- [x] Remove the Income Protection Calculator from Breeze and do not show or infer affiliate-page conversions.
+- [x] Update individual Breeze lead journeys to show Exact Audience source → Google/Meta response → SiteID website-visitor status → Breeze affiliate destination.
+- [x] Remove remaining calculator destination branches and calculator-specific copy from Breeze page logic, not only the visible home card.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

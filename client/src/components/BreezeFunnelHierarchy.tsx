@@ -1,0 +1,62 @@
+import { BREEZE_SOURCE_SELECTOR, type BreezeSourceSelectorId } from "@/lib/breezeSourceSelector";
+import { BREEZE_JOURNEY_STAGES, BREEZE_SITEID_FIELD_GROUPS } from "@/lib/breezeSiteIdSchema";
+import { trpc } from "@/lib/trpc";
+import { ArrowDown, Globe2, MapPin, MousePointerClick, UserRound } from "lucide-react";
+import { useState } from "react";
+
+type SourceRecord = {
+  id: number;
+  source: BreezeSourceSelectorId;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  ageRange: string;
+  incomeRange: string;
+  city: string;
+  state: string;
+  sourceLabel: string;
+};
+
+const AFFILIATE_URL = "https://www.meetbreeze.com/disability-insurance/quotes/?tunetrackingid=102ccdb8593aef1d29660f6b36f8dc";
+const formatCount = (value: number) => new Intl.NumberFormat("en-US").format(value);
+
+function Pill({ children, tone }: { children: React.ReactNode; tone: "orange" | "gold" | "teal" }) {
+  const classes = tone === "orange" ? "border-[#f97316]/45 bg-[#f97316]/10 text-[#fdba74]" : tone === "gold" ? "border-[#fbbf24]/45 bg-[#fbbf24]/10 text-[#fde68a]" : "border-[#14b8a6]/45 bg-[#14b8a6]/10 text-[#99f6e4]";
+  return <span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.14em] ${classes}`}>{children}</span>;
+}
+
+function SourceButton({ source, active, onClick }: { source: (typeof BREEZE_SOURCE_SELECTOR)[number]; active: boolean; onClick: () => void }) {
+  const activeClass = source.accent === "orange" ? "border-[#f97316] shadow-[0_0_0_1px_rgba(249,115,22,.35)]" : source.accent === "gold" ? "border-[#fbbf24] shadow-[0_0_0_1px_rgba(251,191,36,.35)]" : "border-[#14b8a6] shadow-[0_0_0_1px_rgba(20,184,166,.35)]";
+  const countColor = source.accent === "orange" ? "text-[#fdba74]" : source.accent === "gold" ? "text-[#fde68a]" : "text-[#99f6e4]";
+  return <button onClick={onClick} className={`group min-h-32 rounded-2xl border bg-black p-4 text-left transition-all duration-200 hover:-translate-y-1 ${active ? activeClass : "border-white/15 hover:border-white/35"}`}><div className="flex h-14 items-center overflow-hidden"><img src={source.logo} alt={`${source.label} logo`} className={`h-14 w-full object-contain ${source.logoClassName}`} /></div><div className="mt-3 flex items-center justify-between gap-3"><span className="text-sm font-black text-white">{source.label}</span><span className={`text-sm font-black ${countColor}`}>{formatCount(source.count)}</span></div><p className="mt-1 text-xs text-slate-400">{source.id === "exact-audience" ? "Behavior Based Data" : "Responder source records"}</p></button>;
+}
+
+function SourceRecordCard({ record, tone }: { record: SourceRecord; tone: "orange" | "gold" | "teal" }) {
+  const toneClass = tone === "orange" ? "border-[#f97316]/35" : tone === "gold" ? "border-[#fbbf24]/35" : "border-[#14b8a6]/35";
+  const lineClass = tone === "orange" ? "bg-[#f97316]" : tone === "gold" ? "bg-[#fbbf24]" : "bg-[#14b8a6]";
+  const name = `${record.firstName} ${record.lastName}`.trim() || "Contact record";
+  const location = [record.city, record.state].filter(Boolean).join(", ") || "Location not supplied";
+  return <article className={`relative overflow-hidden rounded-2xl border ${toneClass} bg-black p-5 transition-transform duration-200 hover:-translate-y-1`}><div className={`absolute inset-x-0 top-0 h-1 ${lineClass}`} /><div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="truncate text-lg font-black text-white">{name}</h3><p className="mt-1 flex items-center gap-1 text-xs text-slate-400"><MapPin size={13} /> {location}</p></div><Pill tone={tone}>{record.source === "exact-audience" ? "Behavior data" : "Responded"}</Pill></div><div className="mt-5 grid grid-cols-2 gap-3"><div className="rounded-xl border border-white/10 p-3"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-slate-500">Age range</p><p className="mt-2 font-bold text-white">{record.ageRange || "—"}</p></div><div className="rounded-xl border border-white/10 p-3"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-slate-500">Income range</p><p className="mt-2 font-bold text-white">{record.incomeRange || "—"}</p></div></div><div className="mt-4 rounded-xl border border-white/10 bg-black p-3"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-slate-500">Contact fields</p><p className="mt-2 truncate text-sm font-semibold text-white">{record.email || "Email not supplied"}</p><p className="mt-1 text-sm text-slate-300">{record.phone || "Phone not supplied"}</p></div></article>;
+}
+
+export function BreezeFunnelHierarchy() {
+  const [activeSource, setActiveSource] = useState<BreezeSourceSelectorId>("exact-audience");
+  const active = BREEZE_SOURCE_SELECTOR.find(source => source.id === activeSource) ?? BREEZE_SOURCE_SELECTOR[0];
+  const recordsQuery = trpc.breezePortal.sourceRecords.useQuery({ source: activeSource, limit: 30, offset: 0 });
+  const records = (recordsQuery.data ?? []) as SourceRecord[];
+  return <section className="mt-7 rounded-3xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.4)] sm:p-6">
+    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Breeze operating funnel</p><h2 className="mt-1 text-3xl font-black text-white">Behavior-based list to affiliate quote flow</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">Exact Audience supplies the behavior-based list. Ads are served to that list, Google and Meta response records are reviewed, then SiteID website visitors are added when the pixel CSV is supplied. The affiliate destination does not provide conversion reporting.</p></div><Pill tone="teal">Affiliate-only view</Pill></div>
+    <div className="mt-7 space-y-4">
+      <article className="rounded-3xl border border-[#14b8a6]/55 bg-black p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-5"><div className="flex min-w-0 items-center gap-4"><div className="flex h-16 w-40 items-center overflow-hidden"><img src="/manus-storage/breeze-exact-audience-white_f2401364.png" alt="Exact Audience logo" className="h-16 w-full scale-[1.9] object-contain" /></div><div><p className="text-[10px] font-bold uppercase tracking-[.17em] text-[#99f6e4]">First · Exact Audience</p><h3 className="mt-1 text-2xl font-black text-white">Behavior Based Data List</h3><p className="mt-1 text-sm text-slate-300">The supplied audience list is the starting point for Email Outreach and paid-ad delivery.</p></div></div><div className="grid grid-cols-2 gap-3"><div className="rounded-xl border border-[#14b8a6]/35 p-3 text-center"><p className="text-2xl font-black text-[#99f6e4]">2,696</p><p className="text-[10px] uppercase tracking-[.14em] text-slate-400">Records</p></div><div className="rounded-xl border border-[#14b8a6]/35 p-3 text-center"><p className="text-2xl font-black text-[#99f6e4]">2,225</p><p className="text-[10px] uppercase tracking-[.14em] text-slate-400">Email fields</p></div></div></div><div className="mt-5 max-w-sm"><SourceButton source={BREEZE_SOURCE_SELECTOR[2]} active={activeSource === "exact-audience"} onClick={() => setActiveSource("exact-audience")} /></div></article>
+      <div className="flex justify-center"><ArrowDown className="text-[#14b8a6]" size={24} /></div>
+      <article className="rounded-3xl border border-[#fbbf24]/35 bg-black p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.17em] text-[#fde68a]">Second · ads served to list</p><h3 className="mt-1 text-2xl font-black text-white">Google Ads and Meta Ads delivery</h3><p className="mt-1 text-sm text-slate-300">The Exact Audience list is activated across these two paid channels. Delivery totals are not inferred from responder records.</p></div><div className="flex items-center gap-2"><MousePointerClick className="text-[#fbbf24]" size={20} /><Pill tone="gold">Channel activation</Pill></div></div><div className="mt-5 grid gap-3 md:grid-cols-2">{BREEZE_SOURCE_SELECTOR.filter(source => source.id !== "exact-audience").map(source => <SourceButton key={source.id} source={source} active={activeSource === source.id} onClick={() => setActiveSource(source.id)} />)}</div></article>
+      <div className="flex justify-center"><ArrowDown className="text-[#fbbf24]" size={24} /></div>
+      <article className="rounded-3xl border border-[#f97316]/35 bg-black p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.17em] text-[#fdba74]">Third · responders</p><h3 className="mt-1 text-2xl font-black text-white">Google and Meta engagement records</h3><p className="mt-1 text-sm text-slate-300">Source records are organized by the user-provided 112 Google Ads / 238 Meta Ads allocation. These are responders, not a measure of total ad delivery.</p></div><UserRound className="text-[#f97316]" size={24} /></div><div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{recordsQuery.isLoading ? <p className="col-span-full py-10 text-center text-sm text-slate-400">Loading source records…</p> : records.length === 0 ? <p className="col-span-full py-10 text-center text-sm text-slate-400">No records are available for this source yet.</p> : records.map(record => <SourceRecordCard key={record.id} record={record} tone={active.accent} />)}</div></article>
+      <div className="flex justify-center"><ArrowDown className="text-[#f97316]" size={24} /></div>
+      <article className="rounded-3xl border border-[#f97316]/35 bg-black p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.17em] text-[#fdba74]">Fourth · website visitors</p><h3 className="mt-1 text-2xl font-black text-white">SiteID visitor events</h3><p className="mt-1 max-w-3xl text-sm leading-6 text-slate-300">This layer will show the future SiteID pixel CSV. It remains a marked placeholder until that file is supplied; no website visits are modeled or claimed.</p></div><div className="flex items-center gap-2"><Globe2 className="text-[#f97316]" size={20} /><Pill tone="orange">Awaiting SiteID CSV</Pill></div></div><div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{BREEZE_SITEID_FIELD_GROUPS.map(group => <div key={group.label} className="rounded-2xl border border-white/10 p-4"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#fdba74]">{group.label}</p><p className="mt-3 text-xs leading-6 text-slate-400">{group.fields.join(" · ")}</p></div>)}</div></article>
+      <div className="flex justify-center"><ArrowDown className="text-[#f97316]" size={24} /></div>
+      <article className="rounded-3xl border border-[#fbbf24]/35 bg-black p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.17em] text-[#fde68a]">Fifth · destination and journey</p><h3 className="mt-1 text-2xl font-black text-white">Breeze affiliate quote flow</h3><p className="mt-1 max-w-3xl text-sm leading-6 text-slate-300">The affiliate quote link is the sole Breeze destination. Affiliate-page conversion data is not available and is intentionally not displayed.</p></div><a href={AFFILIATE_URL} target="_blank" rel="noreferrer" className="flex h-16 w-36 items-center overflow-hidden rounded-xl border border-[#fbbf24]/35 bg-black p-2"><img src="/manus-storage/breeze-logo_57fe72cd.png" alt="Breeze" className="w-full object-contain" /></a></div><ol className="mt-6 grid gap-3 md:grid-cols-5">{BREEZE_JOURNEY_STAGES.map((stage, index) => <li key={stage} className="rounded-2xl border border-white/10 p-4"><div className="flex items-center gap-2"><span className="grid h-6 w-6 place-items-center rounded-full bg-black text-xs font-black text-[#fde68a] ring-1 ring-[#fbbf24]/45">{index + 1}</span><span className="text-[10px] font-bold uppercase tracking-[.12em] text-slate-500">Step {index + 1}</span></div><p className="mt-3 text-sm font-bold leading-5 text-white">{stage}</p>{index === 3 && <p className="mt-2 text-xs leading-5 text-[#fdba74]">Waiting for SiteID pixel CSV.</p>}{index === 4 && <p className="mt-2 text-xs leading-5 text-[#fde68a]">No conversion data available.</p>}</li>)}</ol></article>
+    </div>
+  </section>;
+}

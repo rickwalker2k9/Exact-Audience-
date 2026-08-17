@@ -17,3 +17,7 @@ After the final GitHub push and Railway wait period, the public Breeze route’s
 The local Breeze view now shows the verified source-allocation panel from the user-supplied worksheet: 350 approved records, with 112 allocated to Google Ads and 238 allocated to Meta Ads. It explicitly distinguishes these record counts from click and landing-page-visit data, which remain blank because the workbook contains no such fields. Pixel Management shows zero configured pixels and no upload workflow.
 
 The allocation update was checkpointed as `d340382` and pushed to GitHub `main`. Two Railway public-route checks after the push were still serving the preceding Breeze revision without the allocation panel; the local implementation and build validation are complete, but the Railway deployment remains pending public verification.
+
+After a further Railway wait and public-route check, the allocation panel was still absent. GitHub reports the `d340382` commit deployment state as `pending` with no detailed status entries, indicating the requested Railway deployment has not yet completed rather than a confirmed application failure.
+
+GitHub later reported two Railway deployment contexts for the commit, both in a `pending` “Railway is deploying the service” state. The user-designated service in project `c3bc7500-c9f9-46b5-b081-a7ee4eac9cae` has deployment ID `049d4f71-089d-4ea6-b928-09f3cad46739` pending; no failure status has been reported.

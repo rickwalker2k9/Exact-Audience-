@@ -1,14 +1,13 @@
 import { trpc } from "@/lib/trpc";
 import {
   BREEZE_DESTINATIONS,
-  BREEZE_DESTINATION_DAILY_TRAFFIC,
   type BreezeDestinationKey,
 } from "@/lib/breezeTrafficDemo";
 import { buildBreezeDemoSignal } from "@/lib/breezeLeadSignals";
 import { BREEZE_SOURCE_TOTALS, BREEZE_SOURCE_TRAFFIC } from "@/lib/breezeSourceTraffic";
+import { BreezeFunnelHierarchy } from "@/components/BreezeFunnelHierarchy";
 import { BREEZE_VERIFIED_SOURCE_RESULTS } from "@/lib/breezeVerifiedSourceResults";
 import { BREEZE_WEBSITE_SNAPSHOT, BREEZE_WEBSITE_TRAFFIC } from "@/lib/breezeWebsiteTraffic";
-import { BreezeFormFillWorkflow } from "@/components/BreezeFormFillWorkflow";
 import {
   ArrowLeft,
   ArrowRight,
@@ -134,7 +133,7 @@ function SourceTrafficChart() {
         </LineChart>
       </ResponsiveContainer>
     </div>
-  </section><VerifiedSourceResults /></>;
+  </section><VerifiedSourceResults /><BreezeFunnelHierarchy /></>;
 }
 
 function VerifiedSourceResults() {
@@ -143,30 +142,6 @@ function VerifiedSourceResults() {
     <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Verified source allocation</p><h2 className="mt-1 text-2xl font-black text-white">Approved records by reported ad source</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Aggregate allocation from the supplied reporting worksheet. These are approved records, not ad-platform click totals or pixel-measured landing-page visits.</p></div><Pill tone="teal">{result.sourceLabel}</Pill></div>
     <div className="mt-5 grid gap-3 sm:grid-cols-4"><Metric label="Verified records" value={formatCount(result.totalRecords)} note={`Reported ${result.reportedOn}.`} /><Metric label="Google Ads" value={formatCount(result.googleAdsRecords)} note="User-confirmed allocation." /><Metric label="Meta Ads" value={formatCount(result.metaAdsRecords)} note="Balance of supplied records." /><Metric label="Landing-page visits" value="—" note="No visit spreadsheet supplied." /></div>
     <p className="mt-4 text-xs leading-5 text-slate-400">The daily source-monitoring chart remains labeled illustrative because the supplied worksheet contains contact records only; it has no daily Google Ads, Meta Ads, click, or landing-page-visit fields.</p>
-  </section>;
-}
-
-function DailyTrafficChart({ destination }: { destination: BreezeDestinationKey }) {
-  const points = BREEZE_DESTINATION_DAILY_TRAFFIC[destination];
-  const max = Math.max(...points.map(point => point.hits), 1);
-  const accent = destination === "affiliate" ? "from-[#14b8a6] to-[#99f6e4]" : "from-[#f97316] to-[#fbbf24]";
-  return <section className="rounded-2xl border border-[#fbbf24]/25 bg-black p-5">
-    <div className="flex flex-wrap items-start justify-between gap-3">
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-[.17em] text-[#fde68a]">Daily traffic · illustrative demo data</p>
-        <h3 className="mt-1 text-xl font-black text-white">Traffic going to this link</h3>
-      </div>
-      <Pill tone="gold">Demo only</Pill>
-    </div>
-    <div className="mt-6 flex h-48 items-end gap-1.5 border-b border-white/15 pb-5">
-      {points.map(point => <div key={point.day} className="group flex min-w-0 flex-1 flex-col justify-end">
-        <div className={`relative rounded-t-md bg-gradient-to-t ${accent}`} style={{ height: `${Math.max(2, (point.hits / max) * 100)}%` }}>
-          <span className="pointer-events-none absolute -top-7 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-black px-2 py-1 text-[10px] font-bold text-white shadow-lg group-hover:block">{formatCount(point.hits)} hits</span>
-        </div>
-        <span className="mt-2 truncate text-center text-[9px] text-slate-500">{point.day.replace(" ", "")}</span>
-      </div>)}
-    </div>
-    <p className="mt-4 text-xs leading-5 text-slate-400">This is a labeled illustrative traffic review series. The calculator route is zero in July and August after the destination transition.</p>
   </section>;
 }
 
@@ -203,13 +178,12 @@ function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination
     <section className="mt-5 rounded-xl border border-[#fbbf24]/25 bg-black p-4">
       <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#fde68a]">Customer journey</p>
       <ol className="mt-4 space-y-3 text-sm">
-        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#14b8a6]" /><div><strong className="text-white">Approved lead record</strong><p className="text-slate-400">Included in the approved spreadsheet review set.</p></div></li>
-        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#f97316]" /><div><strong className="text-white">Source engagement sequence</strong><p className="text-slate-400">Illustrative Google Ads, Meta Ads, and Email engagement sequence.</p></div></li>
-        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#fbbf24]" /><div><strong className="text-white">Destination: {destinationTitle}</strong><p className="text-slate-400">Destination-specific link routing is shown in this view.</p></div></li>
-        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-white/50" /><div><strong className="text-white">Form-fill workflow</strong><p className="text-slate-400">Unique email, unique phone, consent questions, and submission are staged pending workflow activation.</p></div></li>
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#14b8a6]" /><div><strong className="text-white">Exact Audience behavior-based list</strong><p className="text-slate-400">This record begins in the supplied Exact Audience source layer.</p></div></li>
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#f97316]" /><div><strong className="text-white">Google or Meta response</strong><p className="text-slate-400">This source is reviewed as an ad-response record; total platform delivery is not inferred.</p></div></li>
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#fdba74]" /><div><strong className="text-white">SiteID website visitor status</strong><p className="text-slate-400">Awaiting the SiteID pixel CSV; no website visit is claimed until a matching event is supplied.</p></div></li>
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#fbbf24]" /><div><strong className="text-white">Breeze affiliate quote link</strong><p className="text-slate-400">Current destination: {destinationTitle}. Affiliate-page conversions are unavailable and are not displayed.</p></div></li>
       </ol>
     </section>
-    <BreezeFormFillWorkflow leadName={lead.name} />
   </aside>;
 }
 
@@ -233,20 +207,19 @@ function PixelManagement() {
   </section>;
 }
 
-function DestinationPage({ destination, leads, onBack }: { destination: BreezeDestinationKey; leads: OwnerReviewLead[]; onBack: () => void }) {
-  const config = BREEZE_DESTINATIONS[destination];
-  const currentLeadCount = destination === "affiliate" ? leads.length : 0;
-  return <main className="min-h-screen bg-black text-slate-100"><header className="border-b border-[#fbbf24]/25 bg-black"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"><button onClick={onBack} className="inline-flex items-center gap-2 text-sm font-bold text-[#fde68a] hover:text-white"><ArrowLeft size={17} /> All destinations</button><span className="text-lg font-black text-white">Breeze</span><Pill tone={destination === "affiliate" ? "teal" : "orange"}>Destination detail</Pill></div></header><div className="mx-auto max-w-7xl px-5 py-9"><div className="flex flex-wrap items-start justify-between gap-5"><div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[.2em] text-[#fde68a]">{config.eyebrow}</p><h1 className="mt-2 text-4xl font-black tracking-[-.04em] text-white">{config.title}</h1><p className="mt-3 text-base leading-7 text-slate-300">{config.description}</p></div>{config.destinationUrl ? <a href={config.destinationUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[#fbbf24] px-4 py-3 text-sm font-bold text-black">Open affiliate link <ExternalLink size={16} /></a> : <Pill tone="neutral">No July–August routing</Pill>}</div><div className="mt-7 grid gap-4 md:grid-cols-3"><Metric label="Traffic period" value={config.activePeriod} note="Illustrative traffic review." /><Metric label="Leads routed" value={formatCount(currentLeadCount)} note={destination === "affiliate" ? "Current approved roster shown below." : "No historical lead attribution connected."} /><Metric label="Opt-ins" value="Not connected" note="Connect form events to report actual opt-ins." /></div><div className="mt-6"><DailyTrafficChart destination={destination} /></div>{destination === "calculator" ? <section className="mt-6 rounded-2xl border border-[#f97316]/30 bg-black p-6 text-sm leading-7 text-[#fed7aa]"><strong>Income Protection Tool historical view.</strong> This route has illustrative May–June traffic and zero July–August traffic. Individual calculator-lead attribution and opt-ins have not been connected from the current sheet.</section> : <LeadTable leads={leads} destination={destination} />}</div></main>;
+function DestinationPage({ leads, onBack }: { leads: OwnerReviewLead[]; onBack: () => void }) {
+  const config = BREEZE_DESTINATIONS.affiliate;
+  return <main className="min-h-screen bg-black text-slate-100"><header className="border-b border-[#fbbf24]/25 bg-black"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"><button onClick={onBack} className="inline-flex items-center gap-2 text-sm font-bold text-[#fde68a] hover:text-white"><ArrowLeft size={17} /> Breeze funnel</button><span className="text-lg font-black text-white">Breeze</span><Pill tone="teal">Affiliate destination</Pill></div></header><div className="mx-auto max-w-7xl px-5 py-9"><div className="flex flex-wrap items-start justify-between gap-5"><div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[.2em] text-[#fde68a]">{config.eyebrow}</p><h1 className="mt-2 text-4xl font-black tracking-[-.04em] text-white">{config.title}</h1><p className="mt-3 text-base leading-7 text-slate-300">{config.description}</p></div><a href={config.destinationUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[#fbbf24] px-4 py-3 text-sm font-bold text-black">Open affiliate link <ExternalLink size={16} /></a></div><div className="mt-7 grid gap-4 md:grid-cols-3"><Metric label="Affiliate destination" value="Active" note="Current Breeze quote route." /><Metric label="Source records" value={formatCount(leads.length)} note="Approved roster shown below." /><Metric label="Conversions" value="—" note="Affiliate conversion data unavailable." /></div><LeadTable leads={leads} destination="affiliate" /></div></main>;
 }
 
 export default function BreezeLeadPortal() {
   const summary = trpc.breezePortal.summary.useQuery(undefined, { refetchInterval: 5 * 60 * 1000 });
   const rosterQuery = trpc.breezePortal.ownerReview.useQuery({ limit: 500 }, { refetchInterval: 5 * 60 * 1000 });
-  const [destination, setDestination] = useState<BreezeDestinationKey | null>(null);
+  const [destination, setDestination] = useState<"affiliate" | null>(null);
   const leads = (rosterQuery.data ?? []) as OwnerReviewLead[];
-  if (destination) return <DestinationPage destination={destination} leads={leads} onBack={() => setDestination(null)} />;
+  if (destination) return <DestinationPage leads={leads} onBack={() => setDestination(null)} />;
   const approvedCount = (summary.data?.valid.count ?? 0) + (summary.data?.validGold.count ?? 0);
-  return <main className="min-h-screen bg-black text-slate-100"><section className="border-b border-[#fbbf24]/25 bg-[radial-gradient(circle_at_68%_20%,rgba(249,115,22,.24),transparent_34%),radial-gradient(circle_at_82%_4%,rgba(20,184,166,.16),transparent_28%),#000000]"><div className="mx-auto max-w-7xl px-5 py-12 sm:py-16"><div className="breeze-logo-frame"><img src="/manus-storage/breeze-logo_57fe72cd.png" alt="Breeze" className="breeze-logo-wordmark" /></div><p className="mt-5 text-lg font-medium text-[#fde68a] sm:text-xl">Intent prospects based on behavioral activity.</p></div></section><div className="mx-auto max-w-7xl space-y-7 px-5 py-9"><WebsiteTrafficChart /><SourceTrafficChart /><div className="grid gap-5 lg:grid-cols-2">{(Object.keys(BREEZE_DESTINATIONS) as BreezeDestinationKey[]).map(key => { const item = BREEZE_DESTINATIONS[key]; const affiliate = key === "affiliate"; return <button key={key} onClick={() => setDestination(key)} className={`group rounded-3xl border bg-black p-7 text-left transition-all hover:-translate-y-1 hover:shadow-[0_24px_80px_rgba(0,0,0,.6)] ${affiliate ? "border-[#14b8a6]/45" : "border-[#f97316]/45"}`}><div className="flex items-start justify-between gap-4"><Pill tone={affiliate ? "teal" : "orange"}>{item.eyebrow}</Pill><ChevronRight className="text-[#fbbf24] transition-transform group-hover:translate-x-1" /></div><h3 className="mt-8 text-3xl font-black text-white">{item.title}</h3><p className="mt-3 min-h-14 text-sm leading-6 text-slate-300">{item.description}</p><div className="mt-7 grid grid-cols-3 gap-3"><Metric label="Traffic" value={item.activePeriod} note="Review range" /><Metric label="Leads" value={affiliate ? (rosterQuery.isLoading ? "—" : formatCount(leads.length)) : "0"} note={affiliate ? "Approved roster" : "No linked roster"} /><Metric label="Opt-ins" value="—" note="Not connected" /></div><span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#fde68a]">Open destination details <ArrowRight size={16} /></span></button>; })}</div><PixelManagement /><section className="rounded-2xl border border-[#fbbf24]/25 bg-black p-5"><div className="flex items-start gap-3"><CircleAlert className="mt-0.5 shrink-0 text-[#fbbf24]" size={18} /><p className="text-sm leading-6 text-slate-300"><strong className="text-white">Data status:</strong> {summary.isLoading ? "Refreshing approved source…" : `${formatCount(approvedCount)} approved spreadsheet records are available for review.`} Website traffic is displayed as an attributed Similarweb estimate; destination and ad-source activity remain clearly labeled illustrative data until connected.</p></div></section></div></main>;
+  return <main className="min-h-screen bg-black text-slate-100"><section className="border-b border-[#fbbf24]/25 bg-[radial-gradient(circle_at_68%_20%,rgba(249,115,22,.24),transparent_34%),radial-gradient(circle_at_82%_4%,rgba(20,184,166,.16),transparent_28%),#000000]"><div className="mx-auto max-w-7xl px-5 py-12 sm:py-16"><div className="breeze-logo-frame"><img src="/manus-storage/breeze-logo_57fe72cd.png" alt="Breeze" className="breeze-logo-wordmark" /></div><p className="mt-5 text-lg font-medium text-[#fde68a] sm:text-xl">Intent prospects based on behavioral activity.</p></div></section><div className="mx-auto max-w-7xl space-y-7 px-5 py-9"><WebsiteTrafficChart /><SourceTrafficChart /><div className="grid gap-5">{(["affiliate"] as const).map(key => { const item = BREEZE_DESTINATIONS[key]; return <button key={key} onClick={() => setDestination(key)} className="group rounded-3xl border border-[#14b8a6]/45 bg-black p-7 text-left transition-all hover:-translate-y-1 hover:shadow-[0_24px_80px_rgba(0,0,0,.6)]"><div className="flex items-start justify-between gap-4"><Pill tone="teal">Affiliate destination</Pill><ChevronRight className="text-[#fbbf24] transition-transform group-hover:translate-x-1" /></div><div className="mt-6 flex items-center gap-4"><div className="flex h-16 w-36 items-center overflow-hidden rounded-xl border border-[#fbbf24]/25 bg-black p-2"><img src="/manus-storage/breeze-logo_57fe72cd.png" alt="Breeze" className="w-full object-contain" /></div><div><h3 className="text-3xl font-black text-white">{item.title}</h3><p className="mt-1 text-sm text-slate-300">The sole Breeze destination.</p></div></div><p className="mt-5 text-sm leading-6 text-slate-300">{item.description}</p><div className="mt-7 grid gap-3 sm:grid-cols-3"><Metric label="Affiliate link" value="Active" note="Current Breeze quote route." /><Metric label="Source records" value={rosterQuery.isLoading ? "—" : formatCount(leads.length)} note="Approved roster review." /><Metric label="Conversions" value="—" note="Affiliate conversion data unavailable." /></div><span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#fde68a]">Open Breeze destination details <ArrowRight size={16} /></span></button>; })}</div><PixelManagement /><section className="rounded-2xl border border-[#fbbf24]/25 bg-black p-5"><div className="flex items-start gap-3"><CircleAlert className="mt-0.5 shrink-0 text-[#fbbf24]" size={18} /><p className="text-sm leading-6 text-slate-300"><strong className="text-white">Data status:</strong> {summary.isLoading ? "Refreshing approved source…" : `${formatCount(approvedCount)} approved spreadsheet records are available for review.`} The Exact Audience list, Google/Meta responders, and SiteID visitor layer are shown separately. Website visits remain a placeholder until the SiteID CSV is supplied, and affiliate conversions are not available.</p></div></section></div></main>;
 }
 
 export function BreezeStaffLeads() {
