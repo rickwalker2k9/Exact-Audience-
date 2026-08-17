@@ -110,7 +110,7 @@ function SourceTrafficChart() {
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#fdba74]">Traffic sources · illustrative demo data</p>
         <h2 className="mt-1 text-2xl font-black text-white">Daily traffic since August 10</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Google Ads, Meta Ads, and Email are modeled only for the operating-demo view until source-platform reporting is connected.</p>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Google Ads, Meta Ads, and Email remain illustrative in this daily chart until you upload source results. Breeze does not connect to advertising-platform APIs.</p>
       </div>
       <Pill tone="orange">Demo source monitoring</Pill>
     </div>
@@ -168,7 +168,7 @@ function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination
       <div className="mt-4 flex items-center gap-1.5">
         {Array.from({ length: 6 }).map((_, index) => <span key={index} className={`h-3 flex-1 rounded-full ${index < signal.views ? "bg-[#f97316]" : "bg-white/10"}`} />)}
       </div>
-      <p className="mt-3 text-sm leading-6 text-slate-300">Seen {signal.views} engagement exposure{signal.views === 1 ? "" : "s"} across {signal.channels.join(", ")}. Demo website engagement begins after exposure {signal.engagedAfter}; live source-platform and website events are not connected yet.</p>
+      <p className="mt-3 text-sm leading-6 text-slate-300">Seen {signal.views} engagement exposure{signal.views === 1 ? "" : "s"} across {signal.channels.join(", ")}. This illustrative sequence is replaced only when uploaded source results and SiteID events are supplied; Breeze does not connect to advertising-platform APIs.</p>
       <div className="mt-4 grid grid-cols-3 gap-3">
         <Metric label="Ad-seen score" value={`${signal.views} / 6`} note="Illustrative exposures." />
         <Metric label="Likely in 7 days" value={`${signal.sevenDay}%`} note="Ad-seen signal." />

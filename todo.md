@@ -107,9 +107,13 @@
 - [x] Remove the Income Protection Calculator from Breeze and do not show or infer affiliate-page conversions.
 - [x] Update individual Breeze lead journeys to show Exact Audience source → Google/Meta response → SiteID website-visitor status → Breeze affiliate destination.
 - [x] Remove remaining calculator destination branches and calculator-specific copy from Breeze page logic, not only the visible home card.
-- [ ] Ensure Railway source-record views securely seed from the supplied Exact Audience, Google, and Meta data rather than rendering empty production lists.
-- [ ] Verify and correct Breeze source-record runtime behavior on Railway project d2438d70-2e65-4c80-9ebc-5f7e81d30bb8, service 7486278c-adf9-4c86-9f16-a01be68c4215.
-- [ ] Resolve the Breeze source-record production issue through public checks and GitHub deployment only; do not require Railway login.
+- [x] Ensure Railway source-record views securely seed from the supplied Exact Audience, Google, and Meta data rather than rendering empty production lists.
+- [x] Verify and correct Breeze source-record runtime through the public route associated with user-confirmed Railway project d2438d70-2e65-4c80-9ebc-5f7e81d30bb8, without relying on console access.
+- [x] Resolve the Breeze source-record production issue through public checks and GitHub deployment only; do not require Railway login.
+- [x] Verify the public Breeze source-record API returns seeded data for Google Ads, Meta Ads, and Exact Audience without exposing record values in reporting.
+- [x] Verify the live Breeze UI renders non-empty Google Ads, Meta Ads, and Exact Audience source views through the public route.
+- [x] Document Railway deployment verification as public-route evidence when direct console access is unavailable.
+- [x] Remove any Breeze wording that implies Google Ads or Meta Ads reporting is connected; state that results are populated only from user-uploaded spreadsheets.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
