@@ -118,6 +118,8 @@
 - [x] Remove any Breeze wording that implies Google Ads or Meta Ads reporting is connected; state that results are populated only from user-uploaded spreadsheets.
 - [x] Add clearly labeled illustrative Google Ads, Meta Ads, and Email Outreach activity columns to Exact Audience Data records using logos, Opened/Clicked/DNO/Pending email states, and the requested demo distribution.
 - [x] Render 30 Exact Audience records initially and provide a Load more control for progressive review of the supplied list.
+- [ ] Refine the Breeze operating-flow presentation around the uploaded Exact Audience, Google, and Meta data, including customer journey, funnel stages, website-traffic/status context, and current-date labels.
+- [ ] Verify the revised public Breeze route and return the live dashboard link to the user.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

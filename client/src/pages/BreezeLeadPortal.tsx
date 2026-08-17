@@ -4,7 +4,8 @@ import {
   type BreezeDestinationKey,
 } from "@/lib/breezeTrafficDemo";
 import { buildBreezeDemoSignal } from "@/lib/breezeLeadSignals";
-import { BREEZE_SOURCE_TOTALS, BREEZE_SOURCE_TRAFFIC } from "@/lib/breezeSourceTraffic";
+import { BREEZE_SOURCE_TOTALS, getBreezeSourceTraffic } from "@/lib/breezeSourceTraffic";
+import { millisecondsUntilNextLocalDay } from "@/lib/liveDateSeries";
 import { formatBreezeRefreshTime } from "@/lib/breezeRefreshTime";
 import { BreezeFunnelHierarchy } from "@/components/BreezeFunnelHierarchy";
 import { BREEZE_VERIFIED_SOURCE_RESULTS } from "@/lib/breezeVerifiedSourceResults";
@@ -19,7 +20,7 @@ import {
   Target,
   UserRound,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 type OwnerReviewLead = {
@@ -106,23 +107,29 @@ function WebsiteTrafficChart() {
 }
 
 function SourceTrafficChart() {
+  const [trafficSeries, setTrafficSeries] = useState(() => getBreezeSourceTraffic());
+  useEffect(() => {
+    const refreshAtMidnight = () => setTrafficSeries(getBreezeSourceTraffic());
+    const timeout = window.setTimeout(refreshAtMidnight, millisecondsUntilNextLocalDay());
+    return () => window.clearTimeout(timeout);
+  }, []);
   return <><section className="rounded-3xl border border-[#f97316]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#fdba74]">Traffic sources · illustrative demo data</p>
-        <h2 className="mt-1 text-2xl font-black text-white">Daily traffic since August 10</h2>
+        <h2 className="mt-1 text-2xl font-black text-white">Daily traffic · rolling 8-day view</h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Google Ads, Meta Ads, and Email remain illustrative in this daily chart until you upload source results. Breeze does not connect to advertising-platform APIs.</p>
       </div>
       <Pill tone="orange">Demo source monitoring</Pill>
     </div>
     <div className="mt-5 grid gap-3 sm:grid-cols-3">
-      <Metric label="Google Ads" value={formatCount(BREEZE_SOURCE_TOTALS.google)} note="Illustrative Aug 10–17 traffic." />
-      <Metric label="Meta Ads" value={formatCount(BREEZE_SOURCE_TOTALS.meta)} note="Illustrative Aug 10–17 traffic." />
-      <Metric label="Email" value={formatCount(BREEZE_SOURCE_TOTALS.email)} note="Illustrative Aug 10–17 traffic." />
+      <Metric label="Google Ads" value={formatCount(BREEZE_SOURCE_TOTALS.google)} note="Illustrative rolling 8-day traffic." />
+      <Metric label="Meta Ads" value={formatCount(BREEZE_SOURCE_TOTALS.meta)} note="Illustrative rolling 8-day traffic." />
+      <Metric label="Email" value={formatCount(BREEZE_SOURCE_TOTALS.email)} note="Illustrative rolling 8-day traffic." />
     </div>
     <div className="mt-6 h-72">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={BREEZE_SOURCE_TRAFFIC} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+        <LineChart data={trafficSeries} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.12)" vertical={false} />
           <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
           <YAxis tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} allowDecimals={false} />
