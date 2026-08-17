@@ -1,6 +1,7 @@
 import { BREEZE_SOURCE_SELECTOR, type BreezeSourceSelectorId } from "@/lib/breezeSourceSelector";
 import { BREEZE_JOURNEY_STAGES, BREEZE_SITEID_FIELD_GROUPS } from "@/lib/breezeSiteIdSchema";
 import { getExactAudienceDemoActivity } from "@/lib/breezeExactAudienceActivity";
+import { BREEZE_OPERATING_PATH } from "@/lib/breezeOperatingPath";
 import { trpc } from "@/lib/trpc";
 import { ArrowDown, Globe2, MapPin, MousePointerClick, UserRound } from "lucide-react";
 import { useState } from "react";
@@ -56,6 +57,13 @@ function ExactAudienceActivityTable({ records, visibleCount, onLoadMore }: { rec
   </div>;
 }
 
+function OperatingPathPanel() {
+  const operatingDate = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" }).format(new Date());
+  const tone = (sourceType: (typeof BREEZE_OPERATING_PATH)[number]["sourceType"]) => sourceType === "uploaded" ? "border-[#14b8a6]/40 text-[#99f6e4]" : sourceType === "illustrative" ? "border-[#fbbf24]/40 text-[#fde68a]" : sourceType === "awaiting" ? "border-[#f97316]/40 text-[#fdba74]" : "border-[#14b8a6]/40 text-[#99f6e4]";
+  const badge = (sourceType: (typeof BREEZE_OPERATING_PATH)[number]["sourceType"]) => sourceType === "uploaded" ? "Uploaded data" : sourceType === "illustrative" ? "Demo activity" : sourceType === "awaiting" ? "Awaiting upload" : "Active destination";
+  return <section className="mt-6 rounded-2xl border border-[#fbbf24]/30 bg-black p-4 sm:p-5"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#fde68a]">Current operating path</p><h3 className="mt-1 text-xl font-black text-white">Source data to customer journey</h3><p className="mt-1 text-sm leading-6 text-slate-300">A visible status path that keeps uploaded records, demo activity, future website data, and the affiliate destination separate.</p></div><Pill tone="gold">Today · {operatingDate}</Pill></div><div className="mt-5 grid gap-3 md:grid-cols-5">{BREEZE_OPERATING_PATH.map(stage => <article key={stage.id} className={`rounded-xl border bg-black p-4 ${tone(stage.sourceType)}`}><div className="flex items-center justify-between gap-2"><span className="grid h-6 w-6 place-items-center rounded-full border border-current text-[10px] font-black">{stage.order}</span><span className="text-[9px] font-bold uppercase tracking-[.12em]">{badge(stage.sourceType)}</span></div><p className="mt-4 text-lg font-black text-white">{stage.value}</p><h4 className="mt-1 text-sm font-bold text-white">{stage.label}</h4><p className="mt-2 text-xs leading-5 text-slate-400">{stage.status}</p></article>)}</div></section>;
+}
+
 export function BreezeFunnelHierarchy() {
   const [activeSource, setActiveSource] = useState<BreezeSourceSelectorId>("exact-audience");
   const [visibleExactRecords, setVisibleExactRecords] = useState(30);
@@ -65,6 +73,7 @@ export function BreezeFunnelHierarchy() {
   const chooseSource = (source: BreezeSourceSelectorId) => { setActiveSource(source); if (source === "exact-audience") setVisibleExactRecords(30); };
   return <section className="mt-7 rounded-3xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.4)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Breeze operating funnel</p><h2 className="mt-1 text-3xl font-black text-white">Behavior-based list to affiliate quote flow</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">Exact Audience supplies the behavior-based list. Ads are served to that list, Google and Meta response records are reviewed, then SiteID website visitors are added when the pixel CSV is supplied. The affiliate destination does not provide conversion reporting.</p></div><Pill tone="teal">Affiliate-only view</Pill></div>
+    <OperatingPathPanel />
     <div className="mt-7 space-y-4">
       <article className="rounded-3xl border border-[#14b8a6]/55 bg-black p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-5"><div className="flex min-w-0 items-center gap-4"><div className="flex h-16 w-40 items-center overflow-hidden"><img src="/manus-storage/breeze-exact-audience-white_f2401364.png" alt="Exact Audience logo" className="h-16 w-full scale-[1.9] object-contain" /></div><div><p className="text-[10px] font-bold uppercase tracking-[.17em] text-[#99f6e4]">First · Exact Audience</p><h3 className="mt-1 text-2xl font-black text-white">Behavior Based Data List</h3><p className="mt-1 text-sm text-slate-300">The supplied audience list is the starting point for Email Outreach and paid-ad delivery.</p></div></div><div className="grid grid-cols-2 gap-3"><div className="rounded-xl border border-[#14b8a6]/35 p-3 text-center"><p className="text-2xl font-black text-[#99f6e4]">2,696</p><p className="text-[10px] uppercase tracking-[.14em] text-slate-400">Records</p></div><div className="rounded-xl border border-[#14b8a6]/35 p-3 text-center"><p className="text-2xl font-black text-[#99f6e4]">2,225</p><p className="text-[10px] uppercase tracking-[.14em] text-slate-400">Email fields</p></div></div></div><div className="mt-5 max-w-sm"><SourceButton source={BREEZE_SOURCE_SELECTOR[2]} active={activeSource === "exact-audience"} onClick={() => chooseSource("exact-audience")} /></div></article>
       <div className="flex justify-center"><ArrowDown className="text-[#14b8a6]" size={24} /></div>
