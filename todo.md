@@ -74,7 +74,8 @@
 - [x] Present the approved spreadsheet names beneath the traffic sections as an owner-review roster without adding disallowed tab records.
 - [x] Label every illustrative Breeze traffic figure as demo data rather than sourced campaign performance.
 - [x] Replace generic tier labels in the Breeze owner-review roster with useful approved-spreadsheet profile information and current operating status.
-- [ ] Map the verified approved-sheet age-range field into Breeze lead detail; do not substitute an age estimate.
+- [x] Show verified age ranges from the Exact Audience upload in its source-record presentation; do not substitute ages for other sources.
+- [x] Restrict source-record age-range display to Exact Audience Data; leave Google Ads and Meta Ads age fields unavailable unless future uploaded result files contain them.
 - [x] Replace long likelihood horizons with two ad-seen engagement windows only: likely in 7 days and likely in 30 days.
 - [x] Add clearly labeled illustrative Google, Meta, and YouTube pre-roll exposure sequences of one through six views with later website engagement.
 - [x] Adapt the PolicyGenius-style unique contact and staged form-fill workflow for Breeze without provisioning or submitting externally until approved.
