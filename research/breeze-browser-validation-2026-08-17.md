@@ -43,3 +43,7 @@ Public verification of the explicit operating-path revision: the public Breeze r
 Public verification of the SiteID readiness update: the public Breeze route now states “Pending SiteID installation; visitor categories populate after installation.” The fourth funnel layer retains all future visitor-data categories and does not show or infer any visitor result before installation.
 
 Local verification of the animation and source-logo refinement: the Breeze funnel now uses compact text initials (EA, G, and M) rather than internal image logos. The Current operating path shows the animated stage rail, staggered stage cards, and compact relative-volume bars, while its labels keep uploaded, illustrative, pending, active, and unavailable data distinct.
+
+Initial public check after the animated-funnel GitHub push: Railway was still serving the preceding source-logo revision. The local build had passed; a later public retry is required before marking the deployment complete.
+
+Successful public retry: the public Breeze route now shows text-only EA, G, and M source controls with no internal Google, Meta, or Exact Audience image logos. It includes the animated Current operating path language, relative-stage-volume section, pending SiteID stage, and text-only affiliate-quote action; the Breeze hero logo remains in place.
