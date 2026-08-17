@@ -3,8 +3,13 @@ import { drizzle } from "drizzle-orm/mysql2";
 import { asc, sql } from "drizzle-orm";
 import { BreezeLeadProgress, BreezePixelConfiguration, BreezeSourceRecord, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeLeadProgress, breezeImportSources, breezePixelConfigurations, breezeSourceRecords } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import { createBreezeSourceRecordKey } from "./breezeSourceRecords";
+import { parseBreezeSourceSeed } from "./breezeSourceSeed";
+import { storageGetSignedUrl } from "./storage";
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let breezeSourceSeedPromise: Promise<void> | null = null;
+const BREEZE_SOURCE_SEED_KEY = "breeze/private-source-seeds/approved-source-records_0d92955f.ndjson";
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
@@ -212,9 +217,36 @@ export async function upsertBreezeSourceRecords(records: Array<{
   });
 }
 
+async function seedBreezeSourceRecordsIfEmpty() {
+  const db = await getDb();
+  if (!db) return;
+  const [existing] = await db.select({ count: sql<number>`count(*)` }).from(breezeSourceRecords);
+  if (Number(existing?.count ?? 0) > 0) return;
+  if (!breezeSourceSeedPromise) {
+    breezeSourceSeedPromise = (async () => {
+      const signedUrl = await storageGetSignedUrl(BREEZE_SOURCE_SEED_KEY);
+      const response = await fetch(signedUrl);
+      if (!response.ok) throw new Error(`Breeze source seed download failed (${response.status})`);
+      const inputs = parseBreezeSourceSeed(await response.text());
+      const normalized = inputs.map(record => ({ ...record, recordKey: createBreezeSourceRecordKey(record) }));
+      for (let index = 0; index < normalized.length; index += 250) {
+        await upsertBreezeSourceRecords(normalized.slice(index, index + 250));
+      }
+    })().finally(() => {
+      breezeSourceSeedPromise = null;
+    });
+  }
+  await breezeSourceSeedPromise;
+}
+
 export async function getBreezeSourceRecords(input: { source: string; limit: number; offset: number }) {
   const db = await getDb();
   if (!db) return [] as BreezeSourceRecord[];
+  try {
+    await seedBreezeSourceRecordsIfEmpty();
+  } catch (error) {
+    console.error("[Breeze] Source-record seed unavailable:", error);
+  }
   return db.select().from(breezeSourceRecords)
     .where(eq(breezeSourceRecords.source, input.source))
     .orderBy(asc(breezeSourceRecords.recordOrdinal))

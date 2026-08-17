@@ -107,6 +107,7 @@
 - [x] Remove the Income Protection Calculator from Breeze and do not show or infer affiliate-page conversions.
 - [x] Update individual Breeze lead journeys to show Exact Audience source → Google/Meta response → SiteID website-visitor status → Breeze affiliate destination.
 - [x] Remove remaining calculator destination branches and calculator-specific copy from Breeze page logic, not only the visible home card.
+- [ ] Ensure Railway source-record views securely seed from the supplied Exact Audience, Google, and Meta data rather than rendering empty production lists.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

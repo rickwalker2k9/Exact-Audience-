@@ -21,3 +21,5 @@ The allocation update was checkpointed as `d340382` and pushed to GitHub `main`.
 After a further Railway wait and public-route check, the allocation panel was still absent. GitHub reports the `d340382` commit deployment state as `pending` with no detailed status entries, indicating the requested Railway deployment has not yet completed rather than a confirmed application failure.
 
 GitHub later reported two Railway deployment contexts for the commit, both in a `pending` “Railway is deploying the service” state. The user-designated service in project `c3bc7500-c9f9-46b5-b081-a7ee4eac9cae` has deployment ID `049d4f71-089d-4ea6-b928-09f3cad46739` pending; no failure status has been reported.
+
+After the affiliate-only Breeze funnel commit `81f03fd`, GitHub had not attached Railway status details. A public-route sandbox check displayed a blank white render with no browser-console messages; this browser observation does not identify a server-side failure and needs deployment-log confirmation before it is treated as an application fault.
