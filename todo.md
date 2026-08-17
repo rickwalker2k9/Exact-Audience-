@@ -91,6 +91,7 @@
 - [x] Research and display an attributable third-party estimate of meetbreeze.com main-site traffic in a clearly labeled trend view; do not present estimates as first-party analytics.
 - [x] Add a Breeze pixel and tracking management panel with a spreadsheet-upload import path, schema validation, pixel status, and supported event labels.
 - [x] Replace all Breeze dashboard backgrounds and chart colors with black surfaces and gold, orange, and teal accents only.
+- [x] Remove the dashboard-visible pixel spreadsheet-upload controls; populate the presentation-only pixel management display from files the user uploads in chat.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

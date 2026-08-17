@@ -14,10 +14,8 @@ import {
   ChevronRight,
   CircleAlert,
   ExternalLink,
-  FileSpreadsheet,
   MapPin,
   Target,
-  Upload,
   UserRound,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -216,30 +214,12 @@ function LeadTable({ leads, destination }: { leads: OwnerReviewLead[]; destinati
 }
 
 function PixelManagement() {
-  const utils = trpc.useUtils();
   const pixelsQuery = trpc.breezePortal.pixelConfigurations.useQuery();
-  const importMutation = trpc.breezePortal.importPixelCsv.useMutation();
-  const [message, setMessage] = useState<string | null>(null);
   const pixels = (pixelsQuery.data ?? []) as BreezePixelConfiguration[];
   const statusTone = (status: BreezePixelConfiguration["status"]) => status === "active" ? "teal" : status === "paused" ? "gold" : "orange" as const;
-  const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-    if (!file.name.toLowerCase().endsWith(".csv")) { setMessage("Please export the spreadsheet as a CSV file before importing."); return; }
-    setMessage(null);
-    try {
-      const response = await importMutation.mutateAsync({ fileName: file.name, csvText: await file.text() });
-      await utils.breezePortal.pixelConfigurations.invalidate();
-      setMessage(`${response.importedCount} pixel configuration${response.importedCount === 1 ? "" : "s"} imported.`);
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "The pixel spreadsheet could not be imported.");
-    }
-  };
   return <section className="rounded-3xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
-    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Pixel management</p><h2 className="mt-1 text-2xl font-black text-white">Tracking-pixel operations</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Import the current platform, pixel ID, operating status, and tracked events from a spreadsheet. Imports are retained for owner or administrator access only.</p></div><Pill tone="teal">{pixels.length} configured</Pill></div>
-    <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_.9fr]"><div className="rounded-2xl border border-[#fbbf24]/25 bg-black p-4"><div className="flex items-center gap-2 text-[#fde68a]"><FileSpreadsheet size={17} /><h3 className="font-black">CSV import</h3></div><p className="mt-2 text-sm leading-6 text-slate-300">Required columns: <strong className="text-white">Platform</strong>, <strong className="text-white">Pixel ID</strong>, <strong className="text-white">Status</strong>, and <strong className="text-white">Events</strong>. Use <strong className="text-white">active</strong>, <strong className="text-white">paused</strong>, or <strong className="text-white">needs-review</strong> for status. Separate events with semicolons.</p><label className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#fbbf24] px-3 py-2 text-xs font-black text-black transition-transform active:scale-[.97]"><Upload size={15} />{importMutation.isPending ? "Importing…" : "Import pixel CSV"}<input type="file" accept=".csv,text/csv" onChange={handleFile} className="sr-only" disabled={importMutation.isPending} /></label>{message && <p className="mt-3 text-xs leading-5 text-[#fde68a]">{message}</p>}</div><div className="rounded-2xl border border-[#f97316]/25 bg-black p-4"><p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#fdba74]">Template row</p><code className="mt-3 block overflow-x-auto rounded-lg border border-white/10 bg-black p-3 text-xs text-slate-200">Platform,Pixel ID,Status,Events<br />Meta Pixel,123456789,active,PageView;Lead;QuoteStart</code><p className="mt-3 text-xs leading-5 text-slate-400">The raw CSV is stored securely with the import record. This panel stores configuration and event labels; it does not claim that a tag is firing until verification data is connected.</p></div></div>
-    <div className="mt-5 overflow-hidden rounded-2xl border border-white/15">{pixelsQuery.isLoading ? <p className="p-5 text-sm text-slate-400">Loading pixel configurations…</p> : pixels.length === 0 ? <p className="p-5 text-sm text-slate-400">No pixel configuration spreadsheet has been imported yet.</p> : <table className="w-full min-w-[650px] text-left text-sm"><thead className="bg-black text-[10px] uppercase tracking-[.14em] text-[#fde68a]"><tr><th className="px-4 py-3">Platform</th><th className="px-4 py-3">Pixel ID</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Events</th><th className="px-4 py-3">Source</th></tr></thead><tbody>{pixels.map(pixel => <tr key={pixel.id} className="border-t border-white/10 text-slate-200"><td className="px-4 py-3 font-bold text-white">{pixel.platform}</td><td className="px-4 py-3 font-mono text-xs">{pixel.pixelId}</td><td className="px-4 py-3"><Pill tone={statusTone(pixel.status)}>{pixel.status.replace("-", " ")}</Pill></td><td className="px-4 py-3 text-xs">{pixel.eventNames.join(", ")}</td><td className="px-4 py-3 text-xs text-slate-400">{pixel.sourceLabel}</td></tr>)}</tbody></table>}</div>
+    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Pixel management</p><h2 className="mt-1 text-2xl font-black text-white">Tracking-pixel operations</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Current platform configurations, operating status, and tracked events are maintained in this operating view.</p></div><Pill tone="teal">{pixels.length} configured</Pill></div>
+    <div className="mt-5 overflow-hidden rounded-2xl border border-white/15">{pixelsQuery.isLoading ? <p className="p-5 text-sm text-slate-400">Loading pixel configurations…</p> : pixels.length === 0 ? <p className="p-5 text-sm text-slate-400">No tracking-pixel configurations are currently listed.</p> : <table className="w-full min-w-[650px] text-left text-sm"><thead className="bg-black text-[10px] uppercase tracking-[.14em] text-[#fde68a]"><tr><th className="px-4 py-3">Platform</th><th className="px-4 py-3">Pixel ID</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Events</th></tr></thead><tbody>{pixels.map(pixel => <tr key={pixel.id} className="border-t border-white/10 text-slate-200"><td className="px-4 py-3 font-bold text-white">{pixel.platform}</td><td className="px-4 py-3 font-mono text-xs">{pixel.pixelId}</td><td className="px-4 py-3"><Pill tone={statusTone(pixel.status)}>{pixel.status.replace("-", " ")}</Pill></td><td className="px-4 py-3 text-xs">{pixel.eventNames.join(", ")}</td></tr>)}</tbody></table>}</div>
   </section>;
 }
 

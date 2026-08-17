@@ -1,6 +1,11 @@
 import type { Express } from "express";
 import { ENV } from "./env";
 
+// Railway deploys do not receive the managed WebDev storage credentials. Route
+// asset requests through the project’s managed site in that environment so the
+// same uploaded `/manus-storage/` asset path remains usable in both deployments.
+const MANAGED_STORAGE_FALLBACK_ORIGIN = "https://exaudash-unrq5kjn.manus.space";
+
 export function registerStorageProxy(app: Express) {
   app.get("/manus-storage/*", async (req, res) => {
     const key = (req.params as Record<string, string>)[0];
@@ -10,7 +15,8 @@ export function registerStorageProxy(app: Express) {
     }
 
     if (!ENV.forgeApiUrl || !ENV.forgeApiKey) {
-      res.status(500).send("Storage proxy not configured");
+      const safePath = key.split("/").map(encodeURIComponent).join("/");
+      res.redirect(307, `${MANAGED_STORAGE_FALLBACK_ORIGIN}/manus-storage/${safePath}`);
       return;
     }
 
