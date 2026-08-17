@@ -5,3 +5,7 @@ The redesigned Breeze landing page renders two selectable cards: Income Protecti
 Selecting an approved lead opens a detail panel with available location and email-service profile context, age-range status, illustrative Google/Meta/YouTube exposure sequence, website-engagement threshold, 7-day and 30-day engagement likelihood windows, destination journey stages, and the staged unique-contact/form-fill workflow. No email addresses, phone numbers, or external form-submission capability are exposed.
 
 The currently supplied approved source did not populate age-range values in the rendered records; the importer is now prepared to use an AGE RANGE, AGE_RANGE, or AGE header when the corresponding approved source tab provides it.
+
+Staged workflow deployment — Aug. 17, 2026
+
+The latest Railway deployment serves the updated Breeze two-destination portal. The staged form-fill flow is covered by a focused component test that advances through demo contact preparation, eligibility, consent, and review while asserting that external submission remains disabled.

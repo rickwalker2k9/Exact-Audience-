@@ -77,12 +77,14 @@
 - [ ] Map the verified approved-sheet age-range field into Breeze lead detail; do not substitute an age estimate.
 - [x] Replace long likelihood horizons with two ad-seen engagement windows only: likely in 7 days and likely in 30 days.
 - [x] Add clearly labeled illustrative Google, Meta, and YouTube pre-roll exposure sequences of one through six views with later website engagement.
-- [ ] Adapt the PolicyGenius-style unique contact and staged form-fill workflow for Breeze without provisioning or submitting externally until approved.
+- [x] Adapt the PolicyGenius-style unique contact and staged form-fill workflow for Breeze without provisioning or submitting externally until approved.
 - [x] Inspect the existing PolicyGenius dashboard code for reusable unique contact, verification, question, and checkbox workflow components.
 - [x] Prioritize completion of the Breeze two-destination, ad-engagement, and lead-detail experience before resuming other client dashboards.
 - [x] Replace the Breeze home-page owner-review/results hero with the BREEZE name and “Intent prospects based on behavioral activity.”
-- [ ] Build an actual staged Breeze form-fill workflow UI with questions, consent checkboxes, unique-contact placeholders, and step states without external submission.
-- [ ] Add focused test coverage proving the staged Breeze form-fill workflow renders and advances through its demo steps.
+- [x] Build an actual staged Breeze form-fill workflow UI with questions, consent checkboxes, unique-contact placeholders, and step states without external submission.
+- [x] Add focused test coverage proving the staged Breeze form-fill workflow renders and advances through its demo steps.
+- [ ] Keep Breeze as the sole active dashboard priority until the user explicitly redirects work.
+- [ ] Show approved lead name, verified age range when available, income status, city/state, email, phone status, ad-seen engagement score, and customer journey in Breeze lead detail.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

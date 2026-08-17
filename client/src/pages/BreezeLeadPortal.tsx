@@ -22,6 +22,7 @@ type OwnerReviewLead = {
   name: string;
   location: string;
   ageRange: string;
+  email: string;
   emailProvider: string;
   stage: string;
   lastKnownActivity: string;
@@ -90,7 +91,7 @@ function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination
     <div className="mt-5 grid gap-3 sm:grid-cols-2">
       <Metric label="Age range" value={lead.ageRange || "Not supplied"} note="Approved-sheet field when available." />
       <Metric label="Income level" value="Not supplied" note="No income field has been connected." />
-      <Metric label="Email service" value={lead.emailProvider || "Unavailable"} note="Approved-sheet profile field." />
+      <Metric label="Email" value={lead.email || "Not supplied"} note={`Approved-sheet contact · ${lead.emailProvider || "provider unavailable"}`} />
       <Metric label="Phone" value="Not supplied" note="No phone number is connected in this view." />
     </div>
 
@@ -101,6 +102,7 @@ function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination
       </div>
       <p className="mt-3 text-sm leading-6 text-slate-300">Seen {signal.views} ad{signal.views === 1 ? "" : "s"} across {signal.channels.join(", ")}. Demo website engagement begins after exposure {signal.engagedAfter}; live ad and website events are not connected yet.</p>
       <div className="mt-4 grid grid-cols-2 gap-3">
+        <Metric label="Ad-seen score" value={`${signal.views} / 6`} note="Illustrative exposures across Google, Meta, and YouTube." />
         <Metric label="Likely in 7 days" value={`${signal.sevenDay}%`} note="Ad-seen engagement signal." />
         <Metric label="Likely in 30 days" value={`${signal.thirtyDay}%`} note="Ad-seen engagement signal." />
       </div>

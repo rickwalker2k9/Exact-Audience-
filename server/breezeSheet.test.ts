@@ -38,10 +38,10 @@ describe("Breeze approved lead import", () => {
     });
   });
 
-  it("creates an owner-review row without exposing an email address", () => {
+  it("creates an owner-review row with the approved contact address for the temporary owner-review view", () => {
     const lead = mapApprovedCsv(`${headers}\nAda,Stone,Austin,TX,35-44,ada@example.com,valid,google,2026-08-15`, "valid-gold").leads[0];
     const row = toOwnerReviewLead(lead, "visited");
-    expect(row).toEqual({ name: "Ada Stone", location: "Austin, TX", ageRange: "35-44", emailProvider: "google", stage: "visited", lastKnownActivity: "2026-08-15" });
-    expect(JSON.stringify(row)).not.toContain("ada@example.com");
+    expect(row).toEqual({ name: "Ada Stone", location: "Austin, TX", ageRange: "35-44", email: "ada@example.com", emailProvider: "google", stage: "visited", lastKnownActivity: "2026-08-15" });
+    expect(row.email).toBe("ada@example.com");
   });
 });
