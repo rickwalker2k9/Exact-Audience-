@@ -5,6 +5,7 @@ import {
   type BreezeDestinationKey,
 } from "@/lib/breezeTrafficDemo";
 import { buildBreezeDemoSignal } from "@/lib/breezeLeadSignals";
+import { BreezeFormFillWorkflow } from "@/components/BreezeFormFillWorkflow";
 import {
   ArrowLeft,
   ArrowRight,
@@ -114,6 +115,8 @@ function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination
         <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-slate-500" /><div><strong className="text-white">Form-fill workflow</strong><p className="text-slate-400">Unique email, unique phone, consent questions, and submission are staged pending workflow activation.</p></div></li>
       </ol>
     </section>
+
+    <BreezeFormFillWorkflow leadName={lead.name} />
 
     <section className="mt-5 rounded-xl border border-white/10 bg-[#07131d] p-4">
       <p className="text-[10px] font-bold uppercase tracking-[.15em] text-cyan-200">Media mix</p>

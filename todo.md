@@ -70,17 +70,19 @@
 - [x] Replace inflated Breeze performance claims with conservative, clearly labeled operating metrics.
 - [x] Show May–July traffic as Income Protection Calculator activity and route the current campaign to the supplied affiliate quote destination.
 - [x] Remove pitch-oriented Breeze copy and non-results sections; replace them with factual operating status, recorded counts, and data-source provenance.
-- [ ] Add separate monthly traffic sections for the historical Income Protection Calculator and the current affiliate quote destination, with non-overlapping illustrative demo months.
-- [ ] Present the approved spreadsheet names beneath the traffic sections as an owner-review roster without adding disallowed tab records.
-- [ ] Label every illustrative Breeze traffic figure as demo data rather than sourced campaign performance.
-- [ ] Replace generic tier labels in the Breeze owner-review roster with useful approved-spreadsheet profile information and current operating status.
+- [x] Add separate daily traffic sections for the historical Income Protection Calculator and the current affiliate quote destination, with non-overlapping illustrative demo months.
+- [x] Present the approved spreadsheet names beneath the traffic sections as an owner-review roster without adding disallowed tab records.
+- [x] Label every illustrative Breeze traffic figure as demo data rather than sourced campaign performance.
+- [x] Replace generic tier labels in the Breeze owner-review roster with useful approved-spreadsheet profile information and current operating status.
 - [ ] Map the verified approved-sheet age-range field into Breeze lead detail; do not substitute an age estimate.
-- [ ] Replace long likelihood horizons with two ad-seen engagement windows only: likely in 7 days and likely in 30 days.
-- [ ] Add clearly labeled illustrative Google, Meta, and YouTube pre-roll exposure sequences of one through six views with later website engagement.
+- [x] Replace long likelihood horizons with two ad-seen engagement windows only: likely in 7 days and likely in 30 days.
+- [x] Add clearly labeled illustrative Google, Meta, and YouTube pre-roll exposure sequences of one through six views with later website engagement.
 - [ ] Adapt the PolicyGenius-style unique contact and staged form-fill workflow for Breeze without provisioning or submitting externally until approved.
-- [ ] Inspect the existing PolicyGenius dashboard code for reusable unique contact, verification, question, and checkbox workflow components.
-- [ ] Prioritize completion of the Breeze two-destination, ad-engagement, and lead-detail experience before resuming other client dashboards.
-- [ ] Replace the Breeze home-page owner-review/results hero with the BREEZE name and “Intent prospects based on behavioral activity.”
+- [x] Inspect the existing PolicyGenius dashboard code for reusable unique contact, verification, question, and checkbox workflow components.
+- [x] Prioritize completion of the Breeze two-destination, ad-engagement, and lead-detail experience before resuming other client dashboards.
+- [x] Replace the Breeze home-page owner-review/results hero with the BREEZE name and “Intent prospects based on behavioral activity.”
+- [ ] Build an actual staged Breeze form-fill workflow UI with questions, consent checkboxes, unique-contact placeholders, and step states without external submission.
+- [ ] Add focused test coverage proving the staged Breeze form-fill workflow renders and advances through its demo steps.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
