@@ -10,6 +10,7 @@ import { storageGetSignedUrl } from "./storage";
 let _db: ReturnType<typeof drizzle> | null = null;
 let breezeSourceSeedPromise: Promise<void> | null = null;
 const BREEZE_SOURCE_SEED_KEY = "breeze/private-source-seeds/approved-source-records_0d92955f.ndjson";
+const BREEZE_SOURCE_SEED_PROXY = "https://exaudash-unrq5kjn.manus.space";
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
@@ -224,8 +225,15 @@ async function seedBreezeSourceRecordsIfEmpty() {
   if (Number(existing?.count ?? 0) > 0) return;
   if (!breezeSourceSeedPromise) {
     breezeSourceSeedPromise = (async () => {
-      const signedUrl = await storageGetSignedUrl(BREEZE_SOURCE_SEED_KEY);
-      const response = await fetch(signedUrl);
+      let response: Response;
+      try {
+        const signedUrl = await storageGetSignedUrl(BREEZE_SOURCE_SEED_KEY);
+        response = await fetch(signedUrl);
+      } catch {
+        // Railway does not receive the Manus Forge credentials. The managed site
+        // proxies the same private key through its existing signed storage route.
+        response = await fetch(`${BREEZE_SOURCE_SEED_PROXY}/manus-storage/${BREEZE_SOURCE_SEED_KEY}`);
+      }
       if (!response.ok) throw new Error(`Breeze source seed download failed (${response.status})`);
       const inputs = parseBreezeSourceSeed(await response.text());
       const normalized = inputs.map(record => ({ ...record, recordKey: createBreezeSourceRecordKey(record) }));
