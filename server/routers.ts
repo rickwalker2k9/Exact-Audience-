@@ -3,8 +3,9 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { invokeLLM } from "./_core/llm";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { createBreezeImportSource, getBreezeProgressByContactKeys, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertVoterCtvPrefs } from "./db";
+import { createBreezeImportSource, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
 import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBreezeContactKey, mapApprovedCsv, toLeadSummary, toOwnerReviewLead, type BreezeFunnelStage } from "./breezeSheet";
+import { parseBreezePixelCsv } from "./breezePixelImport";
 import { TRPCError } from "@trpc/server";
 import { storagePut } from "./storage";
 import { z } from "zod";
@@ -131,6 +132,41 @@ export const appRouter = router({
           approvedRecordCount: mapped.leads.length,
         });
         return { success: true, approvedRecordCount: mapped.leads.length, tier: input.tier };
+      }),
+    pixelConfigurations: publicProcedure.query(async () => {
+      const configurations = await getBreezePixelConfigurations();
+      return configurations.map(configuration => ({
+        id: configuration.id,
+        platform: configuration.platform,
+        pixelId: configuration.pixelId,
+        status: configuration.status,
+        eventNames: JSON.parse(configuration.eventNamesJson) as string[],
+        sourceLabel: configuration.sourceLabel,
+        updatedAt: configuration.updatedAt,
+      }));
+    }),
+    importPixelCsv: protectedProcedure
+      .input(z.object({ fileName: z.string().min(1).max(255), csvText: z.string().min(1).max(1_000_000) }))
+      .mutation(async ({ ctx, input }) => {
+        const isOwner = Boolean(process.env.OWNER_OPEN_ID && ctx.user.openId === process.env.OWNER_OPEN_ID);
+        if (!isOwner && ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Staff access is required for Breeze pixel imports." });
+        let rows;
+        try {
+          rows = parseBreezePixelCsv(input.csvText);
+        } catch (error) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: error instanceof Error ? error.message : "The pixel spreadsheet could not be read." });
+        }
+        const safeName = input.fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+        await storagePut(`breeze-pixel-imports/${ctx.user.openId}/${Date.now()}-${safeName}`, input.csvText, "text/csv");
+        await Promise.all(rows.map(row => upsertBreezePixelConfiguration({
+          platform: row.platform,
+          pixelId: row.pixelId,
+          status: row.status,
+          eventNamesJson: JSON.stringify(row.eventNames),
+          sourceLabel: input.fileName,
+          updatedByOpenId: ctx.user.openId,
+        })));
+        return { success: true, importedCount: rows.length };
       }),
   }),
 

@@ -20,25 +20,25 @@ export function BreezeFormFillWorkflow({ leadName }: BreezeFormFillWorkflowProps
     (step === 3 && consent);
 
   return (
-    <section className="mt-5 rounded-xl border border-cyan-300/20 bg-cyan-300/[.045] p-4" aria-label="Staged Breeze form-fill workflow">
+    <section className="mt-5 rounded-xl border border-[#14b8a6]/35 bg-black p-4" aria-label="Staged Breeze form-fill workflow">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[.15em] text-cyan-200">Staged form-fill workflow</p>
+          <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#99f6e4]">Staged form-fill workflow</p>
           <h3 className="mt-1 text-base font-black text-white">Review workflow for {leadName}</h3>
         </div>
-        <span className="rounded-full border border-cyan-300/25 px-2 py-1 text-[10px] font-bold text-cyan-100">Step {step} of 4</span>
+        <span className="rounded-full border border-[#14b8a6]/40 px-2 py-1 text-[10px] font-bold text-[#99f6e4]">Step {step} of 4</span>
       </div>
 
       {step === 1 && (
         <div className="mt-4 space-y-3 text-sm text-slate-300">
           <p>Prepare a local demo contact pair. This creates no real inbox or phone number and sends nothing externally.</p>
           {contactPrepared ? (
-            <div className="rounded-lg border border-emerald-300/25 bg-emerald-300/10 p-3 text-xs text-emerald-50">
+            <div className="rounded-lg border border-[#14b8a6]/35 bg-black p-3 text-xs text-[#ccfbf1]">
               <p><strong>Demo email placeholder:</strong> {demoAlias(leadName)}</p>
               <p className="mt-1"><strong>Demo phone placeholder:</strong> Reserved for activation</p>
             </div>
           ) : (
-            <button type="button" onClick={() => setContactPrepared(true)} className="rounded-lg bg-cyan-300 px-3 py-2 text-xs font-bold text-[#061018]">Create demo contact pair</button>
+            <button type="button" onClick={() => setContactPrepared(true)} className="rounded-lg bg-[#14b8a6] px-3 py-2 text-xs font-bold text-black">Create demo contact pair</button>
           )}
         </div>
       )}
@@ -60,14 +60,14 @@ export function BreezeFormFillWorkflow({ leadName }: BreezeFormFillWorkflowProps
       )}
 
       {step === 4 && (
-        <div className="mt-4 rounded-lg border border-amber-300/25 bg-amber-300/10 p-3 text-sm text-amber-50">
+        <div className="mt-4 rounded-lg border border-[#fbbf24]/35 bg-black p-3 text-sm text-[#fde68a]">
           <strong>Ready for review.</strong> Unique contact provisioning and external form submission remain disabled until an approved workflow is connected.
         </div>
       )}
 
       <div className="mt-5 flex items-center justify-between gap-3">
         <button type="button" onClick={() => setStep(current => Math.max(1, current - 1))} disabled={step === 1} className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-slate-200 disabled:cursor-not-allowed disabled:opacity-40">Back</button>
-        {step < 4 ? <button type="button" onClick={() => setStep(current => current + 1)} disabled={!canContinue} className="rounded-lg bg-cyan-300 px-3 py-2 text-xs font-bold text-[#061018] disabled:cursor-not-allowed disabled:opacity-40">Continue</button> : <button type="button" disabled className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-slate-400">External submission is disabled</button>}
+        {step < 4 ? <button type="button" onClick={() => setStep(current => current + 1)} disabled={!canContinue} className="rounded-lg bg-[#fbbf24] px-3 py-2 text-xs font-bold text-black disabled:cursor-not-allowed disabled:opacity-40">Continue</button> : <button type="button" disabled className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-slate-400">External submission is disabled</button>}
       </div>
     </section>
   );

@@ -15,5 +15,6 @@ describe("Breeze illustrative lead signal", () => {
     expect(first.thirtyDay).toBeLessThanOrEqual(88);
     expect(first.channels.length).toBeGreaterThanOrEqual(1);
     expect(first.channels.length).toBeLessThanOrEqual(3);
+    expect(first.channels.every(channel => ["Google Ads", "Meta Ads", "Email"].includes(channel))).toBe(true);
   });
 });

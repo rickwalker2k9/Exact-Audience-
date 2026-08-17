@@ -85,6 +85,12 @@
 - [x] Add focused test coverage proving the staged Breeze form-fill workflow renders and advances through its demo steps.
 - [ ] Keep Breeze as the sole active dashboard priority until the user explicitly redirects work.
 - [ ] Show approved lead name, verified age range when available, income status, city/state, email, phone status, ad-seen engagement score, and customer journey in Breeze lead detail.
+- [x] Add the supplied Breeze logo to the home hero with a subtle animated orange gradient edge treatment.
+- [x] Add a Lamborghini-style daily traffic-source chart beginning August 10 for Google Ads, Meta Ads, and Email, labeled as demo data until live sources are connected.
+- [x] Align the Breeze customer-journey and 7-day/30-day likelihood views with the Google Ads, Meta Ads, and Email traffic-source context.
+- [x] Research and display an attributable third-party estimate of meetbreeze.com main-site traffic in a clearly labeled trend view; do not present estimates as first-party analytics.
+- [x] Add a Breeze pixel and tracking management panel with a spreadsheet-upload import path, schema validation, pixel status, and supported event labels.
+- [x] Replace all Breeze dashboard backgrounds and chart colors with black surfaces and gold, orange, and teal accents only.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

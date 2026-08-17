@@ -20,7 +20,7 @@ export function buildBreezeDemoSignal(leadName: string): BreezeDemoSignal {
   const engagedAfter = Math.min(views, 3 + (hash % 4));
   const sevenDay = 10 + views * 4 + (hash % 7);
   const thirtyDay = Math.min(88, sevenDay + 20 + (hash % 12));
-  const channelPool = ["Google Ads", "Meta", "YouTube pre-roll"];
+  const channelPool = ["Google Ads", "Meta Ads", "Email"];
   return {
     views,
     engagedAfter,

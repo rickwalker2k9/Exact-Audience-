@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -75,3 +75,19 @@ export const breezeImportSources = mysqlTable("breeze_import_sources", {
 });
 
 export type BreezeImportSource = typeof breezeImportSources.$inferSelect;
+
+// Stores staff-managed tracking-pixel configuration and supported events.
+// Raw import files remain in secure object storage, rather than database columns.
+export const breezePixelConfigurations = mysqlTable("breeze_pixel_configurations", {
+  id: int("id").autoincrement().primaryKey(),
+  platform: varchar("platform", { length: 80 }).notNull(),
+  pixelId: varchar("pixelId", { length: 160 }).notNull(),
+  status: varchar("status", { length: 24 }).notNull().default("needs-review"),
+  eventNamesJson: text("eventNamesJson").notNull(),
+  sourceLabel: varchar("sourceLabel", { length: 255 }).notNull(),
+  updatedByOpenId: varchar("updatedByOpenId", { length: 64 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => [uniqueIndex("breeze_pixel_platform_id_unique").on(table.platform, table.pixelId)]);
+
+export type BreezePixelConfiguration = typeof breezePixelConfigurations.$inferSelect;

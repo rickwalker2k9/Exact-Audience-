@@ -1,6 +1,6 @@
-import { eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { BreezeLeadProgress, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeLeadProgress, breezeImportSources } from "../drizzle/schema";
+import { BreezeLeadProgress, BreezePixelConfiguration, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeLeadProgress, breezeImportSources, breezePixelConfigurations } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -150,4 +150,30 @@ export async function createBreezeImportSource(input: {
   const db = await getDb();
   if (!db) throw new Error("Breeze import metadata storage is unavailable");
   await db.insert(breezeImportSources).values(input);
+}
+
+export async function getBreezePixelConfigurations() {
+  const db = await getDb();
+  if (!db) return [] as BreezePixelConfiguration[];
+  return db.select().from(breezePixelConfigurations).orderBy(desc(breezePixelConfigurations.updatedAt));
+}
+
+export async function upsertBreezePixelConfiguration(input: {
+  platform: string;
+  pixelId: string;
+  status: string;
+  eventNamesJson: string;
+  sourceLabel: string;
+  updatedByOpenId: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Breeze pixel configuration storage is unavailable");
+  await db.insert(breezePixelConfigurations).values(input).onDuplicateKeyUpdate({
+    set: {
+      status: input.status,
+      eventNamesJson: input.eventNamesJson,
+      sourceLabel: input.sourceLabel,
+      updatedByOpenId: input.updatedByOpenId,
+    },
+  });
 }
