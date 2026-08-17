@@ -7,3 +7,7 @@ After the restart, the browser rendered the supplied Breeze logo with its orange
 The checkpoint commit `e6dfcfc` was pushed to GitHub `main` for Railway automatic deployment. At the immediate public-route check, Railway was still serving the preceding Breeze revision; a later production verification is needed after the build finishes.
 
 After the presentation-only pixel-management revision, the local Breeze page rendered the Pixel Management heading, operating description, and zero-configuration state with no import button, file chooser, template row, or spreadsheet-upload instructions.
+
+The presentation-only revision was checkpointed as `9e14998` and pushed to GitHub `main`. At two subsequent Railway checks, the public route was still serving the previous import-control revision. Local validation is complete; Railway needs a further deployment-status follow-up before the public route can be marked verified.
+
+The provided Railway project URL currently resolves to Railway’s logged-out 404 screen in this browser, so no deployment-log diagnosis is available from that page without an authenticated Railway session.
