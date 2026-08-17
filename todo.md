@@ -92,6 +92,10 @@
 - [x] Add a Breeze pixel and tracking management panel with a spreadsheet-upload import path, schema validation, pixel status, and supported event labels.
 - [x] Replace all Breeze dashboard backgrounds and chart colors with black surfaces and gold, orange, and teal accents only.
 - [x] Remove the dashboard-visible pixel spreadsheet-upload controls; populate the presentation-only pixel management display from files the user uploads in chat.
+- [ ] Identify any public third-party landing-page traffic estimate available for Breeze and label its limitations clearly.
+- [ ] Add verified-result fields for Google Ads clicks, Meta Ads clicks, and landing-page visits that remain blank until first-party source data is supplied or connected.
+- [ ] Populate Google Ads clicks, Meta Ads clicks, and landing-page visits only from user-uploaded spreadsheets; do not connect GA4 or ad-platform accounts.
+- [x] Import reporting sheet 1AydQ20lsvFBgO7sdFf8c0ZddWgnYyi-anMedOJBuky0 and display 112 Google Ads results with the remaining 238 verified records assigned to Meta Ads.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

@@ -11,3 +11,7 @@ After the presentation-only pixel-management revision, the local Breeze page ren
 The presentation-only revision was checkpointed as `9e14998` and pushed to GitHub `main`. At two subsequent Railway checks, the public route was still serving the previous import-control revision. Local validation is complete; Railway needs a further deployment-status follow-up before the public route can be marked verified.
 
 The provided Railway project URL currently resolves to Railway’s logged-out 404 screen in this browser, so no deployment-log diagnosis is available from that page without an authenticated Railway session.
+
+After the final GitHub push and Railway wait period, the public Breeze route’s detected interactive elements no longer included the prior `Import pixel CSV` control. A follow-up browser view dropped to an empty page, so the control-removal observation is based on the successful public-route navigation result rather than a second visual capture.
+
+The local Breeze view now shows the verified source-allocation panel from the user-supplied worksheet: 350 approved records, with 112 allocated to Google Ads and 238 allocated to Meta Ads. It explicitly distinguishes these record counts from click and landing-page-visit data, which remain blank because the workbook contains no such fields. Pixel Management shows zero configured pixels and no upload workflow.

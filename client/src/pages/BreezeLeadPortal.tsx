@@ -6,6 +6,7 @@ import {
 } from "@/lib/breezeTrafficDemo";
 import { buildBreezeDemoSignal } from "@/lib/breezeLeadSignals";
 import { BREEZE_SOURCE_TOTALS, BREEZE_SOURCE_TRAFFIC } from "@/lib/breezeSourceTraffic";
+import { BREEZE_VERIFIED_SOURCE_RESULTS } from "@/lib/breezeVerifiedSourceResults";
 import { BREEZE_WEBSITE_SNAPSHOT, BREEZE_WEBSITE_TRAFFIC } from "@/lib/breezeWebsiteTraffic";
 import { BreezeFormFillWorkflow } from "@/components/BreezeFormFillWorkflow";
 import {
@@ -105,7 +106,7 @@ function WebsiteTrafficChart() {
 }
 
 function SourceTrafficChart() {
-  return <section className="rounded-3xl border border-[#f97316]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
+  return <><section className="rounded-3xl border border-[#f97316]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#fdba74]">Traffic sources · illustrative demo data</p>
@@ -133,6 +134,15 @@ function SourceTrafficChart() {
         </LineChart>
       </ResponsiveContainer>
     </div>
+  </section><VerifiedSourceResults /></>;
+}
+
+function VerifiedSourceResults() {
+  const result = BREEZE_VERIFIED_SOURCE_RESULTS;
+  return <section className="mt-7 rounded-3xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
+    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Verified source allocation</p><h2 className="mt-1 text-2xl font-black text-white">Approved records by reported ad source</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Aggregate allocation from the supplied reporting worksheet. These are approved records, not ad-platform click totals or pixel-measured landing-page visits.</p></div><Pill tone="teal">{result.sourceLabel}</Pill></div>
+    <div className="mt-5 grid gap-3 sm:grid-cols-4"><Metric label="Verified records" value={formatCount(result.totalRecords)} note={`Reported ${result.reportedOn}.`} /><Metric label="Google Ads" value={formatCount(result.googleAdsRecords)} note="User-confirmed allocation." /><Metric label="Meta Ads" value={formatCount(result.metaAdsRecords)} note="Balance of supplied records." /><Metric label="Landing-page visits" value="—" note="No visit spreadsheet supplied." /></div>
+    <p className="mt-4 text-xs leading-5 text-slate-400">The daily source-monitoring chart remains labeled illustrative because the supplied worksheet contains contact records only; it has no daily Google Ads, Meta Ads, click, or landing-page-visit fields.</p>
   </section>;
 }
 
