@@ -7,7 +7,8 @@ describe("Breeze operating path", () => {
     expect(BREEZE_OPERATING_PATH[0]).toMatchObject({ value: "2,696", sourceType: "uploaded" });
     expect(BREEZE_OPERATING_PATH[1]).toMatchObject({ value: "350", sourceType: "uploaded" });
     expect(BREEZE_OPERATING_PATH[2].sourceType).toBe("illustrative");
-    expect(BREEZE_OPERATING_PATH[3].sourceType).toBe("awaiting");
+    expect(BREEZE_OPERATING_PATH[3]).toMatchObject({ value: "Pending", sourceType: "awaiting" });
+    expect(BREEZE_OPERATING_PATH[3].status).toContain("Pending SiteID installation");
     expect(BREEZE_OPERATING_PATH[4].sourceType).toBe("available");
   });
 });

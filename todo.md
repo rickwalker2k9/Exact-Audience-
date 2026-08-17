@@ -120,6 +120,7 @@
 - [x] Render 30 Exact Audience records initially and provide a Load more control for progressive review of the supplied list.
 - [x] Make the Breeze operating-flow revision explicit in code: strengthen visible customer-journey, funnel-stage, and website-status UI tied to uploaded Exact Audience, Google, and Meta data, then re-test.
 - [x] Return the verified live public Breeze dashboard link to the user after the broader operating-flow revision is complete.
+- [ ] Label the fourth Breeze funnel layer Pending SiteID Installation and show its future visitor-data categories without displaying visitor results.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
