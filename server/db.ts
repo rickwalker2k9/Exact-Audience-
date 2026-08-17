@@ -9,6 +9,8 @@ import { storageGetSignedUrl } from "./storage";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let breezeSourceSeedPromise: Promise<void> | null = null;
+let breezeSourceSeedRecords: Awaited<ReturnType<typeof parseBreezeSourceSeed>> | null = null;
+let breezeSourceSeedLoadPromise: Promise<Awaited<ReturnType<typeof parseBreezeSourceSeed>>> | null = null;
 const BREEZE_SOURCE_SEED_KEY = "breeze/private-source-seeds/approved-source-records_0d92955f.ndjson";
 const BREEZE_SOURCE_SEED_PROXY = "https://exaudash-unrq5kjn.manus.space";
 
@@ -218,13 +220,10 @@ export async function upsertBreezeSourceRecords(records: Array<{
   });
 }
 
-async function seedBreezeSourceRecordsIfEmpty() {
-  const db = await getDb();
-  if (!db) return;
-  const [existing] = await db.select({ count: sql<number>`count(*)` }).from(breezeSourceRecords);
-  if (Number(existing?.count ?? 0) > 0) return;
-  if (!breezeSourceSeedPromise) {
-    breezeSourceSeedPromise = (async () => {
+async function loadBreezeSourceSeedRecords() {
+  if (breezeSourceSeedRecords) return breezeSourceSeedRecords;
+  if (!breezeSourceSeedLoadPromise) {
+    breezeSourceSeedLoadPromise = (async () => {
       let response: Response;
       try {
         const signedUrl = await storageGetSignedUrl(BREEZE_SOURCE_SEED_KEY);
@@ -235,7 +234,25 @@ async function seedBreezeSourceRecordsIfEmpty() {
         response = await fetch(`${BREEZE_SOURCE_SEED_PROXY}/manus-storage/${BREEZE_SOURCE_SEED_KEY}`);
       }
       if (!response.ok) throw new Error(`Breeze source seed download failed (${response.status})`);
-      const inputs = parseBreezeSourceSeed(await response.text());
+      return parseBreezeSourceSeed(await response.text());
+    })().then(records => {
+      breezeSourceSeedRecords = records;
+      return records;
+    }).finally(() => {
+      breezeSourceSeedLoadPromise = null;
+    });
+  }
+  return breezeSourceSeedLoadPromise;
+}
+
+async function seedBreezeSourceRecordsIfEmpty() {
+  const db = await getDb();
+  if (!db) return;
+  const [existing] = await db.select({ count: sql<number>`count(*)` }).from(breezeSourceRecords);
+  if (Number(existing?.count ?? 0) > 0) return;
+  if (!breezeSourceSeedPromise) {
+    breezeSourceSeedPromise = (async () => {
+      const inputs = await loadBreezeSourceSeedRecords();
       const normalized = inputs.map(record => ({ ...record, recordKey: createBreezeSourceRecordKey(record) }));
       for (let index = 0; index < normalized.length; index += 250) {
         await upsertBreezeSourceRecords(normalized.slice(index, index + 250));
@@ -249,7 +266,23 @@ async function seedBreezeSourceRecordsIfEmpty() {
 
 export async function getBreezeSourceRecords(input: { source: string; limit: number; offset: number }) {
   const db = await getDb();
-  if (!db) return [] as BreezeSourceRecord[];
+  if (!db) {
+    try {
+      const seedRecords = await loadBreezeSourceSeedRecords();
+      return seedRecords
+        .filter(record => record.source === input.source)
+        .slice(input.offset, input.offset + input.limit)
+        .map((record, index) => ({
+          id: -(input.offset + index + 1),
+          ...record,
+          createdAt: new Date(0),
+          updatedAt: new Date(0),
+        })) as BreezeSourceRecord[];
+    } catch (error) {
+      console.error("[Breeze] In-memory source-record seed unavailable:", error);
+      return [] as BreezeSourceRecord[];
+    }
+  }
   try {
     await seedBreezeSourceRecordsIfEmpty();
   } catch (error) {
