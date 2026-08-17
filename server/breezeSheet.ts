@@ -14,6 +14,7 @@ export type ApprovedLead = {
   lastName: string;
   city: string;
   state: string;
+  ageRange: string;
   email: string;
   status: string;
   emailProvider: string;
@@ -23,6 +24,7 @@ export type ApprovedLead = {
 export type BreezeOwnerReviewLead = {
   name: string;
   location: string;
+  ageRange: string;
   emailProvider: string;
   stage: BreezeFunnelStage;
   lastKnownActivity: string;
@@ -71,12 +73,20 @@ export function mapApprovedCsv(csv: string, tier: ApprovedLead["tier"]): Approve
   }
   const column = (header: string) => headers.indexOf(header.toUpperCase());
   const get = (row: string[], header: string) => row[column(header)]?.trim() ?? "";
+  const getFirst = (row: string[], candidates: string[]) => {
+    for (const candidate of candidates) {
+      const value = get(row, candidate);
+      if (value) return value;
+    }
+    return "";
+  };
   const leads = rows.slice(1).map(row => ({
     tier,
     firstName: get(row, "FIRST NAME"),
     lastName: get(row, "LAST NAME"),
     city: get(row, "CITY"),
     state: get(row, "ST"),
+    ageRange: getFirst(row, ["AGE RANGE", "AGE_RANGE", "AGE"]),
     email: get(row, "PERS V EMAILS"),
     status: get(row, "ZB Status").toLowerCase(),
     emailProvider: get(row, "ZB SMTP Provider"),
@@ -124,6 +134,7 @@ export function toOwnerReviewLead(lead: ApprovedLead, stage: BreezeFunnelStage):
   return {
     name: `${lead.firstName} ${lead.lastName}`.trim() || "Approved contact",
     location: [lead.city, lead.state].filter(Boolean).join(", ") || "Location unavailable",
+    ageRange: lead.ageRange || "Not supplied",
     emailProvider: lead.emailProvider || "Provider unavailable",
     stage,
     lastKnownActivity: lead.lastKnownActivity || "—",

@@ -1,0 +1,7 @@
+Breeze two-destination local verification — Aug. 17, 2026
+
+The redesigned Breeze landing page renders two selectable cards: Income Protection Tool and Breeze Affiliate Quote Flow. The historical tool states that traffic ended before July and shows no July–August routing. The affiliate destination renders a daily illustrative traffic chart, approved-lead roster, and opt-in status as not connected.
+
+Selecting an approved lead opens a detail panel with available location and email-service profile context, age-range status, illustrative Google/Meta/YouTube exposure sequence, website-engagement threshold, 7-day and 30-day engagement likelihood windows, destination journey stages, and the staged unique-contact/form-fill workflow. No email addresses, phone numbers, or external form-submission capability are exposed.
+
+The currently supplied approved source did not populate age-range values in the rendered records; the importer is now prepared to use an AGE RANGE, AGE_RANGE, or AGE header when the corresponding approved source tab provides it.

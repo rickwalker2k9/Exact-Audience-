@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { buildFunnelCounts, getBreezeContactKey, mapApprovedCsv, toLeadSummary, toOwnerReviewLead } from "./breezeSheet";
 
-const headers = "FIRST NAME,LAST NAME,CITY,ST,PERS V EMAILS,ZB Status,ZB SMTP Provider,ZB Last Known Activity";
+const headers = "FIRST NAME,LAST NAME,CITY,ST,AGE RANGE,PERS V EMAILS,ZB Status,ZB SMTP Provider,ZB Last Known Activity";
 
 describe("Breeze approved lead import", () => {
   it("imports only valid records when the approved schema is present", () => {
-    const result = mapApprovedCsv(`${headers}\nAda,Stone,Austin,TX,ada@example.com,valid,google,2026-08-15\nBlocked,Lead,Austin,TX,blocked@example.com,invalid,google,`, "valid-gold");
+    const result = mapApprovedCsv(`${headers}\nAda,Stone,Austin,TX,35-44,ada@example.com,valid,google,2026-08-15\nBlocked,Lead,Austin,TX,45-54,blocked@example.com,invalid,google,`, "valid-gold");
     expect(result.schemaReady).toBe(true);
     expect(result.leads).toHaveLength(1);
-    expect(result.leads[0]).toMatchObject({ firstName: "Ada", tier: "valid-gold", status: "valid" });
+    expect(result.leads[0]).toMatchObject({ firstName: "Ada", ageRange: "35-44", tier: "valid-gold", status: "valid" });
   });
 
   it("refuses a tab with no reviewed header row", () => {
@@ -19,7 +19,7 @@ describe("Breeze approved lead import", () => {
   });
 
   it("returns aggregate-only data for the public portal summary", () => {
-    const importResult = mapApprovedCsv(`${headers}\nAda,Stone,Austin,TX,ada@example.com,valid,google,2026-08-15`, "valid-gold");
+    const importResult = mapApprovedCsv(`${headers}\nAda,Stone,Austin,TX,35-44,ada@example.com,valid,google,2026-08-15`, "valid-gold");
     const summary = toLeadSummary({ valid: { leads: [], schemaReady: false, reason: "Header row required" }, validGold: importResult, refreshedAt: "2026-08-16T00:00:00.000Z" });
     expect(JSON.stringify(summary)).not.toContain("ada@example.com");
     expect(summary.validGold.count).toBe(1);
@@ -39,9 +39,9 @@ describe("Breeze approved lead import", () => {
   });
 
   it("creates an owner-review row without exposing an email address", () => {
-    const lead = mapApprovedCsv(`${headers}\nAda,Stone,Austin,TX,ada@example.com,valid,google,2026-08-15`, "valid-gold").leads[0];
+    const lead = mapApprovedCsv(`${headers}\nAda,Stone,Austin,TX,35-44,ada@example.com,valid,google,2026-08-15`, "valid-gold").leads[0];
     const row = toOwnerReviewLead(lead, "visited");
-    expect(row).toEqual({ name: "Ada Stone", location: "Austin, TX", emailProvider: "google", stage: "visited", lastKnownActivity: "2026-08-15" });
+    expect(row).toEqual({ name: "Ada Stone", location: "Austin, TX", ageRange: "35-44", emailProvider: "google", stage: "visited", lastKnownActivity: "2026-08-15" });
     expect(JSON.stringify(row)).not.toContain("ada@example.com");
   });
 });

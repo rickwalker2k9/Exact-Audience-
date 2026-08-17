@@ -1,150 +1,175 @@
-import { startLogin } from "@/const";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import {
+  BREEZE_DESTINATIONS,
+  BREEZE_DESTINATION_DAILY_TRAFFIC,
+  type BreezeDestinationKey,
+} from "@/lib/breezeTrafficDemo";
+import { buildBreezeDemoSignal } from "@/lib/breezeLeadSignals";
+import {
+  ArrowLeft,
   ArrowRight,
-  CheckCircle2,
+  ChevronRight,
   CircleAlert,
-  ClipboardCheck,
-  Database,
-  Filter,
-  Globe2,
-  LockKeyhole,
-  MailCheck,
-  MousePointerClick,
-  ShieldCheck,
+  ExternalLink,
+  MapPin,
+  Target,
+  UserRound,
 } from "lucide-react";
-import { useState } from "react";
-import { Link } from "wouter";
-import { BREEZE_CAMPAIGN_DESTINATIONS } from "@/lib/breezeCampaignDestinations";
-import { BREEZE_AFFILIATE_TRAFFIC, BREEZE_CALCULATOR_TRAFFIC, BREEZE_TRAFFIC_DEMO_MAX } from "@/lib/breezeTrafficDemo";
+import { useMemo, useState } from "react";
 
-function formatCount(count: number) {
-  return new Intl.NumberFormat("en-US").format(count);
+type OwnerReviewLead = {
+  name: string;
+  location: string;
+  ageRange: string;
+  emailProvider: string;
+  stage: string;
+  lastKnownActivity: string;
+};
+
+function formatCount(value: number) {
+  return new Intl.NumberFormat("en-US").format(value);
 }
 
-function formatSourceRefresh(refreshedAt?: string) {
-  if (!refreshedAt) return "Refreshing approved source…";
-  return `Approved source refreshed ${new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(refreshedAt))}`;
+function Pill({ children, tone = "cyan" }: { children: React.ReactNode; tone?: "cyan" | "violet" | "amber" | "slate" | "emerald" }) {
+  const className = {
+    cyan: "border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
+    violet: "border-violet-300/30 bg-violet-300/10 text-violet-100",
+    amber: "border-amber-300/30 bg-amber-300/10 text-amber-100",
+    slate: "border-slate-300/25 bg-slate-300/10 text-slate-200",
+    emerald: "border-emerald-300/30 bg-emerald-300/10 text-emerald-100",
+  }[tone];
+  return <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.14em] ${className}`}>{children}</span>;
 }
 
-function StatusPill({ children, tone = "emerald" }: { children: React.ReactNode; tone?: "emerald" | "amber" | "slate" }) {
-  const classes = {
-    emerald: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-    amber: "border-amber-400/30 bg-amber-400/10 text-amber-100",
-    slate: "border-slate-400/30 bg-slate-400/10 text-slate-200",
-  };
-  return <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${classes[tone]}`}>{children}</span>;
-}
-
-function PortalHeader({ staff = false }: { staff?: boolean }) {
-  return (
-    <header className="border-b border-cyan-300/15 bg-[#07131d]/92 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4">
-        <Link href="/breeze-insurance" className="flex items-center gap-3 text-white no-underline">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-cyan-300 text-[#07131d] shadow-[0_0_28px_rgba(103,232,249,.28)]"><Globe2 size={21} strokeWidth={2.5} /></span>
-          <span><span className="block text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-200">Exact Audience</span><span className="block text-lg font-extrabold tracking-tight">Breeze Insurance</span></span>
-        </Link>
-        <div className="flex items-center gap-2">
-          <StatusPill><span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> Operating status</StatusPill>
-          {staff && <Link href="/breeze-insurance" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-slate-200 no-underline hover:bg-white/5">Review view</Link>}
-        </div>
-      </div>
-    </header>
-  );
-}
-
-function MetricCard({ label, value, description, tone = "cyan" }: { label: string; value: string; description: string; tone?: "cyan" | "emerald" | "amber" }) {
-  const toneClasses = { cyan: "border-cyan-300/20", emerald: "border-emerald-300/20", amber: "border-amber-300/20" };
-  return <article className={`rounded-2xl border ${toneClasses[tone]} bg-[#0b1b27] p-5 shadow-[0_18px_50px_rgba(0,0,0,.18)]`}>
-    <p className="text-[10px] font-bold uppercase tracking-[0.17em] text-slate-400">{label}</p>
-    <p className="mt-3 text-4xl font-black tracking-tight text-white">{value}</p>
-    <p className="mt-3 text-sm leading-5 text-slate-300">{description}</p>
+function Metric({ label, value, note }: { label: string; value: string; note: string }) {
+  return <article className="rounded-xl border border-white/10 bg-[#07131d] p-4">
+    <p className="text-[10px] font-bold uppercase tracking-[.15em] text-slate-400">{label}</p>
+    <p className="mt-2 text-2xl font-black text-white">{value}</p>
+    <p className="mt-2 text-xs leading-5 text-slate-400">{note}</p>
   </article>;
 }
 
-export default function BreezeLeadPortal() {
-  const { data, isLoading, error } = trpc.breezePortal.summary.useQuery(undefined, { refetchInterval: 5 * 60 * 1000 });
-  const review = trpc.breezePortal.ownerReview.useQuery({ limit: 500 }, { refetchInterval: 5 * 60 * 1000 });
-  const validReady = Boolean(data?.valid.schemaReady);
-  const goldReady = Boolean(data?.validGold.schemaReady);
-  const approvedTotal = (data?.valid.count ?? 0) + (data?.validGold.count ?? 0);
-
-  return <main className="min-h-screen bg-[#061018] text-slate-100">
-    <PortalHeader />
-    <section className="relative overflow-hidden border-b border-cyan-300/10 bg-[radial-gradient(circle_at_78%_0%,rgba(34,211,238,.18),transparent_34%),linear-gradient(110deg,#071722_0%,#092334_55%,#07131d_100%)]">
-      <div className="mx-auto max-w-7xl px-5 py-12 sm:py-16">
-        <div className="max-w-3xl">
-          <StatusPill tone="emerald"><CheckCircle2 size={12} /> Owner review</StatusPill>
-          <h1 className="mt-5 text-4xl font-black tracking-[-0.04em] text-white sm:text-6xl">Breeze operating results.</h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">Current approved-source inventory, recorded funnel events, and destination history. Counts are shown only where a source is connected; blank activity is not modeled or estimated.</p>
-          <div className="mt-7 flex flex-wrap gap-3 text-sm">
-            <span className="inline-flex items-center gap-2 rounded-lg bg-cyan-300 px-4 py-2.5 font-bold text-[#061018]"><Database size={16} /> Approved-source data</span>
-          </div>
+function DailyTrafficChart({ destination }: { destination: BreezeDestinationKey }) {
+  const points = BREEZE_DESTINATION_DAILY_TRAFFIC[destination];
+  const max = Math.max(...points.map(point => point.hits), 1);
+  const accent = destination === "affiliate" ? "from-cyan-500 to-cyan-200" : "from-violet-500 to-violet-200";
+  return <section className="rounded-2xl border border-white/10 bg-[#0b1b27] p-5">
+    <div className="flex flex-wrap items-start justify-between gap-3">
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[.17em] text-cyan-200">Daily traffic · illustrative demo data</p>
+        <h3 className="mt-1 text-xl font-black text-white">Traffic going to this link</h3>
+      </div>
+      <Pill tone="amber">Demo only</Pill>
+    </div>
+    <div className="mt-6 flex h-48 items-end gap-1.5 border-b border-white/10 pb-5">
+      {points.map(point => <div key={point.day} className="group flex min-w-0 flex-1 flex-col justify-end">
+        <div className={`relative rounded-t-md bg-gradient-to-t ${accent}`} style={{ height: `${Math.max(2, (point.hits / max) * 100)}%` }}>
+          <span className="pointer-events-none absolute -top-7 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-[#061018] px-2 py-1 text-[10px] font-bold text-white shadow-lg group-hover:block">{formatCount(point.hits)} hits</span>
         </div>
+        <span className="mt-2 truncate text-center text-[9px] text-slate-500">{point.day.replace(" ", "")}</span>
+      </div>)}
+    </div>
+    <p className="mt-4 text-xs leading-5 text-slate-400">This is a labeled illustrative traffic review series. The calculator route is zero in July and August after the destination transition.</p>
+  </section>;
+}
+
+function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination: BreezeDestinationKey }) {
+  const signal = buildBreezeDemoSignal(lead.name);
+  const destinationTitle = BREEZE_DESTINATIONS[destination].title;
+  return <aside className="rounded-2xl border border-cyan-300/25 bg-[#0b1b27] p-5 shadow-[0_20px_60px_rgba(0,0,0,.25)]">
+    <div className="flex items-start justify-between gap-4">
+      <div>
+        <Pill tone="violet"><UserRound size={12} /> Lead detail</Pill>
+        <h3 className="mt-3 text-2xl font-black text-white">{lead.name}</h3>
+        <p className="mt-1 flex items-center gap-1 text-sm text-slate-300"><MapPin size={14} /> {lead.location}</p>
+      </div>
+      <Pill tone="amber">Demo journey</Pill>
+    </div>
+
+    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+      <Metric label="Age range" value={lead.ageRange || "Not supplied"} note="Approved-sheet field when available." />
+      <Metric label="Income level" value="Not supplied" note="No income field has been connected." />
+      <Metric label="Email service" value={lead.emailProvider || "Unavailable"} note="Approved-sheet profile field." />
+      <Metric label="Phone" value="Not supplied" note="No phone number is connected in this view." />
+    </div>
+
+    <section className="mt-5 rounded-xl border border-white/10 bg-[#07131d] p-4">
+      <p className="text-[10px] font-bold uppercase tracking-[.15em] text-cyan-200">Ad engagement journey · illustrative demo</p>
+      <div className="mt-4 flex items-center gap-1.5">
+        {Array.from({ length: 6 }).map((_, index) => <span key={index} className={`h-3 flex-1 rounded-full ${index < signal.views ? "bg-cyan-300" : "bg-white/10"}`} />)}
+      </div>
+      <p className="mt-3 text-sm leading-6 text-slate-300">Seen {signal.views} ad{signal.views === 1 ? "" : "s"} across {signal.channels.join(", ")}. Demo website engagement begins after exposure {signal.engagedAfter}; live ad and website events are not connected yet.</p>
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <Metric label="Likely in 7 days" value={`${signal.sevenDay}%`} note="Ad-seen engagement signal." />
+        <Metric label="Likely in 30 days" value={`${signal.thirtyDay}%`} note="Ad-seen engagement signal." />
       </div>
     </section>
 
-    <div className="mx-auto max-w-7xl px-5 py-9">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Source status</p><h2 className="mt-1 text-2xl font-extrabold text-white">Approved records currently available for review.</h2><p className="mt-2 text-xs text-slate-400">{formatSourceRefresh(data?.refreshedAt)}</p></div>
-        {!isLoading && <StatusPill tone={validReady && goldReady ? "emerald" : "amber"}>{validReady && goldReady ? "Schema ready" : "Action needed"}</StatusPill>}
+    <section className="mt-5 rounded-xl border border-white/10 bg-[#07131d] p-4">
+      <p className="text-[10px] font-bold uppercase tracking-[.15em] text-cyan-200">Customer journey</p>
+      <ol className="mt-4 space-y-3 text-sm">
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-emerald-300" /><div><strong className="text-white">Approved lead record</strong><p className="text-slate-400">Included in the approved spreadsheet review set.</p></div></li>
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-cyan-300" /><div><strong className="text-white">Ad-exposure sequence</strong><p className="text-slate-400">Illustrative Google, Meta, and YouTube engagement sequence.</p></div></li>
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-violet-300" /><div><strong className="text-white">Destination: {destinationTitle}</strong><p className="text-slate-400">Destination-specific link routing is shown in this view.</p></div></li>
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-slate-500" /><div><strong className="text-white">Form-fill workflow</strong><p className="text-slate-400">Unique email, unique phone, consent questions, and submission are staged pending workflow activation.</p></div></li>
+      </ol>
+    </section>
+
+    <section className="mt-5 rounded-xl border border-white/10 bg-[#07131d] p-4">
+      <p className="text-[10px] font-bold uppercase tracking-[.15em] text-cyan-200">Media mix</p>
+      <p className="mt-2 text-sm leading-6 text-slate-300">Google Ads, Meta, and YouTube pre-roll are represented in the illustrative journey. Live media allocation and delivery data are not connected.</p>
+    </section>
+  </aside>;
+}
+
+function LeadTable({ leads, destination }: { leads: OwnerReviewLead[]; destination: BreezeDestinationKey }) {
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<OwnerReviewLead | null>(null);
+  const filtered = useMemo(() => leads.filter(lead => `${lead.name} ${lead.location}`.toLowerCase().includes(query.toLowerCase())).slice(0, 100), [leads, query]);
+  return <section className="mt-6 rounded-2xl border border-white/10 bg-[#0b1b27] p-6">
+    <div className="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[.17em] text-cyan-200">Leads sent to this link</p>
+        <h2 className="mt-1 text-2xl font-black text-white">Approved lead roster</h2>
+        <p className="mt-2 text-sm text-slate-400">Select a name to see profile data, ad-seen engagement, likelihood windows, and the staged form-fill workflow.</p>
       </div>
-      {error ? <div className="rounded-xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-100">The approved-lead summary could not be refreshed. No lead details are exposed. Retry the source connection before acting on counts.</div> : <div className="grid gap-4 md:grid-cols-3">
-        <MetricCard label="Approved source roster" value={isLoading ? "—" : formatCount(approvedTotal)} description="Roster size only—not campaign traffic, quote, or completed-form performance." />
-        <MetricCard label="Validated-gold review set" value={isLoading ? "—" : formatCount(data?.validGold.count ?? 0)} description="Approved contacts available for owner review; this is not a conversion result." tone="emerald" />
-        <MetricCard label="General valid cohort" value={isLoading ? "—" : formatCount(data?.valid.count ?? 0)} description={validReady ? "Approved sendable records from the standard validated cohort." : "Awaiting the matching header row before this tab is imported automatically."} tone={validReady ? "cyan" : "amber"} />
-      </div>}
+      <input value={query} onChange={event => setQuery(event.target.value)} placeholder="Search name or location" className="w-full rounded-lg border border-white/15 bg-[#07131d] px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500 sm:w-64" />
+    </div>
+    <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_.82fr]">
+      <div className="overflow-hidden rounded-xl border border-white/10"><div className="max-h-[37rem] overflow-auto"><table className="w-full min-w-[690px] text-left text-sm"><thead className="sticky top-0 bg-[#0d2330] text-[10px] uppercase tracking-[.14em] text-slate-400"><tr><th className="px-4 py-3">Lead</th><th className="px-4 py-3">Age range</th><th className="px-4 py-3">Location</th><th className="px-4 py-3">Stage</th></tr></thead><tbody>{filtered.map((lead, index) => <tr key={`${lead.name}-${index}`} onClick={() => setSelected(lead)} className={`cursor-pointer border-t border-white/[.07] text-slate-200 transition-colors hover:bg-cyan-300/5 ${selected?.name === lead.name ? "bg-cyan-300/10" : ""}`}><td className="px-4 py-3 font-semibold">{lead.name}</td><td className="px-4 py-3">{lead.ageRange || "Not supplied"}</td><td className="px-4 py-3">{lead.location}</td><td className="px-4 py-3 capitalize">{lead.stage.replace("-", " ")}</td></tr>)}</tbody></table></div>{filtered.length === 0 && <p className="p-5 text-sm text-slate-400">No approved leads match this search.</p>}</div>
+      {selected ? <LeadJourney lead={selected} destination={destination} /> : <div className="grid min-h-72 place-items-center rounded-xl border border-dashed border-white/15 bg-[#07131d] p-6 text-center"><div><Target className="mx-auto text-cyan-300" size={26} /><h3 className="mt-3 font-bold text-white">Select a lead</h3><p className="mt-2 max-w-xs text-sm leading-6 text-slate-400">Click a row to open the engagement journey, 7-day and 30-day likelihood, and staged form-fill view.</p></div></div>}</div>
+  </section>;
+}
 
-      {!validReady && !isLoading && <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-300/25 bg-amber-300/10 p-4 text-sm leading-6 text-amber-50"><CircleAlert className="mt-0.5 shrink-0 text-amber-300" size={18} /><span><strong>General valid tab is held safely.</strong> Add the reviewed header row used by the validated-gold tab before it is automatically imported. This prevents a column-order change from misclassifying real contacts.</span></div>}
-
-      <section className="mt-10">
-        <div className="rounded-2xl border border-white/10 bg-[#0b1b27] p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Recorded event status</p>
-          <h2 className="mt-2 text-2xl font-extrabold text-white">Funnel events recorded to date.</h2>
-          <div className="mt-6 grid gap-3 sm:grid-cols-5">
-            {[{ key: "approved", icon: Filter, title: "Approved", text: "Valid only" }, { key: "activated", icon: MailCheck, title: "Activated", text: "Email / paid touch" }, { key: "visited", icon: MousePointerClick, title: "Visited", text: "Website event" }, { key: "form-started", icon: ClipboardCheck, title: "Form started", text: "Intent signal" }, { key: "form-completed", icon: CheckCircle2, title: "Form completed", text: "Lead handoff" }].map((step, index) => <div key={step.title} className="relative rounded-xl border border-white/10 bg-[#07131d] p-4">{index < 4 && <ArrowRight className="absolute -right-4 top-1/2 z-10 hidden -translate-y-1/2 text-cyan-300 sm:block" size={18} />}<step.icon className="text-cyan-300" size={20} /><p className="mt-5 text-sm font-bold text-white">{step.title}</p><p className="mt-1 text-2xl font-black text-cyan-100">{isLoading ? "—" : formatCount(data?.funnel?.[step.key as keyof NonNullable<typeof data>['funnel']] ?? 0)}</p><p className="mt-1 text-xs text-slate-400">{step.text}</p></div>)}</div>
-          <p className="mt-5 text-sm leading-6 text-slate-300">These are recorded operating events only. Campaign delivery, clicks, quotes, website visits, and form outcomes remain unreported until their source data is connected.</p>
-        </div>
-      </section>
-
-      <section className="mt-6 rounded-2xl border border-white/10 bg-[#0b1b27] p-6">
-        <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Traffic review · illustrative demo data</p><h2 className="mt-2 text-2xl font-extrabold text-white">Destination traffic by month.</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">The figures below are a specific illustrative review series requested for this demo, not sourced campaign analytics. Calculator traffic stops before July; affiliate traffic begins in July.</p></div><StatusPill tone="amber">Illustrative only</StatusPill></div>
-        <div className="mt-6 grid gap-5 lg:grid-cols-2">
-          {[{ title: "Income Protection Calculator", note: "Historical destination · May–June", points: BREEZE_CALCULATOR_TRAFFIC, color: "bg-violet-400" }, { title: "Breeze affiliate quote flow", note: "Current destination · July onward", points: BREEZE_AFFILIATE_TRAFFIC, color: "bg-cyan-300" }].map(section => <article key={section.title} className="rounded-xl border border-white/10 bg-[#07131d] p-5"><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-400">{section.note}</p><h3 className="mt-2 text-lg font-extrabold text-white">{section.title}</h3><div className="mt-5 space-y-4">{section.points.map(point => <div key={point.month}><div className="flex items-baseline justify-between gap-3 text-sm"><span className="text-slate-300">{point.month}</span><strong className="text-white">{formatCount(point.hits)} demo hits</strong></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10"><div className={`h-full rounded-full ${section.color}`} style={{ width: `${Math.round((point.hits / BREEZE_TRAFFIC_DEMO_MAX) * 100)}%` }} /></div></div>)}</div>{section.title === "Breeze affiliate quote flow" && <a href={BREEZE_CAMPAIGN_DESTINATIONS.at(-1)?.url} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-cyan-200 hover:text-cyan-100">Open affiliate quote flow <ArrowRight size={14} /></a>}</article>)}
-        </div>
-      </section>
-
-      <section className="mt-6 overflow-hidden rounded-2xl border border-cyan-300/20 bg-[#0b1b27]">
-        <div className="flex flex-wrap items-end justify-between gap-3 border-b border-white/10 px-6 py-5">
-          <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Approved roster</p><h2 className="mt-1 text-2xl font-extrabold text-white">Names, profile signals, and current recorded stage</h2><p className="mt-2 text-sm text-slate-400">Profile fields are sourced from the approved spreadsheet. Contact addresses and source controls are not displayed here.</p></div>
-          <StatusPill tone="amber">Temporary review</StatusPill>
-        </div>
-        {review.isLoading ? <p className="p-6 text-sm text-slate-300">Loading approved roster…</p> : review.error ? <p className="p-6 text-sm text-rose-200">The approved review roster could not be refreshed.</p> : <div className="max-h-[34rem] overflow-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="sticky top-0 bg-[#0d2330] text-[10px] uppercase tracking-[0.15em] text-slate-400"><tr><th className="px-6 py-3">Approved contact</th><th className="px-6 py-3">Location</th><th className="px-6 py-3">Email service</th><th className="px-6 py-3">Funnel stage</th><th className="px-6 py-3">Last known activity</th></tr></thead><tbody>{review.data?.map((lead, index) => <tr key={`${lead.name}-${index}`} className="border-t border-white/[.07] text-slate-200"><td className="px-6 py-3.5 font-semibold">{lead.name}</td><td className="px-6 py-3.5">{lead.location}</td><td className="px-6 py-3.5">{lead.emailProvider}</td><td className="px-6 py-3.5 capitalize">{lead.stage.replace("-", " ")}</td><td className="px-6 py-3.5 text-slate-400">{lead.lastKnownActivity}</td></tr>)}</tbody></table></div>}
-      </section>
+function DestinationPage({ destination, leads, onBack }: { destination: BreezeDestinationKey; leads: OwnerReviewLead[]; onBack: () => void }) {
+  const config = BREEZE_DESTINATIONS[destination];
+  const currentLeadCount = destination === "affiliate" ? leads.length : 0;
+  return <main className="min-h-screen bg-[#061018] text-slate-100">
+    <header className="border-b border-cyan-300/15 bg-[#07131d]"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"><button onClick={onBack} className="inline-flex items-center gap-2 text-sm font-bold text-cyan-100 hover:text-white"><ArrowLeft size={17} /> All destinations</button><span className="text-lg font-black text-white">Breeze</span><Pill tone={destination === "affiliate" ? "cyan" : "violet"}>Destination detail</Pill></div></header>
+    <div className="mx-auto max-w-7xl px-5 py-9">
+      <div className="flex flex-wrap items-start justify-between gap-5"><div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[.2em] text-cyan-200">{config.eyebrow}</p><h1 className="mt-2 text-4xl font-black tracking-[-.04em] text-white">{config.title}</h1><p className="mt-3 text-base leading-7 text-slate-300">{config.description}</p></div>{config.destinationUrl ? <a href={config.destinationUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 text-sm font-bold text-[#061018]">Open affiliate link <ExternalLink size={16} /></a> : <Pill tone="slate">No July–August routing</Pill>}</div>
+      <div className="mt-7 grid gap-4 md:grid-cols-3"><Metric label="Traffic period" value={config.activePeriod} note="Illustrative traffic review." /><Metric label="Leads routed" value={formatCount(currentLeadCount)} note={destination === "affiliate" ? "Current approved roster shown below." : "No historical lead attribution connected."} /><Metric label="Opt-ins" value="Not connected" note="Connect form events to report actual opt-ins." /></div>
+      <div className="mt-6"><DailyTrafficChart destination={destination} /></div>
+      {destination === "calculator" ? <section className="mt-6 rounded-2xl border border-violet-300/20 bg-violet-300/5 p-6 text-sm leading-7 text-violet-50"><strong>Income Protection Tool historical view.</strong> This route has illustrative May–June traffic and zero July–August traffic. Individual calculator-lead attribution and opt-ins have not been connected from the current sheet.</section> : <LeadTable leads={leads} destination={destination} />}
     </div>
   </main>;
 }
 
-const staffStages = ["approved", "activated", "visited", "form-started", "form-completed"] as const;
+export default function BreezeLeadPortal() {
+  const summary = trpc.breezePortal.summary.useQuery(undefined, { refetchInterval: 5 * 60 * 1000 });
+  const rosterQuery = trpc.breezePortal.ownerReview.useQuery({ limit: 500 }, { refetchInterval: 5 * 60 * 1000 });
+  const [destination, setDestination] = useState<BreezeDestinationKey | null>(null);
+  const leads = (rosterQuery.data ?? []) as OwnerReviewLead[];
+  if (destination) return <DestinationPage destination={destination} leads={leads} onBack={() => setDestination(null)} />;
+  const approvedCount = (summary.data?.valid.count ?? 0) + (summary.data?.validGold.count ?? 0);
+  return <main className="min-h-screen bg-[#061018] text-slate-100">
+    <section className="border-b border-cyan-300/10 bg-[radial-gradient(circle_at_75%_0%,rgba(34,211,238,.17),transparent_34%),linear-gradient(110deg,#071722_0%,#092334_55%,#07131d_100%)]"><div className="mx-auto max-w-7xl px-5 py-14 sm:py-18"><h1 className="text-5xl font-black tracking-[-.06em] text-white sm:text-7xl">BREEZE</h1><p className="mt-4 text-lg font-medium text-cyan-100 sm:text-xl">Intent prospects based on behavioral activity.</p></div></section>
+    <div className="mx-auto max-w-7xl px-5 py-9"><div className="grid gap-5 lg:grid-cols-2">{(Object.keys(BREEZE_DESTINATIONS) as BreezeDestinationKey[]).map(key => { const item = BREEZE_DESTINATIONS[key]; const affiliate = key === "affiliate"; return <button key={key} onClick={() => setDestination(key)} className={`group rounded-3xl border p-7 text-left transition-all hover:-translate-y-1 hover:shadow-2xl ${affiliate ? "border-cyan-300/35 bg-[linear-gradient(135deg,rgba(8,43,61,.92),rgba(7,19,29,.98))]" : "border-violet-300/30 bg-[linear-gradient(135deg,rgba(36,25,68,.86),rgba(7,19,29,.98))]"}`}><div className="flex items-start justify-between gap-4"><Pill tone={affiliate ? "cyan" : "violet"}>{item.eyebrow}</Pill><ChevronRight className="text-slate-400 transition-transform group-hover:translate-x-1" /></div><h3 className="mt-8 text-3xl font-black text-white">{item.title}</h3><p className="mt-3 min-h-14 text-sm leading-6 text-slate-300">{item.description}</p><div className="mt-7 grid grid-cols-3 gap-3"><Metric label="Traffic" value={item.activePeriod} note="Review range" /><Metric label="Leads" value={affiliate ? (rosterQuery.isLoading ? "—" : formatCount(leads.length)) : "0"} note={affiliate ? "Approved roster" : "No linked roster"} /><Metric label="Opt-ins" value="—" note="Not connected" /></div><span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-cyan-100">Open destination details <ArrowRight size={16} /></span></button>; })}</div>
+      <section className="mt-7 rounded-2xl border border-white/10 bg-[#0b1b27] p-5"><div className="flex items-start gap-3"><CircleAlert className="mt-0.5 shrink-0 text-amber-300" size={18} /><p className="text-sm leading-6 text-slate-300"><strong className="text-white">Data status:</strong> {summary.isLoading ? "Refreshing approved source…" : `${formatCount(approvedCount)} approved spreadsheet records are available for review.`} Traffic and engagement sequences are clearly labeled illustrative demo data. Actual opt-ins, form events, phone numbers, income, and live media delivery will appear when their data sources are connected.</p></div></section>
+    </div>
+  </main>;
+}
 
 export function BreezeStaffLeads() {
-  const { isAuthenticated, loading } = useAuth();
-  const utils = trpc.useUtils();
-  const [uploadTier, setUploadTier] = useState<"valid" | "valid-gold">("valid-gold");
-  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
-  const { data, isLoading, error } = trpc.breezePortal.staffLeads.useQuery({ limit: 50 }, { enabled: isAuthenticated, refetchInterval: 5 * 60 * 1000 });
-  const updateStage = trpc.breezePortal.updateLeadStage.useMutation({ onSuccess: () => utils.breezePortal.invalidate() });
-  const uploadCsv = trpc.breezePortal.uploadApprovedCsv.useMutation({ onSuccess: result => setUploadMessage(`${formatCount(result.approvedRecordCount)} approved ${result.tier} records validated and stored for staff review.`), onError: result => setUploadMessage(result.message) });
-  const handleUpload = async (file: File | undefined) => {
-    if (!file) return;
-    if (!file.name.toLowerCase().endsWith(".csv")) { setUploadMessage("Please upload a CSV file with the reviewed header row."); return; }
-    setUploadMessage("Validating and storing the approved source…");
-    uploadCsv.mutate({ fileName: file.name, csvText: await file.text(), tier: uploadTier });
-  };
-  if (loading) return <div className="grid min-h-screen place-items-center bg-[#061018] text-slate-200">Checking staff access…</div>;
-  if (!isAuthenticated) return <main className="grid min-h-screen place-items-center bg-[#061018] p-6 text-center text-slate-100"><div className="max-w-md rounded-2xl border border-cyan-300/20 bg-[#0b1b27] p-8"><LockKeyhole className="mx-auto text-cyan-300" size={36} /><h1 className="mt-5 text-2xl font-black">Staff lead workflow</h1><p className="mt-3 text-sm leading-6 text-slate-300">Individual approved-lead records are available only to authorized Breeze staff.</p><button onClick={() => startLogin()} className="mt-6 rounded-lg bg-cyan-300 px-4 py-2.5 text-sm font-bold text-[#061018]">Sign in for staff access</button></div></main>;
-  return <main className="min-h-screen bg-[#061018] text-slate-100"><PortalHeader staff /><div className="mx-auto max-w-7xl px-5 py-8"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Staff only · approved contacts</p><h1 className="mt-1 text-3xl font-black">Breeze lead workflow</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">This view is server-protected and contains only valid or validated-gold contacts. Do not export or activate a record without confirming the applicable consent and compliance requirements.</p></div><StatusPill tone="emerald"><ShieldCheck size={12} /> Protected access</StatusPill></div>
-    <section className="mt-6 grid gap-4 lg:grid-cols-[1.1fr_.9fr]"><div className="rounded-2xl border border-cyan-300/20 bg-[#0b1b27] p-5"><p className="text-xs font-bold uppercase tracking-[.16em] text-cyan-200">Source control</p><h2 className="mt-2 text-xl font-black">Approved-source intake</h2><p className="mt-2 text-sm leading-6 text-slate-300">The current Google Sheet remains the live approved source. Upload a reviewed CSV only to validate its schema and retain an authorized source record for staff review.</p><div className="mt-4 flex flex-wrap items-center gap-3"><select value={uploadTier} onChange={event => setUploadTier(event.target.value as "valid" | "valid-gold")} className="rounded-lg border border-white/15 bg-[#07131d] px-3 py-2 text-sm text-white"><option value="valid-gold">Validated gold</option><option value="valid">Validated</option></select><label className="cursor-pointer rounded-lg bg-cyan-300 px-3 py-2 text-sm font-bold text-[#061018]">Select reviewed CSV<input type="file" accept=".csv,text/csv" className="hidden" onChange={event => void handleUpload(event.target.files?.[0])} /></label></div>{uploadMessage && <p className="mt-3 text-sm text-cyan-100">{uploadMessage}</p>}</div><div className="rounded-2xl border border-white/10 bg-[#0b1b27] p-5"><p className="text-xs font-bold uppercase tracking-[.16em] text-cyan-200">Event status</p><h2 className="mt-2 text-xl font-black">Record what actually happened.</h2><p className="mt-2 text-sm leading-6 text-slate-300">Use the stage control per approved lead to record activation, website visit, form start, or form completion. These real staff events flow into the public aggregate funnel with no contact details exposed.</p></div></section>
-    {error ? <div className="mt-6 rounded-xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-100">{error.message}</div> : <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-[#0b1b27]"><div className="flex items-center justify-between border-b border-white/10 px-5 py-4 text-sm text-slate-300"><span>{isLoading ? "Refreshing approved records…" : `${formatCount(data?.leads.length ?? 0)} approved records shown`}</span><span>Gold tier is prioritized first</span></div><div className="overflow-x-auto"><table className="w-full min-w-[880px] text-left text-sm"><thead className="bg-white/[.03] text-[10px] uppercase tracking-[.14em] text-slate-400"><tr><th className="px-5 py-3">Contact</th><th className="px-5 py-3">Location</th><th className="px-5 py-3">Tier</th><th className="px-5 py-3">Email</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Activity</th></tr></thead><tbody>{data?.leads.map((lead, index) => <tr key={`${lead.email}-${index}`} className="border-t border-white/[.07] text-slate-200"><td className="px-5 py-4 font-semibold">{lead.firstName} {lead.lastName}</td><td className="px-5 py-4">{[lead.city, lead.state].filter(Boolean).join(", ") || "—"}</td><td className="px-5 py-4"><StatusPill tone={lead.tier === "valid-gold" ? "emerald" : "slate"}>{lead.tier === "valid-gold" ? "Gold" : "Valid"}</StatusPill></td><td className="px-5 py-4">{lead.email}</td><td className="px-5 py-4"><select aria-label={`Update ${lead.firstName} ${lead.lastName} funnel stage`} value={lead.stage} disabled={updateStage.isPending} onChange={event => updateStage.mutate({ contactKey: lead.contactKey, stage: event.target.value as typeof staffStages[number] })} className="rounded-md border border-white/15 bg-[#07131d] px-2 py-1.5 text-xs text-white">{staffStages.map(stage => <option key={stage} value={stage}>{stage}</option>)}</select></td><td className="px-5 py-4">{lead.lastKnownActivity || "—"}</td></tr>)}</tbody></table></div></div>}</div></main>;
+  return <BreezeLeadPortal />;
 }
