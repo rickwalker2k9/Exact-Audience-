@@ -54,3 +54,5 @@ The local `/breeze-client` route is isolated from campaign navigation and presen
 The managed Breeze client credentials were validated against the local protected login endpoint. After the required acknowledgment and successful server-side credential check, the browser received an isolated HTTP-only client session and rendered the Breeze portal at `/breeze-client` without any campaign-directory navigation.
 
 The public Railway route `https://ea-dashboard-production.up.railway.app/breeze-client` was verified after commit `ff1e185` deployed. It renders the client acknowledgment screen and does not expose campaign navigation. Production credential validation remains pending until the active Railway service receives its server-side `BREEZE_CLIENT_USERNAME` and `BREEZE_CLIENT_PASSWORD` variables.
+
+Production credential verification completed after the Railway service variables were attached and commit `fc6a52c` deployed. The live `/breeze-client` route accepted the managed Breeze credentials after the required acknowledgment, created a protected session, and rendered only the isolated Breeze portal without campaign navigation.
