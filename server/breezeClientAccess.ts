@@ -11,8 +11,8 @@ function secureEquals(left: string, right: string) {
 }
 
 export function validateBreezeClientCredentials(username: string, password: string) {
-  const configuredUsername = process.env.BREEZE_CLIENT_USERNAME ?? "";
-  const configuredPassword = process.env.BREEZE_CLIENT_PASSWORD ?? "";
+  const configuredUsername = (process.env.BREEZE_CLIENT_USERNAME ?? "").trim();
+  const configuredPassword = (process.env.BREEZE_CLIENT_PASSWORD ?? "").trim();
   if (!configuredUsername || !configuredPassword) return false;
   return secureEquals(username.trim(), configuredUsername) && secureEquals(password, configuredPassword);
 }

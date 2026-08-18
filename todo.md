@@ -154,6 +154,10 @@
 - [x] Record Breeze client login time, latest activity, and calculated session duration in an owner-only access report.
 - [x] Show a brief Breeze client-portal notice that access activity may be logged for security and operational purposes.
 - [x] Require the Breeze client visitor to click a “Continue” acknowledgment before the protected login form becomes available.
+- [ ] Configure BREEZE_CLIENT_USERNAME and BREEZE_CLIENT_PASSWORD in the active Railway service, then verify the production client login.
+- [ ] Diagnose and correct the live Breeze client credential rejection after Railway variables are configured.
+- [ ] Ensure the two Breeze client credential variables are injected into the active Railway production deployment rather than remaining unattached to the running service.
+- [ ] Normalize accidental surrounding whitespace in Breeze client credential environment values before production comparison.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

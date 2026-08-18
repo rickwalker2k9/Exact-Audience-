@@ -38,6 +38,20 @@ describe("Breeze client credential validation", () => {
     expect((await appRouter.createCaller(statusContext).breezeClient.status()).authenticated).toBe(true);
   });
 
+  it("tolerates accidental surrounding whitespace in managed credential values", () => {
+    const originalUsername = process.env.BREEZE_CLIENT_USERNAME;
+    const originalPassword = process.env.BREEZE_CLIENT_PASSWORD;
+    process.env.BREEZE_CLIENT_USERNAME = ` ${originalUsername ?? "Breeze2026"} `;
+    process.env.BREEZE_CLIENT_PASSWORD = ` ${originalPassword ?? "JessBreeze2026"} `;
+
+    expect(validateBreezeClientCredentials((originalUsername ?? "Breeze2026").trim(), (originalPassword ?? "JessBreeze2026").trim())).toBe(true);
+
+    if (originalUsername === undefined) delete process.env.BREEZE_CLIENT_USERNAME;
+    else process.env.BREEZE_CLIENT_USERNAME = originalUsername;
+    if (originalPassword === undefined) delete process.env.BREEZE_CLIENT_PASSWORD;
+    else process.env.BREEZE_CLIENT_PASSWORD = originalPassword;
+  });
+
   it("creates opaque, hashable sessions with an eight-hour maximum lifetime", () => {
     const token = createBreezeClientSessionToken();
     expect(token).toHaveLength(43);
