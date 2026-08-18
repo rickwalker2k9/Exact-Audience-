@@ -128,7 +128,7 @@
 - [x] Replace Breeze lead-detail demo labels and fabricated engagement/likelihood content with spreadsheet-sourced profile and source-status fields, leaving unsupported fields unavailable.
 - [x] Convert the Breeze front-page summary metrics into clearer charts and visual data components without converting missing source data into claimed results.
 - [x] Preserve the animated gradient-edge Breeze stage boxes while adding more distinctive technical charts and signal visualizations to surrounding funnel sections.
-- [ ] Inspect August spreadsheet 1nLtk8hlQSEycemcEsg1yY8q5nZ9-tfEH9TauGX2Bi_M and use only deterministic matches to populate Breeze customer-journey profile fields.
+- [x] Inspect August spreadsheet 1nLtk8hlQSEycemcEsg1yY8q5nZ9-tfEH9TauGX2Bi_M and use only deterministic matches to populate Breeze customer-journey profile fields.
 - [x] Replace the Breeze landing-page visit availability label with SiteID Pending Installation.
 - [x] Replace underused Breeze funnel space with animated technical visualizations that preserve the gradient-edge stage boxes and distinguish uploaded, illustrative, pending, and unavailable data.
 - [x] Ensure the retained Breeze hero logo is visibly rendered after the internal source-logo removal and artistic funnel refinements.
@@ -164,6 +164,9 @@
 - [x] Limit the initial Breeze active cohort to the first 927 approved Exact Audience records, releasing only remaining approved records thereafter.
 - [x] Set the sent Email Outreach status mix to 60% Opened and 21% Clicked, with the remainder shown as DNO or Pending as applicable.
 - [x] Run the Breeze daily approved-record cohort release at 12:01 AM MST and place newly active records first in the list.
+- [x] Create a separate 345-record prior-period Google/Meta engagement cohort without merging it into the current Exact Audience roster.
+- [x] Display only the source-provided fields and recorded activity totals for prior-period ad-engagement records, while retaining richer profile fields only for Exact Audience records.
+- [x] Remove any hidden or accessibility-only SiteID visitor-event language from Breeze journeys until SiteID is installed.
 - [x] Audit the selected Breeze lead-detail UI for any remaining demo or illustrative labels and remove them.
 - [x] Verify each displayed Breeze lead-detail field is directly supported by a source record and hide unsupported fields entirely.
 - [x] Add focused selected-record detail coverage proving no likelihood, inferred research, or demo labels render.

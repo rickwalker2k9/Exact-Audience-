@@ -26,6 +26,6 @@ describe("SelectedAudienceJourney", () => {
     expect(screen.getByText("Phone")).toBeTruthy();
     expect(screen.queryByText("Email")).toBeNull();
     expect(screen.getByText("Channel and outreach status")).toBeTruthy();
-    expect(screen.queryByText(/likelihood|research|demo|illustrative/i)).toBeNull();
+    expect(screen.queryByText(/likelihood|research|demo|illustrative|SiteID/i)).toBeNull();
   });
 });

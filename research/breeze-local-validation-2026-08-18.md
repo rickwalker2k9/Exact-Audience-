@@ -62,3 +62,19 @@ Production credential verification completed after the Railway service variables
 The Breeze source view was updated to start with the first 927 approved Exact Audience records. The public Railway route was cache-bypassed after commit `301bd8e` deployed and showed the 927 active-record count in the source control, funnel stage, and Exact Audience panel. It showed **60% Opened** and **21% Clicked** for the active Email Outreach cohort, rendered the first 30 active records, and retained the progressive load control through the 927-record active roster.
 
 The source-backed map was filtered to the active cohort rather than the full approved population, presenting 919 valid-location records across 16 states. The deterministic release model adds 30 approved records at 12:01 AM MST and places newly active records first on the next dashboard read; it does not create records beyond the approved source pool.
+
+## Authorized August profile source and journey-sheet access
+
+The user-provided August Google Sheet at `https://docs.google.com/spreadsheets/d/1nLtk8hlQSEycemcEsg1yY8q5nZ9-tfEH9TauGX2Bi_M/export?format=csv` is publicly accessible. Its CSV contains 2,696 rows with the fields `FIRST NAME`, `LAST NAME`, `ADDRESS`, `CITY`, `ST`, `MOBILE`, `V EMAILS`, `AGE RANGE`, `GENDER`, `CHILDREN`, `HOMEOWNER`, and `INCOME RANGE`, providing an authorized profile-field source for deterministic match review.
+
+The user-provided journey activity sheet at `https://docs.google.com/spreadsheets/d/1ffr7pNRmd6eNASrsKszNtxG3ROymAC9ZlBhEsa3WEG8/export?format=csv` currently returns a Google sign-in page. Its per-person `Activities` counts must not be inferred or used until the sheet is shared or exported for authorized access.
+
+## Authorized journey activity source match result
+
+After the journey sheet was shared, its CSV was successfully retrieved with 345 activity rows. A deterministic comparison against the active 927-record Exact Audience cohort found **zero exact matches** on normalized phone, email, or first-name/last-name/city/state. Because no match key aligns to an active Breeze source record, no `Activity` total from this sheet will be displayed in the Breeze customer journeys. This avoids assigning activity counts to unrelated people.
+
+## Separate prior-period engagement cohort
+
+The 345 authorized journey rows are now treated as a distinct prior-period Google/Meta ad-engagement cohort rather than as Exact Audience records. Local portal verification showed the separate cohort panel loading the source-provided name, city/state, email/phone where supplied, and exact `Activity` total for each record, while the active Exact Audience table remains a separate 927-record view with richer source fields.
+
+The hidden SiteID visitor-event language was removed from the Breeze quote-flow accessibility content. The visible funnel retains only the SiteID Pending Installation stage and future visitor field categories; it does not present a SiteID visitor event in an individual customer journey.

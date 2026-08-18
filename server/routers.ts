@@ -10,6 +10,7 @@ import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBre
 import { parseBreezePixelCsv } from "./breezePixelImport";
 import { BREEZE_CLIENT_SESSION_COOKIE, BREEZE_CLIENT_SESSION_TTL_MS, createBreezeClientSessionToken, hashBreezeClientSessionToken, validateBreezeClientCredentials } from "./breezeClientAccess";
 import { BREEZE_RECORD_SOURCES } from "./breezeSourceRecords";
+import { getBreezePriorPeriodEngagementRecords } from "./breezePriorPeriodEngagement";
 import { TRPCError } from "@trpc/server";
 import { storagePut } from "./storage";
 import { z } from "zod";
@@ -230,6 +231,15 @@ export const appRouter = router({
           sourceLabel: record.sourceLabel,
           recordOrdinal: record.recordOrdinal,
         }));
+      }),
+    priorPeriodEngagement: publicProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(100).default(30), offset: z.number().int().min(0).max(1_000).default(0) }))
+      .query(async ({ input }) => {
+        const records = await getBreezePriorPeriodEngagementRecords();
+        return {
+          total: records.length,
+          records: records.slice(input.offset, input.offset + input.limit),
+        };
       }),
     audienceGeography: publicProcedure.query(async () => getBreezeExactAudienceGeography()),
     activeCohort: publicProcedure.query(async () => getBreezeActiveCohortStatus()),
