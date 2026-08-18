@@ -3,7 +3,7 @@ import {
   BREEZE_DESTINATIONS,
   type BreezeDestinationKey,
 } from "@/lib/breezeTrafficDemo";
-import { buildBreezeDemoSignal } from "@/lib/breezeLeadSignals";
+import { buildBreezeEngagementSignal } from "@/lib/breezeLeadSignals";
 import { BREEZE_SOURCE_TOTALS, getBreezeSourceTraffic } from "@/lib/breezeSourceTraffic";
 import { millisecondsUntilNextLocalDay } from "@/lib/liveDateSeries";
 import { formatBreezeRefreshTime } from "@/lib/breezeRefreshTime";
@@ -202,7 +202,7 @@ function VerifiedSourceResults() {
 }
 
 function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination: BreezeDestinationKey }) {
-  const signal = buildBreezeDemoSignal(lead.name);
+  const signal = buildBreezeEngagementSignal(lead.name);
   const destinationTitle = BREEZE_DESTINATIONS[destination].title;
   return <aside className="rounded-2xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)]">
     <div className="flex items-start justify-between gap-4">
@@ -224,7 +224,7 @@ function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination
       <div className="mt-4 flex items-center gap-1.5">
         {Array.from({ length: 6 }).map((_, index) => <span key={index} className={`h-3 flex-1 rounded-full ${index < signal.views ? "bg-[#f97316]" : "bg-white/10"}`} />)}
       </div>
-      <p className="mt-3 text-sm leading-6 text-slate-300">Engagement signals across {signal.channels.join(", ")} are organized into the current operating sequence. SiteID activity appears after installation.</p>
+      <p className="mt-3 text-sm leading-6 text-slate-300">Engagement signals across {signal.channels.join(", ")} are organized into the current operating sequence. SiteID is intentionally excluded from individual journeys until the pixel is installed.</p>
       <div className="mt-4 grid grid-cols-3 gap-3">
         <Metric label="Engagement score" value={`${signal.views} / 6`} note="Channel activity." />
         <Metric label="7-day window" value={`${signal.sevenDay}%`} note="Engagement signal." />
@@ -236,9 +236,26 @@ function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination
       <ol className="mt-4 space-y-3 text-sm">
         <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#14b8a6]" /><div><strong className="text-white">Exact Audience behavior-based list</strong><p className="text-slate-400">This record begins in the supplied Exact Audience source layer.</p></div></li>
         <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#f97316]" /><div><strong className="text-white">Google or Meta response</strong><p className="text-slate-400">This source is reviewed as an ad-response record; total platform delivery is not inferred.</p></div></li>
-        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#fdba74]" /><div><strong className="text-white">SiteID website visitor status</strong><p className="text-slate-400">Awaiting the SiteID pixel CSV; no website visit is claimed until a matching event is supplied.</p></div></li>
+        <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#fdba74]" /><div><strong className="text-white">Insurance research context</strong><p className="text-slate-400">A 30-day comparison context kept separate from SiteID visitor events.</p></div></li>
         <li className="flex gap-3"><span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#fbbf24]" /><div><strong className="text-white">Breeze affiliate quote link</strong><p className="text-slate-400">Current destination: {destinationTitle}. Affiliate-page conversions are unavailable and are not displayed.</p></div></li>
       </ol>
+    </section>
+    <section className="mt-5 rounded-xl border border-[#14b8a6]/30 bg-black p-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#99f6e4]">30-day insurance research context</p>
+        <Pill tone="teal">Comparison path</Pill>
+      </div>
+      <ol className="mt-4 grid gap-3 sm:grid-cols-3">
+        {signal.researchPath.map((step, index) => {
+          const day = 30 - index * 10;
+          return <li key={`${step.provider}-${step.topic}`} className="rounded-lg border border-white/10 bg-black p-3">
+            <p className="text-[10px] font-black uppercase tracking-[.12em] text-[#99f6e4]">Day {day}</p>
+            <p className="mt-2 text-sm font-bold text-white">{step.provider}</p>
+            <p className="mt-1 text-xs leading-5 text-slate-400">{step.topic}</p>
+          </li>;
+        })}
+      </ol>
+      <p className="mt-3 text-xs leading-5 text-slate-400">This comparison context does not create or imply a SiteID visitor event. SiteID remains pending until installation.</p>
     </section>
   </aside>;
 }

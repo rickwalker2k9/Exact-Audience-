@@ -18,3 +18,11 @@ The local `/breeze-insurance` route was reviewed after the current operating-por
 - Vitest: 47 tests passed.
 - TypeScript: `npx tsc --noEmit` passed.
 - Production build: `pnpm build` passed.
+
+## Public deployment status
+
+Two initial checks of the Railway `/breeze-insurance` route immediately after the `e7acefe` GitHub push still returned the preceding build. A cache-bypassed check at `/breeze-insurance?release=e7acefe` subsequently confirmed the deployed revision: the old client-facing terminology and the removed lower panels were absent; the new channel-monitoring, engagement-allocation, Data/Engagement/Outreach/SiteID/Destination funnel language, and revised quote flow were present. The public route continued to render the Breeze logo-only hero, 2,696 Exact Audience records, 112 Google engagement records, 238 Meta engagement records, and SiteID Pending Installation.
+
+## Selected-record journey validation
+
+The local Exact Audience activity table now exposes a **View journey** control for each displayed source record. Selecting Megan Henggeler rendered only source-record fields that were present (age range, income range, and email); no phone number was invented. The selected journey showed the corresponding Google, Meta, and Email Outreach states, its engagement windows, and a three-step 30-day comparison path (Northwestern Mutual, The Standard, and PolicyGenius). It explicitly kept that context separate from SiteID, and no SiteID visitor event appeared in the individual journey.
