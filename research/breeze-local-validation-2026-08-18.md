@@ -56,3 +56,9 @@ The managed Breeze client credentials were validated against the local protected
 The public Railway route `https://ea-dashboard-production.up.railway.app/breeze-client` was verified after commit `ff1e185` deployed. It renders the client acknowledgment screen and does not expose campaign navigation. Production credential validation remains pending until the active Railway service receives its server-side `BREEZE_CLIENT_USERNAME` and `BREEZE_CLIENT_PASSWORD` variables.
 
 Production credential verification completed after the Railway service variables were attached and commit `fc6a52c` deployed. The live `/breeze-client` route accepted the managed Breeze credentials after the required acknowledgment, created a protected session, and rendered only the isolated Breeze portal without campaign navigation.
+
+## Active 927-contact cohort and daily release
+
+The Breeze source view was updated to start with the first 927 approved Exact Audience records. The public Railway route was cache-bypassed after commit `301bd8e` deployed and showed the 927 active-record count in the source control, funnel stage, and Exact Audience panel. It showed **60% Opened** and **21% Clicked** for the active Email Outreach cohort, rendered the first 30 active records, and retained the progressive load control through the 927-record active roster.
+
+The source-backed map was filtered to the active cohort rather than the full approved population, presenting 919 valid-location records across 16 states. The deterministic release model adds 30 approved records at 12:01 AM MST and places newly active records first on the next dashboard read; it does not create records beyond the approved source pool.
