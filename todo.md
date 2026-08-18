@@ -126,7 +126,7 @@
 - [x] Remove SiteID visit events from individual Breeze lead journeys until the SiteID pixel is installed and a visitor export is supplied.
 - [x] Add varied, clearly illustrative 30-day insurance-research paths across MassMutual, Ethos, PolicyGenius, and additional disability/income-protection comparison sites without changing uploaded identity or profile fields.
 - [ ] Replace Breeze lead-detail demo labels and fabricated engagement/likelihood content with spreadsheet-sourced profile and source-status fields, leaving unsupported fields unavailable.
-- [ ] Convert the Breeze front-page summary metrics into clearer charts and visual data components without converting missing source data into claimed results.
+- [x] Convert the Breeze front-page summary metrics into clearer charts and visual data components without converting missing source data into claimed results.
 - [x] Preserve the animated gradient-edge Breeze stage boxes while adding more distinctive technical charts and signal visualizations to surrounding funnel sections.
 - [ ] Inspect August spreadsheet 1nLtk8hlQSEycemcEsg1yY8q5nZ9-tfEH9TauGX2Bi_M and use only deterministic matches to populate Breeze customer-journey profile fields.
 - [x] Replace the Breeze landing-page visit availability label with SiteID Pending Installation.
