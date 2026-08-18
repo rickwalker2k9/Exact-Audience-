@@ -4,8 +4,8 @@ type BreezeFormFillWorkflowProps = {
   leadName: string;
 };
 
-function demoAlias(name: string) {
-  return `${name.toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\.|\.$/g, "")}.demo@breeze-review.local`;
+function contactAlias(name: string) {
+  return `${name.toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\.|\.$/g, "")}.breeze-review.local`;
 }
 
 export function BreezeFormFillWorkflow({ leadName }: BreezeFormFillWorkflowProps) {
@@ -31,14 +31,14 @@ export function BreezeFormFillWorkflow({ leadName }: BreezeFormFillWorkflowProps
 
       {step === 1 && (
         <div className="mt-4 space-y-3 text-sm text-slate-300">
-          <p>Prepare a local demo contact pair. This creates no real inbox or phone number and sends nothing externally.</p>
+          <p>Prepare a contact profile for the staged Breeze review workflow. No external message or form submission is triggered.</p>
           {contactPrepared ? (
             <div className="rounded-lg border border-[#14b8a6]/35 bg-black p-3 text-xs text-[#ccfbf1]">
-              <p><strong>Demo email placeholder:</strong> {demoAlias(leadName)}</p>
-              <p className="mt-1"><strong>Demo phone placeholder:</strong> Reserved for activation</p>
+              <p><strong>Contact email:</strong> {contactAlias(leadName)}</p>
+              <p className="mt-1"><strong>Contact phone:</strong> Reserved for activation</p>
             </div>
           ) : (
-            <button type="button" onClick={() => setContactPrepared(true)} className="rounded-lg bg-[#14b8a6] px-3 py-2 text-xs font-bold text-black">Create demo contact pair</button>
+            <button type="button" onClick={() => setContactPrepared(true)} className="rounded-lg bg-[#14b8a6] px-3 py-2 text-xs font-bold text-black">Prepare contact profile</button>
           )}
         </div>
       )}
@@ -55,7 +55,7 @@ export function BreezeFormFillWorkflow({ leadName }: BreezeFormFillWorkflowProps
       {step === 3 && (
         <div className="mt-4 space-y-3 text-sm text-slate-300">
           <p>Review consent before any live contact or external form workflow is activated.</p>
-          <label className="flex items-start gap-2"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} className="mt-1" /> <span>I confirm this is a staged demo only and no contact or form submission will be made.</span></label>
+          <label className="flex items-start gap-2"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} className="mt-1" /> <span>I confirm this is a staged review and no contact or form submission will be made.</span></label>
         </div>
       )}
 

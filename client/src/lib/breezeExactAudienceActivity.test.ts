@@ -20,4 +20,11 @@ describe("Exact Audience illustrative activity", () => {
     const signals = Array.from({ length: EXACT_AUDIENCE_DEMO_TOTAL }, (_, index) => getExactAudienceDemoActivity(index + 1));
     expect(signals.some(signal => signal.googleAdSeen && signal.metaAdSeen)).toBe(true);
   });
+
+  it("emphasizes opened and clicked Email Outreach states within the sent activity set", () => {
+    const signals = Array.from({ length: EXACT_AUDIENCE_DEMO_TOTAL }, (_, index) => getExactAudienceDemoActivity(index + 1));
+    const engaged = signals.filter(signal => signal.emailStatus === "Opened" || signal.emailStatus === "Clicked");
+    expect(engaged).toHaveLength(224);
+    expect(engaged.length / EXACT_AUDIENCE_EMAIL_SENT_COUNT).toBeGreaterThan(0.85);
+  });
 });

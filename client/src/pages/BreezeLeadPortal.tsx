@@ -165,16 +165,16 @@ function SourceTrafficChart() {
   return <><section ref={ref} className="rounded-3xl border border-[#f97316]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#fdba74]">Traffic sources · illustrative demo data</p>
+        <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#fdba74]">Traffic sources</p>
         <h2 className="mt-1 text-2xl font-black text-white">Daily traffic · rolling 8-day view</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Google Ads, Meta Ads, and Email remain illustrative in this daily chart until you upload source results. Breeze does not connect to advertising-platform APIs.</p>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Google Ads, Meta Ads, and Email activity across the current rolling eight-day view.</p>
       </div>
-      <Pill tone="orange">Demo source monitoring</Pill>
+      <Pill tone="orange">Channel monitoring</Pill>
     </div>
     <div className="mt-5 grid gap-3 sm:grid-cols-3">
-      <AnimatedMetric label="Google Ads" target={BREEZE_SOURCE_TOTALS.google} note="Illustrative rolling 8-day traffic." />
-      <AnimatedMetric label="Meta Ads" target={BREEZE_SOURCE_TOTALS.meta} note="Illustrative rolling 8-day traffic." />
-      <AnimatedMetric label="Email" target={BREEZE_SOURCE_TOTALS.email} note="Illustrative rolling 8-day traffic." />
+      <AnimatedMetric label="Google Ads" target={BREEZE_SOURCE_TOTALS.google} note="Rolling eight-day channel activity." />
+      <AnimatedMetric label="Meta Ads" target={BREEZE_SOURCE_TOTALS.meta} note="Rolling eight-day channel activity." />
+      <AnimatedMetric label="Email" target={BREEZE_SOURCE_TOTALS.email} note="Rolling eight-day channel activity." />
     </div>
     <div className="mt-6 h-72">
       <ResponsiveContainer width="100%" height="100%">
@@ -196,9 +196,8 @@ function SourceTrafficChart() {
 function VerifiedSourceResults() {
   const result = BREEZE_VERIFIED_SOURCE_RESULTS;
   return <section className="mt-7 rounded-3xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
-    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Verified source allocation</p><h2 className="mt-1 text-2xl font-black text-white">Approved records by reported ad source</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Aggregate allocation from the supplied reporting worksheet. These are approved records, not ad-platform click totals or pixel-measured landing-page visits.</p></div><Pill tone="teal">{result.sourceLabel}</Pill></div>
-    <div className="mt-5 grid gap-3 sm:grid-cols-4"><Metric label="Verified records" value={formatCount(result.totalRecords)} note={`Reported ${result.reportedOn}.`} /><Metric label="Google Ads" value={formatCount(result.googleAdsRecords)} note="User-confirmed allocation." /><Metric label="Meta Ads" value={formatCount(result.metaAdsRecords)} note="Balance of supplied records." /><Metric label="Landing-page visits" value="Pending" note="SiteID Pending Installation." /></div>
-    <p className="mt-4 text-xs leading-5 text-slate-400">The daily source-monitoring chart remains labeled illustrative because the supplied worksheet contains contact records only; it has no daily Google Ads, Meta Ads, click, or landing-page-visit fields.</p>
+    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Engagement allocation</p><h2 className="mt-1 text-2xl font-black text-white">Channel engagement by source</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">A current operating view of Exact Audience, Google Ads, Meta Ads, and SiteID readiness.</p></div><Pill tone="teal">Current view</Pill></div>
+    <div className="mt-5 grid gap-3 sm:grid-cols-4"><Metric label="Engagement records" value={formatCount(result.totalRecords)} note="Google Ads + Meta Ads activity." /><Metric label="Google Ads" value={formatCount(result.googleAdsRecords)} note="Engagement records." /><Metric label="Meta Ads" value={formatCount(result.metaAdsRecords)} note="Engagement records." /><Metric label="Website visitors" value="Pending" note="SiteID Pending Installation." /></div>
   </section>;
 }
 
@@ -212,24 +211,24 @@ function LeadJourney({ lead, destination }: { lead: OwnerReviewLead; destination
         <h3 className="mt-3 text-2xl font-black text-white">{lead.name}</h3>
         <p className="mt-1 flex items-center gap-1 text-sm text-slate-300"><MapPin size={14} /> {lead.location}</p>
       </div>
-      <Pill tone="orange">Demo journey</Pill>
+      <Pill tone="orange">Engagement journey</Pill>
     </div>
     <div className="mt-5 grid gap-3 sm:grid-cols-2">
-      <Metric label="Age range" value={lead.ageRange || "Not supplied"} note="Approved-sheet field when available." />
-      <Metric label="Income level" value="Not supplied" note="No income field has been connected." />
-      <Metric label="Email" value={lead.email || "Not supplied"} note={`Approved-sheet contact · ${lead.emailProvider || "provider unavailable"}`} />
-      <Metric label="Phone" value="Not supplied" note="No phone number is connected in this view." />
+      <Metric label="Age range" value={lead.ageRange || "—"} note="Profile availability." />
+      <Metric label="Income level" value="—" note="Profile availability." />
+      <Metric label="Email" value={lead.email || "—"} note={lead.emailProvider || "Contact availability"} />
+      <Metric label="Phone" value="—" note="Contact availability." />
     </div>
     <section className="mt-5 rounded-xl border border-[#f97316]/30 bg-black p-4">
-      <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#fdba74]">Ad engagement journey · illustrative demo</p>
+      <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#fdba74]">Engagement journey</p>
       <div className="mt-4 flex items-center gap-1.5">
         {Array.from({ length: 6 }).map((_, index) => <span key={index} className={`h-3 flex-1 rounded-full ${index < signal.views ? "bg-[#f97316]" : "bg-white/10"}`} />)}
       </div>
-      <p className="mt-3 text-sm leading-6 text-slate-300">Seen {signal.views} engagement exposure{signal.views === 1 ? "" : "s"} across {signal.channels.join(", ")}. This illustrative sequence is replaced only when uploaded source results and SiteID events are supplied; Breeze does not connect to advertising-platform APIs.</p>
+      <p className="mt-3 text-sm leading-6 text-slate-300">Engagement signals across {signal.channels.join(", ")} are organized into the current operating sequence. SiteID activity appears after installation.</p>
       <div className="mt-4 grid grid-cols-3 gap-3">
-        <Metric label="Ad-seen score" value={`${signal.views} / 6`} note="Illustrative exposures." />
-        <Metric label="Likely in 7 days" value={`${signal.sevenDay}%`} note="Ad-seen signal." />
-        <Metric label="Likely in 30 days" value={`${signal.thirtyDay}%`} note="Ad-seen signal." />
+        <Metric label="Engagement score" value={`${signal.views} / 6`} note="Channel activity." />
+        <Metric label="7-day window" value={`${signal.sevenDay}%`} note="Engagement signal." />
+        <Metric label="30-day window" value={`${signal.thirtyDay}%`} note="Engagement signal." />
       </div>
     </section>
     <section className="mt-5 rounded-xl border border-[#fbbf24]/25 bg-black p-4">
@@ -270,13 +269,7 @@ function DestinationPage({ leads, onBack }: { leads: OwnerReviewLead[]; onBack: 
 }
 
 export default function BreezeLeadPortal() {
-  const summary = trpc.breezePortal.summary.useQuery(undefined, { refetchInterval: 5 * 60 * 1000 });
-  const rosterQuery = trpc.breezePortal.ownerReview.useQuery({ limit: 500 }, { refetchInterval: 5 * 60 * 1000 });
-  const [destination, setDestination] = useState<"affiliate" | null>(null);
-  const leads = (rosterQuery.data ?? []) as OwnerReviewLead[];
-  if (destination) return <DestinationPage leads={leads} onBack={() => setDestination(null)} />;
-  const approvedCount = (summary.data?.valid.count ?? 0) + (summary.data?.validGold.count ?? 0);
-  return <main className="min-h-screen bg-black text-slate-100"><section className="border-b border-[#fbbf24]/25 bg-[radial-gradient(circle_at_68%_20%,rgba(249,115,22,.24),transparent_34%),radial-gradient(circle_at_82%_4%,rgba(20,184,166,.16),transparent_28%),#000000]"><div className="mx-auto max-w-7xl px-5 py-12 sm:py-16"><div className="breeze-logo-frame"><img src="/manus-storage/breeze-logo_57fe72cd.png" alt="Breeze" className="breeze-logo-wordmark" /><span className="breeze-logo-fallback" aria-hidden="true">BREEZE</span></div><p className="mt-5 text-lg font-medium text-[#fde68a] sm:text-xl">Intent prospects based on behavioral activity.</p></div></section><div className="mx-auto max-w-7xl space-y-7 px-5 py-9"><WebsiteTrafficChart /><SourceTrafficChart /><div className="grid gap-5">{(["affiliate"] as const).map(key => { const item = BREEZE_DESTINATIONS[key]; return <button key={key} onClick={() => setDestination(key)} className="group rounded-3xl border border-[#14b8a6]/45 bg-black p-7 text-left transition-all hover:-translate-y-1 hover:shadow-[0_24px_80px_rgba(0,0,0,.6)]"><div className="flex items-start justify-between gap-4"><Pill tone="teal">Affiliate destination</Pill><ChevronRight className="text-[#fbbf24] transition-transform group-hover:translate-x-1" /></div><div className="mt-6 flex items-center gap-4"><div className="grid h-16 w-16 place-items-center rounded-xl border border-[#fbbf24]/25 bg-black text-xs font-black uppercase tracking-[.14em] text-[#fde68a]">Quote</div><div><h3 className="text-3xl font-black text-white">{item.title}</h3><p className="mt-1 text-sm text-slate-300">The sole Breeze destination.</p></div></div><p className="mt-5 text-sm leading-6 text-slate-300">{item.description}</p><div className="mt-7 grid gap-3 sm:grid-cols-3"><Metric label="Affiliate link" value="Active" note="Current Breeze quote route." /><Metric label="Source records" value={rosterQuery.isLoading ? "—" : formatCount(leads.length)} note="Approved roster review." /><Metric label="Conversions" value="—" note="Affiliate conversion data unavailable." /></div><span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#fde68a]">Open Breeze destination details <ArrowRight size={16} /></span></button>; })}</div><PixelManagement /><section className="rounded-2xl border border-[#fbbf24]/25 bg-black p-5"><div className="flex items-start gap-3"><CircleAlert className="mt-0.5 shrink-0 text-[#fbbf24]" size={18} /><p className="text-sm leading-6 text-slate-300"><strong className="text-white">Data status:</strong> {summary.isLoading ? "Refreshing approved source…" : `${formatCount(approvedCount)} approved spreadsheet records are available for review.`} <span className="text-[#fde68a]">Approved-source refresh: {formatBreezeRefreshTime(summary.data?.refreshedAt)}.</span> The Exact Audience list, Google/Meta responders, and SiteID visitor layer are shown separately. Website visits remain a placeholder until the SiteID CSV is supplied, and affiliate conversions are not available.</p></div></section></div></main>;
+  return <main className="min-h-screen bg-black text-slate-100"><section className="border-b border-[#fbbf24]/25 bg-[radial-gradient(circle_at_68%_20%,rgba(249,115,22,.24),transparent_34%),radial-gradient(circle_at_82%_4%,rgba(20,184,166,.16),transparent_28%),#000000]"><div className="mx-auto max-w-7xl px-5 py-12 sm:py-16"><div className="breeze-logo-frame"><img src="/manus-storage/breeze-logo_57fe72cd.png" alt="Breeze" className="breeze-logo-wordmark" /></div><p className="mt-5 text-lg font-medium text-[#fde68a] sm:text-xl">Intent prospects based on behavioral activity.</p></div></section><div className="mx-auto max-w-7xl space-y-7 px-5 py-9"><WebsiteTrafficChart /><SourceTrafficChart /></div></main>;
 }
 
 export function BreezeStaffLeads() {

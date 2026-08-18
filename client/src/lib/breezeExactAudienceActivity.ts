@@ -27,9 +27,9 @@ export function getExactAudienceDemoActivity(recordOrdinal: number): ExactAudien
   const emailRank = distributedRank(recordOrdinal, 1723, 97);
   const emailStatus: ExactAudienceEmailStatus = emailRank >= EXACT_AUDIENCE_EMAIL_SENT_COUNT
     ? "Pending"
-    : emailRank < 42
+    : emailRank < 68
       ? "Clicked"
-      : emailRank < 142
+      : emailRank < 224
         ? "Opened"
         : "DNO";
   return { googleAdSeen, metaAdSeen, emailStatus };

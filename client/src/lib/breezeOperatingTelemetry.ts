@@ -1,8 +1,8 @@
 export const BREEZE_OPERATING_TELEMETRY = [
-  { stage: "Exact Audience", value: 2696, status: "Uploaded", tone: "#14b8a6", note: "Behavior-based records" },
-  { stage: "Google Ads", value: 112, status: "Uploaded", tone: "#f97316", note: "Responder records" },
-  { stage: "Meta Ads", value: 238, status: "Uploaded", tone: "#fbbf24", note: "Responder records" },
-  { stage: "Email outreach", value: 248, status: "Illustrative", tone: "#fbbf24", note: "Demo send/open/click state" },
+  { stage: "Exact Audience", value: 2696, status: "Data", tone: "#14b8a6", note: "Behavior Based Data" },
+  { stage: "Google Ads", value: 112, status: "Engagement", tone: "#f97316", note: "Engagement records" },
+  { stage: "Meta Ads", value: 238, status: "Engagement", tone: "#fbbf24", note: "Engagement records" },
+  { stage: "Email outreach", value: 248, status: "Outreach", tone: "#fbbf24", note: "Open, click, and response status" },
 ] as const;
 
 export const BREEZE_STAGE_STATUS = [

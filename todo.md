@@ -136,6 +136,14 @@
 - [ ] Generate varied demo activity descriptions only after applying the exact per-person Activities count from the journey spreadsheet; do not exceed that count.
 - [x] Remove the added Breeze hero text fallback and retain only the supplied Breeze logo treatment.
 - [x] Animate the initial Breeze graph on page load and count up visible metrics as their sections enter the viewport, with reduced-motion support and preserved data-source labels.
+- [x] Remove client-facing references to uploads, spreadsheets, and intake files from Breeze; use seamless Exact Audience Data and channel-status language instead.
+- [ ] Replace the decorative Exact Audience field-map filler with a source-backed U.S. prospect-distribution map using actual city/state coverage.
+- [ ] Audit all retained Breeze charts and metrics so each has purposeful, accessible in-view motion or is removed if it lacks decision value.
+- [x] Replace the channel-response trace sweep with in-view Google/Meta bar growth, count-up values, subtle completed-line pulses, and seamless Exact Audience data language.
+- [x] Remove all client-facing references to illustrative, demo activity, and related intake/disclaimer wording from Breeze.
+- [x] Transform the Breeze destination-and-journey area into an animated ad-to-quote flow with a stronger sunset-orange-to-gold-to-teal signal path and accurate SiteID-pending/conversion-unavailable states.
+- [x] Remove the low-value Affiliate Destination, Pixel Management, and Data Status bottom sections from the client-facing Breeze home page.
+- [x] Increase the visible Email Outreach open-and-click share within the current 248 outreach records.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
