@@ -1,11 +1,11 @@
-import { desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { asc, sql } from "drizzle-orm";
 import { BreezeClientSession, BreezeLeadProgress, BreezePixelConfiguration, BreezeSourceRecord, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeClientSessions, breezeLeadProgress, breezeImportSources, breezePixelConfigurations, breezeSourceRecords } from "../drizzle/schema";
 import { ENV } from './_core/env';
 import { createBreezeSourceRecordKey, summarizeExactAudienceGeography } from "./breezeSourceRecords";
 import { parseBreezeSourceSeed } from "./breezeSourceSeed";
 import { storageGetSignedUrl } from "./storage";
+import { getBreezeActiveCohortCount, getBreezeCohortStatus } from "@shared/breezeCohort";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let breezeSourceSeedPromise: Promise<void> | null = null;
@@ -321,12 +321,16 @@ async function seedBreezeSourceRecordsIfEmpty() {
 }
 
 export async function getBreezeSourceRecords(input: { source: string; limit: number; offset: number }) {
+  const activeCohortCount = getBreezeActiveCohortCount();
   const db = await getDb();
   if (!db) {
     try {
       const seedRecords = await loadBreezeSourceSeedRecords();
-      return seedRecords
+      const filtered = seedRecords
         .filter(record => record.source === input.source)
+        .filter(record => record.source !== "exact-audience" || record.recordOrdinal <= activeCohortCount)
+        .sort((left, right) => input.source === "exact-audience" ? right.recordOrdinal - left.recordOrdinal : left.recordOrdinal - right.recordOrdinal);
+      return filtered
         .slice(input.offset, input.offset + input.limit)
         .map((record, index) => ({
           id: -(input.offset + index + 1),
@@ -344,18 +348,27 @@ export async function getBreezeSourceRecords(input: { source: string; limit: num
   } catch (error) {
     console.error("[Breeze] Source-record seed unavailable:", error);
   }
+  const where = input.source === "exact-audience"
+    ? and(eq(breezeSourceRecords.source, input.source), lte(breezeSourceRecords.recordOrdinal, activeCohortCount))
+    : eq(breezeSourceRecords.source, input.source);
   return db.select().from(breezeSourceRecords)
-    .where(eq(breezeSourceRecords.source, input.source))
-    .orderBy(asc(breezeSourceRecords.recordOrdinal))
+    .where(where)
+    .orderBy(input.source === "exact-audience" ? desc(breezeSourceRecords.recordOrdinal) : asc(breezeSourceRecords.recordOrdinal))
     .limit(input.limit)
     .offset(input.offset);
 }
 
+export async function getBreezeActiveCohortStatus() {
+  return getBreezeCohortStatus();
+}
+
 export async function getBreezeExactAudienceGeography() {
+  const activeCohortCount = getBreezeActiveCohortCount();
   const db = await getDb();
   if (!db) {
     try {
-      return summarizeExactAudienceGeography(await loadBreezeSourceSeedRecords());
+      return summarizeExactAudienceGeography((await loadBreezeSourceSeedRecords())
+        .filter(record => record.source !== "exact-audience" || record.recordOrdinal <= activeCohortCount));
     } catch (error) {
       console.error("[Breeze] In-memory geography seed unavailable:", error);
       return summarizeExactAudienceGeography([]);
@@ -368,7 +381,10 @@ export async function getBreezeExactAudienceGeography() {
       source: breezeSourceRecords.source,
       city: breezeSourceRecords.city,
       state: breezeSourceRecords.state,
-    }).from(breezeSourceRecords).where(eq(breezeSourceRecords.source, "exact-audience"));
+    }).from(breezeSourceRecords).where(and(
+      eq(breezeSourceRecords.source, "exact-audience"),
+      lte(breezeSourceRecords.recordOrdinal, activeCohortCount),
+    ));
     return summarizeExactAudienceGeography(records);
   } catch (error) {
     console.error("[Breeze] Geographic aggregation unavailable:", error);

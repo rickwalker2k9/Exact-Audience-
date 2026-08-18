@@ -147,7 +147,7 @@
 - [x] Show each lead's deterministic insurance-research context as an explicit 30-day sequence in the Breeze lead detail.
 - [x] Keep insurance-research context separate from SiteID visitor results and avoid presenting it as a confirmed Breeze-site visit before SiteID installation.
 - [x] Add a small Breeze footer copyright: “Copyright 2026 Exact Audience AI, a service of Imagine Agency LLC. All rights reserved.”
-- [ ] Increase visible Email Outreach opens by approximately 50% and clicks by approximately 17% within the fixed 248-record outreach total.
+- [x] Increase visible Email Outreach opens by approximately 50% and clicks by approximately 17% within the fixed 248-record outreach total.
 - [x] Create a separate Breeze-only client link that does not expose campaign navigation or other client dashboards.
 - [x] Add owner-controlled Breeze client credentials and a read-only session that cannot modify the username or password.
 - [x] Notify the project owner whenever the Breeze client credentials are successfully used to access the protected portal.
@@ -158,6 +158,12 @@
 - [x] Diagnose and correct the live Breeze client credential rejection after Railway variables are configured.
 - [x] Ensure the two Breeze client credential variables are injected into the active Railway production deployment rather than remaining unattached to the running service.
 - [x] Normalize accidental surrounding whitespace in Breeze client credential environment values before production comparison.
+- [x] Confirm and apply the requested Email Outreach open and click percentage targets within the defined sent-record population.
+- [x] Start the Breeze operating roster with only the approved 927 active Exact Audience contacts from August 7.
+- [x] Add a source-backed daily Breeze refresh workflow that introduces only newly approved contact records over time.
+- [x] Limit the initial Breeze active cohort to the first 927 approved Exact Audience records, releasing only remaining approved records thereafter.
+- [x] Set the sent Email Outreach status mix to 60% Opened and 21% Clicked, with the remainder shown as DNO or Pending as applicable.
+- [x] Run the Breeze daily approved-record cohort release at 12:01 AM MST and place newly active records first in the list.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

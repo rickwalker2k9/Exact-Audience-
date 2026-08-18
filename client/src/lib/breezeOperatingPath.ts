@@ -15,7 +15,8 @@ export type BreezeOperatingPathStage = {
 export const BREEZE_OPERATING_PATH: BreezeOperatingPathStage[] = [
   { id: "audience", order: 1, label: "Exact Audience list", value: "2,696", status: "Uploaded behavior-based records", sourceType: "uploaded" },
   { id: "responders", order: 2, label: "Google + Meta responders", value: "350", status: "112 Google + 238 Meta uploaded records", sourceType: "uploaded" },
-  { id: "email", order: 3, label: "Email outreach", value: "248", status: "Illustrative sent/open/click state", sourceType: "illustrative" },
+  { id: "email", order: 3, label: "Email outreach", value: String(BREEZE_INITIAL_ACTIVE_COHORT), status: "60% opened · 21% clicked across active outreach", sourceType: "illustrative" },
   { id: "website", order: 4, label: "Website visitors", value: "Pending", status: "Pending SiteID installation; visitor categories populate after installation", sourceType: "awaiting" },
   { id: "destination", order: 5, label: "Breeze affiliate quote", value: "Active", status: "Destination active; conversions unavailable", sourceType: "available" },
 ];
+import { BREEZE_INITIAL_ACTIVE_COHORT } from "@shared/breezeCohort";

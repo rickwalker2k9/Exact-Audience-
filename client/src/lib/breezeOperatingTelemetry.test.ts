@@ -1,11 +1,13 @@
 import { BREEZE_OPERATING_TELEMETRY, BREEZE_STAGE_STATUS } from "./breezeOperatingTelemetry";
 import { describe, expect, it } from "vitest";
+import { BREEZE_INITIAL_ACTIVE_COHORT } from "@shared/breezeCohort";
 
 describe("Breeze operating telemetry", () => {
   it("keeps channel engagement and email outreach as distinct operating stages", () => {
     expect(BREEZE_OPERATING_TELEMETRY.find(item => item.stage === "Google Ads")?.value).toBe(112);
     expect(BREEZE_OPERATING_TELEMETRY.find(item => item.stage === "Meta Ads")?.value).toBe(238);
     expect(BREEZE_OPERATING_TELEMETRY.find(item => item.stage === "Email outreach")?.status).toBe("Outreach");
+    expect(BREEZE_OPERATING_TELEMETRY.find(item => item.stage === "Email outreach")?.value).toBe(BREEZE_INITIAL_ACTIVE_COHORT);
   });
 
   it("represents SiteID and affiliate as operating statuses rather than conversion metrics", () => {
