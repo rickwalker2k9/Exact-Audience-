@@ -47,3 +47,5 @@ Local verification of the animation and source-logo refinement: the Breeze funne
 Initial public check after the animated-funnel GitHub push: Railway was still serving the preceding source-logo revision. The local build had passed; a later public retry is required before marking the deployment complete.
 
 Successful public retry: the public Breeze route now shows text-only EA, G, and M source controls with no internal Google, Meta, or Exact Audience image logos. It includes the animated Current operating path language, relative-stage-volume section, pending SiteID stage, and text-only affiliate-quote action; the Breeze hero logo remains in place.
+
+Local visual review of the next artistic refinement: the Exact Audience panel renders an animated field-map treatment, while the Google/Meta section renders an animated channel-response trace. The preserved gradient-edge stage cards, source telemetry chart, and status matrix distinguish uploaded counts from illustrative email activity, pending SiteID installation, and unavailable affiliate conversion results.

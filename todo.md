@@ -123,6 +123,14 @@
 - [x] Label the fourth Breeze funnel layer Pending SiteID Installation and show its future visitor-data categories without displaying visitor results.
 - [x] Add a more animated, chart-driven visualization to the Behavior-based list to affiliate quote flow section, with clear stage motion and responsive status treatments.
 - [x] Add compact visual charts for uploaded Exact Audience and Google/Meta counts, illustrative Email Outreach activity, Pending SiteID installation, and the active affiliate destination without implying unavailable results.
+- [ ] Remove SiteID visit events from individual Breeze lead journeys until the SiteID pixel is installed and a visitor export is supplied.
+- [ ] Add varied, clearly illustrative 30-day insurance-research paths across MassMutual, Ethos, PolicyGenius, and additional disability/income-protection comparison sites without changing uploaded identity or profile fields.
+- [ ] Replace Breeze lead-detail demo labels and fabricated engagement/likelihood content with spreadsheet-sourced profile and source-status fields, leaving unsupported fields unavailable.
+- [ ] Convert the Breeze front-page summary metrics into clearer charts and visual data components without converting missing source data into claimed results.
+- [ ] Preserve the animated gradient-edge Breeze stage boxes while adding more distinctive technical charts and signal visualizations to surrounding funnel sections.
+- [ ] Inspect August spreadsheet 1nLtk8hlQSEycemcEsg1yY8q5nZ9-tfEH9TauGX2Bi_M and use only deterministic matches to populate Breeze customer-journey profile fields.
+- [ ] Replace the Breeze landing-page visit availability label with SiteID Pending Installation.
+- [ ] Replace underused Breeze funnel space with animated technical visualizations that preserve the gradient-edge stage boxes and distinguish uploaded, illustrative, pending, and unavailable data.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
