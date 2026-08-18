@@ -36,3 +36,7 @@ The decorative field-coverage visual was replaced locally with an interactive U.
 Selecting Michigan in the local state grid updated the panel to **MI · 210 records**, with the mapped source cities Detroit (14), Grand Rapids (9), Ypsilanti (6), and Grosse Pointe (5). The map control is keyboard-addressable and does not display individual contact data.
 
 The public Railway route was verified after commit `c45c3be` deployed. After its initial loading state, it rendered the source-backed map with the same 2,668-record / 16-state summary and selected Florida detail. The public view also retained the Exact Audience activity table, selectable lead journeys, SiteID Pending Installation layer, and Breeze affiliate quote flow.
+
+## Motion audit
+
+The retained Similarweb area chart now enters from a zero baseline with its supporting metrics counting up on entry. The rolling eight-day Google, Meta, and Email line chart now follows the same viewport-triggered baseline reveal, with staggered channel traces. The engagement-allocation totals count up when that section enters the viewport. Reduced-motion preference bypasses the nonessential chart animation while keeping final values visible.

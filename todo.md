@@ -138,7 +138,7 @@
 - [x] Animate the initial Breeze graph on page load and count up visible metrics as their sections enter the viewport, with reduced-motion support and preserved data-source labels.
 - [x] Remove client-facing references to uploads, spreadsheets, and intake files from Breeze; use seamless Exact Audience Data and channel-status language instead.
 - [x] Replace the decorative Exact Audience field-map filler with a source-backed U.S. prospect-distribution map using actual city/state coverage.
-- [ ] Audit all retained Breeze charts and metrics so each has purposeful, accessible in-view motion or is removed if it lacks decision value.
+- [x] Audit all retained Breeze charts and metrics so each has purposeful, accessible in-view motion or is removed if it lacks decision value.
 - [x] Replace the channel-response trace sweep with in-view Google/Meta bar growth, count-up values, subtle completed-line pulses, and seamless Exact Audience data language.
 - [x] Remove all client-facing references to illustrative, demo activity, and related intake/disclaimer wording from Breeze.
 - [x] Transform the Breeze destination-and-journey area into an animated ad-to-quote flow with a stronger sunset-orange-to-gold-to-teal signal path and accurate SiteID-pending/conversion-unavailable states.

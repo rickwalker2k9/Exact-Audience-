@@ -69,8 +69,15 @@ function Metric({ label, value, note }: { label: string; value: string; note: st
 function useBreezeReveal() {
   const ref = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
+  const [allowMotion, setAllowMotion] = useState(true);
   useEffect(() => {
     const element = ref.current;
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    setAllowMotion(!reducedMotion);
+    if (reducedMotion) {
+      setRevealed(true);
+      return;
+    }
     if (!element || typeof IntersectionObserver === "undefined") {
       setRevealed(true);
       return;
@@ -84,7 +91,7 @@ function useBreezeReveal() {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
-  return { ref, revealed };
+  return { ref, revealed, allowMotion };
 }
 
 function useBreezeCountUp(target: number, revealed: boolean, duration = 980) {
@@ -116,7 +123,7 @@ function BreezeTooltip() {
 }
 
 function WebsiteTrafficChart() {
-  const { ref, revealed } = useBreezeReveal();
+  const { ref, revealed, allowMotion } = useBreezeReveal();
   const chartData = revealed ? BREEZE_WEBSITE_TRAFFIC : BREEZE_WEBSITE_TRAFFIC.map(point => ({ ...point, visits: 0 }));
   return <section ref={ref} className="rounded-3xl border border-[#fbbf24]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4">
@@ -146,7 +153,7 @@ function WebsiteTrafficChart() {
           <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
           <YAxis tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} tickFormatter={value => `${Math.round(value / 1000)}K`} />
           <Tooltip contentStyle={BreezeTooltip()} formatter={(value: number) => [`${formatCount(value)} visits`, "Estimated site traffic"]} />
-          <Area type="monotone" dataKey="visits" name="Estimated site traffic" stroke="#fbbf24" fill="url(#breezeSiteEstimate)" strokeWidth={3} dot={{ r: 4, fill: "#f97316", stroke: "#fbbf24", strokeWidth: 2 }} activeDot={{ r: 6 }} isAnimationActive={revealed} animationDuration={1200} animationEasing="ease-out" />
+          <Area type="monotone" dataKey="visits" name="Estimated site traffic" stroke="#fbbf24" fill="url(#breezeSiteEstimate)" strokeWidth={3} dot={{ r: 4, fill: "#f97316", stroke: "#fbbf24", strokeWidth: 2 }} activeDot={{ r: 6 }} isAnimationActive={revealed && allowMotion} animationDuration={1200} animationEasing="ease-out" />
         </AreaChart>
       </ResponsiveContainer>
     </div>
@@ -156,7 +163,8 @@ function WebsiteTrafficChart() {
 
 function SourceTrafficChart() {
   const [trafficSeries, setTrafficSeries] = useState(() => getBreezeSourceTraffic());
-  const { ref, revealed } = useBreezeReveal();
+  const { ref, revealed, allowMotion } = useBreezeReveal();
+  const chartData = revealed ? trafficSeries : trafficSeries.map(point => ({ ...point, google: 0, meta: 0, email: 0 }));
   useEffect(() => {
     const refreshAtMidnight = () => setTrafficSeries(getBreezeSourceTraffic());
     const timeout = window.setTimeout(refreshAtMidnight, millisecondsUntilNextLocalDay());
@@ -176,17 +184,17 @@ function SourceTrafficChart() {
       <AnimatedMetric label="Meta Ads" target={BREEZE_SOURCE_TOTALS.meta} note="Rolling eight-day channel activity." />
       <AnimatedMetric label="Email" target={BREEZE_SOURCE_TOTALS.email} note="Rolling eight-day channel activity." />
     </div>
-    <div className="mt-6 h-72">
+    <div className={`breeze-chart-reveal mt-6 h-72 ${revealed ? "breeze-chart-reveal--active" : ""}`}>
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={trafficSeries} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+        <LineChart data={chartData} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.12)" vertical={false} />
           <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
           <YAxis tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} allowDecimals={false} />
           <Tooltip contentStyle={BreezeTooltip()} />
           <Legend wrapperStyle={{ fontSize: 12, color: "#cbd5e1", paddingTop: 14 }} />
-          <Line type="monotone" dataKey="google" name="Google Ads" stroke="#f97316" strokeWidth={3} dot={{ r: 3, fill: "#f97316" }} activeDot={{ r: 5 }} isAnimationActive={revealed} animationDuration={1000} animationBegin={100} />
-          <Line type="monotone" dataKey="meta" name="Meta Ads" stroke="#fbbf24" strokeWidth={3} dot={{ r: 3, fill: "#fbbf24" }} activeDot={{ r: 5 }} isAnimationActive={revealed} animationDuration={1000} animationBegin={220} />
-          <Line type="monotone" dataKey="email" name="Email" stroke="#14b8a6" strokeWidth={3} dot={{ r: 3, fill: "#14b8a6" }} activeDot={{ r: 5 }} isAnimationActive={revealed} animationDuration={1000} animationBegin={340} />
+          <Line type="monotone" dataKey="google" name="Google Ads" stroke="#f97316" strokeWidth={3} dot={{ r: 3, fill: "#f97316" }} activeDot={{ r: 5 }} isAnimationActive={revealed && allowMotion} animationDuration={1000} animationBegin={100} />
+          <Line type="monotone" dataKey="meta" name="Meta Ads" stroke="#fbbf24" strokeWidth={3} dot={{ r: 3, fill: "#fbbf24" }} activeDot={{ r: 5 }} isAnimationActive={revealed && allowMotion} animationDuration={1000} animationBegin={220} />
+          <Line type="monotone" dataKey="email" name="Email" stroke="#14b8a6" strokeWidth={3} dot={{ r: 3, fill: "#14b8a6" }} activeDot={{ r: 5 }} isAnimationActive={revealed && allowMotion} animationDuration={1000} animationBegin={340} />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -197,7 +205,7 @@ function VerifiedSourceResults() {
   const result = BREEZE_VERIFIED_SOURCE_RESULTS;
   return <section className="mt-7 rounded-3xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Engagement allocation</p><h2 className="mt-1 text-2xl font-black text-white">Channel engagement by source</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">A current operating view of Exact Audience, Google Ads, Meta Ads, and SiteID readiness.</p></div><Pill tone="teal">Current view</Pill></div>
-    <div className="mt-5 grid gap-3 sm:grid-cols-4"><Metric label="Engagement records" value={formatCount(result.totalRecords)} note="Google Ads + Meta Ads activity." /><Metric label="Google Ads" value={formatCount(result.googleAdsRecords)} note="Engagement records." /><Metric label="Meta Ads" value={formatCount(result.metaAdsRecords)} note="Engagement records." /><Metric label="Website visitors" value="Pending" note="SiteID Pending Installation." /></div>
+    <div className="mt-5 grid gap-3 sm:grid-cols-4"><AnimatedMetric label="Engagement records" target={result.totalRecords} note="Google Ads + Meta Ads activity." /><AnimatedMetric label="Google Ads" target={result.googleAdsRecords} note="Engagement records." /><AnimatedMetric label="Meta Ads" target={result.metaAdsRecords} note="Engagement records." /><Metric label="Website visitors" value="Pending" note="SiteID Pending Installation." /></div>
   </section>;
 }
 
