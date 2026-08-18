@@ -246,6 +246,18 @@
   filter: drop-shadow(0 0 8px rgba(251, 146, 60, 0.42));
 }
 
+.breeze-logo-fallback {
+  display: block;
+  margin-top: .55rem;
+  padding: 0 .35rem;
+  color: #fff;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 900;
+  letter-spacing: .18em;
+  line-height: .9;
+  text-shadow: 0 0 18px rgba(20, 184, 166, .28), 0 0 10px rgba(249, 115, 22, .38);
+}
+
 @keyframes breezeStageEnter {
   from { opacity: 0; transform: translateY(10px) scale(0.985); }
   to { opacity: 1; transform: translateY(0) scale(1); }

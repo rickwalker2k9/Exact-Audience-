@@ -131,6 +131,7 @@
 - [ ] Inspect August spreadsheet 1nLtk8hlQSEycemcEsg1yY8q5nZ9-tfEH9TauGX2Bi_M and use only deterministic matches to populate Breeze customer-journey profile fields.
 - [ ] Replace the Breeze landing-page visit availability label with SiteID Pending Installation.
 - [ ] Replace underused Breeze funnel space with animated technical visualizations that preserve the gradient-edge stage boxes and distinguish uploaded, illustrative, pending, and unavailable data.
+- [ ] Ensure the retained Breeze hero logo is visibly rendered after the internal source-logo removal and artistic funnel refinements.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
