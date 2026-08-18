@@ -134,8 +134,8 @@
 - [x] Ensure the retained Breeze hero logo is visibly rendered after the internal source-logo removal and artistic funnel refinements.
 - [ ] Inspect journey spreadsheet 1ffr7pNRmd6eNASrsKszNtxG3ROymAC9ZlBhEsa3WEG8 and map each Breeze customer journey to the matching Activities value without adding inferred events.
 - [ ] Generate varied demo activity descriptions only after applying the exact per-person Activities count from the journey spreadsheet; do not exceed that count.
-- [ ] Remove the added Breeze hero text fallback and retain only the supplied Breeze logo treatment.
-- [ ] Animate the initial Breeze graph on page load and count up visible metrics as their sections enter the viewport, with reduced-motion support and preserved data-source labels.
+- [x] Remove the added Breeze hero text fallback and retain only the supplied Breeze logo treatment.
+- [x] Animate the initial Breeze graph on page load and count up visible metrics as their sections enter the viewport, with reduced-motion support and preserved data-source labels.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.
