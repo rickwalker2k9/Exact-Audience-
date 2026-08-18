@@ -80,3 +80,5 @@ The 345 authorized journey rows are now treated as a distinct prior-period Googl
 The hidden SiteID visitor-event language was removed from the Breeze quote-flow accessibility content. The visible funnel retains only the SiteID Pending Installation stage and future visitor field categories; it does not present a SiteID visitor event in an individual customer journey.
 
 Public Railway verification confirmed the 345-record prior-period Google/Meta engagement panel loads after the active 927-record Exact Audience cohort. The public panel preserves the source separation, shows only the supplied contact fields and exact activity total, and retains SiteID as Pending Installation rather than reporting visitor activity.
+
+Local interaction verification confirmed that each prior-period engagement record can open a counted sequence. For example, the source record with an Activity total of 9 rendered exactly nine generic “Recorded activity” entries, without added event descriptions, timestamps, SiteID visits, or other inferred detail.

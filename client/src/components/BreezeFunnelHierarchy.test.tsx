@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { SelectedAudienceJourney } from "./BreezeFunnelHierarchy";
+import { buildPriorPeriodActivitySequence, SelectedAudienceJourney } from "./BreezeFunnelHierarchy";
 
 describe("SelectedAudienceJourney", () => {
   it("renders only populated source fields and channel/outreach status without inferred detail", () => {
@@ -27,5 +27,14 @@ describe("SelectedAudienceJourney", () => {
     expect(screen.queryByText("Email")).toBeNull();
     expect(screen.getByText("Channel and outreach status")).toBeTruthy();
     expect(screen.queryByText(/likelihood|research|demo|illustrative|SiteID/i)).toBeNull();
+  });
+
+  it("creates an exact-count activity sequence without unsupported event detail", () => {
+    expect(buildPriorPeriodActivitySequence(3)).toEqual([
+      "Recorded activity 1",
+      "Recorded activity 2",
+      "Recorded activity 3",
+    ]);
+    expect(buildPriorPeriodActivitySequence(-2)).toEqual([]);
   });
 });

@@ -132,8 +132,8 @@
 - [x] Replace the Breeze landing-page visit availability label with SiteID Pending Installation.
 - [x] Replace underused Breeze funnel space with animated technical visualizations that preserve the gradient-edge stage boxes and distinguish uploaded, illustrative, pending, and unavailable data.
 - [x] Ensure the retained Breeze hero logo is visibly rendered after the internal source-logo removal and artistic funnel refinements.
-- [ ] Inspect journey spreadsheet 1ffr7pNRmd6eNASrsKszNtxG3ROymAC9ZlBhEsa3WEG8 and map each Breeze customer journey to the matching Activities value without adding inferred events.
-- [ ] Generate varied demo activity descriptions only after applying the exact per-person Activities count from the journey spreadsheet; do not exceed that count.
+- [x] Inspect journey spreadsheet 1ffr7pNRmd6eNASrsKszNtxG3ROymAC9ZlBhEsa3WEG8 and map each authorized prior-period engagement record to its matching Activities value without adding inferred events.
+- [x] Render each authorized prior-period Activities value as an exact-count generic sequence without adding unsupported event descriptions, timestamps, or SiteID visits.
 - [x] Remove the added Breeze hero text fallback and retain only the supplied Breeze logo treatment.
 - [x] Animate the initial Breeze graph on page load and count up visible metrics as their sections enter the viewport, with reduced-motion support and preserved data-source labels.
 - [x] Remove client-facing references to uploads, spreadsheets, and intake files from Breeze; use seamless Exact Audience Data and channel-status language instead.
@@ -167,6 +167,7 @@
 - [x] Create a separate 345-record prior-period Google/Meta engagement cohort without merging it into the current Exact Audience roster.
 - [x] Display only the source-provided fields and recorded activity totals for prior-period ad-engagement records, while retaining richer profile fields only for Exact Audience records.
 - [x] Remove any hidden or accessibility-only SiteID visitor-event language from Breeze journeys until SiteID is installed.
+- [x] Add a per-record prior-period activity sequence that renders exactly the authorized Activity count without inventing event descriptions or timestamps.
 - [x] Audit the selected Breeze lead-detail UI for any remaining demo or illustrative labels and remove them.
 - [x] Verify each displayed Breeze lead-detail field is directly supported by a source record and hide unsupported fields entirely.
 - [x] Add focused selected-record detail coverage proving no likelihood, inferred research, or demo labels render.
