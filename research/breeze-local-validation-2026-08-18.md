@@ -42,3 +42,13 @@ The public Railway route was verified after commit `c45c3be` deployed. After its
 The retained Similarweb area chart now enters from a zero baseline with its supporting metrics counting up on entry. The rolling eight-day Google, Meta, and Email line chart now follows the same viewport-triggered baseline reveal, with staggered channel traces. The engagement-allocation totals count up when that section enters the viewport. Reduced-motion preference bypasses the nonessential chart animation while keeping final values visible.
 
 The public Railway route was rechecked after commit `b35e80f` deployed. The Similarweb card completed at 20,300 visits, 24.19% month-over-month, and 47.24% bounce rate; the rolling traffic metrics completed at 477 Google, 350 Meta, and 108 Email. The source-backed prospect map, selected-record journey controls, and SiteID Pending Installation layer remained available.
+
+## Engagement allocation visual
+
+The local engagement-allocation section now presents the confirmed 350 Google and Meta engagement records as a single source-backed allocation visual. Before viewport entry it remains at a zero baseline, consistent with the motion audit; the component labels the 112 Google records as 32% and the 238 Meta records as 68%, with no click, delivery, or landing-page-visit total inferred.
+
+## Protected Breeze client portal
+
+The local `/breeze-client` route is isolated from campaign navigation and presents a security notice before its login form. The visitor must click **Continue** to acknowledge that access activity may be logged for security and operational purposes; only then do the username and password fields become visible. The route shows the required Exact Audience AI / Imagine Agency LLC copyright line and no control for changing client credentials.
+
+The managed Breeze client credentials were validated against the local protected login endpoint. After the required acknowledgment and successful server-side credential check, the browser received an isolated HTTP-only client session and rendered the Breeze portal at `/breeze-client` without any campaign-directory navigation.

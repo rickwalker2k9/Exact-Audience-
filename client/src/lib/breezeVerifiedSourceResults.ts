@@ -16,3 +16,11 @@ export const BREEZE_VERIFIED_SOURCE_RESULTS = {
 
 export const BREEZE_VERIFIED_SOURCE_TOTAL =
   BREEZE_VERIFIED_SOURCE_RESULTS.googleAdsRecords + BREEZE_VERIFIED_SOURCE_RESULTS.metaAdsRecords;
+
+export function getBreezeVerifiedSourceShares() {
+  const total = BREEZE_VERIFIED_SOURCE_RESULTS.totalRecords;
+  return {
+    googleAds: Math.round((BREEZE_VERIFIED_SOURCE_RESULTS.googleAdsRecords / total) * 100),
+    metaAds: Math.round((BREEZE_VERIFIED_SOURCE_RESULTS.metaAdsRecords / total) * 100),
+  };
+}

@@ -1,11 +1,14 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
+import { parse as parseCookie } from "cookie";
+import { notifyOwner } from "./_core/notification";
 import { invokeLLM } from "./_core/llm";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { createBreezeImportSource, getBreezeExactAudienceGeography, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getBreezeSourceRecords, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
+import { createBreezeClientSession, createBreezeImportSource, getBreezeClientAccessReport, getBreezeClientSession, getBreezeExactAudienceGeography, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getBreezeSourceRecords, getVoterCtvPrefs, touchBreezeClientSession, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
 import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBreezeContactKey, mapApprovedCsv, toLeadSummary, toOwnerReviewLead, type BreezeFunnelStage } from "./breezeSheet";
 import { parseBreezePixelCsv } from "./breezePixelImport";
+import { BREEZE_CLIENT_SESSION_COOKIE, BREEZE_CLIENT_SESSION_TTL_MS, createBreezeClientSessionToken, hashBreezeClientSessionToken, validateBreezeClientCredentials } from "./breezeClientAccess";
 import { BREEZE_RECORD_SOURCES } from "./breezeSourceRecords";
 import { TRPCError } from "@trpc/server";
 import { storagePut } from "./storage";
@@ -54,6 +57,16 @@ const contactInput = z.object({
   contactChildren: z.string().optional(),
 });
 
+function getBreezeClientSessionHash(cookieHeader?: string) {
+  const token = parseCookie(cookieHeader ?? "")[BREEZE_CLIENT_SESSION_COOKIE];
+  return token ? hashBreezeClientSessionToken(token) : null;
+}
+
+function toBreezeClientSessionStatus(session: Awaited<ReturnType<typeof getBreezeClientSession>>) {
+  if (!session || session.expiresAt.getTime() <= Date.now() || session.closedAt) return { authenticated: false } as const;
+  return { authenticated: true, loginName: session.loginName, loggedInAt: session.loggedInAt, lastSeenAt: session.lastSeenAt } as const;
+}
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -63,6 +76,59 @@ export const appRouter = router({
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
+  }),
+
+  breezeClient: router({
+    login: publicProcedure
+      .input(z.object({ username: z.string().min(1).max(120), password: z.string().min(1).max(256), acknowledged: z.literal(true) }))
+      .mutation(async ({ ctx, input }) => {
+        if (!validateBreezeClientCredentials(input.username, input.password)) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid client credentials." });
+        }
+        const now = new Date();
+        const token = createBreezeClientSessionToken();
+        const expiresAt = new Date(now.getTime() + BREEZE_CLIENT_SESSION_TTL_MS);
+        await createBreezeClientSession({ sessionHash: hashBreezeClientSessionToken(token), loginName: input.username.trim(), acknowledgedAt: now, expiresAt });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(BREEZE_CLIENT_SESSION_COOKIE, token, { ...cookieOptions, maxAge: BREEZE_CLIENT_SESSION_TTL_MS });
+        const notified = await notifyOwner({ title: "Breeze client portal access", content: `The Breeze client portal was accessed at ${now.toLocaleString()} using the managed client username. Access activity is available in the private owner report.` }).catch(() => false);
+        return { success: true, expiresAt, notified };
+      }),
+    status: publicProcedure.query(async ({ ctx }) => {
+      const sessionHash = getBreezeClientSessionHash(ctx.req.headers.cookie);
+      if (!sessionHash) return { authenticated: false } as const;
+      return toBreezeClientSessionStatus(await getBreezeClientSession(sessionHash));
+    }),
+    activity: publicProcedure.mutation(async ({ ctx }) => {
+      const sessionHash = getBreezeClientSessionHash(ctx.req.headers.cookie);
+      if (!sessionHash) return { authenticated: false } as const;
+      const session = await getBreezeClientSession(sessionHash);
+      if (!toBreezeClientSessionStatus(session).authenticated) return { authenticated: false } as const;
+      await touchBreezeClientSession(sessionHash);
+      return { authenticated: true } as const;
+    }),
+    logout: publicProcedure.mutation(async ({ ctx }) => {
+      const sessionHash = getBreezeClientSessionHash(ctx.req.headers.cookie);
+      if (sessionHash) await touchBreezeClientSession(sessionHash, true);
+      const cookieOptions = getSessionCookieOptions(ctx.req);
+      ctx.res.clearCookie(BREEZE_CLIENT_SESSION_COOKIE, { ...cookieOptions, maxAge: -1 });
+      return { success: true } as const;
+    }),
+    accessReport: protectedProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(200).default(100) }))
+      .query(async ({ ctx, input }) => {
+        const isOwner = Boolean(process.env.OWNER_OPEN_ID && ctx.user.openId === process.env.OWNER_OPEN_ID);
+        if (!isOwner && ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Owner access is required for the Breeze client activity report." });
+        const sessions = await getBreezeClientAccessReport(input.limit);
+        return sessions.map(session => ({
+          id: session.id,
+          loginName: session.loginName,
+          loggedInAt: session.loggedInAt,
+          lastSeenAt: session.lastSeenAt,
+          closedAt: session.closedAt,
+          durationSeconds: Math.max(0, Math.round((session.lastSeenAt.getTime() - session.loggedInAt.getTime()) / 1000)),
+        }));
+      }),
   }),
 
   breezePortal: router({

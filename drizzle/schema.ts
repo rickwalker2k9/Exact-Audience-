@@ -114,3 +114,19 @@ export const breezeSourceRecords = mysqlTable("breeze_source_records", {
 }, table => [uniqueIndex("breeze_source_record_unique").on(table.source, table.recordKey)]);
 
 export type BreezeSourceRecord = typeof breezeSourceRecords.$inferSelect;
+
+// Server-managed sessions for the isolated Breeze client portal. The raw browser
+// token is never persisted; only a SHA-256 hash is retained for validation and
+// owner-only access reporting.
+export const breezeClientSessions = mysqlTable("breeze_client_sessions", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionHash: varchar("sessionHash", { length: 64 }).notNull().unique(),
+  loginName: varchar("loginName", { length: 120 }).notNull(),
+  acknowledgedAt: timestamp("acknowledgedAt").notNull(),
+  loggedInAt: timestamp("loggedInAt").defaultNow().notNull(),
+  lastSeenAt: timestamp("lastSeenAt").defaultNow().notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  closedAt: timestamp("closedAt"),
+});
+
+export type BreezeClientSession = typeof breezeClientSessions.$inferSelect;

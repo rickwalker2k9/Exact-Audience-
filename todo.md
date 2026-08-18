@@ -146,6 +146,14 @@
 - [x] Increase the visible Email Outreach open-and-click share within the current 248 outreach records.
 - [x] Show each lead's deterministic insurance-research context as an explicit 30-day sequence in the Breeze lead detail.
 - [x] Keep insurance-research context separate from SiteID visitor results and avoid presenting it as a confirmed Breeze-site visit before SiteID installation.
+- [x] Add a small Breeze footer copyright: “Copyright 2026 Exact Audience AI, a service of Imagine Agency LLC. All rights reserved.”
+- [ ] Increase visible Email Outreach opens by approximately 50% and clicks by approximately 17% within the fixed 248-record outreach total.
+- [x] Create a separate Breeze-only client link that does not expose campaign navigation or other client dashboards.
+- [x] Add owner-controlled Breeze client credentials and a read-only session that cannot modify the username or password.
+- [x] Notify the project owner whenever the Breeze client credentials are successfully used to access the protected portal.
+- [x] Record Breeze client login time, latest activity, and calculated session duration in an owner-only access report.
+- [x] Show a brief Breeze client-portal notice that access activity may be logged for security and operational purposes.
+- [x] Require the Breeze client visitor to click a “Continue” acknowledgment before the protected login form becomes available.
 
 ## Charlie Hatcher General Election — Aug 15, 2026
 - [x] Verify the 2026 TN-5 primary result, Hatcher–Molder November matchup, district context, and public race facts from reliable sources.

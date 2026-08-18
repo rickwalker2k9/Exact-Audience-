@@ -1,7 +1,7 @@
 import { desc, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { asc, sql } from "drizzle-orm";
-import { BreezeLeadProgress, BreezePixelConfiguration, BreezeSourceRecord, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeLeadProgress, breezeImportSources, breezePixelConfigurations, breezeSourceRecords } from "../drizzle/schema";
+import { BreezeClientSession, BreezeLeadProgress, BreezePixelConfiguration, BreezeSourceRecord, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeClientSessions, breezeLeadProgress, breezeImportSources, breezePixelConfigurations, breezeSourceRecords } from "../drizzle/schema";
 import { ENV } from './_core/env';
 import { createBreezeSourceRecordKey, summarizeExactAudienceGeography } from "./breezeSourceRecords";
 import { parseBreezeSourceSeed } from "./breezeSourceSeed";
@@ -11,6 +11,7 @@ let _db: ReturnType<typeof drizzle> | null = null;
 let breezeSourceSeedPromise: Promise<void> | null = null;
 let breezeSourceSeedRecords: Awaited<ReturnType<typeof parseBreezeSourceSeed>> | null = null;
 let breezeSourceSeedLoadPromise: Promise<Awaited<ReturnType<typeof parseBreezeSourceSeed>>> | null = null;
+const breezeClientSessionFallback = new Map<string, BreezeClientSession>();
 const BREEZE_SOURCE_SEED_KEY = "breeze/private-source-seeds/approved-source-records_0d92955f.ndjson";
 const BREEZE_SOURCE_SEED_PROXY = "https://exaudash-unrq5kjn.manus.space";
 
@@ -120,6 +121,61 @@ export async function upsertVoterCtvPrefs(prefs: InsertVoterCtvPrefs) {
       lastPreset: prefs.lastPreset,
     },
   });
+}
+
+export async function createBreezeClientSession(input: {
+  sessionHash: string;
+  loginName: string;
+  acknowledgedAt: Date;
+  expiresAt: Date;
+}) {
+  const db = await getDb();
+  const now = new Date();
+  if (!db) {
+    const session: BreezeClientSession = {
+      id: breezeClientSessionFallback.size + 1,
+      sessionHash: input.sessionHash,
+      loginName: input.loginName,
+      acknowledgedAt: input.acknowledgedAt,
+      loggedInAt: now,
+      lastSeenAt: now,
+      expiresAt: input.expiresAt,
+      closedAt: null,
+    };
+    breezeClientSessionFallback.set(input.sessionHash, session);
+    return session;
+  }
+  await db.insert(breezeClientSessions).values(input);
+  const [session] = await db.select().from(breezeClientSessions).where(eq(breezeClientSessions.sessionHash, input.sessionHash)).limit(1);
+  if (!session) throw new Error("Breeze client session could not be created.");
+  return session;
+}
+
+export async function getBreezeClientSession(sessionHash: string) {
+  const db = await getDb();
+  if (!db) return breezeClientSessionFallback.get(sessionHash) ?? null;
+  const [session] = await db.select().from(breezeClientSessions).where(eq(breezeClientSessions.sessionHash, sessionHash)).limit(1);
+  return session ?? null;
+}
+
+export async function touchBreezeClientSession(sessionHash: string, closed = false) {
+  const now = new Date();
+  const db = await getDb();
+  if (!db) {
+    const session = breezeClientSessionFallback.get(sessionHash);
+    if (!session) return null;
+    const next = { ...session, lastSeenAt: now, closedAt: closed ? now : session.closedAt };
+    breezeClientSessionFallback.set(sessionHash, next);
+    return next;
+  }
+  await db.update(breezeClientSessions).set({ lastSeenAt: now, ...(closed ? { closedAt: now } : {}) }).where(eq(breezeClientSessions.sessionHash, sessionHash));
+  return getBreezeClientSession(sessionHash);
+}
+
+export async function getBreezeClientAccessReport(limit = 100) {
+  const db = await getDb();
+  if (!db) return Array.from(breezeClientSessionFallback.values()).sort((a, b) => b.loggedInAt.getTime() - a.loggedInAt.getTime()).slice(0, limit);
+  return db.select().from(breezeClientSessions).orderBy(desc(breezeClientSessions.loggedInAt)).limit(limit);
 }
 
 export async function getBreezeProgressByContactKeys(contactKeys: string[]) {

@@ -24,6 +24,8 @@ import MogulDashboard from "./pages/MogulDashboard";
 import LitehouseHealthDashboard from "./pages/LitehouseHealthDashboard";
 import ProdromeDashboard from "./pages/ProdromeDashboard";
 import CharlieHatcherDashboard from "./pages/CharlieHatcherGeneralDashboard";
+import BreezeClientPortal from "./pages/BreezeClientPortal";
+import BreezeClientAccessReport from "./pages/BreezeClientAccessReport";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/lamborghini" component={LamborghiniDashboard} />
       <Route path="/warby-parker" component={WarbyDashboard} />
       <Route path="/policygenius" component={PolicyGeniusDashboard} />
+      <Route path="/breeze-client" component={BreezeClientPortal} />
+      <Route path="/breeze-client-access" component={BreezeClientAccessReport} />
       <Route path="/breeze-insurance/staff" component={BreezeStaffLeads} />
       <Route path="/breeze-insurance" component={BreezeLeadPortal} />
       <Route path="/land-rover" component={LandRoverDashboard} />
