@@ -397,3 +397,23 @@
 @media (prefers-reduced-motion: reduce) {
   .breeze-audience-map__orbit, .breeze-audience-map__node, .breeze-delivery-trace__signal { animation: none; }
 }
+
+.breeze-chart-reveal {
+  opacity: .35;
+  transform: translateY(1rem) scaleY(.72);
+  transform-origin: bottom center;
+  transition: opacity 720ms var(--ease-out, cubic-bezier(.23,1,.32,1)), transform 920ms var(--ease-out, cubic-bezier(.23,1,.32,1));
+}
+
+.breeze-chart-reveal--active {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+}
+
+.breeze-logo-fallback {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breeze-chart-reveal { opacity: 1; transform: none; transition: none; }
+}

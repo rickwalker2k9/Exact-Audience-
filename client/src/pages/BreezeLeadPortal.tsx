@@ -8,6 +8,7 @@ import { BREEZE_SOURCE_TOTALS, getBreezeSourceTraffic } from "@/lib/breezeSource
 import { millisecondsUntilNextLocalDay } from "@/lib/liveDateSeries";
 import { formatBreezeRefreshTime } from "@/lib/breezeRefreshTime";
 import { BreezeFunnelHierarchy } from "@/components/BreezeFunnelHierarchy";
+import { breezeCounterValue } from "@/lib/breezeMotion";
 import { BREEZE_VERIFIED_SOURCE_RESULTS } from "@/lib/breezeVerifiedSourceResults";
 import { BREEZE_WEBSITE_SNAPSHOT, BREEZE_WEBSITE_TRAFFIC } from "@/lib/breezeWebsiteTraffic";
 import {
@@ -20,7 +21,7 @@ import {
   Target,
   UserRound,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 type OwnerReviewLead = {
@@ -65,12 +66,59 @@ function Metric({ label, value, note }: { label: string; value: string; note: st
   </article>;
 }
 
+function useBreezeReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || typeof IntersectionObserver === "undefined") {
+      setRevealed(true);
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        setRevealed(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.18 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  return { ref, revealed };
+}
+
+function useBreezeCountUp(target: number, revealed: boolean, duration = 980) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!revealed) return;
+    const start = performance.now();
+    let frame = 0;
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      setValue(breezeCounterValue(target, progress));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [duration, revealed, target]);
+  return value;
+}
+
+function AnimatedMetric({ label, target, note, suffix = "", decimals = 0 }: { label: string; target: number; note: string; suffix?: string; decimals?: number }) {
+  const { ref, revealed } = useBreezeReveal();
+  const value = useBreezeCountUp(target, revealed);
+  const formatted = decimals > 0 ? (value / Math.pow(10, decimals)).toFixed(decimals) : formatCount(value);
+  return <div ref={ref}><Metric label={label} value={`${formatted}${suffix}`} note={note} /></div>;
+}
+
 function BreezeTooltip() {
   return { background: "#000000", border: "1px solid rgba(251,191,36,.45)", borderRadius: 10, color: "#f8fafc", fontSize: 12 };
 }
 
 function WebsiteTrafficChart() {
-  return <section className="rounded-3xl border border-[#fbbf24]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
+  const { ref, revealed } = useBreezeReveal();
+  const chartData = revealed ? BREEZE_WEBSITE_TRAFFIC : BREEZE_WEBSITE_TRAFFIC.map(point => ({ ...point, visits: 0 }));
+  return <section ref={ref} className="rounded-3xl border border-[#fbbf24]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#fde68a]">Main website traffic · Similarweb estimate</p>
@@ -80,14 +128,14 @@ function WebsiteTrafficChart() {
       <Pill tone="gold">{BREEZE_WEBSITE_SNAPSHOT.retrievedOn} snapshot</Pill>
     </div>
     <div className="mt-5 grid gap-3 sm:grid-cols-4">
-      <Metric label="Reported visits" value="20.3K" note="Similarweb July panel." />
-      <Metric label="Month over month" value="+24.19%" note="Similarweb-reported change." />
-      <Metric label="Bounce rate" value="47.24%" note="Similarweb estimate." />
+      <AnimatedMetric label="Reported visits" target={20_300} note="Similarweb July panel." />
+      <AnimatedMetric label="Month over month" target={2419} suffix="%" decimals={2} note="Similarweb-reported change." />
+      <AnimatedMetric label="Bounce rate" target={4724} suffix="%" decimals={2} note="Similarweb estimate." />
       <Metric label="Average duration" value="2:38" note="Similarweb estimate." />
     </div>
-    <div className="mt-6 h-64">
+    <div className={`breeze-chart-reveal mt-6 h-64 ${revealed ? "breeze-chart-reveal--active" : ""}`}>
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={BREEZE_WEBSITE_TRAFFIC} margin={{ top: 10, right: 8, left: -18, bottom: 0 }}>
+        <AreaChart data={chartData} margin={{ top: 10, right: 8, left: -18, bottom: 0 }}>
           <defs>
             <linearGradient id="breezeSiteEstimate" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#f97316" stopOpacity={0.48} />
@@ -98,7 +146,7 @@ function WebsiteTrafficChart() {
           <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
           <YAxis tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} tickFormatter={value => `${Math.round(value / 1000)}K`} />
           <Tooltip contentStyle={BreezeTooltip()} formatter={(value: number) => [`${formatCount(value)} visits`, "Estimated site traffic"]} />
-          <Area type="monotone" dataKey="visits" name="Estimated site traffic" stroke="#fbbf24" fill="url(#breezeSiteEstimate)" strokeWidth={3} dot={{ r: 4, fill: "#f97316", stroke: "#fbbf24", strokeWidth: 2 }} activeDot={{ r: 6 }} />
+          <Area type="monotone" dataKey="visits" name="Estimated site traffic" stroke="#fbbf24" fill="url(#breezeSiteEstimate)" strokeWidth={3} dot={{ r: 4, fill: "#f97316", stroke: "#fbbf24", strokeWidth: 2 }} activeDot={{ r: 6 }} isAnimationActive={revealed} animationDuration={1200} animationEasing="ease-out" />
         </AreaChart>
       </ResponsiveContainer>
     </div>
@@ -108,12 +156,13 @@ function WebsiteTrafficChart() {
 
 function SourceTrafficChart() {
   const [trafficSeries, setTrafficSeries] = useState(() => getBreezeSourceTraffic());
+  const { ref, revealed } = useBreezeReveal();
   useEffect(() => {
     const refreshAtMidnight = () => setTrafficSeries(getBreezeSourceTraffic());
     const timeout = window.setTimeout(refreshAtMidnight, millisecondsUntilNextLocalDay());
     return () => window.clearTimeout(timeout);
   }, []);
-  return <><section className="rounded-3xl border border-[#f97316]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
+  return <><section ref={ref} className="rounded-3xl border border-[#f97316]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#fdba74]">Traffic sources · illustrative demo data</p>
@@ -123,9 +172,9 @@ function SourceTrafficChart() {
       <Pill tone="orange">Demo source monitoring</Pill>
     </div>
     <div className="mt-5 grid gap-3 sm:grid-cols-3">
-      <Metric label="Google Ads" value={formatCount(BREEZE_SOURCE_TOTALS.google)} note="Illustrative rolling 8-day traffic." />
-      <Metric label="Meta Ads" value={formatCount(BREEZE_SOURCE_TOTALS.meta)} note="Illustrative rolling 8-day traffic." />
-      <Metric label="Email" value={formatCount(BREEZE_SOURCE_TOTALS.email)} note="Illustrative rolling 8-day traffic." />
+      <AnimatedMetric label="Google Ads" target={BREEZE_SOURCE_TOTALS.google} note="Illustrative rolling 8-day traffic." />
+      <AnimatedMetric label="Meta Ads" target={BREEZE_SOURCE_TOTALS.meta} note="Illustrative rolling 8-day traffic." />
+      <AnimatedMetric label="Email" target={BREEZE_SOURCE_TOTALS.email} note="Illustrative rolling 8-day traffic." />
     </div>
     <div className="mt-6 h-72">
       <ResponsiveContainer width="100%" height="100%">
@@ -135,9 +184,9 @@ function SourceTrafficChart() {
           <YAxis tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} allowDecimals={false} />
           <Tooltip contentStyle={BreezeTooltip()} />
           <Legend wrapperStyle={{ fontSize: 12, color: "#cbd5e1", paddingTop: 14 }} />
-          <Line type="monotone" dataKey="google" name="Google Ads" stroke="#f97316" strokeWidth={3} dot={{ r: 3, fill: "#f97316" }} activeDot={{ r: 5 }} />
-          <Line type="monotone" dataKey="meta" name="Meta Ads" stroke="#fbbf24" strokeWidth={3} dot={{ r: 3, fill: "#fbbf24" }} activeDot={{ r: 5 }} />
-          <Line type="monotone" dataKey="email" name="Email" stroke="#14b8a6" strokeWidth={3} dot={{ r: 3, fill: "#14b8a6" }} activeDot={{ r: 5 }} />
+          <Line type="monotone" dataKey="google" name="Google Ads" stroke="#f97316" strokeWidth={3} dot={{ r: 3, fill: "#f97316" }} activeDot={{ r: 5 }} isAnimationActive={revealed} animationDuration={1000} animationBegin={100} />
+          <Line type="monotone" dataKey="meta" name="Meta Ads" stroke="#fbbf24" strokeWidth={3} dot={{ r: 3, fill: "#fbbf24" }} activeDot={{ r: 5 }} isAnimationActive={revealed} animationDuration={1000} animationBegin={220} />
+          <Line type="monotone" dataKey="email" name="Email" stroke="#14b8a6" strokeWidth={3} dot={{ r: 3, fill: "#14b8a6" }} activeDot={{ r: 5 }} isAnimationActive={revealed} animationDuration={1000} animationBegin={340} />
         </LineChart>
       </ResponsiveContainer>
     </div>
