@@ -84,3 +84,5 @@ Public Railway verification confirmed the 345-record prior-period Google/Meta en
 Local interaction verification confirmed that each prior-period engagement record can open a counted sequence. For example, the source record with an Activity total of 9 rendered exactly nine generic “Recorded activity” entries, without added event descriptions, timestamps, SiteID visits, or other inferred detail.
 
 Public Railway verification confirmed the same source-counted interaction is live: the 9-activity prior-period record rendered exactly nine generic entries, and the activity sequence remained separate from current Exact Audience journeys and pending SiteID data.
+
+The first two cache-bypassed public checks after the aggregate-only public-route commit continued to serve the prior Breeze build with individual record names. Local validation passed; public verification remains pending the Railway deployment propagation.

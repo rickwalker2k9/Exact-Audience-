@@ -171,6 +171,11 @@
 - [ ] Remove approved individual names and operating statistics from the public `/breeze-insurance` route or gate them behind the protected Breeze client portal, then verify the public route.
 - [ ] Re-verify that the protected `/breeze-client` route retains record-level review after the aggregate-only public route is deployed.
 - [ ] Either obtain a true public third-party estimate for the Breeze landing destination or revise the requirement to explicitly accept the currently available main-site estimate with its stated limitations.
+- [ ] Diagnose why Railway continues serving the pre-privacy Breeze build after the protected-route commit reached GitHub main.
+- [ ] Verify the deployed public aggregate route has no individual record content and the protected client route retains record-level review.
+- [ ] Fix the Railway deployment failure reported for commit 6d5f4e6 before re-verifying the Breeze public privacy route.
+- [ ] Pin the Railway production build to a Node version compatible with Vite 7 and confirm the deployment proceeds beyond image push.
+- [ ] Inspect any remaining Railway deploy-stage startup error after the compatible Node runtime is applied.
 - [x] Audit the selected Breeze lead-detail UI for any remaining demo or illustrative labels and remove them.
 - [x] Verify each displayed Breeze lead-detail field is directly supported by a source record and hide unsupported fields entirely.
 - [x] Add focused selected-record detail coverage proving no likelihood, inferred research, or demo labels render.
