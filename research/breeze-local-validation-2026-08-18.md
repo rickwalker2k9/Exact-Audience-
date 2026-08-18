@@ -82,3 +82,5 @@ The hidden SiteID visitor-event language was removed from the Breeze quote-flow 
 Public Railway verification confirmed the 345-record prior-period Google/Meta engagement panel loads after the active 927-record Exact Audience cohort. The public panel preserves the source separation, shows only the supplied contact fields and exact activity total, and retains SiteID as Pending Installation rather than reporting visitor activity.
 
 Local interaction verification confirmed that each prior-period engagement record can open a counted sequence. For example, the source record with an Activity total of 9 rendered exactly nine generic “Recorded activity” entries, without added event descriptions, timestamps, SiteID visits, or other inferred detail.
+
+Public Railway verification confirmed the same source-counted interaction is live: the 9-activity prior-period record rendered exactly nine generic entries, and the activity sequence remained separate from current Exact Audience journeys and pending SiteID data.
