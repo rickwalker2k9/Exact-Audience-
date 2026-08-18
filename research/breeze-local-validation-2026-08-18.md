@@ -26,3 +26,11 @@ Two initial checks of the Railway `/breeze-insurance` route immediately after th
 ## Selected-record journey validation
 
 The local Exact Audience activity table now exposes a **View journey** control for each displayed source record. Selecting Megan Henggeler rendered only source-record fields that were present (age range, income range, and email); no phone number was invented. The selected journey showed the corresponding Google, Meta, and Email Outreach states, its engagement windows, and a three-step 30-day comparison path (Northwestern Mutual, The Standard, and PolicyGenius). It explicitly kept that context separate from SiteID, and no SiteID visitor event appeared in the individual journey.
+
+The first two public cache-bypassed checks after the `5d4e662` GitHub push still returned the preceding table implementation without the **View journey** control. A subsequent cache-bypassed public check confirmed the automatic Railway deployment completed. The route exposed the **View journey** control for the Exact Audience table; selecting Megan Henggeler rendered the verified source-record fields, Google/Meta/Email engagement states, the 30-day comparison path, and the statement that no SiteID visitor event appears until installation.
+
+## Source-backed prospect distribution map
+
+The decorative field-coverage visual was replaced locally with an interactive U.S. state-grid map powered by the Exact Audience source-record geography aggregation. The loaded data produced 2,668 records with valid city/state coverage across 16 states; the remainder of the 2,696-record Exact Audience population did not carry a usable two-letter state and was not assigned to a map location. The map surfaced source-backed state counts, including Florida (385), Illinois (292), Pennsylvania (273), Massachusetts (212), Michigan (210), North Carolina (206), New Jersey (200), and Georgia (198). The selected Florida state panel displayed its top source cities: Miami (33), Orlando (24), Tampa (24), and Naples (12).
+
+Selecting Michigan in the local state grid updated the panel to **MI · 210 records**, with the mapped source cities Detroit (14), Grand Rapids (9), Ypsilanti (6), and Grosse Pointe (5). The map control is keyboard-addressable and does not display individual contact data.

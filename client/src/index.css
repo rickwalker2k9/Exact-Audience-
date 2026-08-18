@@ -344,54 +344,53 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.breeze-audience-map {
-  position: relative;
-  min-height: 11rem;
+.breeze-prospect-map {
   overflow: hidden;
-  background: radial-gradient(circle at 48% 48%, rgba(20,184,166,.17), transparent 26%), radial-gradient(circle at 80% 25%, rgba(251,191,36,.1), transparent 18%), #000;
+  background: radial-gradient(circle at 55% 20%, rgba(20,184,166,.12), transparent 36%), radial-gradient(circle at 74% 76%, rgba(249,115,22,.11), transparent 32%), #000;
 }
 
-.breeze-audience-map__grid {
-  position: absolute;
-  inset: 0;
-  opacity: .65;
-  background-image: linear-gradient(rgba(20,184,166,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,.12) 1px, transparent 1px);
-  background-size: 24px 24px;
-  mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+.breeze-prospect-map__grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(1.7rem, 1fr));
+  grid-template-rows: repeat(7, 2.4rem);
+  gap: .35rem;
+  padding: 1rem;
+  background-image: linear-gradient(rgba(20,184,166,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,.08) 1px, transparent 1px);
+  background-size: 1.8rem 1.8rem;
 }
 
-.breeze-audience-map__orbit {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 9rem;
-  height: 9rem;
-  margin: -4.5rem;
-  border: 1px solid rgba(20,184,166,.35);
-  border-radius: 999px;
-  animation: breezeOrbitTurn 13s linear infinite;
+.breeze-prospect-map__cell {
+  display: grid;
+  place-items: center;
+  gap: .08rem;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: .45rem;
+  background: #050505;
+  color: #64748b;
+  font-size: .6rem;
+  font-weight: 800;
+  line-height: 1;
+  transition: transform 160ms var(--ease-out, cubic-bezier(.23,1,.32,1)), border-color 160ms var(--ease-out, cubic-bezier(.23,1,.32,1));
 }
 
-.breeze-audience-map__orbit--two {
-  width: 13rem;
-  height: 13rem;
-  margin: -6.5rem;
-  border-color: rgba(251,191,36,.22);
-  animation-duration: 20s;
-  animation-direction: reverse;
+.breeze-prospect-map__cell--active {
+  cursor: pointer;
+  border-color: rgba(20,184,166,calc(.25 + var(--map-intensity) * .65));
+  background: linear-gradient(135deg, rgba(249,115,22,calc(.12 + var(--map-intensity) * .48)), rgba(251,191,36,calc(.08 + var(--map-intensity) * .42)) 54%, rgba(20,184,166,calc(.1 + var(--map-intensity) * .54)));
+  color: #fff;
+  animation: breezeMapCellReveal 520ms var(--ease-out, cubic-bezier(.23,1,.32,1)) both;
 }
 
-.breeze-audience-map__node {
-  position: absolute;
-  z-index: 1;
-  width: .6rem;
-  height: .6rem;
-  border-radius: 999px;
-  animation: breezeSignalNode 2.8s ease-in-out infinite;
+.breeze-prospect-map__cell--active:hover, .breeze-prospect-map__cell--selected { transform: translateY(-2px); border-color: #14b8a6; box-shadow: 0 0 0 1px rgba(20,184,166,.35), 0 0 18px rgba(20,184,166,.26); }
+.breeze-prospect-map__cell:disabled { cursor: default; }
+.breeze-prospect-map__cell span { color: #fde68a; font-size: .56rem; }
+.breeze-prospect-map__detail { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem; border-top: 1px solid rgba(20,184,166,.2); padding: .9rem 1rem 1rem; }
+.breeze-prospect-map__selection { min-width: 13rem; max-width: 28rem; border-left: 2px solid #14b8a6; padding-left: .75rem; }
+
+@keyframes breezeMapCellReveal {
+  from { opacity: 0; transform: translateY(.4rem) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.breeze-audience-map__node--teal { background: #14b8a6; box-shadow: 0 0 15px rgba(20,184,166,.85); }
-.breeze-audience-map__node--gold { background: #fbbf24; box-shadow: 0 0 15px rgba(251,191,36,.75); }
-.breeze-audience-map__node--orange { background: #f97316; box-shadow: 0 0 15px rgba(249,115,22,.8); }
 
 .breeze-delivery-trace {
   background: linear-gradient(120deg, rgba(249,115,22,.08), transparent 35%, rgba(20,184,166,.09));
@@ -438,7 +437,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .breeze-audience-map__orbit, .breeze-audience-map__node, .breeze-response-bar__pulse, .breeze-quote-flow__signal { animation: none; }
+  .breeze-prospect-map__cell--active, .breeze-response-bar__pulse, .breeze-quote-flow__signal { animation: none; }
   .breeze-response-bar { transform: scaleX(1); transition: none; }
 }
 

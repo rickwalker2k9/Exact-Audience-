@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/mysql2";
 import { asc, sql } from "drizzle-orm";
 import { BreezeLeadProgress, BreezePixelConfiguration, BreezeSourceRecord, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeLeadProgress, breezeImportSources, breezePixelConfigurations, breezeSourceRecords } from "../drizzle/schema";
 import { ENV } from './_core/env';
-import { createBreezeSourceRecordKey } from "./breezeSourceRecords";
+import { createBreezeSourceRecordKey, summarizeExactAudienceGeography } from "./breezeSourceRecords";
 import { parseBreezeSourceSeed } from "./breezeSourceSeed";
 import { storageGetSignedUrl } from "./storage";
 
@@ -293,4 +293,29 @@ export async function getBreezeSourceRecords(input: { source: string; limit: num
     .orderBy(asc(breezeSourceRecords.recordOrdinal))
     .limit(input.limit)
     .offset(input.offset);
+}
+
+export async function getBreezeExactAudienceGeography() {
+  const db = await getDb();
+  if (!db) {
+    try {
+      return summarizeExactAudienceGeography(await loadBreezeSourceSeedRecords());
+    } catch (error) {
+      console.error("[Breeze] In-memory geography seed unavailable:", error);
+      return summarizeExactAudienceGeography([]);
+    }
+  }
+
+  try {
+    await seedBreezeSourceRecordsIfEmpty();
+    const records = await db.select({
+      source: breezeSourceRecords.source,
+      city: breezeSourceRecords.city,
+      state: breezeSourceRecords.state,
+    }).from(breezeSourceRecords).where(eq(breezeSourceRecords.source, "exact-audience"));
+    return summarizeExactAudienceGeography(records);
+  } catch (error) {
+    console.error("[Breeze] Geographic aggregation unavailable:", error);
+    return summarizeExactAudienceGeography([]);
+  }
 }

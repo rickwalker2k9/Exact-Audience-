@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { invokeLLM } from "./_core/llm";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { createBreezeImportSource, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getBreezeSourceRecords, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
+import { createBreezeImportSource, getBreezeExactAudienceGeography, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getBreezeSourceRecords, getVoterCtvPrefs, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
 import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBreezeContactKey, mapApprovedCsv, toLeadSummary, toOwnerReviewLead, type BreezeFunnelStage } from "./breezeSheet";
 import { parseBreezePixelCsv } from "./breezePixelImport";
 import { BREEZE_RECORD_SOURCES } from "./breezeSourceRecords";
@@ -165,6 +165,7 @@ export const appRouter = router({
           recordOrdinal: record.recordOrdinal,
         }));
       }),
+    audienceGeography: publicProcedure.query(async () => getBreezeExactAudienceGeography()),
     importPixelCsv: protectedProcedure
       .input(z.object({ fileName: z.string().min(1).max(255), csvText: z.string().min(1).max(1_000_000) }))
       .mutation(async ({ ctx, input }) => {
