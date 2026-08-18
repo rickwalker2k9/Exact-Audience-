@@ -63,7 +63,7 @@
 - [x] Require Breeze sign-in for all portal data and define viewer, staff, and administrator visibility levels for approved lead information and source controls.
 - [x] Use the current approved-sheet read-only feed for the Breeze demo while deferring the private Google service-account connection.
 - [x] Remove the Breeze sign-in interruption for the complete aggregate demo while keeping source controls protected.
-- [ ] Add a lightweight access-code-protected Breeze view for approved individual names, stages, and operating statistics without exposing them on the public demo route.
+- [x] Add a lightweight access-code-protected Breeze view for approved individual names, stages, and operating statistics without exposing them on the public demo route.
 - [ ] Temporarily display approved lead names and operating statistics directly in Breeze for the owner’s review, then restore access controls on approval.
 - [ ] Require the valid tab to receive the validated-gold header schema before automatic production synchronization.
 - [ ] Implement live website-engagement and form-status ingestion so the Breeze funnel shows actual visited, started, and completed counts.
@@ -168,6 +168,9 @@
 - [x] Display only the source-provided fields and recorded activity totals for prior-period ad-engagement records, while retaining richer profile fields only for Exact Audience records.
 - [x] Remove any hidden or accessibility-only SiteID visitor-event language from Breeze journeys until SiteID is installed.
 - [x] Add a per-record prior-period activity sequence that renders exactly the authorized Activity count without inventing event descriptions or timestamps.
+- [ ] Remove approved individual names and operating statistics from the public `/breeze-insurance` route or gate them behind the protected Breeze client portal, then verify the public route.
+- [ ] Re-verify that the protected `/breeze-client` route retains record-level review after the aggregate-only public route is deployed.
+- [ ] Either obtain a true public third-party estimate for the Breeze landing destination or revise the requirement to explicitly accept the currently available main-site estimate with its stated limitations.
 - [x] Audit the selected Breeze lead-detail UI for any remaining demo or illustrative labels and remove them.
 - [x] Verify each displayed Breeze lead-detail field is directly supported by a source record and hide unsupported fields entirely.
 - [x] Add focused selected-record detail coverage proving no likelihood, inferred research, or demo labels render.

@@ -41,7 +41,7 @@ function Router() {
       <Route path="/breeze-client" component={BreezeClientPortal} />
       <Route path="/breeze-client-access" component={BreezeClientAccessReport} />
       <Route path="/breeze-insurance/staff" component={BreezeStaffLeads} />
-      <Route path="/breeze-insurance" component={BreezeLeadPortal} />
+      <Route path="/breeze-insurance" component={() => <BreezeLeadPortal />} />
       <Route path="/land-rover" component={LandRoverDashboard} />
       <Route path="/barrett-financial" component={BarrettDashboard} />
       <Route path="/neurocatch" component={NeuroCatchDashboard} />

@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { buildPriorPeriodActivitySequence, SelectedAudienceJourney } from "./BreezeFunnelHierarchy";
+import { BreezeRecordAccessNotice, buildPriorPeriodActivitySequence, SelectedAudienceJourney } from "./BreezeFunnelHierarchy";
 
 describe("SelectedAudienceJourney", () => {
   it("renders only populated source fields and channel/outreach status without inferred detail", () => {
@@ -36,5 +36,12 @@ describe("SelectedAudienceJourney", () => {
       "Recorded activity 3",
     ]);
     expect(buildPriorPeriodActivitySequence(-2)).toEqual([]);
+  });
+
+  it("renders an aggregate-only public access notice without prospect identities", () => {
+    render(<BreezeRecordAccessNotice />);
+    expect(screen.getByText("Individual prospect records are protected")).toBeTruthy();
+    expect(screen.queryByText("Janice Threatte")).toBeNull();
+    expect(screen.queryByText("Troy Brant")).toBeNull();
   });
 });

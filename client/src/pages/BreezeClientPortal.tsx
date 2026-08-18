@@ -36,7 +36,7 @@ function BreezeClientLogin() {
   }, [activity, status.data?.authenticated]);
 
   if (status.isLoading) return <div className="grid min-h-screen place-items-center bg-black text-[#fde68a]"><Loader2 className="animate-spin" /></div>;
-  if (status.data?.authenticated) return <BreezeLeadPortal />;
+  if (status.data?.authenticated) return <BreezeLeadPortal showIndividualRecords />;
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();

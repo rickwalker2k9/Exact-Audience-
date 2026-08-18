@@ -204,8 +204,16 @@ function QuoteJourneyFlow() {
   return <div className="breeze-quote-flow mt-6"><div className="breeze-quote-flow__track"><span className="breeze-quote-flow__signal" /></div><ol className="grid gap-3 md:grid-cols-5">{flow.map((stage, index) => { const item = toneClasses[stage.tone]; return <li key={stage.label} className={`breeze-quote-flow__node relative rounded-2xl border bg-black p-4 ${item.border}`} style={{ animationDelay: `${index * 80}ms` }}><span className={`grid h-7 w-7 place-items-center rounded-full border text-[10px] font-black ${item.border} ${item.bg} ${item.text}`}>{index + 1}</span><p className="mt-5 text-sm font-black text-white">{stage.label}</p><p className={`mt-2 text-xs font-semibold ${item.text}`}>{stage.detail}</p></li>; })}</ol></div>;
 }
 
-export function BreezeFunnelHierarchy() {
-  return <><BreezeFunnelHierarchyBase /><PriorPeriodEngagementPanel /></>;
+export function BreezeRecordAccessNotice() {
+  return <section className="rounded-2xl border border-[#fbbf24]/35 bg-black p-5"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#fde68a]">Secure record access</p><h3 className="mt-2 text-xl font-black text-white">Individual prospect records are protected</h3><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Names, contact fields, and per-record activity sequences are available only through the secure Breeze client portal. This public operating view shows aggregate source counts and status only.</p></section>;
+}
+
+function BreezePublicOperatingFunnel() {
+  return <section className="mt-7 rounded-3xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.4)] sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Breeze operating funnel</p><h2 className="mt-1 text-3xl font-black text-white">Behavior-based list to affiliate quote flow</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">Aggregate Exact Audience, channel engagement, Email Outreach, SiteID readiness, and quote-destination status are shown in this public operating view.</p></div><Pill tone="teal">Aggregate results</Pill></div><OperatingPathPanel /><div className="mt-7 grid gap-5 xl:grid-cols-2"><AudienceDistributionMap /><ChannelDeliveryTrace /><BreezeRecordAccessNotice /><div className="rounded-2xl border border-[#14b8a6]/40 bg-[radial-gradient(circle_at_8%_10%,rgba(249,115,22,.12),transparent_28%),radial-gradient(circle_at_92%_90%,rgba(20,184,166,.14),transparent_32%),#000] p-5"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#99f6e4]">Breeze affiliate quote flow</p><p className="mt-2 text-sm leading-6 text-slate-300">SiteID remains pending installation. Affiliate-page conversions are not available in this view.</p><QuoteJourneyFlow /></div></div></section>;
+}
+
+export function BreezeFunnelHierarchy({ showIndividualRecords = false }: { showIndividualRecords?: boolean }) {
+  return showIndividualRecords ? <><BreezeFunnelHierarchyBase /><PriorPeriodEngagementPanel /></> : <BreezePublicOperatingFunnel />;
 }
 
 function BreezeFunnelHierarchyBase() {
