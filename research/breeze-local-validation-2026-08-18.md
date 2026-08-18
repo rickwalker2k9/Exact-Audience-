@@ -78,3 +78,5 @@ After the journey sheet was shared, its CSV was successfully retrieved with 345 
 The 345 authorized journey rows are now treated as a distinct prior-period Google/Meta ad-engagement cohort rather than as Exact Audience records. Local portal verification showed the separate cohort panel loading the source-provided name, city/state, email/phone where supplied, and exact `Activity` total for each record, while the active Exact Audience table remains a separate 927-record view with richer source fields.
 
 The hidden SiteID visitor-event language was removed from the Breeze quote-flow accessibility content. The visible funnel retains only the SiteID Pending Installation stage and future visitor field categories; it does not present a SiteID visitor event in an individual customer journey.
+
+Public Railway verification confirmed the 345-record prior-period Google/Meta engagement panel loads after the active 927-record Exact Audience cohort. The public panel preserves the source separation, shows only the supplied contact fields and exact activity total, and retains SiteID as Pending Installation rather than reporting visitor activity.
