@@ -40,3 +40,5 @@ The public Railway route was verified after commit `c45c3be` deployed. After its
 ## Motion audit
 
 The retained Similarweb area chart now enters from a zero baseline with its supporting metrics counting up on entry. The rolling eight-day Google, Meta, and Email line chart now follows the same viewport-triggered baseline reveal, with staggered channel traces. The engagement-allocation totals count up when that section enters the viewport. Reduced-motion preference bypasses the nonessential chart animation while keeping final values visible.
+
+The public Railway route was rechecked after commit `b35e80f` deployed. The Similarweb card completed at 20,300 visits, 24.19% month-over-month, and 47.24% bounce rate; the rolling traffic metrics completed at 477 Google, 350 Meta, and 108 Email. The source-backed prospect map, selected-record journey controls, and SiteID Pending Installation layer remained available.
