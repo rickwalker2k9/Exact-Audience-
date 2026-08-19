@@ -1,13 +1,13 @@
 import { BREEZE_INITIAL_ACTIVE_COHORT } from "@shared/breezeCohort";
 
 export const BREEZE_OPERATING_TELEMETRY = [
-  { stage: "Exact Audience", value: 2696, status: "Data", tone: "#14b8a6", note: "Behavior Based Data" },
-  { stage: "Google Ads", value: 112, status: "Engagement", tone: "#f97316", note: "Engagement records" },
-  { stage: "Meta Ads", value: 238, status: "Engagement", tone: "#fbbf24", note: "Engagement records" },
-  { stage: "Email outreach", value: BREEZE_INITIAL_ACTIVE_COHORT, status: "Outreach", tone: "#fbbf24", note: "60% opened · 21% clicked across active outreach" },
+  { stage: "Exact Audience", value: 2696, status: "List", tone: "#14b8a6", note: "Behavior Based Data" },
+  { stage: "Google Ads", value: 112, status: "Replies", tone: "#f97316", note: "People who replied" },
+  { stage: "Meta Ads", value: 238, status: "Replies", tone: "#fbbf24", note: "People who replied" },
+  { stage: "Email outreach", value: BREEZE_INITIAL_ACTIVE_COHORT, status: "Email", tone: "#fbbf24", note: "60% opened · 21% clicked" },
 ] as const;
 
 export const BREEZE_STAGE_STATUS = [
-  { label: "SiteID visitor layer", status: "Pending installation", tone: "#f97316", detail: "No visitor events are shown" },
-  { label: "Affiliate quote flow", status: "Active destination", tone: "#14b8a6", detail: "Conversions unavailable" },
+  { label: "Website visits", status: "Not installed", tone: "#f97316", detail: "No visits to show" },
+  { label: "Breeze quote page", status: "Ready", tone: "#14b8a6", detail: "No sign-up results are shown" },
 ] as const;
