@@ -511,3 +511,52 @@ section.mt-6.rounded-2xl > div:first-child > div:first-child > p:first-child::af
   text-transform: uppercase;
   color: #99f6e4;
 }
+
+section.mt-6.rounded-2xl > div:first-child > div:first-child > h3,
+.breeze-telemetry-panel + section > p:first-child {
+  font-size: 0;
+}
+
+section.mt-6.rounded-2xl > div:first-child > div:first-child > h3::after {
+  content: "How it works";
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.breeze-telemetry-panel + section > p:first-child::after {
+  content: "What is ready";
+  font-size: .75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Keep the separate older-ad section simple and clear. */
+.mx-auto.mt-7.max-w-7xl > div:first-child > div:first-child > p:first-child,
+.mx-auto.mt-7.max-w-7xl > div:first-child > div:first-child > h3,
+.mx-auto.mt-7.max-w-7xl > div:first-child > div:first-child > p:last-child {
+  font-size: 0;
+}
+
+.mx-auto.mt-7.max-w-7xl > div:first-child > div:first-child > p:first-child::after {
+  content: "Earlier ad results";
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #fde68a;
+}
+
+.mx-auto.mt-7.max-w-7xl > div:first-child > div:first-child > h3::after {
+  content: "Earlier ad group";
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.mx-auto.mt-7.max-w-7xl > div:first-child > div:first-child > p:last-child::after {
+  content: "These people came from last month's ads. They are not on today's Exact Audience list.";
+  font-size: .875rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+}
