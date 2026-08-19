@@ -181,8 +181,8 @@
 - [x] Keep individual record-level review available on the direct `/breeze-insurance` route while the user has requested a no-login immediate-use portal.
 - [x] Replace the stale visible Aug 17 Similarweb snapshot label and any remaining static Breeze date labels with current-date derived August 19 presentation.
 - [x] Remove the active-cohort explanatory sentence and the 2,225 Email Fields metric from the Breeze presentation.
-- [ ] Remove client-visible words such as animated, animation, inferred, and other unclear technical wording from Breeze.
-- [ ] Rewrite all Breeze client-facing labels and descriptions to clear fifth-grade plain language while keeping factual source limits.
+- [x] Remove client-visible words such as animated, animation, inferred, and other unclear technical wording from Breeze.
+- [x] Rewrite all Breeze client-facing labels and descriptions to clear fifth-grade plain language while keeping factual source limits.
 - [x] Audit the selected Breeze lead-detail UI for any remaining demo or illustrative labels and remove them.
 - [x] Verify each displayed Breeze lead-detail field is directly supported by a source record and hide unsupported fields entirely.
 - [x] Add focused selected-record detail coverage proving no likelihood, inferred research, or demo labels render.

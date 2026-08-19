@@ -20,20 +20,20 @@ describe("SelectedAudienceJourney", () => {
       recordOrdinal: 4,
     }} />);
 
-    expect(screen.getByText("Available source fields")).toBeTruthy();
+    expect(screen.getByText("Details in this list")).toBeTruthy();
     expect(screen.getByText("Age range")).toBeTruthy();
     expect(screen.getByText("Income range")).toBeTruthy();
     expect(screen.getByText("Phone")).toBeTruthy();
     expect(screen.queryByText("Email")).toBeNull();
-    expect(screen.getByText("Channel and outreach status")).toBeTruthy();
+    expect(screen.getByText("Ad and email updates")).toBeTruthy();
     expect(screen.queryByText(/likelihood|research|demo|illustrative|SiteID/i)).toBeNull();
   });
 
   it("creates an exact-count activity sequence without unsupported event detail", () => {
     expect(buildPriorPeriodActivitySequence(3)).toEqual([
-      "Recorded activity 1",
-      "Recorded activity 2",
-      "Recorded activity 3",
+      "Activity 1",
+      "Activity 2",
+      "Activity 3",
     ]);
     expect(buildPriorPeriodActivitySequence(-2)).toEqual([]);
   });
