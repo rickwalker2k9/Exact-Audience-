@@ -178,6 +178,7 @@
 - [ ] Inspect any remaining Railway deploy-stage startup error after the compatible Node runtime is applied.
 - [ ] Keep the direct public Breeze portal available for immediate client review while the optional protected-route deployment is deferred.
 - [ ] Verify the live direct Breeze portal displays August 19 date labels and the requested Exact Audience, Google, Meta, Email Outreach, prior-period, and SiteID-pending data layers.
+- [ ] Keep individual record-level review available on the direct `/breeze-insurance` route while the user has requested a no-login immediate-use portal.
 - [ ] Replace the stale visible Aug 17 Similarweb snapshot label and any remaining static Breeze date labels with current-date derived August 19 presentation.
 - [ ] Remove the active-cohort explanatory sentence and the 2,225 Email Fields metric from the Breeze presentation.
 - [ ] Remove client-visible words such as animated, animation, inferred, and other unclear technical wording from Breeze.
