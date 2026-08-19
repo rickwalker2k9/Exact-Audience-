@@ -124,8 +124,8 @@ export function SelectedAudienceJourney({ record }: { record: SourceRecord }) {
 }
 
 const STAGE_VISUALS = [
-  { id: "audience", value: String(BREEZE_INITIAL_ACTIVE_COHORT), label: "Active Exact Audience cohort", sublabel: "Daily approved-record release", width: 100, tone: "teal" as Tone, kind: "Data" },
-  { id: "responders", value: "350", label: "Google + Meta engagement", sublabel: "112 Google + 238 Meta", width: 61, tone: "orange" as Tone, kind: "Engagement" },
+  { id: "audience", value: String(BREEZE_INITIAL_ACTIVE_COHORT), label: "Active Exact Audience list", sublabel: "New approved records added daily", width: 100, tone: "teal" as Tone, kind: "Data" },
+  { id: "responders", value: "350", label: "Google + Meta results", sublabel: "112 Google + 238 Meta", width: 61, tone: "orange" as Tone, kind: "Engagement" },
   { id: "email", value: String(BREEZE_INITIAL_ACTIVE_COHORT), label: "Email outreach", sublabel: "60% opened · 21% clicked", width: 45, tone: "gold" as Tone, kind: "Outreach" },
   { id: "website", value: "Pending", label: "Website visitors", sublabel: "SiteID installation pending", width: 28, tone: "orange" as Tone, kind: "SiteID" },
   { id: "destination", value: "Active", label: "Affiliate quote", sublabel: "Breeze quote destination", width: 100, tone: "teal" as Tone, kind: "Destination" },

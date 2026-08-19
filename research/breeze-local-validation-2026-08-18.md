@@ -86,3 +86,7 @@ Local interaction verification confirmed that each prior-period engagement recor
 Public Railway verification confirmed the same source-counted interaction is live: the 9-activity prior-period record rendered exactly nine generic entries, and the activity sequence remained separate from current Exact Audience journeys and pending SiteID data.
 
 The first two cache-bypassed public checks after the aggregate-only public-route commit continued to serve the prior Breeze build with individual record names. Local validation passed; public verification remains pending the Railway deployment propagation.
+
+## Plain-language and active-cohort review — August 19, 2026
+
+The local direct Breeze route now shows an August 19 operating-date label and keeps the factual August 17 Similarweb source-check date. The main traffic panel uses shorter labels and direct wording. The active-cohort panel no longer visibly displays the requested explanatory sentence or the 2,225 Email Fields card. Remaining technical labels were identified for a final copy pass before deployment.

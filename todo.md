@@ -176,6 +176,12 @@
 - [ ] Fix the Railway deployment failure reported for commit 6d5f4e6 before re-verifying the Breeze public privacy route.
 - [ ] Pin the Railway production build to a Node version compatible with Vite 7 and confirm the deployment proceeds beyond image push.
 - [ ] Inspect any remaining Railway deploy-stage startup error after the compatible Node runtime is applied.
+- [ ] Keep the direct public Breeze portal available for immediate client review while the optional protected-route deployment is deferred.
+- [ ] Verify the live direct Breeze portal displays August 19 date labels and the requested Exact Audience, Google, Meta, Email Outreach, prior-period, and SiteID-pending data layers.
+- [ ] Replace the stale visible Aug 17 Similarweb snapshot label and any remaining static Breeze date labels with current-date derived August 19 presentation.
+- [ ] Remove the active-cohort explanatory sentence and the 2,225 Email Fields metric from the Breeze presentation.
+- [ ] Remove client-visible words such as animated, animation, inferred, and other unclear technical wording from Breeze.
+- [ ] Rewrite all Breeze client-facing labels and descriptions to clear fifth-grade plain language while keeping factual source limits.
 - [x] Audit the selected Breeze lead-detail UI for any remaining demo or illustrative labels and remove them.
 - [x] Verify each displayed Breeze lead-detail field is directly supported by a source record and hide unsupported fields entirely.
 - [x] Add focused selected-record detail coverage proving no likelihood, inferred research, or demo labels render.

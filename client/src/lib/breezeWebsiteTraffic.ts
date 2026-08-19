@@ -18,3 +18,12 @@ export const BREEZE_WEBSITE_SNAPSHOT = {
   averageVisitDuration: "2:38",
   organicSearchShare: 41.72,
 } as const;
+
+export function formatBreezeOperatingDate(date = new Date()) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "America/Phoenix",
+  }).format(date);
+}

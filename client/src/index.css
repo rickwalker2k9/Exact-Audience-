@@ -464,3 +464,18 @@
 @media (prefers-reduced-motion: reduce) {
   .breeze-chart-reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* Breeze active-cohort presentation: retain the approved active-record count only. */
+.mt-7.space-y-4 > article:first-child > .flex.flex-wrap.items-center.justify-between.gap-5 > div:first-child > p:last-child,
+.mt-7.space-y-4 > article:first-child > .flex.flex-wrap.items-center.justify-between.gap-5 > .grid.grid-cols-2 > div:last-child {
+  display: none;
+}
+
+.mt-7.space-y-4 > article:first-child > .flex.flex-wrap.items-center.justify-between.gap-5 > .grid.grid-cols-2 {
+  grid-template-columns: minmax(9rem, 1fr) !important;
+}
+
+/* Keep the operating path clear and direct. */
+section.mt-6.rounded-2xl > div:first-child > div:first-child > p:last-child {
+  display: none;
+}

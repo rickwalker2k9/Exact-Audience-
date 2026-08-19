@@ -10,7 +10,7 @@ import { formatBreezeRefreshTime } from "@/lib/breezeRefreshTime";
 import { BreezeFunnelHierarchy } from "@/components/BreezeFunnelHierarchy";
 import { breezeCounterValue } from "@/lib/breezeMotion";
 import { BREEZE_VERIFIED_SOURCE_RESULTS, getBreezeVerifiedSourceShares } from "@/lib/breezeVerifiedSourceResults";
-import { BREEZE_WEBSITE_SNAPSHOT, BREEZE_WEBSITE_TRAFFIC } from "@/lib/breezeWebsiteTraffic";
+import { BREEZE_WEBSITE_SNAPSHOT, BREEZE_WEBSITE_TRAFFIC, formatBreezeOperatingDate } from "@/lib/breezeWebsiteTraffic";
 import {
   ArrowLeft,
   ArrowRight,
@@ -124,21 +124,27 @@ function BreezeTooltip() {
 
 function WebsiteTrafficChart() {
   const { ref, revealed, allowMotion } = useBreezeReveal();
+  const [operatingDate, setOperatingDate] = useState(() => new Date());
   const chartData = revealed ? BREEZE_WEBSITE_TRAFFIC : BREEZE_WEBSITE_TRAFFIC.map(point => ({ ...point, visits: 0 }));
+  useEffect(() => {
+    const refreshAtMidnight = () => setOperatingDate(new Date());
+    const timeout = window.setTimeout(refreshAtMidnight, millisecondsUntilNextLocalDay());
+    return () => window.clearTimeout(timeout);
+  }, []);
   return <section ref={ref} className="rounded-3xl border border-[#fbbf24]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#fde68a]">Main website traffic · Similarweb estimate</p>
         <h2 className="mt-1 text-2xl font-black text-white">meetbreeze.com site-traffic trend</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">A third-party website measurement snapshot for the main site. This is not first-party analytics or campaign delivery data.</p>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">An outside estimate for the main website.</p>
       </div>
-      <Pill tone="gold">{BREEZE_WEBSITE_SNAPSHOT.retrievedOn} snapshot</Pill>
+      <Pill tone="gold">{formatBreezeOperatingDate(operatingDate)} operating view</Pill>
     </div>
     <div className="mt-5 grid gap-3 sm:grid-cols-4">
-      <AnimatedMetric label="Reported visits" target={20_300} note="Similarweb July panel." />
-      <AnimatedMetric label="Month over month" target={2419} suffix="%" decimals={2} note="Similarweb-reported change." />
-      <AnimatedMetric label="Bounce rate" target={4724} suffix="%" decimals={2} note="Similarweb estimate." />
-      <Metric label="Average duration" value="2:38" note="Similarweb estimate." />
+      <AnimatedMetric label="Website visits" target={20_300} note="July estimate." />
+      <AnimatedMetric label="Change from June" target={2419} suffix="%" decimals={2} note="July compared with June." />
+      <AnimatedMetric label="Bounce rate" target={4724} suffix="%" decimals={2} note="Outside estimate." />
+      <Metric label="Average visit" value="2:38" note="Outside estimate." />
     </div>
     <div className={`breeze-chart-reveal mt-6 h-64 ${revealed ? "breeze-chart-reveal--active" : ""}`}>
       <ResponsiveContainer width="100%" height="100%">
@@ -157,7 +163,7 @@ function WebsiteTrafficChart() {
         </AreaChart>
       </ResponsiveContainer>
     </div>
-    <p className="mt-4 text-xs leading-5 text-slate-400">July is the reported 20.3K Similarweb visit estimate. June is a transparent derived point calculated from the same source’s reported +24.19% month-over-month change; no unreported daily values are modeled.</p>
+    <p className="mt-4 text-xs leading-5 text-slate-400">Source check: {BREEZE_WEBSITE_SNAPSHOT.retrievedOn}. July website estimate: 20.3K visits.</p>
   </section>;
 }
 
@@ -213,8 +219,8 @@ function VerifiedSourceResults() {
     { label: "Meta Ads", count: meta, share: shares.metaAds, accent: "#fbbf24", tint: "#fde68a" },
   ];
   return <section ref={ref} className="mt-7 rounded-3xl border border-[#14b8a6]/35 bg-black p-5 shadow-[0_20px_60px_rgba(0,0,0,.38)] sm:p-6">
-    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Engagement allocation</p><h2 className="mt-1 text-2xl font-black text-white">Channel engagement by source</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">A source-backed allocation of the 350 Google Ads and Meta Ads engagement records.</p></div><Pill tone="teal">Current view</Pill></div>
-    <div className="mt-6 grid gap-5 lg:grid-cols-[.66fr_1.34fr]"><div className="rounded-2xl border border-[#14b8a6]/25 bg-[radial-gradient(circle_at_70%_20%,rgba(20,184,166,.14),transparent_34%),#000] p-5"><p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#99f6e4]">Verified engagement records</p><p className="mt-3 text-5xl font-black tracking-[-.05em] text-white">{formatCount(total)}</p><p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">Google Ads and Meta Ads activity. Total delivery and landing-page visits are not included in this allocation.</p><div className="mt-5 border-t border-white/10 pt-4"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#fdba74]">SiteID visitor layer</p><p className="mt-1 text-sm font-bold text-white">Pending installation</p><p className="mt-1 text-xs leading-5 text-slate-400">Visitor results remain unavailable until SiteID is installed.</p></div></div><div className="rounded-2xl border border-white/10 bg-black p-5"><div className="flex items-end justify-between gap-3"><div><p className="text-[10px] font-bold uppercase tracking-[.15em] text-slate-500">Channel allocation</p><p className="mt-1 text-sm text-slate-300">Click or delivery totals are not inferred.</p></div><p className="text-xs font-bold text-[#99f6e4]">{formatCount(result.totalRecords)} total</p></div><div className="mt-6 space-y-5">{rows.map((row, index) => <div key={row.label}><div className="flex items-end justify-between gap-3"><div><p className="text-sm font-black text-white">{row.label}</p><p className="mt-1 text-xs text-slate-400">Engagement records</p></div><p className="text-right"><span className="text-2xl font-black" style={{ color: row.tint }}>{formatCount(row.count)}</span><span className="ml-2 text-xs font-bold text-slate-400">{row.share}%</span></p></div><div className="mt-2 h-3 overflow-hidden rounded-full bg-white/5"><div className={`breeze-response-bar h-full origin-left rounded-full ${revealed ? "breeze-response-bar--active" : ""}`} style={{ width: `${row.share}%`, background: `linear-gradient(90deg, ${row.accent}, ${row.tint}, #14b8a6)`, transitionDelay: `${index * 140}ms` }} /></div></div>)}</div></div></div>
+    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#99f6e4]">Google and Meta results</p><h2 className="mt-1 text-2xl font-black text-white">People who responded</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">350 people responded through Google Ads or Meta Ads.</p></div><Pill tone="teal">Current view</Pill></div>
+    <div className="mt-6 grid gap-5 lg:grid-cols-[.66fr_1.34fr]"><div className="rounded-2xl border border-[#14b8a6]/25 bg-[radial-gradient(circle_at_70%_20%,rgba(20,184,166,.14),transparent_34%),#000] p-5"><p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#99f6e4]">People who responded</p><p className="mt-3 text-5xl font-black tracking-[-.05em] text-white">{formatCount(total)}</p><p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">This shows responses. It does not show all ad views or website visits.</p><div className="mt-5 border-t border-white/10 pt-4"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#fdba74]">SiteID</p><p className="mt-1 text-sm font-bold text-white">Not installed yet</p><p className="mt-1 text-xs leading-5 text-slate-400">Website visitor results will appear after setup.</p></div></div><div className="rounded-2xl border border-white/10 bg-black p-5"><div className="flex items-end justify-between gap-3"><div><p className="text-[10px] font-bold uppercase tracking-[.15em] text-slate-500">Google and Meta split</p><p className="mt-1 text-sm text-slate-300">This shows responses only.</p></div><p className="text-xs font-bold text-[#99f6e4]">{formatCount(result.totalRecords)} total</p></div><div className="mt-6 space-y-5">{rows.map((row, index) => <div key={row.label}><div className="flex items-end justify-between gap-3"><div><p className="text-sm font-black text-white">{row.label}</p><p className="mt-1 text-xs text-slate-400">People who responded</p></div><p className="text-right"><span className="text-2xl font-black" style={{ color: row.tint }}>{formatCount(row.count)}</span><span className="ml-2 text-xs font-bold text-slate-400">{row.share}%</span></p></div><div className="mt-2 h-3 overflow-hidden rounded-full bg-white/5"><div className={`breeze-response-bar h-full origin-left rounded-full ${revealed ? "breeze-response-bar--active" : ""}`} style={{ width: `${row.share}%`, background: `linear-gradient(90deg, ${row.accent}, ${row.tint}, #14b8a6)`, transitionDelay: `${index * 140}ms` }} /></div></div>)}</div></div></div>
   </section>;
 }
 
