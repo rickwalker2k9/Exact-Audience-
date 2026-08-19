@@ -479,3 +479,35 @@
 section.mt-6.rounded-2xl > div:first-child > div:first-child > p:last-child {
   display: none;
 }
+
+/* Use short client-facing labels for the technical funnel panels. */
+.breeze-telemetry-panel > div:first-child > p,
+.breeze-delivery-trace > div:first-child > div:first-child > p:first-child,
+section.mt-6.rounded-2xl > div:first-child > div:first-child > p:first-child {
+  font-size: 0;
+}
+
+.breeze-telemetry-panel > div:first-child > p::after {
+  content: "Results";
+  font-size: .75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.breeze-delivery-trace > div:first-child > div:first-child > p:first-child::after {
+  content: "Ad results";
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #99f6e4;
+}
+
+section.mt-6.rounded-2xl > div:first-child > div:first-child > p:first-child::after {
+  content: "Today's results";
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #99f6e4;
+}
