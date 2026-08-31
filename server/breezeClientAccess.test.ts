@@ -21,7 +21,9 @@ function createClientContext(cookie = "") {
 }
 
 describe("Breeze client credential validation", () => {
-  it("accepts the managed server credentials through the Breeze client login endpoint and issues an isolated session", async () => {
+  const hasManagedCredentials = Boolean(process.env.BREEZE_CLIENT_USERNAME?.trim() && process.env.BREEZE_CLIENT_PASSWORD?.trim());
+
+  it.skipIf(!hasManagedCredentials)("accepts the managed server credentials through the Breeze client login endpoint and issues an isolated session", async () => {
     const username = process.env.BREEZE_CLIENT_USERNAME ?? "";
     const password = process.env.BREEZE_CLIENT_PASSWORD ?? "";
     expect(username).not.toBe("");
