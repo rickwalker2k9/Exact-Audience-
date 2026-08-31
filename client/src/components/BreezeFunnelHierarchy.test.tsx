@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { BreezeRecordAccessNotice, buildPriorPeriodActivitySequence, SelectedAudienceJourney } from "./BreezeFunnelHierarchy";
+import { BreezeRecordAccessNotice, buildPriorPeriodActivitySequence, PriorPeriodJourney, SelectedAudienceJourney } from "./BreezeFunnelHierarchy";
 
 describe("SelectedAudienceJourney", () => {
   it("renders source fields, channel status, and general coverage resources without inferring personal activity", () => {
@@ -38,6 +38,25 @@ describe("SelectedAudienceJourney", () => {
       "Activity 3",
     ]);
     expect(buildPriorPeriodActivitySequence(-2)).toEqual([]);
+  });
+
+  it("renders a selected earlier-lead journey with the recorded count and coverage resources", () => {
+    render(<PriorPeriodJourney record={{
+      firstName: "Mary",
+      lastName: "Osborne",
+      city: "Austin",
+      state: "TX",
+      email: "",
+      phone: "",
+      activityCount: 5,
+      sourceLabel: "Earlier Google and Meta replies",
+      recordOrdinal: 15,
+    }} />);
+
+    expect(screen.getByText("Selected lead journey")).toBeTruthy();
+    expect(screen.getByText("5 activities")).toBeTruthy();
+    expect(screen.getByText("Coverage resources")).toBeTruthy();
+    expect(screen.getByText("The Texas Insurance Broker")).toBeTruthy();
   });
 
   it("renders an aggregate-only public access notice without prospect identities", () => {
