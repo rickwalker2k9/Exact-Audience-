@@ -11,7 +11,6 @@ import { BreezeFunnelHierarchy } from "@/components/BreezeFunnelHierarchy";
 import { breezeCounterValue } from "@/lib/breezeMotion";
 import { BREEZE_VERIFIED_SOURCE_RESULTS, getBreezeVerifiedSourceShares } from "@/lib/breezeVerifiedSourceResults";
 import { BREEZE_WEBSITE_SNAPSHOT, BREEZE_WEBSITE_TRAFFIC, formatBreezeOperatingDate } from "@/lib/breezeWebsiteTraffic";
-import { BREEZE_WORDMARK_DATA_URI } from "@/lib/breezeWordmark";
 import {
   ArrowLeft,
   ArrowRight,
@@ -310,7 +309,7 @@ function DestinationPage({ leads, onBack }: { leads: OwnerReviewLead[]; onBack: 
 }
 
 export default function BreezeLeadPortal({ showIndividualRecords = false }: { showIndividualRecords?: boolean }) {
-  return <main className="min-h-screen bg-black text-slate-100"><section className="border-b border-[#fbbf24]/25 bg-[radial-gradient(circle_at_68%_20%,rgba(249,115,22,.24),transparent_34%),radial-gradient(circle_at_82%_4%,rgba(20,184,166,.16),transparent_28%),#000000]"><div className="mx-auto max-w-7xl px-5 py-12 sm:py-16"><div className="breeze-logo-frame"><img src={BREEZE_WORDMARK_DATA_URI} alt="Breeze" className="breeze-logo-wordmark" /></div><p className="mt-5 text-lg font-medium text-[#fde68a] sm:text-xl">Intent prospects based on behavioral activity.</p></div></section><div className="mx-auto max-w-7xl space-y-7 px-5 py-9"><WebsiteTrafficChart /><SourceTrafficChart showIndividualRecords={showIndividualRecords} /></div><footer className="border-t border-[#fbbf24]/20 bg-black px-5 py-6 text-center text-[10px] font-medium tracking-[.08em] text-slate-500 sm:text-[11px]">Copyright 2026 Exact Audience AI, a service of Imagine Agency LLC. All rights reserved.</footer></main>;
+  return <main className="min-h-screen bg-black text-slate-100"><section className="border-b border-[#fbbf24]/25 bg-[radial-gradient(circle_at_68%_20%,rgba(249,115,22,.24),transparent_34%),radial-gradient(circle_at_82%_4%,rgba(20,184,166,.16),transparent_28%),#000000]"><div className="mx-auto max-w-7xl px-5 py-12 sm:py-16"><div aria-label="Breeze" className="inline-flex rounded-2xl border border-[#fbbf24]/35 bg-black/45 px-5 py-2 shadow-[0_0_28px_rgba(249,115,22,.2)]"><span className="bg-gradient-to-r from-[#fb923c] via-[#fbbf24] to-[#2dd4bf] bg-clip-text text-4xl font-black tracking-[-0.08em] text-transparent sm:text-5xl">breeze</span></div><p className="mt-5 text-lg font-medium text-[#fde68a] sm:text-xl">Intent prospects based on behavioral activity.</p></div></section><div className="mx-auto max-w-7xl space-y-7 px-5 py-9"><WebsiteTrafficChart /><SourceTrafficChart showIndividualRecords={showIndividualRecords} /></div><footer className="border-t border-[#fbbf24]/20 bg-black px-5 py-6 text-center text-[10px] font-medium tracking-[.08em] text-slate-500 sm:text-[11px]">Copyright 2026 Exact Audience AI, a service of Imagine Agency LLC. All rights reserved.</footer></main>;
 }
 
 export function BreezeStaffLeads() {

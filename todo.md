@@ -202,3 +202,14 @@
 - [x] Replace the statewide map presentation with a TN-5-only interactive district map containing no irrelevant counties.
 - [x] Add a component test proving a TN-5 county click changes the visible intelligence panel.
 - [ ] Deploy the accessible map controls and re-verify a live Railway county selection interaction.
+
+## Breeze Railway Logo Rendering — Aug 31, 2026
+- [x] Replace the broken Breeze hero image dependency with a self-contained wordmark in the active BreezeLeadPortal route.
+- [ ] Reduce the initial Railway JavaScript payload so the Breeze portal can load the wordmark reliably before client-side timeouts.
+- [ ] Verify the repaired Breeze hero wordmark on the public Railway URL after the optimized deployment completes.
+- [ ] Remove the current active Breeze hero logo treatment and replace it with a fresh Railway-safe implementation.
+- [x] Replace the Breeze hero image with a thick lowercase gradient-text wordmark and verify it locally.
+
+## Breeze Research Paths — Aug 31, 2026
+- [ ] Make every active Breeze View journey control open a lead-specific research-path panel.
+- [ ] Use official national and city-relevant income-protection resources in the initial Breeze research paths.
