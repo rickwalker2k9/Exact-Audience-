@@ -1,35 +1,43 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
+import { lazy, Suspense } from "react";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
-// Pages
-import Campaigns from "./pages/Campaigns";
-import Home from "./pages/Home";
-import LamborghiniDashboard from "./pages/LamborghiniDashboard";
-import WarbyDashboard from "./pages/WarbyDashboard";
-import PolicyGeniusDashboard from "./pages/PolicyGeniusDashboard";
-import CampaignPlaceholder from "./pages/CampaignPlaceholder";
-import BuyerProfilePage from "./pages/BuyerProfilePage";
-import BreezeLeadPortal, { BreezeStaffLeads } from "./pages/BreezeLeadPortal";
-import LandRoverDashboard from "./pages/LandRoverDashboard";
-import BarrettDashboard from "./pages/BarrettDashboard";
-import NeuroCatchDashboard from "./pages/NeuroCatchDashboard";
-import SymCheckDashboard from "@/pages/SymCheckDashboard";
-import InterMedDashboard from "./pages/InterMedDashboard";
-import ImagineAgencyDashboard from "./pages/ImagineAgencyDashboard";
-import MogulDashboard from "./pages/MogulDashboard";
-import LitehouseHealthDashboard from "./pages/LitehouseHealthDashboard";
-import ProdromeDashboard from "./pages/ProdromeDashboard";
-import CharlieHatcherDashboard from "./pages/CharlieHatcherGeneralDashboard";
-import BreezeClientPortal from "./pages/BreezeClientPortal";
-import BreezeClientAccessReport from "./pages/BreezeClientAccessReport";
+// Route-level code splitting keeps the initial Railway payload focused on the requested portal.
+const Campaigns = lazy(() => import("./pages/Campaigns"));
+const Home = lazy(() => import("./pages/Home"));
+const LamborghiniDashboard = lazy(() => import("./pages/LamborghiniDashboard"));
+const WarbyDashboard = lazy(() => import("./pages/WarbyDashboard"));
+const PolicyGeniusDashboard = lazy(() => import("./pages/PolicyGeniusDashboard"));
+const CampaignPlaceholder = lazy(() => import("./pages/CampaignPlaceholder"));
+const BuyerProfilePage = lazy(() => import("./pages/BuyerProfilePage"));
+const BreezeLeadPortal = lazy(() => import("./pages/BreezeLeadPortal"));
+const BreezeStaffLeads = lazy(() => import("./pages/BreezeLeadPortal").then(module => ({ default: module.BreezeStaffLeads })));
+const LandRoverDashboard = lazy(() => import("./pages/LandRoverDashboard"));
+const BarrettDashboard = lazy(() => import("./pages/BarrettDashboard"));
+const NeuroCatchDashboard = lazy(() => import("./pages/NeuroCatchDashboard"));
+const SymCheckDashboard = lazy(() => import("@/pages/SymCheckDashboard"));
+const InterMedDashboard = lazy(() => import("./pages/InterMedDashboard"));
+const ImagineAgencyDashboard = lazy(() => import("./pages/ImagineAgencyDashboard"));
+const MogulDashboard = lazy(() => import("./pages/MogulDashboard"));
+const LitehouseHealthDashboard = lazy(() => import("./pages/LitehouseHealthDashboard"));
+const ProdromeDashboard = lazy(() => import("./pages/ProdromeDashboard"));
+const CharlieHatcherDashboard = lazy(() => import("./pages/CharlieHatcherGeneralDashboard"));
+const BreezeClientPortal = lazy(() => import("./pages/BreezeClientPortal"));
+const BreezeClientAccessReport = lazy(() => import("./pages/BreezeClientAccessReport"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+
+function RouteLoadingState() {
+  return <div className="min-h-screen bg-black text-[#fde68a] flex items-center justify-center text-sm font-semibold tracking-[0.08em]">LOADING DASHBOARD…</div>;
+}
+
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
-    <Switch>
+    <Suspense fallback={<RouteLoadingState />}>
+      <Switch>
       {/* Campaign directory — post-login home */}
       <Route path="/campaigns" component={Campaigns} />
 
@@ -62,7 +70,8 @@ function Router() {
 
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
-    </Switch>
+      </Switch>
+    </Suspense>
   );
 }
 
