@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { BreezeRecordAccessNotice, buildPriorPeriodActivitySequence, SelectedAudienceJourney } from "./BreezeFunnelHierarchy";
 
 describe("SelectedAudienceJourney", () => {
-  it("renders only populated source fields and channel/outreach status without inferred detail", () => {
+  it("renders source fields, channel status, and general coverage resources without inferring personal activity", () => {
     render(<SelectedAudienceJourney record={{
       id: 1,
       source: "exact-audience",
@@ -26,7 +26,9 @@ describe("SelectedAudienceJourney", () => {
     expect(screen.getByText("Phone")).toBeTruthy();
     expect(screen.queryByText("Email")).toBeNull();
     expect(screen.getByText("Ad and email updates")).toBeTruthy();
-    expect(screen.queryByText(/likelihood|research|demo|illustrative|SiteID/i)).toBeNull();
+    expect(screen.getByText("Coverage research path")).toBeTruthy();
+    expect(screen.getByText("Guardian Life")).toBeTruthy();
+    expect(screen.queryByText(/likelihood|demo|illustrative|SiteID/i)).toBeNull();
   });
 
   it("creates an exact-count activity sequence without unsupported event detail", () => {
