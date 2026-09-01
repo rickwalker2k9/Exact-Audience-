@@ -4,6 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
+    "preDeployCommand": "pnpm drizzle-kit migrate",
     "startCommand": "NODE_ENV=production node dist/index.js",
     "healthcheckPath": "/",
     "restartPolicyType": "ON_FAILURE",

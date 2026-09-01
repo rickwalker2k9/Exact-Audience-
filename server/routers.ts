@@ -11,6 +11,7 @@ import { parseBreezePixelCsv } from "./breezePixelImport";
 import { BREEZE_CLIENT_SESSION_COOKIE, BREEZE_CLIENT_SESSION_TTL_MS, createBreezeClientSessionToken, hashBreezeClientSessionToken, validateBreezeClientCredentials } from "./breezeClientAccess";
 import { BREEZE_RECORD_SOURCES } from "./breezeSourceRecords";
 import { getBreezePriorPeriodEngagementRecords } from "./breezePriorPeriodEngagement";
+import { ensureBreezeCurrentLeadListInitialized } from "./breezeDailyLeadList";
 import { TRPCError } from "@trpc/server";
 import { storagePut } from "./storage";
 import { z } from "zod";
@@ -241,7 +242,12 @@ export const appRouter = router({
           records: records.slice(input.offset, input.offset + input.limit),
         };
       }),
-    currentLeadList: publicProcedure.query(async () => getBreezeCurrentLeadList()),
+    currentLeadList: publicProcedure.query(async () => {
+      const current = await getBreezeCurrentLeadList();
+      if (current.leads.length) return current;
+      await ensureBreezeCurrentLeadListInitialized();
+      return getBreezeCurrentLeadList();
+    }),
     audienceGeography: publicProcedure.query(async () => getBreezeExactAudienceGeography()),
     activeCohort: publicProcedure.query(async () => getBreezeActiveCohortStatus()),
     importPixelCsv: protectedProcedure

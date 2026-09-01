@@ -83,3 +83,19 @@ export async function refreshBreezeDailyLeadList(now = new Date()) {
   }
   return { listDate, releaseCount: dailyList.releaseCount, importedRecordCount: imported.count, visibleSlotsRefreshed: nextLeads.length };
 }
+
+let currentLeadListInitialization: Promise<void> | null = null;
+
+export async function ensureBreezeCurrentLeadListInitialized() {
+  const db = await getDb();
+  if (!db) throw new Error("Breeze lead-list storage is unavailable");
+  const [currentCount] = await db.select({ count: sql<number>`count(*)` }).from(breezeCurrentLeadList);
+  if (Number(currentCount?.count ?? 0) > 0) return false;
+  if (!currentLeadListInitialization) {
+    currentLeadListInitialization = refreshBreezeDailyLeadList().then(() => undefined).finally(() => {
+      currentLeadListInitialization = null;
+    });
+  }
+  await currentLeadListInitialization;
+  return true;
+}
