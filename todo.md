@@ -220,3 +220,4 @@
 - [x] Replace the outdated earlier-ad records with the Current Lead List and a View customer journey detail panel.
 - [x] Build the Railway Cron command and document its required configuration.
 - [ ] Create the separate Railway Cron service with the production database variable and verify its first daily run.
+- [ ] Synchronize pnpm-lock.yaml with package.json so Railway can install the Breeze CSV importer with frozen lockfile enabled.
