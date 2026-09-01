@@ -1,6 +1,6 @@
-import { and, asc, desc, eq, inArray, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { BreezeClientSession, BreezeLeadProgress, BreezePixelConfiguration, BreezeSourceRecord, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeClientSessions, breezeLeadProgress, breezeImportSources, breezePixelConfigurations, breezeSourceRecords } from "../drizzle/schema";
+import { BreezeClientSession, BreezeLeadProgress, BreezePixelConfiguration, BreezeSourceRecord, InsertUser, InsertVoterCtvPrefs, users, voterCtvPrefs, breezeClientSessions, breezeCurrentLeadList, breezeDailyLeadLists, breezeLeadProgress, breezeImportSources, breezePixelConfigurations, breezeSourceRecords, breezeUpcomingLeads } from "../drizzle/schema";
 import { ENV } from './_core/env';
 import { createBreezeSourceRecordKey, summarizeExactAudienceGeography } from "./breezeSourceRecords";
 import { parseBreezeSourceSeed } from "./breezeSourceSeed";
@@ -252,8 +252,12 @@ export async function upsertBreezeSourceRecords(records: Array<{
   phone: string;
   ageRange: string;
   incomeRange: string;
+  children?: string;
+  homeowner?: string;
+  gender?: string;
   city: string;
   state: string;
+  zip?: string;
   sourceLabel: string;
   recordOrdinal: number;
 }>) {
@@ -268,12 +272,54 @@ export async function upsertBreezeSourceRecords(records: Array<{
       phone: sql`values(phone)`,
       ageRange: sql`values(ageRange)`,
       incomeRange: sql`values(incomeRange)`,
+      children: sql`values(children)`,
+      homeowner: sql`values(homeowner)`,
+      gender: sql`values(gender)`,
       city: sql`values(city)`,
       state: sql`values(state)`,
+      zip: sql`values(zip)`,
       sourceLabel: sql`values(sourceLabel)`,
       recordOrdinal: sql`values(recordOrdinal)`,
     },
   });
+}
+
+export async function getBreezeCurrentLeadList() {
+  const db = await getDb();
+  if (!db) return { leads: [], metadata: null };
+  const leads = await db.select({
+    firstName: breezeSourceRecords.firstName,
+    lastName: breezeSourceRecords.lastName,
+    email: breezeSourceRecords.email,
+    phone: breezeSourceRecords.phone,
+    ageRange: breezeSourceRecords.ageRange,
+    incomeRange: breezeSourceRecords.incomeRange,
+    children: breezeSourceRecords.children,
+    homeowner: breezeSourceRecords.homeowner,
+    gender: breezeSourceRecords.gender,
+    city: breezeSourceRecords.city,
+    state: breezeSourceRecords.state,
+    zip: breezeSourceRecords.zip,
+    recordOrdinal: breezeSourceRecords.recordOrdinal,
+    assignedAt: breezeCurrentLeadList.assignedAt,
+    listDate: breezeDailyLeadLists.listDate,
+    releaseCount: breezeDailyLeadLists.releaseCount,
+    sourceLastSyncedAt: breezeDailyLeadLists.sourceLastSyncedAt,
+  }).from(breezeCurrentLeadList)
+    .innerJoin(breezeSourceRecords, eq(breezeCurrentLeadList.recordKey, breezeSourceRecords.recordKey))
+    .innerJoin(breezeDailyLeadLists, eq(breezeCurrentLeadList.sourceLeadListId, breezeDailyLeadLists.id))
+    .orderBy(asc(breezeCurrentLeadList.slotNumber));
+  const [latest] = await db.select().from(breezeDailyLeadLists).orderBy(desc(breezeDailyLeadLists.listDate)).limit(1);
+  const [upcoming] = await db.select({ count: sql<number>`count(*)` }).from(breezeUpcomingLeads).where(isNull(breezeUpcomingLeads.releasedAt));
+  return {
+    leads,
+    metadata: latest ? {
+      listDate: latest.listDate,
+      releaseCount: latest.releaseCount,
+      sourceLastSyncedAt: latest.sourceLastSyncedAt,
+      upcomingLeadCount: Number(upcoming?.count ?? 0),
+    } : null,
+  };
 }
 
 async function loadBreezeSourceSeedRecords() {

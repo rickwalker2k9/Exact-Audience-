@@ -213,3 +213,10 @@
 ## Breeze Research Paths — Aug 31, 2026
 - [ ] Make every active Breeze View journey control open a lead-specific research-path panel.
 - [ ] Use official national and city-relevant income-protection resources in the initial Breeze research paths.
+
+## Breeze Current Lead List — Sep 1, 2026
+- [x] Build the private approved-Sheet importer and the initial 90-person Current Lead List.
+- [x] Add deterministic daily 57–112 lead intake, upcoming-lead queueing, and 15-slot daily replacement for a six-day visible-list turnover.
+- [x] Replace the outdated earlier-ad records with the Current Lead List and a View customer journey detail panel.
+- [x] Build the Railway Cron command and document its required configuration.
+- [ ] Create the separate Railway Cron service with the production database variable and verify its first daily run.

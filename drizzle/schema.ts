@@ -105,8 +105,12 @@ export const breezeSourceRecords = mysqlTable("breeze_source_records", {
   phone: varchar("phone", { length: 64 }).notNull(),
   ageRange: varchar("ageRange", { length: 64 }).notNull(),
   incomeRange: varchar("incomeRange", { length: 64 }).notNull(),
+  children: varchar("children", { length: 64 }).notNull().default(""),
+  homeowner: varchar("homeowner", { length: 64 }).notNull().default(""),
+  gender: varchar("gender", { length: 32 }).notNull().default(""),
   city: varchar("city", { length: 120 }).notNull(),
   state: varchar("state", { length: 32 }).notNull(),
+  zip: varchar("zip", { length: 16 }).notNull().default(""),
   sourceLabel: varchar("sourceLabel", { length: 255 }).notNull(),
   recordOrdinal: int("recordOrdinal").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -114,6 +118,51 @@ export const breezeSourceRecords = mysqlTable("breeze_source_records", {
 }, table => [uniqueIndex("breeze_source_record_unique").on(table.source, table.recordKey)]);
 
 export type BreezeSourceRecord = typeof breezeSourceRecords.$inferSelect;
+
+export const breezeDailyLeadLists = mysqlTable("breeze_daily_lead_lists", {
+  id: int("id").autoincrement().primaryKey(),
+  listDate: timestamp("listDate").notNull(),
+  releaseCount: int("releaseCount").notNull(),
+  importedRecordCount: int("importedRecordCount").notNull(),
+  sourceLastSyncedAt: timestamp("sourceLastSyncedAt").notNull(),
+  sourceLabel: varchar("sourceLabel", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => [uniqueIndex("breeze_daily_lead_list_date_unique").on(table.listDate)]);
+
+export type BreezeDailyLeadList = typeof breezeDailyLeadLists.$inferSelect;
+
+// Each approved lead is added once to the Upcoming Leads queue and is marked
+// released only when assigned to the 90-person Current Lead List.
+export const breezeUpcomingLeads = mysqlTable("breeze_upcoming_leads", {
+  id: int("id").autoincrement().primaryKey(),
+  recordKey: varchar("recordKey", { length: 64 }).notNull(),
+  leadListId: int("leadListId").notNull(),
+  queuePosition: int("queuePosition").notNull(),
+  addedAt: timestamp("addedAt").notNull(),
+  releasedAt: timestamp("releasedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => [
+  uniqueIndex("breeze_upcoming_lead_record_unique").on(table.recordKey),
+  uniqueIndex("breeze_upcoming_lead_position_unique").on(table.queuePosition),
+]);
+
+export type BreezeUpcomingLead = typeof breezeUpcomingLeads.$inferSelect;
+
+// Exactly 90 active slots. Fifteen slots are refreshed daily to complete one
+// full Current Lead List turnover across six daily releases.
+export const breezeCurrentLeadList = mysqlTable("breeze_current_lead_list", {
+  id: int("id").autoincrement().primaryKey(),
+  slotNumber: int("slotNumber").notNull(),
+  recordKey: varchar("recordKey", { length: 64 }).notNull(),
+  sourceLeadListId: int("sourceLeadListId").notNull(),
+  assignedAt: timestamp("assignedAt").notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => [
+  uniqueIndex("breeze_current_lead_slot_unique").on(table.slotNumber),
+  uniqueIndex("breeze_current_lead_record_unique").on(table.recordKey),
+]);
+
+export type BreezeCurrentLead = typeof breezeCurrentLeadList.$inferSelect;
 
 // Server-managed sessions for the isolated Breeze client portal. The raw browser
 // token is never persisted; only a SHA-256 hash is retained for validation and

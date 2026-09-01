@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-export const BREEZE_RECORD_SOURCES = ["google-ads", "meta-ads", "exact-audience"] as const;
+export const BREEZE_RECORD_SOURCES = ["google-ads", "meta-ads", "exact-audience", "breeze-approved-sheet"] as const;
 export type BreezeRecordSource = (typeof BREEZE_RECORD_SOURCES)[number];
 
 export type BreezeSourceRecordInput = {
@@ -40,7 +40,7 @@ export function createBreezeSourceRecordKey(record: Pick<BreezeSourceRecordInput
 }
 
 export function displaySourceName(source: BreezeRecordSource) {
-  return source === "google-ads" ? "Google Ads" : source === "meta-ads" ? "Meta Ads" : "Exact Audience Data";
+  return source === "google-ads" ? "Google Ads" : source === "meta-ads" ? "Meta Ads" : source === "breeze-approved-sheet" ? "Approved Breeze Lead List" : "Exact Audience Data";
 }
 
 export function summarizeExactAudienceGeography(records: Array<{ source: string; city: string; state: string }>): BreezeAudienceGeography {

@@ -5,7 +5,7 @@ import { notifyOwner } from "./_core/notification";
 import { invokeLLM } from "./_core/llm";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { createBreezeClientSession, createBreezeImportSource, getBreezeActiveCohortStatus, getBreezeClientAccessReport, getBreezeClientSession, getBreezeExactAudienceGeography, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getBreezeSourceRecords, getVoterCtvPrefs, touchBreezeClientSession, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
+import { createBreezeClientSession, createBreezeImportSource, getBreezeActiveCohortStatus, getBreezeClientAccessReport, getBreezeClientSession, getBreezeCurrentLeadList, getBreezeExactAudienceGeography, getBreezePixelConfigurations, getBreezeProgressByContactKeys, getBreezeSourceRecords, getVoterCtvPrefs, touchBreezeClientSession, upsertBreezeLeadProgress, upsertBreezePixelConfiguration, upsertVoterCtvPrefs } from "./db";
 import { BREEZE_FUNNEL_STAGES, buildFunnelCounts, getApprovedBreezeLeads, getBreezeContactKey, mapApprovedCsv, toLeadSummary, toOwnerReviewLead, type BreezeFunnelStage } from "./breezeSheet";
 import { parseBreezePixelCsv } from "./breezePixelImport";
 import { BREEZE_CLIENT_SESSION_COOKIE, BREEZE_CLIENT_SESSION_TTL_MS, createBreezeClientSessionToken, hashBreezeClientSessionToken, validateBreezeClientCredentials } from "./breezeClientAccess";
@@ -241,6 +241,7 @@ export const appRouter = router({
           records: records.slice(input.offset, input.offset + input.limit),
         };
       }),
+    currentLeadList: publicProcedure.query(async () => getBreezeCurrentLeadList()),
     audienceGeography: publicProcedure.query(async () => getBreezeExactAudienceGeography()),
     activeCohort: publicProcedure.query(async () => getBreezeActiveCohortStatus()),
     importPixelCsv: protectedProcedure
